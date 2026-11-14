@@ -1,9 +1,9 @@
 class_name SilhouetteTobie
 extends Node2D
 ## Tobie dessiné (planche de la DA, #65) : trois AnimatedSprite2D superposés, synchronisés
-## image par image : le dessin de base, le ruban rouge du pli (calque _red, qu'on peut faire
-## pulser) et la cendre au front (calque chr_tobie-cendre, visible après e1_cendre, où
-## Cassien cendre Tobie même s'il refuse).
+## image par image : le dessin de base, le ruban rouge du pli (calque _red, qui bat avec la
+## Lucidité basse, voir Battement) et la cendre au front (calque chr_tobie-cendre, visible
+## après e1_cendre, où Cassien cendre Tobie même s'il refuse).
 ## Planches horizontales d'images de 200×320, Tobie tourné vers la droite, pieds sur le sol à
 ## y 316, hanches à x 100 : l'origine du nœud est aux pieds. Le Messager retourne ce nœud
 ## (scale.x) pour la gauche. 10 i/s pile : la marche (8 images) ne glisse pas à 160 px/s.
@@ -38,6 +38,12 @@ func _ready() -> void:
 
 
 ## Le dessin est-il chargé (planches présentes) ?
+func _process(_delta: float) -> void:
+	if ruban != null:
+		ruban.modulate.a = Battement.opacite(Battement.maintenant(), GameState.palier,
+			Reglages.valeur(&"effets_attenues"))
+
+
 func est_dessine() -> bool:
 	return base != null
 

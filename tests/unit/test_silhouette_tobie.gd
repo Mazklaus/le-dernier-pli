@@ -79,3 +79,15 @@ func test_tourne_a_gauche_par_retournement() -> void:
 	await wait_physics_frames(3)
 	Input.action_release(&"deplacer_gauche")
 	assert_eq(s.scale.x, -1.0)
+
+
+func test_ruban_bat_au_palier_trouble() -> void:
+	GameState.palier = GameState.TROUBLE
+	var opacites := {}
+	for i in 20:
+		await wait_process_frames(1)
+		opacites[snappedf(s.ruban.modulate.a, 0.01)] = true
+		await wait_seconds(0.05)
+	GameState.palier = GameState.palier_pour(GameState.lucidite)
+	assert_true(opacites.has(0.55), "le ruban bat")
+	assert_true(opacites.has(1.0))
