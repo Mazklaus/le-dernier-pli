@@ -1,0 +1,21 @@
+# Étape 3, rencontre 1 : les enfants de la lisière. Le sas après le No Man's Land.
+# Faire l'ennemi : +1 Lucidité (le seul rire franc depuis la tranchée). Refuser : rien.
+# Garde-fou du Game Director : personne ne dit « paix ». Les enfants ne savent pas où est le front.
+
+~ debut
+
+Tobie: Des enfants, dans le verger. Ils se battent avec des bâtons et crient « pan ».
+Un enfant: T'es un vrai soldat ? Avec un vrai fusil ?
+Tobie: Je n'ai pas de fusil. J'ai une sacoche.
+Un enfant: Alors tu fais l'ennemi. Tu dois tomber quand on dit pan.
+- [Faire l'ennemi] D'accord. Mais visez bien.
+	Un enfant: Pan !
+	Tobie: Je tombe dans l'herbe sèche. Je reste là, les bras en croix, et je ris. Je ne sais plus depuis quand.
+	do GameState.appliquer_effets({&"lucidite": 1})
+- [Refuser] J'ai une course à faire.
+	Un enfant: T'es pas drôle. Les soldats, c'est jamais drôle.
+Le plus petit: Dis, c'est où, le front ?
+Tobie: Il me regarde comme on demande où est la mer. Personne ne lui a jamais dit.
+Tobie: Je montre le chemin derrière moi. Il hausse les épaules et repart jouer.
+
+=> END

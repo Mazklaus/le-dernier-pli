@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://434fihvst8uo"
+path="res://.godot/imported/e3_details.dialogue-800d1627315c13a3ba8c7da203938440.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_03/e3_details.dialogue"
+dest_files=["res://.godot/imported/e3_details.dialogue-800d1627315c13a3ba8c7da203938440.tres"]
+
+[params]
+
+defaults=true

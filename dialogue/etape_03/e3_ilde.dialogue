@@ -1,0 +1,34 @@
+# Étape 3, rencontre 2 : Maîtresse Ilde, la maire. Obligatoire, elle ouvre la nuit.
+# Objet pain blanc (celui que Jacquot attend : le manger ou le troquer trahit « Promis à Jacquot »).
+# Promettre : Promesse « Promis à Ilde », résolue la nuit même (e3_procession).
+# Titre « lit » : réplique facultative avant le fondu du passage vers la chambre (requiert e3_ilde).
+
+~ debut
+
+Tobie: Une femme ronde et calme, un trousseau de clés à la ceinture. Elle m'ouvre avant que je frappe.
+Ilde: Entre, petit. Tu as fait une longue route, ça se voit à tes bottes.
+Tobie: Son regard tombe sur ma sacoche. Sur la cire noire. Une seconde de trop.
+Ilde: Assieds-toi. Tiens.
+Tobie: Un pain blanc. Rond, tiède, avec une croûte qui chante sous le pouce. Je n'en avais jamais tenu.
+do GameState.ajouter_objet(&"pain_blanc")
+if GameState.possede_marque(&"promis_a_jacquot")
+	Tobie: Jacquot. Je t'avais promis du pain blanc. Le voilà.
+Ilde: Tu dormiras ici. Mais cette nuit, tu restes dans ta chambre, volets fermés.
+Ilde: Quoi que tu entendes. Promets-le-moi.
+- [Promettre] Je resterai dans ma chambre. Promis.
+	Ilde: Bon garçon.
+	do GameState.ajouter_marque(&"promis_a_ilde", &"promesse", &"e3_ilde")
+- [Parler du front] Il se passe quoi, la nuit ?
+	Ilde: Le front ? Tu dois avoir faim. Mange donc.
+	Tobie: Je n'ai pas parlé du front.
+- [Ne rien promettre] Je ne promets plus rien à personne.
+	Ilde: Alors je fermerai à clé. Ce sera plus simple pour tout le monde.
+
+=> END
+
+~ lit
+
+Tobie: Un vrai lit, des draps qui sentent le savon. Ilde ferme les volets elle-même.
+Tobie: J'entends la clé tourner. Une fois. Deux fois.
+
+=> END

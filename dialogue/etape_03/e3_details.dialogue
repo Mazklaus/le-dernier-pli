@@ -1,0 +1,45 @@
+# Étape 3 : détails à examiner, sans coût ni marque, rejouables, 15 à 30 s chacun.
+# Titres du plan du Level Designer. Une seule fausse note visuelle mise en avant : les lampions à l'envers.
+# Garde-fou : rien sur ce que sont devenues les cloches, rien sur le pli. Jamais le mot « paix ».
+
+~ lisiere_fusils
+
+Tobie: Des fusils de bois, alignés contre le mur. Bien taillés, bien droits.
+Tobie: Celui qui les a sculptés n'a jamais vu de vrai fusil. Il a oublié la gâchette.
+
+=> END
+
+~ place_lampions
+
+Tobie: Les lampions de la noce. Tous accrochés à l'envers, la flamme vers le bas.
+Tobie: Personne ne semble le remarquer. Comme si la lumière, ici, devait regarder la terre.
+
+=> END
+
+~ ilde_pain
+
+Tobie: Le pain blanc, sur la table. Il y en a trop pour une femme seule.
+Tobie: Il est blanc comme je n'ai jamais rien vu de blanc. Même pas la neige, au front.
+
+=> END
+
+~ clocher_cordes
+
+Tobie: Les cordes des cloches, coupées net. Une coupe propre, à la hache, tout là-haut.
+Tobie: Pas usées, pas rongées. Quelqu'un est monté exprès, un jour, avec un outil et un ordre.
+
+=> END
+
+~ chambre_volet
+
+Tobie: Le volet de la chambre. On l'a cloué de l'extérieur, puis décloué. Plusieurs fois.
+Tobie: Les trous des clous se touchent presque. Je ne suis pas le premier à dormir ici.
+
+=> END
+
+~ champs_cierges
+
+Tobie: Un cierge éteint, planté dans la terre. La cire a coulé jusqu'aux racines.
+Tobie: Quelqu'un l'a enfoncé profond, à deux mains. Pour qu'il tienne. Ou pour qu'on le voie d'en bas.
+
+=> END
