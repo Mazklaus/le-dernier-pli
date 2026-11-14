@@ -8,6 +8,7 @@ Moteur : Godot 4.7.2-stable, GDScript typé, renderer **Compatibility** (WebGL2)
 |---|---|---|---|
 | `GameState` | `autoload/game_state.gd` | Jauges, marques, sceau, étape. Fonction unique `modifier_jauge`. Émet des signaux, ne connaît personne. | Gameplay Prog |
 | `AudioDirector` | `autoload/audio_director.gd` | Seul point de lecture du son. S'abonne à GameState. | Sound Designer + Gameplay Prog |
+| `Reglages` | `autoload/reglages.gd` | Options du joueur (user://reglages.cfg), volumes appliqués aux bus. | Lead Prog |
 | `SceneRouter` | `autoload/scene_router.gd` | Titre → étapes 1 à 7, `aller_etape`, `etape_suivante`, `aller_rencontre`. | Lead Prog |
 | `DialogueManager` | `addons/dialogue_manager/` | Runtime des fichiers `.dialogue`. | addon |
 | `BuildInfo` | `autoload/build_info.gd` | SHA du build en coin d'écran (debug seulement). | Lead Prog |
