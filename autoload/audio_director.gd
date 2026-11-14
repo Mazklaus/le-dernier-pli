@@ -3,8 +3,9 @@ extends Node
 ## S'abonne aux signaux de GameState ; GameState ne connaît pas l'audio.
 ## Web : rien ne joue avant la première interaction joueur (déverrouillée par l'écran titre).
 ##
-## Squelette : les fonctions existent et sont branchées, le Sound Designer et le
-## Gameplay Prog y mettent le contenu (couches d'ambiance, filtres de lucidité).
+## Mixage selon la Lucidité : les règles chiffrées sont dans scripts/regles/mixage_son.gd.
+## Ici, on ne fait que les appliquer en fondu aux couches de l'étape et au passe-bas
+## du bus Ambiance.
 
 const BUS_MUSIQUE := &"Musique"
 const BUS_AMBIANCE := &"Ambiance"
@@ -27,16 +28,49 @@ const SLUGS_ETAPES := {
 const COUCHES_AMBIANCE := {
 	1: ["surface-lit", "surface-voix", "autre"],
 }
+## Couches de la famille « autre » (ce que la Lucidité qui baisse laisse passer) ;
+## toutes les autres couches sont du « réel ».
+const COUCHES_AUTRE: Array[String] = ["autre"]
+## Couches de voix dont le gain suit la position du messager (repères de surface).
+const COUCHES_VOIX: Array[String] = ["surface-voix"]
+## Variantes de timbre de dialogue : vox_<personnage>_01 à _03.
+const VARIANTES_TIMBRE := 3
 
 var audio_deverrouille: bool = false
 var _musique: AudioStreamPlayer
-var _ambiances: Array[AudioStreamPlayer] = []
+## couche -> lecteur, pour l'étape en cours.
+var _couches: Dictionary = {}
+## Mélange courant (interpolé par les fondus), en gains linéaires.
+var _mix_reel: float = 1.0
+var _mix_autre: float = 0.0
+var _gain_voix: float = 1.0
+var _dans_le_noir: bool = false
+var _fondu: Tween
+var _passe_bas: AudioEffectLowPassFilter
+var _suivi_joueur: Node2D
+var _points_voix: Array[Vector2] = []
+var _rng := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
 	_musique = _creer_lecteur(BUS_MUSIQUE)
-	GameState.jauge_changee.connect(_sur_jauge_changee)
+	_passe_bas = _installer_passe_bas()
+	_rng.randomize()
 	GameState.palier_change.connect(_sur_palier_change)
+	GameState.etat_declenche.connect(_sur_etat_declenche)
+	GameState.etat_charge.connect(_sur_etat_charge)
+	GameState.zone_sombre_changee.connect(_sur_zone_sombre_changee)
+	set_process(false)
+
+
+func _process(_delta: float) -> void:
+	if not is_instance_valid(_suivi_joueur):
+		arreter_suivi_voix()
+		return
+	var gain := MixageSon.gain_voix(_suivi_joueur.global_position.x, _points_voix)
+	if not is_equal_approx(gain, _gain_voix):
+		_gain_voix = gain
+		_maj_volumes()
 
 
 ## Appelé par l'écran titre au premier clic ou à la première touche.
@@ -46,17 +80,20 @@ func deverrouiller() -> void:
 
 ## Appelé par SceneRouter au changement d'étape.
 func jouer_etape(numero: int) -> void:
-	for lecteur in _ambiances:
+	for lecteur: AudioStreamPlayer in _couches.values():
 		lecteur.queue_free()
-	_ambiances.clear()
+	_couches.clear()
+	arreter_suivi_voix()
 	_musique.stop()
 	var slug: String = SLUGS_ETAPES.get(numero, "")
 	if slug.is_empty():
 		return
 	for couche: String in COUCHES_AMBIANCE.get(numero, []):
 		var lecteur := _creer_lecteur(BUS_AMBIANCE)
-		_ambiances.append(lecteur)
+		_couches[couche] = lecteur
 		_jouer_boucle(lecteur, "res://assets/audio/amb_%s_%s.ogg" % [slug, couche])
+	# Une nouvelle étape démarre directement au bon mélange, sans fondu.
+	_appliquer_mixage(true)
 
 
 ## Musique d'un moment de l'étape courante (mus_<slug>_<moment>.ogg).
@@ -65,9 +102,18 @@ func jouer_musique(numero: int, moment: String) -> void:
 	_jouer_boucle(_musique, "res://assets/audio/mus_%s_%s.ogg" % [slug, moment])
 
 
-## Le timbre d'une rencontre ou d'un objet (sfx_<famille>_<action>_NN.wav).
-func jouer_timbre(nom: String) -> void:
-	jouer_sfx(nom, BUS_SFX)
+## Timbre de dialogue d'un personnage (pas de doublage) : une variante au hasard parmi
+## vox_<personnage>_01 à _03, sur le bus Voix. `personnage` est le slug du fichier
+## (tobie, lamarre, cassien, jacquot, ravaude, guetteur, voix-sous-terre).
+func jouer_timbre(personnage: String) -> void:
+	var variantes: Array[String] = []
+	for n in range(1, VARIANTES_TIMBRE + 1):
+		var nom := "vox_%s_%02d" % [personnage, n]
+		if ResourceLoader.exists("res://assets/audio/%s.wav" % nom):
+			variantes.append(nom)
+	if variantes.is_empty():
+		return
+	jouer_sfx(variantes[_rng.randi_range(0, variantes.size() - 1)], BUS_VOIX)
 
 
 func jouer_sfx(nom: String, bus: StringName = BUS_SFX) -> void:
@@ -82,18 +128,101 @@ func jouer_sfx(nom: String, bus: StringName = BUS_SFX) -> void:
 	lecteur.play()
 
 
-func set_lucidite(valeur: int) -> void:
-	# À remplir avec le Sound Designer : filtres et couches selon la lucidité.
-	pass
+## Recalcule le mélange depuis l'état de GameState (la valeur seule ne suffit pas :
+## le palier et l'état Perdu décident). Gardé pour les appels manuels (menu debug).
+func set_lucidite(_valeur: int) -> void:
+	_appliquer_mixage()
 
 
-func _sur_jauge_changee(nom: StringName, _ancienne: int, nouvelle: int) -> void:
-	if nom == GameState.LUCIDITE:
-		set_lucidite(nouvelle)
+## Le gain des voix de surface suit l'abscisse de `joueur`, interpolé entre les repères
+## nommés boyau_arriere, carrefour, periscope, pied_echelle (Marker2D du Level Designer).
+func definir_suivi_voix(joueur: Node2D, reperes: Array[Marker2D]) -> void:
+	var positions := {}
+	for repere in reperes:
+		positions[StringName(repere.name)] = repere.global_position.x
+	_points_voix = MixageSon.points_depuis_reperes(positions)
+	_suivi_joueur = joueur
+	set_process(joueur != null and not _points_voix.is_empty())
+
+
+## Sous terre ou hors de la surface : les voix reviennent à leur gain plein.
+func arreter_suivi_voix() -> void:
+	_suivi_joueur = null
+	_points_voix.clear()
+	set_process(false)
+	if not is_equal_approx(_gain_voix, 1.0):
+		_gain_voix = 1.0
+		_maj_volumes()
 
 
 func _sur_palier_change(_ancien: StringName, _nouveau: StringName) -> void:
-	pass
+	_appliquer_mixage()
+
+
+func _sur_etat_declenche(etat: StringName) -> void:
+	if etat == &"perdu":
+		_appliquer_mixage()
+
+
+func _sur_etat_charge() -> void:
+	_dans_le_noir = false
+	_appliquer_mixage(true)
+
+
+func _sur_zone_sombre_changee(dans_zone: bool, lanterne: bool) -> void:
+	_dans_le_noir = dans_zone and not lanterne
+	_appliquer_mixage()
+
+
+## Lance le fondu vers le mélange cible (ou l'applique d'un coup si `instantane`).
+func _appliquer_mixage(instantane: bool = false) -> void:
+	var cible := MixageSon.cible(GameState.palier, GameState.est_perdu(), _dans_le_noir)
+	if _fondu and _fondu.is_valid():
+		_fondu.kill()
+	if instantane:
+		_mix_reel = cible["reel"]
+		_mix_autre = cible["autre"]
+		if _passe_bas:
+			_passe_bas.cutoff_hz = cible["coupure_hz"]
+		_maj_volumes()
+		return
+	_fondu = create_tween().set_parallel(true).set_trans(Tween.TRANS_SINE)
+	_fondu.tween_method(_regler_mix_reel, _mix_reel, float(cible["reel"]), MixageSon.DUREE_FONDU)
+	_fondu.tween_method(_regler_mix_autre, _mix_autre, float(cible["autre"]), MixageSon.DUREE_FONDU)
+	if _passe_bas:
+		_fondu.tween_property(_passe_bas, "cutoff_hz", float(cible["coupure_hz"]), MixageSon.DUREE_FONDU)
+
+
+func _regler_mix_reel(valeur: float) -> void:
+	_mix_reel = valeur
+	_maj_volumes()
+
+
+func _regler_mix_autre(valeur: float) -> void:
+	_mix_autre = valeur
+	_maj_volumes()
+
+
+func _maj_volumes() -> void:
+	for couche: String in _couches:
+		var gain := _mix_autre if couche in COUCHES_AUTRE else _mix_reel
+		if couche in COUCHES_VOIX:
+			gain *= _gain_voix
+		(_couches[couche] as AudioStreamPlayer).volume_db = MixageSon.vers_db(gain)
+
+
+func _installer_passe_bas() -> AudioEffectLowPassFilter:
+	var bus := AudioServer.get_bus_index(BUS_AMBIANCE)
+	if bus == -1:
+		return null
+	for i in AudioServer.get_bus_effect_count(bus):
+		var effet := AudioServer.get_bus_effect(bus, i)
+		if effet is AudioEffectLowPassFilter:
+			return effet
+	var filtre := AudioEffectLowPassFilter.new()
+	filtre.cutoff_hz = MixageSon.COUPURE_PAR_PALIER[&"clair"]
+	AudioServer.add_bus_effect(bus, filtre, 0)
+	return filtre
 
 
 func _jouer_boucle(lecteur: AudioStreamPlayer, chemin: String) -> void:
