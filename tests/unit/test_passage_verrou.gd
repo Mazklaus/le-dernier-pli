@@ -131,3 +131,21 @@ func test_fondu_au_noir_teleporte_dans_le_noir() -> void:
 	assert_true(p.est_disponible())
 	var noirs := get_tree().root.find_children("Noir", "ColorRect", true, false)
 	assert_eq(noirs.size(), 0, "voile retiré")
+
+
+func test_lieux_nuit_basculent_l_eclairage() -> void:
+	etape.lieux_nuit = [&"chambre"]
+	_marqueur("entree_chambre", Vector2(-3000, 400))
+	_marqueur("entree_place", Vector2(3000, 400))
+	var vers_chambre := _passage(&"chambre")
+	var vers_place := _passage(&"place")
+	etape.brancher_musique_lieux()
+	watch_signals(etape)
+	vers_chambre.interagir(m)
+	assert_true(etape.nuit)
+	assert_signal_emitted_with_parameters(etape, "phase_changee", [true])
+	var eclairage := etape.get_node("Eclairage") as CanvasModulate
+	assert_eq(eclairage.color, etape.teinte_nuit)
+	vers_place.interagir(m)
+	assert_false(etape.nuit)
+	assert_eq(eclairage.color, Color.WHITE)
