@@ -140,6 +140,7 @@ position = Vector2(420, 900)
 rencontre_id = &"e1_sape"
 dialogue = ExtResource("3")
 libelle = "Entrer dans la sape"
+une_seule_fois = true
 metadata/note_level_design = "Choix à l'entrée : allumer la lanterne ou rester dans le noir"
 
 [node name="Visuel" type="ColorRect" parent="Rencontres/e1_sape"]
