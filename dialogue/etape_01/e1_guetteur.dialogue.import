@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://brrxjn6oj4pv"
+path="res://.godot/imported/e1_guetteur.dialogue-bcb02b991e3082b3d9faf2d6c11d38fd.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_01/e1_guetteur.dialogue"
+dest_files=["res://.godot/imported/e1_guetteur.dialogue-bcb02b991e3082b3d9faf2d6c11d38fd.tres"]
+
+[params]
+
+defaults=true

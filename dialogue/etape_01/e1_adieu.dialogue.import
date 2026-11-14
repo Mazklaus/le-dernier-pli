@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://p1abwt1d6o6r"
+path="res://.godot/imported/e1_adieu.dialogue-9fd9e95efac58b113e5a305502319bb0.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_01/e1_adieu.dialogue"
+dest_files=["res://.godot/imported/e1_adieu.dialogue-9fd9e95efac58b113e5a305502319bb0.tres"]
+
+[params]
+
+defaults=true

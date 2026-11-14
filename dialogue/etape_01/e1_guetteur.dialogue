@@ -1,0 +1,19 @@
+# Étape 1, scène 3d : le Guetteur (optionnel). Ambiance, première fausse note. Aucune marque.
+# Le Guetteur ne quitte jamais le périscope des yeux (DA).
+
+~ debut
+
+Guetteur: Doucement. Tu fais trembler la terre.
+Guetteur: Tu vois la motte, là-bas ? Je la surveille depuis des années.
+Guetteur: Un jour elle bougera. Ce jour-là, je serai là.
+- [Regarder dans le périscope]
+	Tobie: Une bosse de terre grise. Rien d'autre.
+	Guetteur: Regarde encore.
+	Tobie: ... Elle n'est plus au même endroit.
+	Guetteur: Rien n'a bougé. Rien ne bouge jamais.
+- Vous avez déjà vu l'ennemi ?
+	Guetteur: Jamais. C'est pour ça qu'il faut guetter.
+- [Partir]
+	Guetteur: C'est ça. Va courir.
+
+=> END
