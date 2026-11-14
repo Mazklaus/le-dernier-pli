@@ -8,9 +8,9 @@ const DUREE_FONDU := 0.15
 const LIBELLE_MAX := 24
 ## Hauteur au-dessus de l'origine de la cible (ses pieds), en pixels écran à 1080.
 const HAUTEUR := 220.0
-const ENCRE := Color("15130f")
-const PAPIER := Color("e8e5da")
+const ENCRE := StylePapier.ENCRE
 
+## Police du libellé ; Spectral par défaut.
 @export var police: Font
 
 var cible: Interactif = null
@@ -22,15 +22,10 @@ var _en_dialogue: bool = false
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var style := StyleBoxFlat.new()
-	style.bg_color = PAPIER
-	style.border_color = ENCRE
-	style.set_border_width_all(2)
-	style.content_margin_left = 14
-	style.content_margin_right = 14
-	style.content_margin_top = 6
-	style.content_margin_bottom = 6
-	add_theme_stylebox_override(&"panel", style)
+	# Petite plaque de papier déchiré du DA (bord réduit à 18 px pour une plaque d'une ligne).
+	add_theme_stylebox_override(&"panel", StylePapier.plaque(22.0, 18.0, 10.0))
+	if police == null:
+		police = StylePapier.police(StylePapier.POLICE_TEXTE)
 	_etiquette = Label.new()
 	_etiquette.add_theme_color_override(&"font_color", ENCRE)
 	_etiquette.add_theme_font_size_override(&"font_size", 20)
