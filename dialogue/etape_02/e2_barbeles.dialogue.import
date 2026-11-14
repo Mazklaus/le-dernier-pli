@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://cbhbdvhtgmaus"
+path="res://.godot/imported/e2_barbeles.dialogue-5a5234df196a7113aaa3cfeaf65c9083.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_02/e2_barbeles.dialogue"
+dest_files=["res://.godot/imported/e2_barbeles.dialogue-5a5234df196a7113aaa3cfeaf65c9083.tres"]
+
+[params]
+
+defaults=true

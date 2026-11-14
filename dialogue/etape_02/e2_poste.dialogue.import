@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://dptqjlvmb4drg"
+path="res://.godot/imported/e2_poste.dialogue-ccd0a56c2cffaa5332906bc748693cf6.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_02/e2_poste.dialogue"
+dest_files=["res://.godot/imported/e2_poste.dialogue-ccd0a56c2cffaa5332906bc748693cf6.tres"]
+
+[params]
+
+defaults=true

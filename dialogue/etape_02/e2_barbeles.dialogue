@@ -1,0 +1,42 @@
+# Étape 2, rencontre 2 : les barbelés qui fredonnent. Gabarit GD n°1 (zone sombre longue).
+# Lanterne : −1 Huile, on passe. La zone sombre couvre aussi e2_mort : la scène appelle sortir_zone_sombre() en sortie de brouillard. Noir : −1 Lucidité, les fils fredonnent l'air de Jacquot,
+# puis ramper (−1 Vivres) ou foncer (Cicatrice « Les barbelés »). Le choix vaut pour les deux ceintures.
+
+~ debut
+
+Tobie: Le brouillard. Je ne vois plus mes pieds.
+- [Allumer la lanterne] [#cout_huile=1, #sans_prelevement]
+	do GameState.entrer_zone_sombre(true)
+	=> lumiere
+- [Avancer dans le noir] [#cout_lucidite=1, #sans_prelevement]
+	do GameState.entrer_zone_sombre(false)
+	=> noir
+
+~ lumiere
+
+Tobie: La lumière accroche les fils. Il y a des passages, si on regarde bien.
+Tobie: Quelqu'un les a ouverts avant moi. Je passe sans me griffer.
+
+=> END
+
+~ noir
+
+Tobie: Le vent passe entre les pointes. Les fils chantent.
+Tobie: C'est l'air de Jacquot. Celui du dépôt. Note pour note.
+Tobie: Je me surprends à le fredonner avec eux.
+- [Ramper dessous] [#cout_vivres=1]
+	Tobie: Je rampe dans la boue froide. Ça prend du temps, et des forces.
+- [Foncer]
+	Tobie: Je fonce. Les pointes me prennent les mains, la manche, un peu de peau.
+	do GameState.ajouter_marque(&"les_barbeles", &"cicatrice", &"e2_barbeles")
+
+=> END
+
+~ seconde_ceinture
+
+if GameState.lanterne_allumee
+	Tobie: Encore des fils. Encore un passage ouvert.
+else
+	Tobie: Encore des fils. Mon corps refait le même geste, sans me demander.
+
+=> END

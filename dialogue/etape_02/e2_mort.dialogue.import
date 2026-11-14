@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://c4sl3b0oob2fp"
+path="res://.godot/imported/e2_mort.dialogue-56721990edc43819951302b1509897ce.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_02/e2_mort.dialogue"
+dest_files=["res://.godot/imported/e2_mort.dialogue-56721990edc43819951302b1509897ce.tres"]
+
+[params]
+
+defaults=true

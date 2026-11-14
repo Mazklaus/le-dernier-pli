@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://djqgdstsefmpl"
+path="res://.godot/imported/e2_sacoche.dialogue-eede2216e3defc2fbe2900413b71a618.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_02/e2_sacoche.dialogue"
+dest_files=["res://.godot/imported/e2_sacoche.dialogue-eede2216e3defc2fbe2900413b71a618.tres"]
+
+[params]
+
+defaults=true
