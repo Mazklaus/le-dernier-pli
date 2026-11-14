@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3]
+[gd_scene load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_01/etape_01.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_01/lieux/couchette.tscn" id="2"]
@@ -7,10 +7,12 @@
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_01/lieux/chapelle.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_01/lieux/vieille_sape.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_01/lieux/sape_sortie.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="8"]
-[ext_resource type="Resource" path="res://dialogue/etape_01/e1_guetteur.dialogue" id="9"]
-[ext_resource type="Resource" path="res://dialogue/etape_01/e1_parapet.dialogue" id="10"]
-[ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="11"]
+[ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="8"]
+[ext_resource type="Script" path="res://scenes/interactions/verrou/verrou.gd" id="9"]
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="10"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_guetteur.dialogue" id="11"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_parapet.dialogue" id="12"]
+[ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="13"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(3840, 180)
@@ -113,6 +115,12 @@ text = "2 Boyau arrière · 2 écrans · soldats qui fixent Tobie"
 
 [node name="VersCouchette" type="Area2D" parent="Surface/BoyauArriere" groups=["passages"]]
 position = Vector2(200, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("8")
+vers = &"couchette"
+libelle = "Descendre à la couchette"
 metadata/vers = "couchette"
 metadata/note_level_design = "Escalier vers la couchette (départ)"
 
@@ -138,6 +146,12 @@ text = "-> couchette"
 
 [node name="VersAbriSergent" type="Area2D" parent="Surface/BoyauArriere" groups=["passages"]]
 position = Vector2(3200, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("8")
+vers = &"abri_sergent"
+libelle = "Descendre à l'abri"
 metadata/vers = "abri_sergent"
 metadata/note_level_design = "Escalier vers l'abri du sergent"
 
@@ -163,6 +177,8 @@ text = "-> abri_sergent"
 
 [node name="Chicane" type="StaticBody2D" parent="Surface/BoyauArriere"]
 position = Vector2(3740.0, 770.0)
+script = ExtResource("9")
+rencontre = &"e1_ordre"
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/BoyauArriere/Chicane"]
 shape = SubResource("RectangleShape2D_5")
@@ -227,6 +243,12 @@ text = "4 Carrefour · 3 écrans · ordre libre"
 
 [node name="VersCantine" type="Area2D" parent="Surface/Carrefour" groups=["passages"]]
 position = Vector2(460, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("8")
+vers = &"cantine"
+libelle = "Descendre à la cantine"
 metadata/vers = "cantine"
 metadata/note_level_design = "Escalier à gauche du carrefour"
 
@@ -252,6 +274,12 @@ text = "-> cantine"
 
 [node name="VersChapelle" type="Area2D" parent="Surface/Carrefour" groups=["passages"]]
 position = Vector2(2360, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("8")
+vers = &"chapelle"
+libelle = "Entrer dans la chapelle"
 metadata/vers = "chapelle"
 metadata/note_level_design = "Niche dans le parados, au milieu"
 
@@ -289,10 +317,10 @@ offset_bottom = 60.0
 color = Color(0.35, 0.35, 0.35, 1)
 mouse_filter = 2
 
-[node name="e1_guetteur" parent="Surface/Carrefour" instance=ExtResource("8")]
+[node name="e1_guetteur" parent="Surface/Carrefour" instance=ExtResource("10")]
 position = Vector2(3940, 780)
 rencontre_id = &"e1_guetteur"
-dialogue = ExtResource("9")
+dialogue = ExtResource("11")
 libelle = "Regarder au périscope"
 metadata/note_level_design = "Le Guetteur au périscope, facultatif. -1 lucidité au deuxième regard"
 
@@ -315,6 +343,12 @@ text = "e1_guetteur"
 
 [node name="VersVieilleSape" type="Area2D" parent="Surface/Carrefour" groups=["passages"]]
 position = Vector2(5100, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("8")
+vers = &"vieille_sape"
+libelle = "Se glisser dans la sape"
 metadata/vers = "vieille_sape"
 metadata/note_level_design = "Trou d'étais rubanné, tout à droite"
 
@@ -340,6 +374,12 @@ text = "-> vieille_sape"
 
 [node name="VersSapeSortie" type="Area2D" parent="Surface/Carrefour" groups=["passages"]]
 position = Vector2(5500, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("8")
+vers = &"sape_sortie"
+libelle = "Vers la sape de sortie"
 metadata/vers = "sape_sortie"
 metadata/note_level_design = "Entrée de la sape de sortie"
 
@@ -427,10 +467,10 @@ text = "6 Pied de l'échelle · 0,5 écran"
 [node name="entree_echelle" type="Marker2D" parent="Surface/PiedEchelle"]
 position = Vector2(120, 900)
 
-[node name="e1_parapet" parent="Surface/PiedEchelle" instance=ExtResource("8")]
+[node name="e1_parapet" parent="Surface/PiedEchelle" instance=ExtResource("10")]
 position = Vector2(480, 900)
 rencontre_id = &"e1_parapet"
-dialogue = ExtResource("10")
+dialogue = ExtResource("12")
 libelle = "Monter"
 fin_etape = true
 metadata/note_level_design = "Lamarre au pied de l'échelle : regarder le pli, monter, bilan"
@@ -500,5 +540,26 @@ position = Vector2(12800, 1400)
 [node name="SapeSortie" parent="Lieux" instance=ExtResource("7")]
 position = Vector2(16000, 1400)
 
-[node name="Messager" parent="." instance=ExtResource("11")]
+[node name="PassageAbri" parent="Lieux/AbriSergent/Passages"]
+arrivee = NodePath("../../../../Surface/BoyauArriere/porte_abri_sergent")
+
+[node name="PassageCantine" parent="Lieux/Cantine/Passages"]
+arrivee = NodePath("../../../../Surface/Carrefour/porte_cantine")
+
+[node name="PassageChapelle" parent="Lieux/Chapelle/Passages"]
+arrivee = NodePath("../../../../Surface/Carrefour/porte_chapelle")
+
+[node name="PassageVieilleSape" parent="Lieux/VieilleSape/Passages"]
+arrivee = NodePath("../../../../Surface/Carrefour/porte_vieille_sape")
+
+[node name="PassageSapeSortie" parent="Lieux/SapeSortie/Passages"]
+arrivee = NodePath("../../../../Surface/Carrefour/porte_sape_sortie")
+
+[node name="Messager" parent="." instance=ExtResource("13")]
 position = Vector2(360, 2300)
+
+[editable path="Lieux/AbriSergent"]
+[editable path="Lieux/Cantine"]
+[editable path="Lieux/Chapelle"]
+[editable path="Lieux/VieilleSape"]
+[editable path="Lieux/SapeSortie"]

@@ -1,7 +1,9 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=12 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
-[ext_resource type="Resource" path="res://dialogue/etape_01/e1_adieu.dialogue" id="2"]
+[ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="2"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_adieu.dialogue" id="3"]
+[ext_resource type="Script" path="res://scenes/interactions/verrou/verrou.gd" id="4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
@@ -108,6 +110,12 @@ text = "5 Sape de sortie (verrou : la Cendre) · 1.5 écran(s)"
 
 [node name="PassageSapeSortie" type="Area2D" parent="Passages" groups=["passages"]]
 position = Vector2(200, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("1")
+vers = &"carrefour"
+libelle = "Revenir au carrefour"
 metadata/vers = "carrefour"
 metadata/note_level_design = "Entrée de la sape de sortie"
 
@@ -131,10 +139,10 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> carrefour"
 
-[node name="e1_adieu" parent="Rencontres" instance=ExtResource("1")]
+[node name="e1_adieu" parent="Rencontres" instance=ExtResource("2")]
 position = Vector2(1400, 900)
 rencontre_id = &"e1_adieu"
-dialogue = ExtResource("2")
+dialogue = ExtResource("3")
 libelle = "Parler à Jacquot"
 rencontre_requise = &"e1_cendre"
 titre_si_verrouille = "refus_sans_cendre"
@@ -159,6 +167,8 @@ text = "e1_adieu"
 
 [node name="VerrouCendre" type="StaticBody2D" parent="."]
 position = Vector2(1580.0, 675.0)
+script = ExtResource("4")
+rencontre = &"e1_cendre"
 
 [node name="Forme" type="CollisionShape2D" parent="VerrouCendre"]
 shape = SubResource("RectangleShape2D_6")
@@ -173,6 +183,12 @@ mouse_filter = 2
 
 [node name="SortieVersEchelle" type="Area2D" parent="Passages" groups=["passages"]]
 position = Vector2(2700, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("1")
+vers = &"echelle"
+libelle = "Aller à l'échelle"
 metadata/vers = "echelle"
 metadata/note_level_design = "Débouche au pied de l'échelle"
 
