@@ -138,3 +138,9 @@ func test_invite_en_plaque_de_papier() -> void:
 	add_child_autofree(invite)
 	assert_true(invite.get_theme_stylebox(&"panel") is StyleBoxTexture)
 	assert_not_null(invite.police)
+
+
+func test_pas_de_traduction_de_disposition_sans_ecran_ni_sur_le_web() -> void:
+	# En CI (headless), et sur le web (#23), le glyphe vient de la touche physique.
+	assert_false(InviteInteraction.disposition_disponible())
+	assert_eq(InviteInteraction.glyphe_action(&"interagir"), "E")
