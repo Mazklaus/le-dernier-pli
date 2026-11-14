@@ -11,7 +11,7 @@ Cassien: ... C'est la cire noire.
 	do GameState.modifier_jauge(&"lucidite", 1)
 	Cassien: Prends ma médaille. Elle a plus besoin de moi.
 	- La prendre.
-		do GameState.ajouter_marque(&"medaille_de_cendre", &"relique", &"e1_cassien")
+		do GameState.ajouter_marque(&"medaille_de_cendre", &"relique", &"e1_cendre")
 		Cassien: Garde-la contre ta peau. Elle tient chaud.
 	- Gardez-la, mon père.
 		Cassien: Comme tu veux. Tu as toujours été plus têtu que tes lettres.

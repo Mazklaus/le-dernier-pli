@@ -16,10 +16,10 @@ Jacquot: Moi j'ai raté la gamelle. La Ravaude dit que j'ai l'air trop gras.
 - [Partager ta ration] Prends la moitié.
 	do GameState.appliquer_couts({&"vivres": 1})
 	Jacquot: T'es bête. ... Bon. Merci.
-	do GameState.ajouter_marque(&"jacquot", &"nom_retenu", &"e1_jacquot")
+	do GameState.ajouter_marque(&"jacquot", &"nom_retenu", &"e1_adieu")
 - Je te rapporte du pain blanc. Promis.
 	Jacquot: T'as intérêt. Je compte.
-	do GameState.ajouter_marque(&"promis_a_jacquot", &"promesse", &"e1_jacquot")
+	do GameState.ajouter_marque(&"promis_a_jacquot", &"promesse", &"e1_adieu")
 - [Passer] Faut que j'y aille.
 	Jacquot: Ouais. Faut toujours.
 Jacquot: Tiens, écoute. C'est l'air du dépôt.

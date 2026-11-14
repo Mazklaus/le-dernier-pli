@@ -13,7 +13,7 @@ Ravaude: ... C'est de la cire noire, ça, sur ta sacoche.
 	Ravaude: Il est parti avec la cire noire. Il est jamais revenu.
 	Ravaude: Il y en a eu d'autres depuis. J'ai arrêté de retenir les noms.
 	Ravaude: Tiens. Prends-la. Elle a assez attendu dans ma poche.
-	do GameState.ajouter_marque(&"il_s_appelait_aurele", &"nom_retenu", &"e1_ravaude")
+	do GameState.ajouter_marque(&"il_s_appelait_aurele", &"nom_retenu", &"e1_cantine")
 - [Manger sans rien dire]
 	Ravaude: C'est ça. Mange. Ça vaut mieux.
 

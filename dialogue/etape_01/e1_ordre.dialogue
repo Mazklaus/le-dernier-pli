@@ -12,12 +12,12 @@ Lamarre: Un pli pour l'arrière. Cire noire. Tu sais ce que ça veut dire ?
 Lamarre: Tu le portes contre toi. Tu l'ouvres pas. Tu le perds pas.
 - [Le prendre sans un mot]
 	Lamarre: Bien. T'apprends vite.
-	do GameState.ajouter_marque(&"obei_sans_question", &"relique", &"e1_sergent")
+	do GameState.ajouter_marque(&"obei_sans_question", &"relique", &"e1_ordre")
 - C'est pour qui ?
 	Lamarre: Pour l'arrière. Tu demandes à chaque poste.
 	Lamarre: ... Encore un.
 	Lamarre: Oublie ça. Je m'appelle Hugues, au fait. Personne s'en sert.
-	do GameState.ajouter_marque(&"hugues_lamarre", &"nom_retenu", &"e1_sergent")
+	do GameState.ajouter_marque(&"hugues_lamarre", &"nom_retenu", &"e1_ordre")
 Lamarre: Va te faire cendrer chez Cassien.
 Lamarre: Et passe chez la Ravaude, t'auras faim.
 

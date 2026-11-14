@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://dntyfjsdeb5na"
+path="res://.godot/imported/e1_cendre.dialogue-c90c90943815251e41db36a67f852b65.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_01/e1_cendre.dialogue"
+dest_files=["res://.godot/imported/e1_cendre.dialogue-c90c90943815251e41db36a67f852b65.tres"]
+
+[params]
+
+defaults=true
