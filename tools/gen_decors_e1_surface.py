@@ -25,7 +25,9 @@ VUE = 1920
 VITESSES = {0: 0.05, 1: 0.2, 2: 0.5, 3: 1.0, 4: 1.4}
 SOL = 900                # dessus du caillebotis
 CRETE = 520              # haut du parados
-SOMBRE_X = 6600          # cran de lumière après la chapelle
+SOMBRE_X = 6600          # cran 1 : la journée baisse après la chapelle
+NUIT_X = 9000            # cran 2 : crépuscule avant la sortie
+VUE_CX = 960             # milieu de l'écran
 
 PAPIER, ENCRE, LAVIS, MINE, ROUGE = "#E8E5DA", "#15130F", "#4A463D", "#8C877A", "#9B1C1C"
 
@@ -33,6 +35,7 @@ DEFS = f"""<defs>
 <pattern id="h1" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><rect width="5" height="5" fill="{PAPIER}"/><line x1="0" y1="0" x2="0" y2="5" stroke="{ENCRE}" stroke-width="1"/></pattern>
 <pattern id="h2" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><rect width="4" height="4" fill="{PAPIER}"/><line x1="0" y1="0" x2="0" y2="4" stroke="{ENCRE}" stroke-width="1.1"/><line x1="0" y1="2" x2="4" y2="2" stroke="{ENCRE}" stroke-width=".8"/></pattern>
 <pattern id="v1" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><line x1="0" y1="0" x2="0" y2="5" stroke="{ENCRE}" stroke-width="1"/></pattern>
+<pattern id="v2" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><line x1="0" y1="0" x2="0" y2="4" stroke="{ENCRE}" stroke-width="1.1"/><line x1="0" y1="2" x2="4" y2="2" stroke="{ENCRE}" stroke-width=".8"/></pattern>
 <pattern id="terre" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><rect width="7" height="7" fill="{PAPIER}"/><line x1="0" y1="0" x2="0" y2="7" stroke="{ENCRE}" stroke-width="1.1"/><line x1="3.5" y1="0" x2="3.5" y2="7" stroke="{ENCRE}" stroke-width=".5"/></pattern>
 <pattern id="sacs" width="68" height="32" patternUnits="userSpaceOnUse"><rect width="68" height="32" fill="{PAPIER}"/><path d="M2 30 Q2 4 34 4 Q66 4 66 30 Z" fill="url(#h1)" stroke="{ENCRE}" stroke-width="2.2"/><path d="M-32 14 Q-32 -12 0 -12 Q32 -12 32 14 M36 14 Q36 -12 68 -12" fill="none" stroke="{ENCRE}" stroke-width="1.5"/><path d="M24 16 L28 20 M40 12 L42 18" stroke="{ENCRE}" stroke-width="1.2"/></pattern>
 <pattern id="planches" width="80" height="44" patternUnits="userSpaceOnUse"><rect width="80" height="44" fill="url(#h1)"/><path d="M0 0 H80 M0 22 H80 M28 0 V22 M60 22 V44" stroke="{ENCRE}" stroke-width="2"/><circle cx="10" cy="10" r="1.6" fill="{ENCRE}"/><circle cx="68" cy="32" r="1.6" fill="{ENCRE}"/></pattern>
@@ -53,6 +56,24 @@ def crete(x0: int, x1: int, y: float, amp: float, pas: int, seed: int) -> str:
         pts.append(f"{x} {y + r.uniform(-amp, amp):.1f}")
         x += pas
     return " L".join(pts)
+
+
+def seuil(x_monde: int, v: float) -> int:
+    """Abscisse dans un plan de vitesse v qui passe au milieu de l'écran quand Tobie atteint x_monde."""
+    return int(round((x_monde - VUE_CX) * v + VUE_CX))
+
+
+def voiles(v: float, w: int, forme: str, nom: str) -> str:
+    """Deux crans de voile nets (jamais de dégradé) posés sur la forme du plan."""
+    out = []
+    for i, (xm, motif) in enumerate(((SOMBRE_X, "v1"), (NUIT_X, "v2"))):
+        x0 = seuil(xm, v)
+        if x0 >= w:
+            continue
+        cid = f"cl-{nom}-{i}"
+        out.append(f'<clipPath id="{cid}"><rect x="{x0}" y="0" width="{w - x0}" height="{H}"/></clipPath>')
+        out.append(f'<path d="{forme}" fill="url(#{motif})" clip-path="url(#{cid})"/>')
+    return "".join(out)
 
 
 def plan3() -> str:
@@ -141,13 +162,14 @@ def plan3() -> str:
     out.append(f'<rect x="0" y="{SOL}" width="{LARGEUR}" height="40" fill="url(#caille)" stroke="{ENCRE}" stroke-width="3"/>')
     out.append(f'<rect x="0" y="{SOL + 40}" width="{LARGEUR}" height="{H - SOL - 40}" fill="url(#terre)" stroke="{ENCRE}" stroke-width="3"/>')
 
-    # cran de lumière : voile de hachure net sur tout ce qui suit la chapelle
-    out.append(f'<path d="M{SOMBRE_X} {CRETE} L{crete(SOMBRE_X, LARGEUR, CRETE, 6, 64, 3).split(" L", 0)[0]} L{LARGEUR} {CRETE} L{LARGEUR} {H} L{SOMBRE_X} {H} Z" fill="url(#v1)" opacity=".55"/>')
+    # crans de lumière : voiles de hachure nets sur le mur, la crête et le sol
+    out.append(voiles(1.0, LARGEUR, f"M0 {CRETE - 12} L{LARGEUR} {CRETE - 12} L{LARGEUR} {H} L0 {H} Z", "p3"))
     return "".join(out)
 
 
 def plan2(w: int) -> str:
-    out = [f'<path d="M0 470 Q{w * .1:.0f} 430 {w * .2:.0f} 462 T{w * .4:.0f} 452 T{w * .6:.0f} 466 T{w * .8:.0f} 450 T{w} 460 L{w} {H} L0 {H} Z" fill="{LAVIS}"/>']
+    forme = f"M0 470 Q{w * .1:.0f} 430 {w * .2:.0f} 462 T{w * .4:.0f} 452 T{w * .6:.0f} 466 T{w * .8:.0f} 450 T{w} 460 L{w} {H} L0 {H} Z"
+    out = [f'<path d="{forme}" fill="{LAVIS}"/>', voiles(VITESSES[2], w, forme, "p2")]
     r = rnd(21)
     x = 200
     while x < w:
@@ -162,13 +184,15 @@ def plan2(w: int) -> str:
 
 
 def plan1(w: int) -> str:
-    out = [f'<path d="M0 {crete(0, w, 400, 14, 120, 31)} L{w} {H} L0 {H} Z" fill="{MINE}"/>']
+    forme = f"M0 {crete(0, w, 400, 14, 120, 31)} L{w} {H} L0 {H} Z"
+    out = [f'<path d="{forme}" fill="{MINE}"/>']
     # clochers sans cloche : la baie est vide, en papier
     for cx in (900, 2700):
         out.append(f'<path d="M{cx - 26} 400 L{cx - 26} 270 L{cx} 230 L{cx + 26} 270 L{cx + 26} 400 Z" fill="{MINE}"/>')
         out.append(f'<rect x="{cx - 14}" y="282" width="28" height="30" fill="{PAPIER}"/>')
     for sx in (300, 1500, 2100, 3300):
         out.append(f'<path d="M{sx} 400 L{sx + 3} 350 L{sx - 10} 336 M{sx + 3} 366 L{sx + 18} 356" stroke="{MINE}" stroke-width="6" fill="none"/>')
+    out.append(voiles(VITESSES[1], w, forme, "p1"))
     return "".join(out)
 
 
@@ -180,6 +204,8 @@ def plan0(w: int) -> str:
         x = r.randint(-200, w)
         out.append(f'<path d="M{x} {y} H{x + r.randint(300, 900)}" stroke="{MINE}" stroke-width="1.4" opacity=".6"/>')
     out.append(f'<circle cx="{int(w * .7)}" cy="170" r="60" fill="none" stroke="{MINE}" stroke-width="2.6"/>')
+    # le ciel aussi baisse : premier cran en hachure, second en contre-hachure
+    out.append(voiles(VITESSES[0], w, f"M0 0 H{w} V{H} H0 Z", "p0"))
     return "".join(out)
 
 
