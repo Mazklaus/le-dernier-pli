@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_01/e1_reveil.dialogue" id="2"]
+[ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 180)
@@ -126,6 +127,12 @@ text = "e1_reveil"
 
 [node name="SortieCouchette" type="Area2D" parent="Passages" groups=["passages"]]
 position = Vector2(1700, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("3")
+vers = &"boyau_arriere"
+libelle = "Monter au boyau"
 metadata/vers = "boyau_arriere"
 metadata/note_level_design = "Escalier de rondins vers le boyau arrière"
 
