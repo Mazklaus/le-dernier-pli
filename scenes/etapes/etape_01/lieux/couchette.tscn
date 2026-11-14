@@ -133,6 +133,7 @@ monitoring = false
 script = ExtResource("3")
 vers = &"boyau_arriere"
 libelle = "Monter au boyau"
+rencontre_requise = &"e1_reveil"
 metadata/vers = "boyau_arriere"
 metadata/note_level_design = "Escalier de rondins vers le boyau arrière"
 
@@ -157,7 +158,7 @@ theme_override_font_sizes/font_size = 24
 text = "-> boyau_arriere"
 
 [node name="entree_couchette" type="Marker2D" parent="Points"]
-position = Vector2(360, 900)
+position = Vector2(460, 900)
 
 [node name="sortie_couchette" type="Marker2D" parent="Points"]
 position = Vector2(1560, 900)
