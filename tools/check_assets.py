@@ -77,6 +77,9 @@ def check_audio() -> None:
         if ext != want_ext:
             errors.append(f"{rel(p)} : extension {ext}, attendu {want_ext}")
         opts = import_options(p)
+        if not opts:
+            errors.append(f"{rel(p)} : {p.name}.import manquant (ouvrir le projet dans Godot "
+                          "ou lancer godot --headless --import, puis versionner le .import)")
         if want_loop and opts and opts.get("loop") != "true":
             errors.append(f"{rel(p)} : boucle non activée à l'import (loop=true)")
 
@@ -99,6 +102,9 @@ def check_graphics() -> None:
             errors.append(f"{rel(p)} : {size[0]}x{size[1]} dépasse {MAX_TEX} px "
                           "(découper les décors en tuiles de 2048)")
         opts = import_options(p)
+        if not opts:
+            errors.append(f"{rel(p)} : {p.name}.import manquant (ouvrir le projet dans Godot "
+                          "ou lancer godot --headless --import, puis versionner le .import)")
         if opts.get("mipmaps/generate") == "true":
             errors.append(f"{rel(p)} : mipmaps activées à l'import")
         if SVG_DIR.exists() and not stem.endswith("_red"):
