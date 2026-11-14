@@ -35,6 +35,7 @@ DEFS = f"""<defs>
 <pattern id="h1" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><rect width="5" height="5" fill="{PAPIER}"/><line x1="0" y1="0" x2="0" y2="5" stroke="{ENCRE}" stroke-width="1"/></pattern>
 <pattern id="h2" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><rect width="4" height="4" fill="{PAPIER}"/><line x1="0" y1="0" x2="0" y2="4" stroke="{ENCRE}" stroke-width="1.1"/><line x1="0" y1="2" x2="4" y2="2" stroke="{ENCRE}" stroke-width=".8"/></pattern>
 <pattern id="v1" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><line x1="0" y1="0" x2="0" y2="5" stroke="{ENCRE}" stroke-width="1"/></pattern>
+<pattern id="v1f" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><line x1="0" y1="0" x2="0" y2="5" stroke="{ENCRE}" stroke-width="1.9"/></pattern>
 <pattern id="v2" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><line x1="0" y1="0" x2="0" y2="4" stroke="{ENCRE}" stroke-width="1.1"/><line x1="0" y1="2" x2="4" y2="2" stroke="{ENCRE}" stroke-width=".8"/></pattern>
 <pattern id="terre" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><rect width="7" height="7" fill="{PAPIER}"/><line x1="0" y1="0" x2="0" y2="7" stroke="{ENCRE}" stroke-width="1.1"/><line x1="3.5" y1="0" x2="3.5" y2="7" stroke="{ENCRE}" stroke-width=".5"/></pattern>
 <pattern id="sacs" width="68" height="32" patternUnits="userSpaceOnUse"><rect width="68" height="32" fill="{PAPIER}"/><path d="M2 30 Q2 4 34 4 Q66 4 66 30 Z" fill="url(#h1)" stroke="{ENCRE}" stroke-width="2.2"/><path d="M-32 14 Q-32 -12 0 -12 Q32 -12 32 14 M36 14 Q36 -12 68 -12" fill="none" stroke="{ENCRE}" stroke-width="1.5"/><path d="M24 16 L28 20 M40 12 L42 18" stroke="{ENCRE}" stroke-width="1.2"/></pattern>
@@ -66,7 +67,7 @@ def seuil(x_monde: int, v: float) -> int:
 def voiles(v: float, w: int, forme: str, nom: str) -> str:
     """Deux crans de voile nets (jamais de dégradé) posés sur la forme du plan."""
     out = []
-    for i, (xm, motif) in enumerate(((SOMBRE_X, "v1"), (NUIT_X, "v2"))):
+    for i, (xm, motif) in enumerate(((SOMBRE_X, "v1f"), (NUIT_X, "v2"))):
         x0 = seuil(xm, v)
         if x0 >= w:
             continue
@@ -169,7 +170,7 @@ def plan3() -> str:
 
 def plan2(w: int) -> str:
     forme = f"M0 470 Q{w * .1:.0f} 430 {w * .2:.0f} 462 T{w * .4:.0f} 452 T{w * .6:.0f} 466 T{w * .8:.0f} 450 T{w} 460 L{w} {H} L0 {H} Z"
-    out = [f'<path d="{forme}" fill="{LAVIS}"/>', voiles(VITESSES[2], w, forme, "p2")]
+    out = [f'<path d="{forme}" fill="{LAVIS}"/>']
     r = rnd(21)
     x = 200
     while x < w:
@@ -192,7 +193,6 @@ def plan1(w: int) -> str:
         out.append(f'<rect x="{cx - 14}" y="282" width="28" height="30" fill="{PAPIER}"/>')
     for sx in (300, 1500, 2100, 3300):
         out.append(f'<path d="M{sx} 400 L{sx + 3} 350 L{sx - 10} 336 M{sx + 3} 366 L{sx + 18} 356" stroke="{MINE}" stroke-width="6" fill="none"/>')
-    out.append(voiles(VITESSES[1], w, forme, "p1"))
     return "".join(out)
 
 
@@ -204,8 +204,6 @@ def plan0(w: int) -> str:
         x = r.randint(-200, w)
         out.append(f'<path d="M{x} {y} H{x + r.randint(300, 900)}" stroke="{MINE}" stroke-width="1.4" opacity=".6"/>')
     out.append(f'<circle cx="{int(w * .7)}" cy="170" r="60" fill="none" stroke="{MINE}" stroke-width="2.6"/>')
-    # le ciel aussi baisse : premier cran en hachure, second en contre-hachure
-    out.append(voiles(VITESSES[0], w, f"M0 0 H{w} V{H} H0 Z", "p0"))
     return "".join(out)
 
 
@@ -243,6 +241,13 @@ def largeur_plan(v: float) -> int:
 
 def fx() -> None:
     FX.mkdir(parents=True, exist_ok=True)
+    # Voiles plein écran pour les plans lents (ciel, lointain, milieu) : un bord fixe dans un plan
+    # lent ne suit pas Tobie, donc le code pose ces calques entre le plan 2 et le plan 3 et les
+    # affiche d'un coup quand Tobie passe x 6600 (hachure) puis x 9000 (contre-hachure).
+    for nom, motif in (("fx_voile-hachure", "v1"), ("fx_voile-contre-hachure", "v2")):
+        (FX / f"{nom}.svg").write_text(
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">{DEFS}'
+            f'<rect width="1920" height="1080" fill="url(#{motif})"/></svg>\n')
     r = rnd(61)
     flocons = "".join(f'<circle cx="{r.uniform(0, 1920):.0f}" cy="{r.uniform(0, 1080):.0f}" r="{r.uniform(1.4, 3):.1f}" fill="{MINE}"/>' for _ in range(180))
     (FX / "fx_cendre.svg").write_text(f'<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">{flocons}</svg>\n')
@@ -269,7 +274,7 @@ def main() -> None:
     total += ecrire_tuiles(3, "surface", plan3(), LARGEUR, False)
     total += ecrire_tuiles(4, "premier-plan", plan4(largeur_plan(VITESSES[4])), largeur_plan(VITESSES[4]), False)
     fx()
-    print(f"{total} tuiles + 5 calques fx dans art/src/")
+    print(f"{total} tuiles + 7 calques fx dans art/src/")
 
 
 if __name__ == "__main__":
