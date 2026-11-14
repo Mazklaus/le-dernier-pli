@@ -1,23 +1,18 @@
 class_name DeclencheurDialogue
-extends Area2D
+extends Interactif
 ## Point d'interaction : lance un dialogue quand le messager appuie sur « interagir ».
 ## Tout se règle dans l'inspecteur, sans code par rencontre :
 ## - un verrou (`rencontre_requise`) joue un autre titre tant qu'une rencontre n'a pas été vue
 ##   (ex. Jacquot : `refus_sans_cendre` tant que `e1_cendre` n'est pas vue, puis `debut`) ;
 ## - `fin_etape` appelle SceneRouter.etape_suivante() à la fin du dialogue (ex. le parapet).
-## Calque de collision 3 (« interactions ») : seul le détecteur du messager le voit.
 
 signal dialogue_commence(declencheur: DeclencheurDialogue)
 signal dialogue_termine(declencheur: DeclencheurDialogue)
-
-const GROUPE: StringName = &"declencheurs"
 
 ## Identifiant de rencontre du plan (ex. &"e1_adieu").
 @export var rencontre_id: StringName
 @export var dialogue: DialogueResource
 @export var titre: String = "debut"
-## Texte d'invite pour l'UI (ex. « Parler à Jacquot »).
-@export var libelle: String = ""
 
 @export_group("Verrou")
 ## Tant que cette rencontre n'est pas vue, on joue `titre_si_verrouille`.
@@ -31,10 +26,6 @@ const GROUPE: StringName = &"declencheurs"
 @export var fin_etape: bool = false
 
 var en_cours: bool = false
-
-
-func _ready() -> void:
-	add_to_group(GROUPE)
 
 
 func est_verrouille() -> bool:
@@ -54,7 +45,7 @@ func est_disponible() -> bool:
 	return true
 
 
-func interagir(_messager: Node) -> void:
+func interagir(_messager: Messager) -> void:
 	if not est_disponible():
 		return
 	var verrouille := est_verrouille()

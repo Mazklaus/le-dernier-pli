@@ -15,6 +15,8 @@ signal sceau_change(drapeau: StringName)  # &"abime", &"rechauffe", &"ouvert"
 signal etape_changee(etape: int)
 ## Émis après depuis_dictionnaire() (menu debug, autosave) : les abonnés relisent tout l'état.
 signal etat_charge()
+## Une rencontre vient d'être jouée pour la première fois (verrous, passages).
+signal rencontre_vue_marquee(id: StringName)
 ## Entrée/sortie de zone sombre, pour l'audio (couche « autre » +20 % dans le noir) et le rendu.
 signal zone_sombre_changee(dans_zone: bool, lanterne: bool)
 
@@ -370,6 +372,7 @@ func ouvrir_sceau() -> bool:
 func marquer_rencontre_vue(id: StringName) -> void:
 	if id != &"" and id not in rencontres_vues:
 		rencontres_vues.append(id)
+		rencontre_vue_marquee.emit(id)
 
 
 func rencontre_vue(id: StringName) -> bool:

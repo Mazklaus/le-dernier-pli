@@ -33,5 +33,6 @@ monitorable = false
 shape = SubResource("CircleShape2D_rayon")
 
 [node name="Camera" type="Camera2D" parent="."]
+unique_name_in_owner = true
 position = Vector2(0, -300)
 position_smoothing_enabled = true
