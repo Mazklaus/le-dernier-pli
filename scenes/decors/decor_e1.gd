@@ -3,7 +3,7 @@ extends DecorParallaxe
 ## Décor de surface de l'étape 1 (planche du DA, PR #39) : cinq plans parallaxes pour un
 ## niveau de 10624 px, la cendre qui tombe entre le plan 2 et le plan 3. La tombée du jour
 ## est peinte dans les tuiles (crans à x 6600 et 9000) : aucun modulate.
-## Masque les fonds gris de la maquette (Surface/*/Fond) quand le décor est posé, et habille
+## Masque les fonds, sols et murs gris de la maquette (Surface/*/Fond, Sol, Mur*) quand le décor est posé, et habille
 ## la Chicane (fx_chicane) et l'échelle de sortie (ombre, puis claire après e1_adieu).
 
 const DOSSIER := "res://assets/graphics/env/e1/env_e1_"
@@ -22,6 +22,14 @@ const PLANS := [
 	["plan4_premier-plan", 1.4, 20],
 ]
 const Z_CENDRE := -25
+## Voiles de la tombée du jour (DA, #53) : calques plein écran entre le plan 2 et le plan 3,
+## affichés en tout-ou-rien quand le messager dépasse leur abscisse.
+const VOILES := [
+	["fx_voile-hachure", 6600.0, -27],
+	["fx_voile-contre-hachure", 9000.0, -26],
+]
+const DOSSIER_FX := "res://assets/graphics/fx/"
+const FONDU_VOILE := 0.1
 ## Vitesse de chute de la cendre, en pixels par seconde.
 const CHUTE_CENDRE := 40.0
 
@@ -30,6 +38,8 @@ const CHUTE_CENDRE := 40.0
 var plans: Array[Parallax2D] = []
 var cendre: Sprite2D
 var echelle: Sprite2D
+## [Sprite2D, seuil x] par voile.
+var voiles: Array = []
 
 var _defilement: float = 0.0
 
@@ -41,6 +51,7 @@ func _ready() -> void:
 			add_child(plan)
 			plans.append(plan)
 	_creer_cendre()
+	_creer_voiles()
 	if masquer_fonds_maquette:
 		_masquer_fonds()
 	_habiller_chicane()
@@ -48,6 +59,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_maj_voiles()
 	if cendre == null:
 		return
 	var attenue: bool = Reglages.valeur(&"effets_attenues")
@@ -75,6 +87,45 @@ func _creer_cendre() -> void:
 	couche.add_child(cendre)
 
 
+func _creer_voiles() -> void:
+	for v: Array in VOILES:
+		var chemin := DOSSIER_FX + String(v[0]) + ".png"
+		if not ResourceLoader.exists(chemin):
+			continue
+		var couche := Parallax2D.new()
+		couche.name = String(v[0])
+		couche.scroll_scale = Vector2(0.0, 1.0)
+		couche.z_index = int(v[2])
+		add_child(couche)
+		var voile := Sprite2D.new()
+		voile.texture = load(chemin) as Texture2D
+		voile.centered = false
+		voile.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		voile.modulate.a = 0.0
+		voile.visible = false
+		couche.add_child(voile)
+		voiles.append([voile, float(v[1])])
+
+
+## Tout-ou-rien selon l'abscisse du messager (fondu de FONDU_VOILE s au plus).
+func _maj_voiles() -> void:
+	if voiles.is_empty():
+		return
+	var messager := get_tree().get_first_node_in_group(Messager.GROUPE) as Node2D
+	if messager == null:
+		return
+	for paire: Array in voiles:
+		var voile: Sprite2D = paire[0]
+		var actif: bool = messager.global_position.x >= float(paire[1])
+		var cible := 1.0 if actif else 0.0
+		if is_equal_approx(voile.modulate.a, cible) and voile.visible == actif:
+			continue
+		voile.visible = true
+		voile.modulate.a = move_toward(voile.modulate.a, cible, get_process_delta_time() / FONDU_VOILE)
+		if voile.modulate.a <= 0.0:
+			voile.visible = false
+
+
 func _masquer_fonds() -> void:
 	var surface := get_parent().get_node_or_null("Surface") if get_parent() else null
 	if surface == null:
@@ -83,6 +134,12 @@ func _masquer_fonds() -> void:
 		var fond := section.get_node_or_null("Fond") as CanvasItem
 		if fond != null:
 			fond.visible = false
+		# Sol et murs gris de la maquette : le plan 3 les dessine (et s'assombrit avec le jour).
+		for corps in section.get_children():
+			if corps is StaticBody2D and (String(corps.name) == "Sol" or String(corps.name).begins_with("Mur")):
+				var visuel := corps.get_node_or_null("Visuel") as CanvasItem
+				if visuel != null:
+					visuel.visible = false
 
 
 ## La Chicane (Verrou levé après e1_ordre) prend le dessin du DA à la place du rectangle gris ;
