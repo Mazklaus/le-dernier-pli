@@ -13,7 +13,7 @@ extends CanvasLayer
 #   SceneRouter : périmètre Lead Prog, fonction de saut encore à confirmer.
 const GAUGES: Array[StringName] = [&"vivres", &"huile", &"lucidite"]
 const SEAL_FLAGS: Array[StringName] = [&"sceau_abime", &"sceau_rechauffe", &"sceau_ouvert"]
-const ENCOUNTERS: Array[StringName] = [&"tranchee_mere_01"]  # à remplir (Level Designer)
+const ENCOUNTERS: Array[StringName] = [&"e1_sergent"]  # à remplir (Level Designer)
 
 
 func _get_gauge(id: StringName) -> int:
