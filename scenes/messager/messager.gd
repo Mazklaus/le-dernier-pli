@@ -13,6 +13,10 @@ const VITESSE_MARCHE := 160.0
 const RAYON_INTERACTION := 96.0
 ## Distance à laquelle le saut de débogage pose le messager devant un déclencheur.
 const ECART_PLACEMENT := 64.0
+## Pente la plus raide encore marchable (au-delà, c'est un mur).
+const PENTE_MAX_DEGRES := 40.0
+## Distance d'accroche au sol : garde le messager collé en descente de pente ou de marche.
+const ACCROCHE_SOL := 24.0
 
 @export var vitesse: float = VITESSE_MARCHE
 @export var gravite: float = 2400.0
@@ -31,6 +35,12 @@ var _a_portee: Array[Interactif] = []
 
 func _ready() -> void:
 	add_to_group(GROUPE)
+	# Sols en pente (étape 2, 30° au plus) : vitesse constante, collé au sol en descente,
+	# immobile à l'arrêt.
+	floor_max_angle = deg_to_rad(PENTE_MAX_DEGRES)
+	floor_constant_speed = true
+	floor_snap_length = ACCROCHE_SOL
+	floor_stop_on_slope = true
 	_detecteur.area_entered.connect(_sur_zone_entree)
 	_detecteur.area_exited.connect(_sur_zone_sortie)
 	DialogueManager.dialogue_started.connect(_sur_dialogue_commence)
