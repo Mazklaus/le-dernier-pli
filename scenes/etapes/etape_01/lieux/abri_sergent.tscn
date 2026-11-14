@@ -1,4 +1,7 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_ordre.dialogue" id="2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
@@ -14,9 +17,6 @@ size = Vector2(64, 750)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5"]
 size = Vector2(160, 300)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6"]
-size = Vector2(192, 300)
 
 [node name="AbriSergent" type="Node2D"]
 
@@ -125,27 +125,26 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> boyau_arriere"
 
-[node name="e1_ordre" type="Area2D" parent="Rencontres" groups=["declencheurs_rencontre"]]
-position = Vector2(2450, 750.0)
-metadata/dialogue_id = &"e1_ordre"
+[node name="e1_ordre" parent="Rencontres" instance=ExtResource("1")]
+position = Vector2(2450, 900)
+rencontre_id = &"e1_ordre"
+dialogue = ExtResource("2")
+libelle = "Parler au sergent"
 metadata/note_level_design = "Lamarre assis devant la bougie, au fond : le pli, la lampe, une ration"
-
-[node name="Forme" type="CollisionShape2D" parent="Rencontres/e1_ordre"]
-shape = SubResource("RectangleShape2D_6")
 
 [node name="Visuel" type="ColorRect" parent="Rencontres/e1_ordre"]
 offset_left = -96.0
-offset_top = -150.0
+offset_top = -300.0
 offset_right = 96.0
-offset_bottom = 150.0
+offset_bottom = 0.0
 color = Color(0.75, 0.1, 0.1, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Rencontres/e1_ordre"]
 offset_left = -96.0
-offset_top = -206.0
+offset_top = -356.0
 offset_right = 1104.0
-offset_bottom = -162.0
+offset_bottom = -312.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 28
 text = "e1_ordre"

@@ -1,4 +1,7 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_adieu.dialogue" id="2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
@@ -16,12 +19,9 @@ size = Vector2(64, 750)
 size = Vector2(160, 300)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6"]
-size = Vector2(192, 300)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7"]
 size = Vector2(40, 450)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_8"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7"]
 size = Vector2(160, 300)
 
 [node name="SapeSortie" type="Node2D"]
@@ -131,27 +131,28 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> carrefour"
 
-[node name="e1_adieu" type="Area2D" parent="Rencontres" groups=["declencheurs_rencontre"]]
-position = Vector2(1400, 750.0)
-metadata/dialogue_id = &"e1_adieu"
+[node name="e1_adieu" parent="Rencontres" instance=ExtResource("1")]
+position = Vector2(1400, 900)
+rencontre_id = &"e1_adieu"
+dialogue = ExtResource("2")
+libelle = "Parler à Jacquot"
+rencontre_requise = &"e1_cendre"
+titre_si_verrouille = "refus_sans_cendre"
 metadata/note_level_design = "Jacquot de garde : sans Cendre il bloque, avec Cendre l'adieu se lance"
-
-[node name="Forme" type="CollisionShape2D" parent="Rencontres/e1_adieu"]
-shape = SubResource("RectangleShape2D_6")
 
 [node name="Visuel" type="ColorRect" parent="Rencontres/e1_adieu"]
 offset_left = -96.0
-offset_top = -150.0
+offset_top = -300.0
 offset_right = 96.0
-offset_bottom = 150.0
+offset_bottom = 0.0
 color = Color(0.75, 0.1, 0.1, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Rencontres/e1_adieu"]
 offset_left = -96.0
-offset_top = -206.0
+offset_top = -356.0
 offset_right = 1104.0
-offset_bottom = -162.0
+offset_bottom = -312.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 28
 text = "e1_adieu"
@@ -160,7 +161,7 @@ text = "e1_adieu"
 position = Vector2(1580.0, 675.0)
 
 [node name="Forme" type="CollisionShape2D" parent="VerrouCendre"]
-shape = SubResource("RectangleShape2D_7")
+shape = SubResource("RectangleShape2D_6")
 
 [node name="Visuel" type="ColorRect" parent="VerrouCendre"]
 offset_left = -20.0
@@ -176,7 +177,7 @@ metadata/vers = "echelle"
 metadata/note_level_design = "Débouche au pied de l'échelle"
 
 [node name="Forme" type="CollisionShape2D" parent="Passages/SortieVersEchelle"]
-shape = SubResource("RectangleShape2D_8")
+shape = SubResource("RectangleShape2D_7")
 
 [node name="Visuel" type="ColorRect" parent="Passages/SortieVersEchelle"]
 offset_left = -80.0

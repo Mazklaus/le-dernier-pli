@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=27 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_01/etape_01.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_01/lieux/couchette.tscn" id="2"]
@@ -7,6 +7,10 @@
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_01/lieux/chapelle.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_01/lieux/vieille_sape.tscn" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_01/lieux/sape_sortie.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="8"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_guetteur.dialogue" id="9"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_parapet.dialogue" id="10"]
+[ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="11"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(3840, 180)
@@ -36,27 +40,21 @@ size = Vector2(160, 300)
 size = Vector2(480, 120)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_10"]
-size = Vector2(192, 300)
+size = Vector2(160, 300)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_11"]
 size = Vector2(160, 300)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_12"]
-size = Vector2(160, 300)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_13"]
 size = Vector2(64, 1080)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_14"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_13"]
 size = Vector2(960, 180)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_15"]
-size = Vector2(192, 300)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_16"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_14"]
 size = Vector2(40, 700)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_17"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_15"]
 size = Vector2(64, 1080)
 
 [node name="Etape01" type="Node2D"]
@@ -189,6 +187,9 @@ text = "Chicane : retirée après e1_ordre"
 [node name="entree_boyau_arriere" type="Marker2D" parent="Surface/BoyauArriere"]
 position = Vector2(400, 900)
 
+[node name="porte_abri_sergent" type="Marker2D" parent="Surface/BoyauArriere"]
+position = Vector2(3060, 900)
+
 [node name="Carrefour" type="Node2D" parent="Surface"]
 position = Vector2(3840, 0)
 
@@ -288,27 +289,26 @@ offset_bottom = 60.0
 color = Color(0.35, 0.35, 0.35, 1)
 mouse_filter = 2
 
-[node name="e1_guetteur" type="Area2D" parent="Surface/Carrefour" groups=["declencheurs_rencontre"]]
-position = Vector2(3940, 630.0)
-metadata/dialogue_id = &"e1_guetteur"
+[node name="e1_guetteur" parent="Surface/Carrefour" instance=ExtResource("8")]
+position = Vector2(3940, 780)
+rencontre_id = &"e1_guetteur"
+dialogue = ExtResource("9")
+libelle = "Regarder au périscope"
 metadata/note_level_design = "Le Guetteur au périscope, facultatif. -1 lucidité au deuxième regard"
-
-[node name="Forme" type="CollisionShape2D" parent="Surface/Carrefour/e1_guetteur"]
-shape = SubResource("RectangleShape2D_10")
 
 [node name="Visuel" type="ColorRect" parent="Surface/Carrefour/e1_guetteur"]
 offset_left = -96.0
-offset_top = -150.0
+offset_top = -300.0
 offset_right = 96.0
-offset_bottom = 150.0
+offset_bottom = 0.0
 color = Color(0.75, 0.1, 0.1, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Carrefour/e1_guetteur"]
 offset_left = -96.0
-offset_top = -206.0
+offset_top = -356.0
 offset_right = 1104.0
-offset_bottom = -162.0
+offset_bottom = -312.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 28
 text = "e1_guetteur"
@@ -319,7 +319,7 @@ metadata/vers = "vieille_sape"
 metadata/note_level_design = "Trou d'étais rubanné, tout à droite"
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/Carrefour/VersVieilleSape"]
-shape = SubResource("RectangleShape2D_11")
+shape = SubResource("RectangleShape2D_10")
 
 [node name="Visuel" type="ColorRect" parent="Surface/Carrefour/VersVieilleSape"]
 offset_left = -80.0
@@ -344,7 +344,7 @@ metadata/vers = "sape_sortie"
 metadata/note_level_design = "Entrée de la sape de sortie"
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/Carrefour/VersSapeSortie"]
-shape = SubResource("RectangleShape2D_12")
+shape = SubResource("RectangleShape2D_11")
 
 [node name="Visuel" type="ColorRect" parent="Surface/Carrefour/VersSapeSortie"]
 offset_left = -80.0
@@ -367,7 +367,7 @@ text = "-> sape_sortie"
 position = Vector2(5792.0, 540.0)
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/Carrefour/MurDroit"]
-shape = SubResource("RectangleShape2D_13")
+shape = SubResource("RectangleShape2D_12")
 
 [node name="Visuel" type="ColorRect" parent="Surface/Carrefour/MurDroit"]
 offset_left = -32.0
@@ -376,6 +376,18 @@ offset_right = 32.0
 offset_bottom = 540.0
 color = Color(0.25, 0.25, 0.25, 1)
 mouse_filter = 2
+
+[node name="porte_cantine" type="Marker2D" parent="Surface/Carrefour"]
+position = Vector2(600, 900)
+
+[node name="porte_chapelle" type="Marker2D" parent="Surface/Carrefour"]
+position = Vector2(2500, 900)
+
+[node name="porte_vieille_sape" type="Marker2D" parent="Surface/Carrefour"]
+position = Vector2(4960, 900)
+
+[node name="porte_sape_sortie" type="Marker2D" parent="Surface/Carrefour"]
+position = Vector2(5360, 900)
 
 [node name="PiedEchelle" type="Node2D" parent="Surface"]
 position = Vector2(9664, 0)
@@ -393,7 +405,7 @@ z_index = -10
 position = Vector2(480.0, 990.0)
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/PiedEchelle/Sol"]
-shape = SubResource("RectangleShape2D_14")
+shape = SubResource("RectangleShape2D_13")
 
 [node name="Visuel" type="ColorRect" parent="Surface/PiedEchelle/Sol"]
 offset_left = -480.0
@@ -415,27 +427,27 @@ text = "6 Pied de l'échelle · 0,5 écran"
 [node name="entree_echelle" type="Marker2D" parent="Surface/PiedEchelle"]
 position = Vector2(120, 900)
 
-[node name="e1_parapet" type="Area2D" parent="Surface/PiedEchelle" groups=["declencheurs_rencontre"]]
-position = Vector2(480, 750.0)
-metadata/dialogue_id = &"e1_parapet"
+[node name="e1_parapet" parent="Surface/PiedEchelle" instance=ExtResource("8")]
+position = Vector2(480, 900)
+rencontre_id = &"e1_parapet"
+dialogue = ExtResource("10")
+libelle = "Monter"
+fin_etape = true
 metadata/note_level_design = "Lamarre au pied de l'échelle : regarder le pli, monter, bilan"
-
-[node name="Forme" type="CollisionShape2D" parent="Surface/PiedEchelle/e1_parapet"]
-shape = SubResource("RectangleShape2D_15")
 
 [node name="Visuel" type="ColorRect" parent="Surface/PiedEchelle/e1_parapet"]
 offset_left = -96.0
-offset_top = -150.0
+offset_top = -300.0
 offset_right = 96.0
-offset_bottom = 150.0
+offset_bottom = 0.0
 color = Color(0.75, 0.1, 0.1, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/PiedEchelle/e1_parapet"]
 offset_left = -96.0
-offset_top = -206.0
+offset_top = -356.0
 offset_right = 1104.0
-offset_bottom = -162.0
+offset_bottom = -312.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 28
 text = "e1_parapet"
@@ -444,7 +456,7 @@ text = "e1_parapet"
 position = Vector2(820.0, 550.0)
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/PiedEchelle/Echelle"]
-shape = SubResource("RectangleShape2D_16")
+shape = SubResource("RectangleShape2D_14")
 
 [node name="Visuel" type="ColorRect" parent="Surface/PiedEchelle/Echelle"]
 offset_left = -20.0
@@ -458,7 +470,7 @@ mouse_filter = 2
 position = Vector2(992.0, 540.0)
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/PiedEchelle/MurDroit"]
-shape = SubResource("RectangleShape2D_17")
+shape = SubResource("RectangleShape2D_15")
 
 [node name="Visuel" type="ColorRect" parent="Surface/PiedEchelle/MurDroit"]
 offset_left = -32.0
@@ -488,5 +500,5 @@ position = Vector2(12800, 1400)
 [node name="SapeSortie" parent="Lieux" instance=ExtResource("7")]
 position = Vector2(16000, 1400)
 
-[node name="CameraBlockout" type="Camera2D" parent="."]
-position = Vector2(960.0, 540)
+[node name="Messager" parent="." instance=ExtResource("11")]
+position = Vector2(360, 2300)

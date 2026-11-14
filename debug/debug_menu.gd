@@ -16,7 +16,7 @@ const SEAL_FLAGS: Array[StringName] = [&"sceau_abime", &"sceau_rechauffe", &"sce
 const ENCOUNTERS: Array[StringName] = [
 	&"e1_reveil", &"e1_ordre", &"e1_cantine", &"e1_cendre",
 	&"e1_guetteur", &"e1_sape", &"e1_adieu", &"e1_parapet",
-]
+]  # Level Designer, étape 1
 
 
 func _get_gauge(id: StringName) -> int:

@@ -108,6 +108,10 @@ jobs:
           unzip -q /tmp/templates.tpz -d /tmp/tpl
           mv /tmp/tpl/templates/* "$TPL"/
 
+      - name: Exclure le dossier de sortie de l'import Godot
+        # Sans ce fichier, le second export importe le premier (index.png.import...).
+        run: mkdir -p build && touch build/.gdignore
+
       - name: Import des assets et dialogues
         # Echoue si une ressource (texture, son, .dialogue) ne s'importe pas.
         run: |
@@ -117,11 +121,11 @@ jobs:
           fi
 
       - name: Choisir le mode d'export
-        # PR et lancements manuels : debug (menu F1 du QA présent).
-        # Push sur main : release (ce qui est publié) + debug pour le QA.
+        # PR et lancements hors main : debug (menu F1 du QA présent).
+        # Push ou relance manuelle sur main : release (publiée) + debug pour le QA.
         id: mode
         run: |
-          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          if [ "${{ github.event_name }}" != "pull_request" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
             echo "modes=debug release" >> "$GITHUB_OUTPUT"
           else
             echo "modes=debug" >> "$GITHUB_OUTPUT"
@@ -169,7 +173,8 @@ jobs:
   deploy-pages:
     name: Publier sur GitHub Pages
     needs: export
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Push sur main, ou relance manuelle (workflow_dispatch) depuis main.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -182,16 +187,23 @@ jobs:
         with:
           name: build-web-release
           path: web
+      # Nom suffixé par la tentative : une relance du job ne trouve pas
+      # l'artefact de la tentative précédente ("Multiple artifacts named
+      # github-pages").
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web
+          name: github-pages-${{ github.run_attempt }}
       - id: deploy
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_attempt }}
 
   deploy-itch:
     name: Publier sur itch.io
     needs: export
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Push sur main, ou relance manuelle (workflow_dispatch) depuis main.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
       BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}

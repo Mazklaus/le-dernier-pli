@@ -1,0 +1,65 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/etapes/etape_base.gd" id="1_etape"]
+[ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="2_messager"]
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="3_declencheur"]
+[ext_resource type="Resource" path="res://scenes/bac_a_sable/bac_a_sable.dialogue" id="4_dialogue"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sol"]
+size = Vector2(6000, 200)
+
+[node name="BacASable" type="Node2D"]
+script = ExtResource("1_etape")
+
+[node name="Fond" type="ColorRect" parent="."]
+offset_left = -1000.0
+offset_top = -400.0
+offset_right = 6000.0
+offset_bottom = 1400.0
+color = Color(0.82, 0.78, 0.7, 1)
+
+[node name="Sol" type="StaticBody2D" parent="."]
+position = Vector2(2500, 1000)
+
+[node name="Forme" type="CollisionShape2D" parent="Sol"]
+shape = SubResource("RectangleShape2D_sol")
+
+[node name="Visuel" type="Polygon2D" parent="Sol"]
+color = Color(0.35, 0.3, 0.25, 1)
+polygon = PackedVector2Array(-3000, -100, 3000, -100, 3000, 100, -3000, 100)
+
+[node name="Gardien" parent="." instance=ExtResource("3_declencheur")]
+position = Vector2(600, 900)
+rencontre_id = &"e0_gardien"
+dialogue = ExtResource("4_dialogue")
+libelle = "Parler au gardien"
+
+[node name="Cassien" parent="." instance=ExtResource("3_declencheur")]
+position = Vector2(1100, 900)
+rencontre_id = &"e0_cendre"
+dialogue = ExtResource("4_dialogue")
+titre = "cendre"
+libelle = "Se faire cendrer"
+une_seule_fois = true
+
+[node name="Sentinelle" parent="." instance=ExtResource("3_declencheur")]
+position = Vector2(1600, 900)
+rencontre_id = &"e0_sentinelle"
+dialogue = ExtResource("4_dialogue")
+titre = "sentinelle"
+libelle = "Parler à la sentinelle"
+rencontre_requise = &"e0_cendre"
+titre_si_verrouille = "refus"
+
+[node name="Parapet" parent="." instance=ExtResource("3_declencheur")]
+position = Vector2(2100, 900)
+rencontre_id = &"e0_parapet"
+dialogue = ExtResource("4_dialogue")
+titre = "parapet"
+libelle = "Monter au parapet"
+rencontre_requise = &"e0_sentinelle"
+titre_si_verrouille = "refus"
+fin_etape = true
+
+[node name="Messager" parent="." instance=ExtResource("2_messager")]
+position = Vector2(200, 900)

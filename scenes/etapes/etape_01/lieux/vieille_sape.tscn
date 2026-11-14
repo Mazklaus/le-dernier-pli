@@ -1,4 +1,7 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_sape.dialogue" id="2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
@@ -16,9 +19,6 @@ size = Vector2(64, 750)
 size = Vector2(160, 300)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6"]
-size = Vector2(192, 300)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7"]
 size = Vector2(2320, 450)
 
 [node name="VieilleSape" type="Node2D"]
@@ -128,27 +128,26 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> carrefour"
 
-[node name="e1_sape" type="Area2D" parent="Rencontres" groups=["declencheurs_rencontre"]]
-position = Vector2(420, 750.0)
-metadata/dialogue_id = &"e1_sape"
+[node name="e1_sape" parent="Rencontres" instance=ExtResource("1")]
+position = Vector2(420, 900)
+rencontre_id = &"e1_sape"
+dialogue = ExtResource("2")
+libelle = "Entrer dans la sape"
 metadata/note_level_design = "Choix à l'entrée : allumer la lanterne ou rester dans le noir"
-
-[node name="Forme" type="CollisionShape2D" parent="Rencontres/e1_sape"]
-shape = SubResource("RectangleShape2D_6")
 
 [node name="Visuel" type="ColorRect" parent="Rencontres/e1_sape"]
 offset_left = -96.0
-offset_top = -150.0
+offset_top = -300.0
 offset_right = 96.0
-offset_bottom = 150.0
+offset_bottom = 0.0
 color = Color(0.75, 0.1, 0.1, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Rencontres/e1_sape"]
 offset_left = -96.0
-offset_top = -206.0
+offset_top = -356.0
 offset_right = 1104.0
-offset_bottom = -162.0
+offset_bottom = -312.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 28
 text = "e1_sape"
@@ -158,7 +157,7 @@ position = Vector2(1720.0, 675.0)
 metadata/note_level_design = "Zone sombre : appeler GameState.entrer_zone_sombre() à l'entrée (choix fait en e1_sape)"
 
 [node name="Forme" type="CollisionShape2D" parent="ZoneSombre"]
-shape = SubResource("RectangleShape2D_7")
+shape = SubResource("RectangleShape2D_6")
 
 [node name="Visuel" type="ColorRect" parent="ZoneSombre"]
 offset_left = -1160.0

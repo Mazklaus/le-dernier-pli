@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 GameState="*res://autoload/game_state.gd"
 AudioDirector="*res://autoload/audio_director.gd"
+Reglages="*res://autoload/reglages.gd"
 SceneRouter="*res://autoload/scene_router.gd"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 BuildInfo="*res://autoload/build_info.gd"
@@ -81,7 +82,7 @@ debug_menu={
 
 [internationalization]
 
-locale/translations_pot_files=PackedStringArray("res://dialogue/etape_01/exemple.dialogue")
+locale/translations_pot_files=PackedStringArray("res://dialogue/etape_01/exemple.dialogue", "res://dialogue/etape_01/e1_ordre.dialogue", "res://dialogue/etape_01/e1_guetteur.dialogue", "res://dialogue/etape_01/e1_sape.dialogue", "res://dialogue/etape_01/e1_parapet.dialogue", "res://dialogue/etape_01/e1_adieu.dialogue", "res://dialogue/etape_01/e1_cendre.dialogue", "res://dialogue/etape_01/e1_cantine.dialogue", "res://dialogue/etape_01/e1_reveil.dialogue")
 
 [rendering]
 

@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://cp5ghfvhy6y1l"
+path="res://.godot/imported/e1_ordre.dialogue-20d45f9ced5ee115a94c75853532d8c8.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_01/e1_ordre.dialogue"
+dest_files=["res://.godot/imported/e1_ordre.dialogue-20d45f9ced5ee115a94c75853532d8c8.tres"]
+
+[params]
+
+defaults=true

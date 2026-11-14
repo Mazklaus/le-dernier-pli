@@ -67,7 +67,7 @@ func test_vivres_a_zero_affame_et_marque_la_faim_une_fois() -> void:
 	assert_true(gs.possede_marque(&"la_faim"))
 	gs.modifier_jauge(&"vivres", 2)
 	gs.modifier_jauge(&"vivres", -2)
-	var nb: int = gs.marques.filter(func(m): return m["id"] == &"la_faim").size()
+	var nb: int = gs.marques.filter(func(m: Dictionary) -> bool: return m["id"] == &"la_faim").size()
 	assert_eq(nb, 1, "La faim n'est gagnée que la première fois")
 
 
@@ -164,28 +164,76 @@ func test_promesse_resolue_une_seule_fois() -> void:
 
 # --- Sceau ---
 
+func test_gestes_sceau_interdits_a_l_etape_1() -> void:
+	assert_false(gs.rechauffer_sceau())
+	assert_false(gs.ouvrir_sceau())
+	assert_eq(gs.lire_ligne_pli(), -1)
+	assert_eq(gs.huile, 4)
+	gs.abimer_sceau()
+	assert_true(gs.sceau_abime, "abîmer est un accident, possible dès l'étape 1")
+
+
 func test_rechauffer_coute_une_huile_et_implique_abime() -> void:
+	gs.passer_etape()
 	assert_true(gs.rechauffer_sceau())
 	assert_eq(gs.huile, 3)
 	assert_true(gs.sceau_abime)
 	assert_true(gs.sceau_rechauffe)
 
 
-func test_une_ligne_du_pli_par_etape() -> void:
-	gs.rechauffer_sceau()
-	assert_true(gs.lire_ligne_pli())
-	assert_false(gs.lire_ligne_pli())
+func test_lignes_du_pli_dans_l_ordre_une_par_etape() -> void:
 	gs.passer_etape()
-	assert_true(gs.lire_ligne_pli())
+	gs.rechauffer_sceau()
+	assert_eq(gs.lire_ligne_pli(), 0)
+	assert_eq(gs.lire_ligne_pli(), -1, "une seule ligne par étape")
+	gs.passer_etape()
+	assert_eq(gs.lire_ligne_pli(), 1)
+	assert_eq(gs.pli_lignes_lues, 2)
 	assert_eq(gs.huile, 1)
 
 
+func test_six_lignes_au_plus() -> void:
+	gs.passer_etape()
+	gs.rechauffer_sceau()
+	for i in 6:
+		gs.modifier_jauge(&"huile", 10)
+		gs.modifier_jauge(&"vivres", 10)
+		assert_eq(gs.lire_ligne_pli(), i)
+		gs.passer_etape()
+	gs.modifier_jauge(&"huile", 10)
+	assert_eq(gs.pli_lignes_lues, 6)
+	assert_eq(gs.lire_ligne_pli(), -1)
+
+
 func test_drapeaux_du_sceau_irreversibles() -> void:
+	gs.passer_etape()
 	gs.abimer_sceau()
-	gs.ouvrir_sceau()
-	gs.abimer_sceau()
+	assert_true(gs.ouvrir_sceau())
+	assert_false(gs.ouvrir_sceau())
 	assert_true(gs.sceau_abime)
 	assert_true(gs.sceau_ouvert)
+
+
+# --- Objets et promesses ---
+
+func test_pain_promis_mange_trahit_la_promesse() -> void:
+	gs.ajouter_marque(&"promis_jacquot", Marques.PROMESSE)
+	gs.ajouter_objet(&"pain_jacquot")
+	assert_true(gs.manger_objet_promis(&"pain_jacquot", 2, &"promis_jacquot"))
+	assert_eq(gs.vivres, 8)
+	assert_false(gs.possede_objet(&"pain_jacquot"))
+	assert_eq(gs.trouver_marque(&"promis_jacquot")["etat"], Marques.TRAHIE)
+	assert_false(gs.manger_objet_promis(&"pain_jacquot", 2, &"promis_jacquot"))
+
+
+func test_promesses_resolues_avant_fin() -> void:
+	gs.ajouter_marque(&"p1", Marques.PROMESSE)
+	gs.ajouter_marque(&"p2", Marques.PROMESSE)
+	gs.ajouter_marque(&"p3", Marques.PROMESSE)
+	gs.resoudre_promesses_avant_fin({"p1": true, "p2": false})
+	assert_eq(gs.trouver_marque(&"p1")["etat"], Marques.TENUE)
+	assert_eq(gs.trouver_marque(&"p2")["etat"], Marques.TRAHIE)
+	assert_eq_deep(gs.promesses_ouvertes(), [&"p3"] as Array[StringName])
 
 
 # --- Conditions et coûts affichés ---
@@ -199,18 +247,82 @@ func test_conditions() -> void:
 	assert_false(gs.condition_remplie({"palier": "egare"}))
 
 
+func test_condition_objet() -> void:
+	assert_false(gs.condition_remplie({"objet": "pain_jacquot"}))
+	gs.ajouter_objet(&"pain_jacquot")
+	assert_true(gs.condition_remplie({"objet": "pain_jacquot"}))
+
+
 func test_couts_affiches_exacts_hors_egare() -> void:
-	var couts := {"vivres": 2, "huile": 1}
-	assert_eq_deep(gs.couts_affiches(couts), couts)
+	var options := [{"vivres": 2}, {}, {"huile": 1}]
+	var affiches: Array[Dictionary] = gs.couts_affiches_rencontre(options)
+	for i in options.size():
+		assert_eq_deep(affiches[i]["couts"], options[i])
+		assert_false(affiches[i]["cout_douteux"])
 
 
-func test_couts_affiches_au_plus_faux_de_un_en_egare() -> void:
+func test_couts_affiches_en_egare_tirage_par_rencontre() -> void:
 	gs.modifier_jauge(&"lucidite", -6)
+	var options := [{"vivres": 1}, {}, {"huile": 0, "vivres": 2}, {"huile": 1}]
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 42
-	for i in 50:
-		var affiches: Dictionary = gs.couts_affiches({"vivres": 1}, rng)
-		assert_between(int(affiches["vivres"]), 0, 2)
+	var nb_mensonge := 0
+	var nb_leurre_seul := 0
+	var nb_rien := 0
+	for essai in 400:
+		var affiches: Array[Dictionary] = gs.couts_affiches_rencontre(options, rng)
+		var douteuses := 0
+		var faux := 0
+		for i in options.size():
+			var vrai: Dictionary = options[i]
+			var vu: Dictionary = affiches[i]["couts"]
+			if affiches[i]["cout_douteux"]:
+				douteuses += 1
+				assert_false(vrai.is_empty(), "une option sans coût ne bave jamais")
+			if affiches[i]["cout_faux"]:
+				faux += 1
+				assert_true(affiches[i]["cout_douteux"], "un coût faux bave toujours")
+				var ecarts := 0
+				for cle in vrai:
+					assert_true(int(vu[cle]) >= 0)
+					ecarts += absi(int(vu[cle]) - int(vrai[cle]))
+				assert_eq(ecarts, 1, "exactement un coût faux de 1")
+			else:
+				assert_eq_deep(vu, vrai)
+		if faux == 1:
+			assert_eq(douteuses, 2, "un mensonge vient toujours avec un leurre")
+			nb_mensonge += 1
+		elif douteuses == 1:
+			nb_leurre_seul += 1
+		else:
+			assert_eq([douteuses, faux], [0, 0])
+			nb_rien += 1
+	assert_between(nb_mensonge, 160, 240, "environ 50 %")
+	assert_between(nb_leurre_seul, 70, 130, "environ 25 %")
+	assert_between(nb_rien, 70, 130, "environ 25 %")
+	assert_eq(options[0]["vivres"], 1, "les coûts réels ne sont jamais modifiés")
+
+
+func test_un_seul_cout_affiche_ne_ment_jamais() -> void:
+	gs.modifier_jauge(&"lucidite", -6)
+	var options := [{"vivres": 2}, {}, {}]
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	for essai in 50:
+		var affiches: Array[Dictionary] = gs.couts_affiches_rencontre(options, rng)
+		for i in options.size():
+			assert_false(affiches[i]["cout_douteux"])
+			assert_eq_deep(affiches[i]["couts"], options[i])
+
+
+func test_rencontres_vues() -> void:
+	assert_false(gs.rencontre_vue(&"e1_cendre"))
+	assert_false(gs.condition_remplie({"rencontre_vue": "e1_cendre"}))
+	gs.marquer_rencontre_vue(&"e1_cendre")
+	gs.marquer_rencontre_vue(&"e1_cendre")
+	assert_true(gs.rencontre_vue(&"e1_cendre"))
+	assert_true(gs.condition_remplie({"rencontre_vue": "e1_cendre"}))
+	assert_eq(gs.rencontres_vues.size(), 1)
 
 
 # --- Étapes ---
@@ -238,11 +350,16 @@ func test_parcours_etape_1_selon_spec() -> void:
 func test_aller_retour_dictionnaire_json() -> void:
 	gs.modifier_jauge(&"lucidite", -8)
 	gs.ajouter_marque(&"promis_aubert", Marques.PROMESSE, &"camarade")
-	gs.rechauffer_sceau()
+	gs.ajouter_objet(&"objet_d_ombre")
+	gs.marquer_rencontre_vue(&"e1_cendre")
 	gs.passer_etape()
+	gs.rechauffer_sceau()
+	gs.lire_ligne_pli()
 	var json := JSON.stringify(gs.vers_dictionnaire())
 	var autre: Node = autofree(GameStateScript.new())
+	watch_signals(autre)
 	autre.depuis_dictionnaire(JSON.parse_string(json))
+	assert_signal_emitted(autre, "etat_charge")
 	assert_eq_deep(autre.vers_dictionnaire(), gs.vers_dictionnaire())
 	assert_eq(autre.lucidite_max, 3)
 	assert_false(autre.ajouter_marque(&"autre", Marques.RELIQUE, &"camarade"))
