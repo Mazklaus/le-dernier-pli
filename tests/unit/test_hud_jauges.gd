@@ -1,0 +1,140 @@
+extends GutTest
+## HUD des jauges : correspondances icônes/libellés, mise à jour sur les signaux de GameState,
+## mode contextuel. Et le branchement des assets du DA dans la bulle et l'invite.
+
+const SceneBulle := preload("res://scenes/ui/bulle_dialogue/bulle_dialogue.tscn")
+const Dialogue := preload("res://scenes/bac_a_sable/bac_a_sable.dialogue")
+const SceneInterface := preload("res://scenes/ui/interface_jeu/interface_jeu.tscn")
+
+var _contextuel: Variant
+var _chiffres: Variant
+
+
+func before_all() -> void:
+	_contextuel = Reglages.valeur(&"hud_contextuel")
+	_chiffres = Reglages.valeur(&"valeurs_chiffrees")
+
+
+func before_each() -> void:
+	GameState.reinitialiser()
+
+
+func after_all() -> void:
+	GameState.reinitialiser()
+	Reglages.changer(&"hud_contextuel", _contextuel)
+	Reglages.changer(&"valeurs_chiffrees", _chiffres)
+
+
+func _hud() -> HudJauges:
+	var hud := HudJauges.new()
+	add_child_autofree(hud)
+	return hud
+
+
+func test_icones_des_jauges() -> void:
+	assert_eq(HudJauges.icone_jauge(GameState.VIVRES, 10, &"clair"), "sacoche-pleine")
+	assert_eq(HudJauges.icone_jauge(GameState.VIVRES, 6, &"clair"), "sacoche-pleine")
+	assert_eq(HudJauges.icone_jauge(GameState.VIVRES, 5, &"clair"), "sacoche-moitie")
+	assert_eq(HudJauges.icone_jauge(GameState.VIVRES, 2, &"clair"), "sacoche-moitie")
+	assert_eq(HudJauges.icone_jauge(GameState.VIVRES, 1, &"clair"), "sacoche-vide")
+	assert_eq(HudJauges.icone_jauge(GameState.HUILE, 3, &"clair"), "lanterne-pleine")
+	assert_eq(HudJauges.icone_jauge(GameState.HUILE, 1, &"clair"), "lanterne-faible")
+	assert_eq(HudJauges.icone_jauge(GameState.HUILE, 0, &"clair"), "lanterne-eteinte")
+	assert_eq(HudJauges.icone_jauge(GameState.LUCIDITE, 2, &"egare"), "oeil-egare")
+
+
+func test_toutes_les_icones_existent() -> void:
+	for nom: String in ["sacoche-pleine", "sacoche-moitie", "sacoche-vide", "lanterne-pleine",
+			"lanterne-faible", "lanterne-eteinte", "oeil-clair", "oeil-trouble", "oeil-egare",
+			"sceau-intact", "sceau-abime", "sceau-rechauffe", "sceau-ouvert", "carnet",
+			"cout-vivres", "cout-huile", "cout-lucidite"]:
+		assert_not_null(StylePapier.icone(nom), nom)
+	assert_not_null(StylePapier.police(StylePapier.POLICE_ITALIQUE))
+	assert_not_null(StylePapier.plaque().texture)
+
+
+func test_libelles_sans_chiffre_de_lucidite() -> void:
+	assert_eq(HudJauges.libelle_jauge(GameState.VIVRES, 0, &"clair", false), "Affamé")
+	assert_eq(HudJauges.libelle_jauge(GameState.VIVRES, 3, &"clair", false), "Vivres")
+	assert_eq(HudJauges.libelle_jauge(GameState.HUILE, 0, &"clair", false), "Éteinte")
+	assert_eq(HudJauges.libelle_jauge(GameState.LUCIDITE, 5, &"trouble", false), "Trouble")
+	assert_eq(HudJauges.libelle_jauge(GameState.LUCIDITE, 2, &"egare", false), "Égaré")
+	assert_eq(HudJauges.libelle_jauge(GameState.LUCIDITE, 2, &"egare", true), "Perdu")
+
+
+func test_icone_du_sceau() -> void:
+	assert_eq(HudJauges.icone_sceau(), "sceau-intact")
+	GameState.sceau_abime = true
+	assert_eq(HudJauges.icone_sceau(), "sceau-abime")
+	GameState.sceau_ouvert = true
+	assert_eq(HudJauges.icone_sceau(), "sceau-ouvert")
+
+
+func test_le_hud_suit_les_jauges() -> void:
+	var hud := _hud()
+	GameState.modifier_jauge(GameState.VIVRES, -10)
+	assert_eq((hud._batons[GameState.VIVRES] as Batons).valeur, 0)
+	assert_eq((hud._libelles[GameState.VIVRES] as Label).text, "Affamé")
+	assert_eq((hud._icones[GameState.VIVRES] as TextureRect).texture, StylePapier.icone("sacoche-vide"))
+	GameState.modifier_jauge(GameState.LUCIDITE, -5)
+	assert_eq((hud._libelles[GameState.LUCIDITE] as Label).text, "Égaré")
+
+
+func test_valeurs_chiffrees() -> void:
+	Reglages.changer(&"valeurs_chiffrees", false)
+	var hud := _hud()
+	assert_false((hud._chiffres[GameState.HUILE] as Label).visible)
+	Reglages.changer(&"valeurs_chiffrees", true)
+	assert_true((hud._chiffres[GameState.HUILE] as Label).visible)
+	assert_eq((hud._chiffres[GameState.HUILE] as Label).text, "4 / 6")
+	assert_false(hud._chiffres.has(GameState.LUCIDITE), "jamais de chiffre pour la Lucidité")
+
+
+func test_mode_contextuel_s_efface_sauf_jauge_basse() -> void:
+	Reglages.changer(&"hud_contextuel", true)
+	var hud := _hud()
+	hud._estomper()
+	await wait_seconds(HudJauges.DUREE_FONDU + 0.2)
+	assert_almost_eq(hud.modulate.a, 0.0, 0.01)
+	GameState.modifier_jauge(GameState.HUILE, -3)
+	await wait_seconds(HudJauges.DUREE_FONDU + 0.2)
+	assert_almost_eq(hud.modulate.a, 1.0, 0.01, "un changement fait revenir le HUD")
+	hud._estomper()
+	await wait_seconds(HudJauges.DUREE_FONDU + 0.2)
+	assert_almost_eq(hud.modulate.a, 1.0, 0.01, "huile à 1 : le HUD reste")
+
+
+func test_batons_bornes() -> void:
+	var b := Batons.new()
+	add_child_autofree(b)
+	b.maximum = 6
+	b.valeur = 9
+	assert_eq(b.valeur, 6)
+	assert_gt(b.custom_minimum_size.x, 0.0)
+
+
+func test_l_interface_contient_le_hud() -> void:
+	var interface: InterfaceJeu = add_child_autofree(SceneInterface.instantiate())
+	assert_not_null(interface.hud)
+	assert_true(interface.hud is HudJauges)
+
+
+func test_bulle_polices_plaque_et_icones_de_cout() -> void:
+	var bulle: Node = add_child_autofree(SceneBulle.instantiate())
+	assert_not_null(bulle.police_replique, "Spectral italique par défaut")
+	assert_eq(bulle.police_replique.resource_path, StylePapier.POLICE_ITALIQUE)
+	assert_true(bulle._plaque.get_theme_stylebox(&"panel") is StyleBoxTexture, "plaque de papier")
+	bulle.start(Dialogue, "couts")
+	await wait_process_frames(3)
+	bulle._replique.skip_typing()
+	await wait_process_frames(3)
+	var icones: Array[Node] = bulle._options.find_children("*", "TextureRect", true, false)
+	assert_gt(icones.size(), 0, "les coûts s'affichent en icône")
+	assert_eq((icones[0] as TextureRect).texture, StylePapier.icone("cout-vivres"))
+
+
+func test_invite_en_plaque_de_papier() -> void:
+	var invite := InviteInteraction.new()
+	add_child_autofree(invite)
+	assert_true(invite.get_theme_stylebox(&"panel") is StyleBoxTexture)
+	assert_not_null(invite.police)
