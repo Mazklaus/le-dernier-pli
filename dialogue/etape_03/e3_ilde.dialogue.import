@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://b4folctia7l3x"
+path="res://.godot/imported/e3_ilde.dialogue-14733c61368c57a9f88b627b915dbbe4.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_03/e3_ilde.dialogue"
+dest_files=["res://.godot/imported/e3_ilde.dialogue-14733c61368c57a9f88b627b915dbbe4.tres"]
+
+[params]
+
+defaults=true

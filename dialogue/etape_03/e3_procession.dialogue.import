@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://bmtrk7qxyf2l3"
+path="res://.godot/imported/e3_procession.dialogue-033f911f7fe3c72b40d321969c74cace.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_03/e3_procession.dialogue"
+dest_files=["res://.godot/imported/e3_procession.dialogue-033f911f7fe3c72b40d321969c74cace.tres"]
+
+[params]
+
+defaults=true

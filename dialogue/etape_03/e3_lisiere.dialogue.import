@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://c5pn8asiudeis"
+path="res://.godot/imported/e3_lisiere.dialogue-5a57ab1c1a5a56c56b2d20ae7024f2bd.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_03/e3_lisiere.dialogue"
+dest_files=["res://.godot/imported/e3_lisiere.dialogue-5a57ab1c1a5a56c56b2d20ae7024f2bd.tres"]
+
+[params]
+
+defaults=true

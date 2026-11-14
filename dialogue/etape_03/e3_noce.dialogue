@@ -1,0 +1,26 @@
+# Étape 3, rencontre 3 : la noce sur la place. Facultative, une seule action parmi trois.
+# Banquet : +1 Vivres. Le nom de la mariée : Nom retenu « Elle s'appelait Rose ».
+# Parler du front : −1 Lucidité (le silence, puis la météo). Garde-fou : jamais le mot « paix ».
+
+~ debut
+
+Tobie: Un violon, des rubans, des tables dans la rue. Une mariée en blanc.
+Tobie: Le marié a mon âge. Il n'a jamais porté d'uniforme, ça se voit à ses épaules.
+Tobie: Personne ne me demande d'où je viens.
+- [Manger au banquet]
+	Tobie: Une main remplit mon assiette. Puis une autre. Des œufs, du lard, du vin coupé d'eau.
+	Tobie: Je mange comme on mange au dépôt : vite, penché, un bras autour de l'assiette.
+	do GameState.appliquer_effets({&"vivres": 1})
+- [Demander son nom à la mariée]
+	Rose: Rose. Et toi ?
+	Tobie: Tobie.
+	Rose: Alors danse, Tobie. Un seul tour. C'est la règle, le jour d'une noce.
+	Tobie: Je danse mal. Elle rit quand même. Elle sent la lavande et la poussière du chemin.
+	do GameState.ajouter_marque(&"elle_s_appelait_rose", &"nom_retenu", &"e3_noce")
+- [Parler du front] [#cout_lucidite=1]
+	Tobie: Je dis que là-bas, on n'a plus de pain depuis l'hiver.
+	Tobie: Le violon s'arrête. Toute la place se tait. Une fourchette tombe.
+	Un vieux: Il va pleuvoir demain. C'est bon pour les blés.
+	Tobie: Le violon repart. Les gens rient de nouveau. Comme si je n'avais rien dit.
+
+=> END
