@@ -23,7 +23,7 @@ if GameState.possede_marque(&"promis_a_ilde")
 	do GameState.resoudre_promesse(&"promis_a_ilde", false)
 	do GameState.marquer_rencontre_vue(&"e3_suivre")
 	Tobie: Je passe par la fenêtre. Les cierges sont déjà loin. Entre eux et moi, il fait noir.
-	- [Allumer la lanterne] [#cout_huile=1, #sans_prelevement]
+	- [Allumer la lanterne] [if GameState.valeur(&"huile") >= 1 /] [#cout_huile=1, #sans_prelevement]
 		do GameState.entrer_zone_sombre(true)
 		Tobie: Je garde la flamme basse, dans ma main. Comme eux.
 	- [Suivre les cierges dans le noir] [#cout_lucidite=1, #sans_prelevement]

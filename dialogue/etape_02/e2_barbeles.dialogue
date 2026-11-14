@@ -5,7 +5,7 @@
 ~ debut
 
 Tobie: Le brouillard. Je ne vois plus mes pieds.
-- [Allumer la lanterne] [#cout_huile=1, #sans_prelevement]
+- [Allumer la lanterne] [if GameState.valeur(&"huile") >= 1 /] [#cout_huile=1, #sans_prelevement]
 	do GameState.entrer_zone_sombre(true)
 	=> lumiere
 - [Avancer dans le noir] [#cout_lucidite=1, #sans_prelevement]
