@@ -18,12 +18,41 @@ const NOEUD_REPERES_VOIX := "ReperesVoix"
 ## associé (fondu entrant) ; vers tout autre lieu, elle s'arrête (fondu sortant).
 ## Ex. étape 1 : {&"abri_sergent": "theme", &"chapelle": "theme"}.
 @export var lieux_musique: Dictionary = {}
+## Bornes horizontales de la caméra à la surface (le décor parallaxe est calculé pour elles) ;
+## levées sous terre. x > y : pas de borne.
+@export var bornes_camera_surface: Vector2 = Vector2(1, 0)
 
 
 func _ready() -> void:
 	ajouter_interface()
 	brancher_suivi_voix()
 	brancher_musique_lieux()
+	brancher_bornes_camera()
+
+
+## Borne la caméra à la surface (bornes_camera_surface), la libère sous terre, à chaque
+## téléportation du messager.
+func brancher_bornes_camera() -> void:
+	var messager := trouver_messager()
+	if messager == null or bornes_camera_surface.x > bornes_camera_surface.y:
+		return
+	if not messager.teleporte.is_connected(_sur_teleporte_bornes):
+		messager.teleporte.connect(_sur_teleporte_bornes)
+	maj_bornes_camera.call_deferred()
+
+
+func maj_bornes_camera() -> void:
+	var messager := trouver_messager()
+	if messager == null:
+		return
+	if est_en_surface(messager.global_position):
+		messager.borner_camera(int(bornes_camera_surface.x), int(bornes_camera_surface.y))
+	else:
+		messager.liberer_camera()
+
+
+func _sur_teleporte_bornes(_position_globale: Vector2) -> void:
+	maj_bornes_camera()
 
 
 ## Relie les Passages de l'étape à la musique par lieu (lieux_musique).
