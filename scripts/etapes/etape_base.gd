@@ -12,11 +12,36 @@ const NOEUD_REPERES_VOIX := "ReperesVoix"
 
 ## Ordonnée (globale) sous laquelle le messager est sous terre (lieux souterrains).
 @export var limite_surface_y: float = INF
+## Numéro de l'étape (musiques AudioDirector.jouer_musique).
+@export var numero_etape: int = 0
+## Musique par lieu : franchir un Passage vers un de ces lieux lance la musique du moment
+## associé (fondu entrant) ; vers tout autre lieu, elle s'arrête (fondu sortant).
+## Ex. étape 1 : {&"abri_sergent": "theme", &"chapelle": "theme"}.
+@export var lieux_musique: Dictionary = {}
 
 
 func _ready() -> void:
 	ajouter_interface()
 	brancher_suivi_voix()
+	brancher_musique_lieux()
+
+
+## Relie les Passages de l'étape à la musique par lieu (lieux_musique).
+func brancher_musique_lieux() -> void:
+	if lieux_musique.is_empty():
+		return
+	for n in get_tree().get_nodes_in_group(&"passages"):
+		if n is Passage and is_ancestor_of(n):
+			var passage := n as Passage
+			if not passage.franchi.is_connected(_sur_passage_franchi):
+				passage.franchi.connect(_sur_passage_franchi)
+
+
+func _sur_passage_franchi(_passage: Passage, vers: StringName) -> void:
+	if lieux_musique.has(vers):
+		AudioDirector.jouer_musique(numero_etape, String(lieux_musique[vers]))
+	else:
+		AudioDirector.arreter_musique()
 
 
 ## Relie le gain des voix de surface (AudioDirector) à la position du messager.
