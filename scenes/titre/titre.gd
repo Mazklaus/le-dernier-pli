@@ -31,13 +31,17 @@ func _ready() -> void:
 	_afficher(Ecran.INVITE)
 
 
+## _input et non _unhandled_input : à l'invite, aucun Control ne doit pouvoir avaler
+## le premier clic (bug #10).
+func _input(event: InputEvent) -> void:
+	if ecran == Ecran.INVITE and _est_une_pression(event):
+		get_viewport().set_input_as_handled()
+		AudioDirector.deverrouiller()
+		_afficher(Ecran.MENU)
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if ecran == Ecran.INVITE:
-		if _est_une_pression(event):
-			get_viewport().set_input_as_handled()
-			AudioDirector.deverrouiller()
-			_afficher(Ecran.MENU)
-	elif event.is_action_pressed(&"ui_cancel") and ecran != Ecran.MENU:
+	if event.is_action_pressed(&"ui_cancel") and ecran != Ecran.MENU and ecran != Ecran.INVITE:
 		get_viewport().set_input_as_handled()
 		_afficher(Ecran.MENU)
 
