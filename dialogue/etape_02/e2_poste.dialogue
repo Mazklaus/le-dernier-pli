@@ -1,6 +1,7 @@
 # Étape 2, rencontre 1 : le poste avancé. Gabarit GD n°3. Verrou du chemin.
 # Le caporal Brisse réchauffe la cire gratuitement et devient témoin.
 # Réchauffer gratuit : +1 Huile puis rechauffer_sceau() (qui coûte 1), en attendant une API dédiée.
+# Verrou de la chicane : e2_poste_passe (sceau intact ou payé). Détour : titre « boyau », déclenché à l'entrée du boyau.
 # Témoin : rencontre fictive &"temoin_garde_sceau", en attendant un drapeau dédié dans GameState.
 
 ~ debut
@@ -10,6 +11,7 @@ Brisse: Caporal Brisse. Je tiens le poste. Tout seul, depuis la dernière relèv
 Brisse: Montre ton pli. C'est le règlement.
 if GameState.condition_remplie({"sceau": &"intact"})
 	Brisse: Cire noire, intacte. Passe, petit.
+	do GameState.marquer_rencontre_vue(&"e2_poste_passe")
 	if GameState.possede_marque(&"obei_sans_question")
 		Brisse: Et prends ça. Un gars qui obéit, ça se nourrit.
 		do GameState.appliquer_effets({&"vivres": 1})
@@ -17,6 +19,7 @@ else
 	Brisse: La cire est fendue. Ça, c'est pas bon pour toi.
 	- [Payer] Prenez ma ration. [#cout_vivres=1]
 		Brisse: Bon. J'ai rien vu.
+		do GameState.marquer_rencontre_vue(&"e2_poste_passe")
 	- [Faire le détour] Je passerai par en dessous. [#cout_huile=1, #sans_prelevement]
 		Brisse: Le vieux boyau ? Allume bien ta lampe.
 		do GameState.marquer_rencontre_vue(&"e2_poste_detour")
@@ -37,5 +40,13 @@ Brisse: Personne n'en saura rien. À part moi.
 - [Refuser] Non. Je n'ai pas le droit.
 	Brisse: T'as raison. Moi non plus, j'ai jamais osé.
 Brisse: Va. Le brouillard commence juste après la crête. Il est méchant, ce matin.
+
+=> END
+
+~ boyau
+
+Tobie: Le vieux boyau sous le poste. Il sent la terre mouillée et la bougie froide.
+Tobie: J'allume ma lampe. Le plafond tient avec des planches et des prières.
+do GameState.appliquer_effets({&"huile": -1})
 
 => END

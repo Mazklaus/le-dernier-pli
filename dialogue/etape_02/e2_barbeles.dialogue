@@ -1,5 +1,5 @@
 # Étape 2, rencontre 2 : les barbelés qui fredonnent. Gabarit GD n°1 (zone sombre longue).
-# Lanterne : −1 Huile, on passe. La zone sombre couvre aussi e2_mort : la scène appelle sortir_zone_sombre() en sortie de brouillard. Noir : −1 Lucidité, les fils fredonnent l'air de Jacquot,
+# Lanterne : −1 Huile, on passe. La zone sombre couvre aussi e2_mort ; seconde_ceinture la referme. Noir : −1 Lucidité, les fils fredonnent l'air de Jacquot,
 # puis ramper (−1 Vivres) ou foncer (Cicatrice « Les barbelés »). Le choix vaut pour les deux ceintures.
 
 ~ debut
@@ -38,5 +38,6 @@ if GameState.lanterne_allumee
 	Tobie: Encore des fils. Encore un passage ouvert.
 else
 	Tobie: Encore des fils. Mon corps refait le même geste, sans me demander.
+do GameState.sortir_zone_sombre()
 
 => END
