@@ -68,3 +68,31 @@ func test_jouer_musique_theme_joue_a_plein_volume_sans_fondu() -> void:
 	assert_almost_eq(ad._musique.volume_db, 0.0, 0.01)
 	ad.arreter_musique(0.0)
 	assert_false(ad._musique.playing)
+
+
+func test_variantes_de_trouve_les_fichiers_numerotes() -> void:
+	var ad := _director_etape_1()
+	assert_eq(ad.variantes_de("sfx_pas_boue").size(), 6)
+	assert_eq(ad.variantes_de("vox_tobie"), ["vox_tobie_01", "vox_tobie_02", "vox_tobie_03"])
+	assert_eq(ad.variantes_de("sfx_inexistant").size(), 0)
+
+
+func test_jouer_variante_ne_repete_pas_deux_fois_de_suite() -> void:
+	var ad := _director_etape_1()
+	ad.audio_deverrouille = true
+	var precedente := ""
+	for i in 20:
+		ad.jouer_variante("sfx_pas_planche")
+		var choix: String = ad._derniere_variante["sfx_pas_planche"]
+		assert_ne(choix, precedente)
+		precedente = choix
+
+
+func test_arreter_sfx_coupe_le_maintien() -> void:
+	var ad := _director_etape_1()
+	ad.audio_deverrouille = true
+	ad.jouer_variante("sfx_ui_maintien", AudioDirectorScript.BUS_UI)
+	var en_cours := ad.get_children().filter(func(n: Node) -> bool: return n.has_meta(&"sfx"))
+	assert_eq(en_cours.size(), 1)
+	ad.arreter_sfx("sfx_ui_maintien")
+	assert_false((en_cours[0] as AudioStreamPlayer).playing)
