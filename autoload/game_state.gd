@@ -230,7 +230,8 @@ func couts_affiches_rencontre(couts_options: Array, rng: RandomNumberGenerator =
 	var cle: Variant = cles[rng.randi_range(0, cles.size() - 1)]
 	var vrai := int(affiches[cle])
 	var faux := vrai + (1 if rng.randf() < 0.5 else -1)
-	if faux < 0:
+	# Un coût affiché n'est jamais 0 : « −0 » trahirait le mensonge (#30).
+	if faux < 1:
 		faux = vrai + 1
 	affiches[cle] = faux
 	resultat[a]["cout_douteux"] = true

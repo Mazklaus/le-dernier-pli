@@ -261,6 +261,23 @@ func test_couts_affiches_exacts_hors_egare() -> void:
 		assert_false(affiches[i]["cout_douteux"])
 
 
+func test_cout_faux_jamais_affiche_a_zero() -> void:
+	# #30 : un vrai coût de 1 qui ment vers le bas afficherait « −0 » et trahirait le mensonge.
+	gs.modifier_jauge(&"lucidite", -6)
+	var options := [{"vivres": 1}, {"huile": 1}]
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	var nb_faux := 0
+	for essai in 200:
+		var affiches: Array[Dictionary] = gs.couts_affiches_rencontre(options, rng)
+		for i in options.size():
+			for cle in affiches[i]["couts"]:
+				assert_true(int(affiches[i]["couts"][cle]) >= 1, "coût affiché à 0")
+			if affiches[i]["cout_faux"]:
+				nb_faux += 1
+	assert_gt(nb_faux, 50, "le tirage ment bien")
+
+
 func test_couts_affiches_en_egare_tirage_par_rencontre() -> void:
 	gs.modifier_jauge(&"lucidite", -6)
 	var options := [{"vivres": 1}, {}, {"huile": 0, "vivres": 2}, {"huile": 1}]
