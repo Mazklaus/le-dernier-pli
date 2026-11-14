@@ -73,3 +73,13 @@ func test_decalage_parallaxe_depuis_le_bord_gauche_de_l_ecran() -> void:
 	for plan in _decor.plans:
 		var attendu := bord_gauche * (1.0 - plan.scroll_scale.x)
 		assert_almost_eq(plan.get_child(0).global_position.x, attendu, 2.0, plan.name)
+
+
+func test_echelle_dans_l_ombre_puis_claire_apres_l_adieu() -> void:
+	GameState.reinitialiser()
+	_decor.actualiser_echelle()
+	assert_not_null(_decor.echelle)
+	assert_eq(_decor.echelle.texture.resource_path, DecorE1.ECHELLE_OMBRE)
+	GameState.marquer_rencontre_vue(&"e1_adieu")
+	assert_eq(_decor.echelle.texture.resource_path, DecorE1.ECHELLE_CLAIRE)
+	GameState.reinitialiser()

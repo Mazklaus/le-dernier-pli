@@ -4,11 +4,15 @@ extends DecorParallaxe
 ## niveau de 10624 px, la cendre qui tombe entre le plan 2 et le plan 3. La tombée du jour
 ## est peinte dans les tuiles (crans à x 6600 et 9000) : aucun modulate.
 ## Masque les fonds gris de la maquette (Surface/*/Fond) quand le décor est posé, et habille
-## la Chicane (fx_chicane).
+## la Chicane (fx_chicane) et l'échelle de sortie (ombre, puis claire après e1_adieu).
 
 const DOSSIER := "res://assets/graphics/env/e1/env_e1_"
 const CENDRE := "res://assets/graphics/fx/fx_cendre.png"
 const CHICANE := "res://assets/graphics/fx/fx_chicane.png"
+const ECHELLE_OMBRE := "res://assets/graphics/fx/fx_echelle-ombre.png"
+const ECHELLE_CLAIRE := "res://assets/graphics/fx/fx_echelle-claire.png"
+## L'échelle de sortie passe au clair quand l'adieu de Jacquot a été fait (Level Designer).
+const RENCONTRE_ECHELLE: StringName = &"e1_adieu"
 ## [nom du plan, vitesse, couche] du plus lointain au plus proche.
 const PLANS := [
 	["plan0_ciel", 0.05, -50],
@@ -25,6 +29,7 @@ const CHUTE_CENDRE := 40.0
 
 var plans: Array[Parallax2D] = []
 var cendre: Sprite2D
+var echelle: Sprite2D
 
 var _defilement: float = 0.0
 
@@ -39,6 +44,7 @@ func _ready() -> void:
 	if masquer_fonds_maquette:
 		_masquer_fonds()
 	_habiller_chicane()
+	_habiller_echelle()
 
 
 func _process(delta: float) -> void:
@@ -93,3 +99,27 @@ func _habiller_chicane() -> void:
 	dessin.texture = load(CHICANE) as Texture2D
 	dessin.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	chicane.add_child(dessin)
+
+
+## L'échelle de sortie : dans l'ombre tant que l'adieu de Jacquot n'est pas fait, claire ensuite.
+func _habiller_echelle() -> void:
+	var support := get_parent().get_node_or_null("Surface/PiedEchelle/Echelle") if get_parent() else null
+	if support == null or not ResourceLoader.exists(ECHELLE_OMBRE):
+		return
+	var visuel := support.get_node_or_null("Visuel") as CanvasItem
+	if visuel != null:
+		visuel.visible = false
+	echelle = Sprite2D.new()
+	echelle.name = "Dessin"
+	echelle.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	support.add_child(echelle)
+	GameState.rencontre_vue_marquee.connect(func(_id: StringName) -> void: actualiser_echelle())
+	GameState.etat_charge.connect(actualiser_echelle)
+	actualiser_echelle()
+
+
+func actualiser_echelle() -> void:
+	if echelle == null:
+		return
+	var claire := GameState.rencontre_vue(RENCONTRE_ECHELLE)
+	echelle.texture = load(ECHELLE_CLAIRE if claire else ECHELLE_OMBRE) as Texture2D
