@@ -241,13 +241,35 @@ def largeur_plan(v: float) -> int:
 
 def fx() -> None:
     FX.mkdir(parents=True, exist_ok=True)
-    # Voiles plein écran pour les plans lents (ciel, lointain, milieu) : un bord fixe dans un plan
-    # lent ne suit pas Tobie, donc le code pose ces calques entre le plan 2 et le plan 3 et les
-    # affiche d'un coup quand Tobie passe x 6600 (hachure) puis x 9000 (contre-hachure).
-    for nom, motif in (("fx_voile-hachure", "v1"), ("fx_voile-contre-hachure", "v2")):
-        (FX / f"{nom}.svg").write_text(
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">{DEFS}'
-            f'<rect width="1920" height="1080" fill="url(#{motif})"/></svg>\n')
+    # Voiles des plans lents (ciel, lointain, milieu) : un bord fixe dans un plan lent ne suit pas
+    # Tobie, donc le code pose ces calques à l'écran, entre le plan 2 et le plan 3, et les affiche
+    # d'un coup à x 6600 (hachure) puis x 9000 (contre-hachure).
+    # Ce sont des TUILES qui se raccordent (texture répétée sur 1920x1080) : une hachure plein écran
+    # pesait 2,6 Mo dans le build web. Angle 38° = pente 25/32 (37,99°) ; avec cette pente, la
+    # famille 32x + 25y = k.P revient sur elle-même tous les P px en x et en y, P = écart x 40,61.
+    def famille(n: tuple[int, int], periode: int, cote: int, epais: float) -> str:
+        a, b = n
+        lignes = []
+        for k in range(-(abs(a) + abs(b)) * 2, (abs(a) + abs(b)) * 2 + 1):
+            c = k * periode
+            # deux points de la droite a.x + b.y = c, loin hors de la tuile
+            if b != 0:
+                x0, x1 = -cote, 2 * cote
+                y0, y1 = (c - a * x0) / b, (c - a * x1) / b
+            else:
+                x0 = x1 = c / a
+                y0, y1 = -cote, 2 * cote
+            lignes.append(f"M{x0:.2f} {y0:.2f} L{x1:.2f} {y1:.2f}")
+        return f'<path d="{" ".join(lignes)}" stroke="{ENCRE}" stroke-width="{epais}" fill="none"/>'
+
+    # hachure : écart 5 px (203 / 40,61), trait 1 px
+    (FX / "fx_voile-hachure.svg").write_text(
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="203" height="203" viewBox="0 0 203 203">'
+        f'{famille((32, 25), 203, 203, 1.0)}</svg>\n')
+    # contre-hachure : écart 4 px (162 / 40,61), traits 1,1 et 0,8
+    (FX / "fx_voile-contre-hachure.svg").write_text(
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="162" height="162" viewBox="0 0 162 162">'
+        f'{famille((32, 25), 162, 162, 1.1)}{famille((25, -32), 162, 162, 0.8)}</svg>\n')
     r = rnd(61)
     flocons = "".join(f'<circle cx="{r.uniform(0, 1920):.0f}" cy="{r.uniform(0, 1080):.0f}" r="{r.uniform(1.4, 3):.1f}" fill="{MINE}"/>' for _ in range(180))
     (FX / "fx_cendre.svg").write_text(f'<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">{flocons}</svg>\n')

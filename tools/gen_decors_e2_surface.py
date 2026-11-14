@@ -35,6 +35,7 @@ SOL = [(0, 900), (1600, 900), (1808, 780), (3400, 780), (3608, 900), (12000, 900
 
 BROUILLARD = (4800, 10100)
 CEINTURES = (5230, 10030)
+TROU_ZONE = (11600, 14300)  # la caméra descend ici : terre hachurée jusqu'en bas
 SOUCHE_X = 14800          # sous le détail souche_entailles (les initiales sont gravées dedans)
 
 
@@ -110,6 +111,11 @@ def plan3() -> str:
     pts = " L".join(f"{x} {y}" for x, y in SOL)
     sol = f"M{pts} L{LARGEUR} {H} L0 {H} Z"
     out.append(f'<path d="{sol}" fill="url(#terre)"/>')
+    # Sous y 1080, la terre passe en aplat de lavis (hors zone du grand trou, où la caméra descend) :
+    # même lecture de profondeur, et une texture qui pèse presque rien dans le build web.
+    for xa, xb in ((0, TROU_ZONE[0]), (TROU_ZONE[1], LARGEUR)):
+        out.append(f'<rect x="{xa}" y="1080" width="{xb - xa}" height="{H - 1080}" fill="{LAVIS}"/>')
+    out.append(f'<path d="M0 1080 H{TROU_ZONE[0]} M{TROU_ZONE[1]} 1080 H{LARGEUR}" stroke="{ENCRE}" stroke-width="1.5"/>')
     # liseré de surface : boue retournée, plus sombre, sur 40 px
     out.append(f'<path d="M{pts}" fill="none" stroke="{ENCRE}" stroke-width="3"/>')
     bande = " L".join(f"{x} {y + 40}" for x, y in reversed(SOL))
