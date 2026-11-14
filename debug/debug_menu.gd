@@ -57,6 +57,7 @@ var _panel: PanelContainer
 var _spins: Dictionary = {}  # StringName -> SpinBox
 var _checks: Dictionary = {}  # StringName -> CheckBox
 var _encounter_pick: OptionButton
+var _force_lie: CheckBox
 
 
 func _ready() -> void:
@@ -105,6 +106,12 @@ func _build_ui() -> void:
 		box.add_child(check)
 		_checks[id] = check
 
+	# Captures UI : force le coût faux + leurre à l'Égaré (bavure garantie).
+	_force_lie = CheckBox.new()
+	_force_lie.text = "forcer coût faux (Égaré)"
+	_force_lie.toggled.connect(func(on: bool) -> void: GameState.debug_forcer_cout_faux = on)
+	box.add_child(_force_lie)
+
 	var jump_row := HBoxContainer.new()
 	_encounter_pick = OptionButton.new()
 	for id in ENCOUNTERS:
@@ -125,3 +132,4 @@ func _refresh() -> void:
 		spin.set_value_no_signal(_get_gauge(id))
 	for id in SEAL_FLAGS:
 		(_checks[id] as CheckBox).set_pressed_no_signal(_get_flag(id))
+	_force_lie.set_pressed_no_signal(GameState.debug_forcer_cout_faux)

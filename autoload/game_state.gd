@@ -40,6 +40,10 @@ const PROBA_MENSONGE := 0.5
 const PROBA_LEURRE_SEUL := 0.25
 const PLI_NB_LIGNES := 6
 
+## Débogage (menu F1, captures UI) : à l'Égaré, force le tirage « coût faux + leurre ».
+## Non sauvegardé, sans effet hors de l'Égaré ou avec moins de deux options à coût.
+var debug_forcer_cout_faux: bool = false
+
 var vivres: int
 var huile: int
 var lucidite: int
@@ -213,7 +217,7 @@ func couts_affiches_rencontre(couts_options: Array, rng: RandomNumberGenerator =
 	if rng == null:
 		rng = RandomNumberGenerator.new()
 		rng.randomize()
-	var tirage := rng.randf()
+	var tirage := 0.0 if debug_forcer_cout_faux else rng.randf()
 	if tirage >= PROBA_MENSONGE + PROBA_LEURRE_SEUL:
 		return resultat
 	var a: int = candidates.pop_at(rng.randi_range(0, candidates.size() - 1))

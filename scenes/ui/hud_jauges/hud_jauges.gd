@@ -5,6 +5,12 @@ extends Control
 ## chiffre) ; plaque en haut à droite avec le sceau et le carnet.
 ## Lit GameState par son API et ses signaux. Options : Reglages.hud_contextuel (le HUD
 ## s'efface 3 s après le dernier changement), valeurs_chiffrees, effets_attenues.
+## La bulle le retient pleinement visible tant qu'une rencontre affiche des coûts (retenir).
+
+const GROUPE: StringName = &"hud_jauges"
+## Boîte des icônes de jauge : les dessins du DA (80 px) ont ~8 px de marge transparente,
+## une boîte de 100 px les affiche à ~80 px à 1080 comme dans la spec.
+const TAILLE_ICONE := 100.0
 
 const SEUIL_BAS := 1
 const DELAI_CONTEXTUEL := 3.0
@@ -23,10 +29,12 @@ var _coin: PanelContainer
 var _fondu: Tween
 var _minuteur: Timer
 var _temps: float = 0.0
+var _retenu: bool = false
 
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_to_group(GROUPE)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_construire()
 	_minuteur = Timer.new()
@@ -128,14 +136,27 @@ func _sur_changement() -> void:
 ## sauf si une jauge est au seuil bas.
 func _montrer() -> void:
 	_fondre(1.0)
-	if Reglages.valeur(&"hud_contextuel"):
+	if Reglages.valeur(&"hud_contextuel") and not _retenu:
 		_minuteur.start(DELAI_CONTEXTUEL)
 	else:
 		_minuteur.stop()
 
 
+## Tant que `actif`, le HUD reste pleinement visible (rencontre avec coûts : le joueur
+## compare le coût à son stock) ; ensuite le mode contextuel reprend son délai.
+func retenir(actif: bool) -> void:
+	if actif == _retenu:
+		return
+	_retenu = actif
+	if actif:
+		_minuteur.stop()
+		_fondre(1.0)
+	else:
+		_montrer()
+
+
 func _estomper() -> void:
-	if not Reglages.valeur(&"hud_contextuel"):
+	if _retenu or not Reglages.valeur(&"hud_contextuel"):
 		return
 	if GameState.valeur(GameState.VIVRES) <= SEUIL_BAS or GameState.valeur(GameState.HUILE) <= SEUIL_BAS:
 		return
@@ -183,10 +204,10 @@ func _jauge(jauge: StringName) -> Control:
 	var colonne := VBoxContainer.new()
 	colonne.alignment = BoxContainer.ALIGNMENT_END
 	colonne.add_theme_constant_override(&"separation", 6)
-	var icone := _icone(80.0)
+	var icone := _icone(TAILLE_ICONE)
 	_icones[jauge] = icone
 	var support := Control.new()
-	support.custom_minimum_size = Vector2(80, 80)
+	support.custom_minimum_size = Vector2.ONE * TAILLE_ICONE
 	support.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	support.add_child(icone)
 	colonne.add_child(support)
