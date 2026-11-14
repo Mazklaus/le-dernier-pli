@@ -15,7 +15,9 @@ env:
   GODOT_RELEASE: "stable"
   # Renseigner quand le projet itch.io existe : "utilisateur/jeu"
   ITCH_TARGET: ""
-  # Budget du build web (étape 1) fixé par le Lead Prog.
+  # Budget du build web fixé par le Lead Prog : poids TÉLÉCHARGÉ par le joueur, c.-à-d.
+  # la somme des fichiers compressés en gzip (GitHub Pages et itch.io servent en gzip ;
+  # le moteur .wasm passe de ~35 Mo à ~9 Mo, les OGG et PNG ne bougent presque pas).
   WEB_BUDGET_MB: 60
   WEB_WARN_MB: 50
 
@@ -147,8 +149,12 @@ jobs:
         if: matrix.platform == 'web'
         run: |
           DIR="build/$(echo ${{ steps.mode.outputs.modes }} | awk '{print $NF}')/build/web"
-          MB=$(du -sm "$DIR" | cut -f1)
-          echo "Build web : ${MB} Mo (budget ${WEB_BUDGET_MB} Mo)" >> "$GITHUB_STEP_SUMMARY"
+          BRUT=$(du -sm "$DIR" | cut -f1)
+          OCTETS=0
+          for f in "$DIR"/*; do OCTETS=$((OCTETS + $(gzip -9 -c "$f" | wc -c))); done
+          MB=$(( (OCTETS + 1048575) / 1048576 ))
+          echo "Build web : ${MB} Mo téléchargés (gzip), ${BRUT} Mo sur disque (budget ${WEB_BUDGET_MB} Mo téléchargés)" >> "$GITHUB_STEP_SUMMARY"
+          for f in "$DIR"/*; do echo "- $(basename "$f") : $(du -h "$f" | cut -f1)" >> "$GITHUB_STEP_SUMMARY"; done
           if [ "$MB" -gt "$WEB_BUDGET_MB" ]; then
             echo "::error::Build web ${MB} Mo, au-delà du budget de ${WEB_BUDGET_MB} Mo"; exit 1
           elif [ "$MB" -gt "$WEB_WARN_MB" ]; then
