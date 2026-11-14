@@ -219,7 +219,10 @@ func test_bavure_forcee_deux_taches_differentes() -> void:
 	assert_eq(taches.size(), 2, "une tache sous chacun des deux chiffres qui bavent")
 	if taches.size() == 2:
 		assert_not_null((taches[0] as TextureRect).texture)
-		assert_ne((taches[0] as TextureRect).texture, (taches[1] as TextureRect).texture, "variantes différentes")
+		var t0 := (taches[0] as TextureRect).texture
+		var t1 := (taches[1] as TextureRect).texture
+		if t0 is AtlasTexture and t1 is AtlasTexture:
+			assert_ne((t0 as AtlasTexture).atlas, (t1 as AtlasTexture).atlas, "variantes différentes")
 		assert_true((taches[0] as TextureRect).show_behind_parent)
 	for icone: Node in bulle._options.find_children("*", "TextureRect", true, false):
 		if icone.name != "Tache":
@@ -238,5 +241,21 @@ func test_tache_reduite_sous_le_chiffre() -> void:
 	var tache: TextureRect = bulle._options.find_children("Tache", "TextureRect", true, false)[0]
 	var chiffre := tache.get_parent() as Label
 	var taille := float(chiffre.get_theme_font_size(&"font_size"))
-	assert_almost_eq(tache.size.y, roundf(taille * 0.7 / 3.0), 0.5, "un tiers de la hauteur du chiffre")
+	assert_almost_eq(tache.size.y, roundf(taille * 0.5), 0.5, "moitié du chiffre, ~12 px à 1080")
+	assert_true(tache.texture is AtlasTexture, "sprite recadré sur sa zone utile")
+	if tache.texture is AtlasTexture:
+		assert_lt((tache.texture as AtlasTexture).region.size.x, 32.0)
+	assert_eq(chiffre.get_theme_color(&"font_color"), StylePapier.ENCRE, "chiffre qui bave en encre pleine")
 	assert_gt(tache.position.y, chiffre.size.y / 2.0, "sous le milieu du chiffre")
+
+
+
+func test_chiffres_de_cout_normaux_en_lavis() -> void:
+	var bulle: Node = add_child_autofree(SceneBulle.instantiate())
+	bulle.start(Dialogue, "couts")
+	await wait_process_frames(3)
+	bulle._replique.skip_typing()
+	await wait_process_frames(3)
+	var icone: TextureRect = bulle._options.find_children("*", "TextureRect", true, false)[0]
+	var chiffre := icone.get_parent().get_child(1) as Label
+	assert_eq(chiffre.get_theme_color(&"font_color"), StylePapier.LAVIS)
