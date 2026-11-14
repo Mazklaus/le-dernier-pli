@@ -38,11 +38,7 @@ func test_constantes_de_la_spec() -> void:
 	assert_eq(InviteInteraction.PERSISTANCE, 0.6)
 	assert_eq(InviteInteraction.DUREE_EFFACEMENT, 0.4)
 	assert_eq(InviteInteraction.MARGE_ECRAN, 24.0)
-	assert_eq(RepereExamen.TAILLE, 24.0)
-	assert_eq(RepereExamen.RAPPORT_PASTILLE, 1.5)
-	assert_eq(RepereExamen.COULEUR, StylePapier.ENCRE)
-	assert_eq(RepereExamen.COULEUR_PASTILLE, StylePapier.PAPIER)
-	assert_eq(RepereExamen.PORTEE, Messager.RAYON_INTERACTION * 2.0)
+	assert_eq(RepereExamen.TAILLE, 40.0)
 
 
 func test_touche_en_carre_d_encre_et_libelle_a_28() -> void:
@@ -92,16 +88,26 @@ func test_repere_sur_les_details_seulement() -> void:
 	assert_null(rencontre.repere)
 
 
+func test_repere_visible_des_que_le_detail_est_a_l_ecran() -> void:
+	var ecran := Rect2(1000, 0, 1920, 1080)
+	assert_true(RepereExamen.est_a_l_ecran(Vector2(1010, 500), ecran))
+	assert_true(RepereExamen.est_a_l_ecran(Vector2(990, 500), ecran), "en partie à l'écran")
+	assert_false(RepereExamen.est_a_l_ecran(Vector2(900, 500), ecran))
+	assert_false(RepereExamen.est_a_l_ecran(Vector2(3000, 500), ecran))
+
+
 func test_repere_visible_de_loin_et_efface_une_fois_examine() -> void:
 	var detail := _declencheur(&"e9_detail_test", 500)
 	var m: Messager = add_child_autofree(SceneMessager.instantiate())
 	m.gravite = 0.0
-	m.global_position = Vector2(500 + 150, 500)
-	await wait_process_frames(2)
-	assert_true(detail.repere.doit_paraitre(), "à 150 px : plus loin que l'invite (96), en deçà de 192")
-	m.global_position = Vector2(500 + 300, 500)
-	assert_false(detail.repere.doit_paraitre(), "trop loin")
-	m.global_position = Vector2(500 + 50, 500)
+	m.teleporter(Vector2(500 + 450, 500))
+	await wait_process_frames(3)
+	assert_true(detail.repere.doit_paraitre(), "à 450 px, à l'écran : bien plus loin que l'invite")
+	m.teleporter(Vector2(500 + 6000, 500))
+	await wait_process_frames(3)
+	assert_false(detail.repere.doit_paraitre(), "hors de l'écran")
+	m.teleporter(Vector2(500 + 50, 500))
+	await wait_process_frames(3)
 	GameState.marquer_rencontre_vue(&"e9_detail_test")
 	assert_false(detail.repere.doit_paraitre(), "examiné : plus de repère")
 
@@ -125,11 +131,8 @@ func test_est_detail_force_le_repere() -> void:
 
 
 
-func test_pastille_dechiree_stable_et_a_la_bonne_taille() -> void:
+func test_repere_dessine_par_le_sprite_du_da() -> void:
 	var detail := _declencheur(&"e9_detail_test", 100)
-	var contour := detail.repere.contour_pastille()
-	assert_eq(contour, detail.repere.contour_pastille(), "même contour à chaque dessin")
-	var rayon_max := 0.0
-	for p in contour:
-		rayon_max = maxf(rayon_max, p.length())
-	assert_almost_eq(rayon_max, 24.0 * 1.5 / 2.0, 2.0)
+	var dessin := detail.repere.get_node("Dessin") as Sprite2D
+	assert_not_null(dessin.texture)
+	assert_eq(dessin.texture.get_size(), Vector2(RepereExamen.TAILLE, RepereExamen.TAILLE))
