@@ -107,13 +107,13 @@
       <path d="M90 190 Q120 202 150 190 L150 204 Q120 214 90 204 Z" fill="#E8E5DA" stroke-width="2"/>
       <path d="M140 200 Q160 214 176 206 L174 218 Q158 224 140 212 Z" fill="#E8E5DA" stroke-width="1.8"/>
       <path d="M96 196 L144 198 M98 203 L142 205" stroke-width=".8"/>
-      <!-- tête ronde -->
+      <!-- tête ronde, traits sobres : yeux ouverts, sourcils droits, pas de joues -->
       <circle cx="120" cy="160" r="28" fill="#E8E5DA" stroke-width="2.2"/>
-      <path d="M106 156 Q110 152 114 156 M126 156 Q130 152 134 156" fill="none" stroke-width="1.8"/>
-      <circle cx="104" cy="168" r="5" fill="url(#hach-1)" stroke="none"/><circle cx="136" cy="168" r="5" fill="url(#hach-1)" stroke="none"/>
-      <circle cx="120" cy="174" r="3.2" fill="#15130F" stroke-width="1"/>
+      <path d="M107 157 L114 156.5 M126 156.5 L133 157" fill="none" stroke-width="2"/>
+      <path d="M106 151 L114 150 M126 150 L134 151" fill="none" stroke-width="1.2"/>
+            <circle cx="120" cy="175" r="2.2" fill="#15130F" stroke-width="1"/>
       <!-- sifflement : trois petits traits d'air -->
-      <path d="M128 174 Q136 172 142 176 M130 180 Q138 182 146 180 M128 168 Q136 164 142 166" fill="none" stroke-width="1.2"/>
+      <path d="M127 175 Q134 173 140 175" fill="none" stroke-width="1.1"/>
       <!-- calot de travers -->
       <path d="M94 146 Q100 126 124 126 Q144 128 150 140 L152 148 Q122 136 94 150 Z" fill="url(#hach-2)" stroke-width="2.2"/>
       <path d="M100 128 Q96 120 102 118" fill="none" stroke-width="1.6"/>
