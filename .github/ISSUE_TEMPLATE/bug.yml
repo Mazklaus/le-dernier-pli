@@ -1,0 +1,49 @@
+name: Bug
+description: Signaler un bug trouvé dans un build
+labels: ["type:bug"]
+body:
+  - type: input
+    id: build
+    attributes:
+      label: Build (SHA)
+      description: Le SHA affiché en bas à droite de l'écran.
+      placeholder: "a1b2c3d"
+    validations:
+      required: true
+  - type: dropdown
+    id: plateforme
+    attributes:
+      label: Plateforme
+      multiple: true
+      options: [Web, Windows, Linux]
+    validations:
+      required: true
+  - type: dropdown
+    id: severite
+    attributes:
+      label: Sévérité
+      options: [Bloquante, Majeure, Mineure, Cosmétique]
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Étapes de reproduction
+      placeholder: |
+        1. Lancer l'étape 1
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: attendu
+    attributes:
+      label: Résultat attendu
+    validations:
+      required: true
+  - type: textarea
+    id: constate
+    attributes:
+      label: Résultat constaté
+      description: Joindre capture, vidéo ou log si possible.
+    validations:
+      required: true

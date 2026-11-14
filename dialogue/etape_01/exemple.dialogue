@@ -1,0 +1,17 @@
+# Exemple de format pour le Narrative Designer (Dialogue Manager 4).
+# Les conditions et effets lisent et modifient GameState par son API publique.
+
+~ debut
+
+Sergent: Coureur. Ce pli part ce soir, et toi avec.
+- Oui, sergent.
+	Sergent: Bien. Tu ne l'ouvres pas. Tu ne le perds pas.
+- Pourquoi moi ?
+	Sergent: Parce que tu cours vite, et qu'on ne te regrettera pas longtemps.
+	do GameState.modifier_jauge(&"lucidite", -1)
+- Partager ma ration avec lui. [if GameState.valeur(&"vivres") >= 2]
+	do GameState.appliquer_couts({&"vivres": 1})
+	Sergent: ... Merci, petit.
+Sergent: File.
+
+=> END
