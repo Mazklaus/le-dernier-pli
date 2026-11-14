@@ -1,5 +1,6 @@
 # Étape 1 : détails à examiner, sans coût ni marque, 15 à 30 s chacun.
-# Un titre par point d'examen du plan du Level Designer.
+# Un titre par point d'examen du plan du Level Designer. Rejouables : aucune réplique
+# ne suppose une première lecture.
 # Règles (Game Director) : chaque détail humanise quelqu'un ; une seule fausse note
 # (carrefour_cloches) ; rien sur le secret. La lettre de la couchette prépare une perte
 # qu'on retrouvera plus loin dans le voyage.
@@ -94,9 +95,6 @@ Tobie: Il le garde pour la garde de nuit. Il ne s'en est jamais servi : il siffl
 
 Tobie: Des initiales gravées sur les barreaux. Chacun grave les siennes avant de monter.
 Tobie: Il y en a tant qu'on sent les lettres sous les doigts en grimpant.
-- [Graver tes initiales]
-	Tobie: T. Petit, de travers. À côté de celles de Jacquot, de l'an dernier.
-- [Ne rien graver]
-	Tobie: Je les graverai en revenant.
+Tobie: Celles de Jacquot, de l'an dernier, sont toutes droites. Il s'était appliqué.
 
 => END
