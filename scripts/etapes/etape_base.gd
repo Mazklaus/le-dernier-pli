@@ -21,7 +21,7 @@ func trouver_messager() -> Messager:
 
 
 func trouver_declencheur(id: StringName) -> DeclencheurDialogue:
-	for n in get_tree().get_nodes_in_group(DeclencheurDialogue.GROUPE):
+	for n in get_tree().get_nodes_in_group(Interactif.GROUPE):
 		if n is DeclencheurDialogue and is_ancestor_of(n) and (n as DeclencheurDialogue).rencontre_id == id:
 			return n as DeclencheurDialogue
 	return null
