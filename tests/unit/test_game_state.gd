@@ -315,6 +315,16 @@ func test_un_seul_cout_affiche_ne_ment_jamais() -> void:
 			assert_eq_deep(affiches[i]["couts"], options[i])
 
 
+func test_rencontres_vues() -> void:
+	assert_false(gs.rencontre_vue(&"e1_cendre"))
+	assert_false(gs.condition_remplie({"rencontre_vue": "e1_cendre"}))
+	gs.marquer_rencontre_vue(&"e1_cendre")
+	gs.marquer_rencontre_vue(&"e1_cendre")
+	assert_true(gs.rencontre_vue(&"e1_cendre"))
+	assert_true(gs.condition_remplie({"rencontre_vue": "e1_cendre"}))
+	assert_eq(gs.rencontres_vues.size(), 1)
+
+
 # --- Étapes ---
 
 func test_marche_entre_etapes() -> void:
@@ -341,6 +351,7 @@ func test_aller_retour_dictionnaire_json() -> void:
 	gs.modifier_jauge(&"lucidite", -8)
 	gs.ajouter_marque(&"promis_aubert", Marques.PROMESSE, &"camarade")
 	gs.ajouter_objet(&"objet_d_ombre")
+	gs.marquer_rencontre_vue(&"e1_cendre")
 	gs.passer_etape()
 	gs.rechauffer_sceau()
 	gs.lire_ligne_pli()
