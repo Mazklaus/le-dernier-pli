@@ -55,6 +55,8 @@ var rencontres_marquees: Array[StringName] = []
 var etape_derniere_lecture: int
 ## Nombre de lignes du pli déjà lues en transparence (lues dans l'ordre, 0 à 6).
 var pli_lignes_lues: int
+## Rencontres déjà jouées (interactions à usage unique, verrous de progression).
+var rencontres_vues: Array[StringName] = []
 ## Objets portés (ex. le pain promis à Jacquot, l'objet d'ombre de la sape).
 var objets: Array[StringName] = []
 
@@ -79,6 +81,7 @@ func reinitialiser() -> void:
 	etape_derniere_lecture = 0
 	pli_lignes_lues = 0
 	objets = []
+	rencontres_vues = []
 
 
 # --- Jauges --------------------------------------------------------------------
@@ -246,6 +249,8 @@ func condition_remplie(condition: Dictionary) -> bool:
 		return false
 	if condition.has("objet") and not possede_objet(StringName(condition["objet"])):
 		return false
+	if condition.has("rencontre_vue") and not rencontre_vue(StringName(condition["rencontre_vue"])):
+		return false
 	return true
 
 
@@ -360,6 +365,17 @@ func ouvrir_sceau() -> bool:
 	return true
 
 
+# --- Rencontres --------------------------------------------------------------------
+
+func marquer_rencontre_vue(id: StringName) -> void:
+	if id != &"" and id not in rencontres_vues:
+		rencontres_vues.append(id)
+
+
+func rencontre_vue(id: StringName) -> bool:
+	return id in rencontres_vues
+
+
 # --- Objets --------------------------------------------------------------------------
 
 func ajouter_objet(id: StringName) -> void:
@@ -461,6 +477,7 @@ func vers_dictionnaire() -> Dictionary:
 		"etape_derniere_lecture": etape_derniere_lecture,
 		"pli_lignes_lues": pli_lignes_lues,
 		"objets": objets.duplicate(),
+		"rencontres_vues": rencontres_vues.duplicate(),
 	}
 
 
@@ -484,4 +501,6 @@ func depuis_dictionnaire(d: Dictionary) -> void:
 	pli_lignes_lues = clampi(int(d.get("pli_lignes_lues", 0)), 0, PLI_NB_LIGNES)
 	for o in d.get("objets", []):
 		objets.append(StringName(o))
+	for v in d.get("rencontres_vues", []):
+		rencontres_vues.append(StringName(v))
 	etat_charge.emit()

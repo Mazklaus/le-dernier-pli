@@ -1,0 +1,35 @@
+# Bac à sable du Gameplay Prog : vérifie les interactions sans dépendre des dialogues de l'étape.
+
+~ debut
+
+Gardien: Tu peux me parler autant que tu veux.
+- Encore.
+	Gardien: Encore.
+- Assez.
+Gardien: Va voir la sentinelle, puis le parapet.
+
+=> END
+
+~ cendre
+
+Cassien: Te voilà cendré. La sentinelle te laissera passer.
+
+=> END
+
+~ refus
+
+Sentinelle: Pas sans la Cendre.
+
+=> END
+
+~ sentinelle
+
+Sentinelle: Passe.
+
+=> END
+
+~ parapet
+
+Lamarre: Cours, et compte pas.
+
+=> END
