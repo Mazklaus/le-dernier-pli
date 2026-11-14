@@ -137,9 +137,12 @@ func _maj_brouillard(x: float, delta: float) -> void:
 	if bandes.is_empty():
 		return
 	var cible := 1.0 if dans_le_brouillard(x) else 0.0
-	if is_equal_approx(_alpha_brouillard, cible):
+	if _alpha_brouillard == cible and bandes[0].visible == (cible > 0.0):
 		return
 	_alpha_brouillard = move_toward(_alpha_brouillard, cible, delta / FONDU_BROUILLARD)
+	# Calé net sur la cible : un reste flottant laisserait les bandes visibles à alpha ~0.
+	if absf(_alpha_brouillard - cible) < 0.001:
+		_alpha_brouillard = cible
 	for bande in bandes:
 		bande.modulate.a = _alpha_brouillard
 		bande.visible = _alpha_brouillard > 0.0
