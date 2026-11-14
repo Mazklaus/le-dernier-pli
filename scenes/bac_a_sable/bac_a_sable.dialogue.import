@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://bhgyglhjpv2k8"
+path="res://.godot/imported/bac_a_sable.dialogue-17e0e0b30b90de6debe0fb18739d1bee.tres"
+
+[deps]
+
+source_file="res://scenes/bac_a_sable/bac_a_sable.dialogue"
+dest_files=["res://.godot/imported/bac_a_sable.dialogue-17e0e0b30b90de6debe0fb18739d1bee.tres"]
+
+[params]
+
+defaults=true
