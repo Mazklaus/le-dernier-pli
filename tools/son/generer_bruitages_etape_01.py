@@ -98,6 +98,8 @@ def ui_maintien():  # appui maintenu 1,2 s des gestes irréversibles : la tensio
     creak=bp(nz(d),300,2000)*(np.sin(2*np.pi*np.cumsum(9+20*tt/d)/SR)>0.6)*(tt/d)*0.4
     return lp(tone+creak,3000)
 def ui_annuler(): return bp(nz(0.18),300,1500)*env(int(0.18*SR),0.01,0.15)*0.5
+def ui_refus():  # option grisée : un « non » très sourd, comme un doigt sur du bois couvert de drap
+    return lp(lp(nz(0.09),260),260)*dec(0.09,45)
 PACK={
  'sfx_pas_boue':(pas_boue,6),'sfx_pas_planche':(pas_planche,4),'sfx_pas_terre':(pas_terre,4),
  'sfx_echelle_monter':(echelle,3),'sfx_passage_escalier':(escalier,1),'sfx_passage_toile':(toile,2),
@@ -105,9 +107,9 @@ PACK={
  'sfx_sceau_abimer':(sceau_abimer,1),'sfx_sceau_rechauffer':(sceau_rechauffer,1),'sfx_sceau_ouvrir':(sceau_ouvrir,1),
  'sfx_pli_lire':(pli_lire,2),'sfx_carnet_fremir':(carnet,2),'sfx_pain_manger':(pain,1),
  'sfx_cendre_front':(cendre,1),'sfx_periscope_regarder':(periscope_regarder,1),
- 'sfx_ui_survol':(ui_survol,3),'sfx_ui_valider':(ui_valider,2),'sfx_ui_maintien':(ui_maintien,1),'sfx_ui_annuler':(ui_annuler,1),
+ 'sfx_ui_survol':(ui_survol,3),'sfx_ui_valider':(ui_valider,2),'sfx_ui_maintien':(ui_maintien,1),'sfx_ui_annuler':(ui_annuler,1),'sfx_ui_refus':(ui_refus,1),
 }
-PEAK={'sfx_ui_maintien':0.45,'sfx_cendre_front':0.5,'sfx_ui_annuler':0.45,'sfx_ui_survol':0.35,'sfx_ui_valider':0.5,'sfx_carnet_fremir':0.35,'sfx_pas_boue':0.6,'sfx_pas_planche':0.6,'sfx_pas_terre':0.5}
+PEAK={'sfx_ui_refus':0.4,'sfx_ui_maintien':0.45,'sfx_cendre_front':0.5,'sfx_ui_annuler':0.45,'sfx_ui_survol':0.35,'sfx_ui_valider':0.5,'sfx_carnet_fremir':0.35,'sfx_pas_boue':0.6,'sfx_pas_planche':0.6,'sfx_pas_terre':0.5}
 for base,(fn,n) in PACK.items():
     for i in range(1,n+1): save(f"{base}_{i:02d}", fn(), PEAK.get(base,0.75))
 print(sum(n for _,n in PACK.values()),"fichiers")

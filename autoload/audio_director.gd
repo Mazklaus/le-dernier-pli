@@ -180,9 +180,19 @@ func jouer_sfx(nom: String, bus: StringName = BUS_SFX) -> void:
 	if not ResourceLoader.exists(chemin):
 		return
 	var lecteur := _creer_lecteur(bus)
+	lecteur.set_meta(&"sfx", nom)
 	lecteur.stream = load(chemin)
 	lecteur.finished.connect(lecteur.queue_free)
 	lecteur.play()
+
+
+## Coupe net les bruitages en cours dont le nom commence par `base`
+## (ex. arreter_sfx("sfx_ui_maintien") quand l'appui est relâché avant 1,2 s).
+func arreter_sfx(base: String) -> void:
+	for enfant in get_children():
+		if enfant is AudioStreamPlayer and String(enfant.get_meta(&"sfx", "")).begins_with(base):
+			(enfant as AudioStreamPlayer).stop()
+			enfant.queue_free()
 
 
 ## Recalcule le mélange depuis l'état de GameState (la valeur seule ne suffit pas :
