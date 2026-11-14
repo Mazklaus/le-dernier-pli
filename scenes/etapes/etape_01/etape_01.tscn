@@ -61,6 +61,7 @@ size = Vector2(64, 1080)
 
 [node name="Etape01" type="Node2D"]
 script = ExtResource("1")
+limite_surface_y = 1150.0
 
 [node name="Surface" type="Node2D" parent="."]
 
@@ -557,6 +558,20 @@ arrivee = NodePath("../../../../Surface/Carrefour/porte_sape_sortie")
 
 [node name="Messager" parent="." instance=ExtResource("13")]
 position = Vector2(460, 2300)
+
+[node name="ReperesVoix" type="Node2D" parent="."]
+
+[node name="boyau_arriere" type="Marker2D" parent="ReperesVoix"]
+position = Vector2(1920, 800)
+
+[node name="carrefour" type="Marker2D" parent="ReperesVoix"]
+position = Vector2(5000, 800)
+
+[node name="periscope" type="Marker2D" parent="ReperesVoix"]
+position = Vector2(7780, 800)
+
+[node name="pied_echelle" type="Marker2D" parent="ReperesVoix"]
+position = Vector2(10144, 800)
 
 [editable path="Lieux/AbriSergent"]
 [editable path="Lieux/Cantine"]
