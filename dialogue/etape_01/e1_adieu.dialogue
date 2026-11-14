@@ -1,0 +1,28 @@
+# Étape 1, scène 4 : l'adieu. Gabarit GD n°3 (le camarade affamé).
+# Jacquot est la sentinelle de la sape de sortie : il vérifie la Cendre (verrou du Level Designer).
+# Partager : −1 Vivres, Nom retenu « Jacquot ». Promettre : Promesse « Promis à Jacquot ».
+
+~ refus_sans_cendre
+
+Jacquot: Pas sans la Cendre, Pied-Léger. Cassien me tuerait.
+Jacquot: Et toi aussi, après.
+
+=> END
+
+~ debut
+
+Jacquot: Alors c'est toi qui vas voir l'arrière.
+Jacquot: Moi j'ai raté la gamelle. La Ravaude dit que j'ai l'air trop gras.
+- [Partager ta ration] Prends la moitié.
+	do GameState.appliquer_couts({&"vivres": 1})
+	Jacquot: T'es bête. ... Bon. Merci.
+	do GameState.ajouter_marque(&"jacquot", &"nom_retenu", &"e1_adieu")
+- Je te rapporte du pain blanc. Promis.
+	Jacquot: T'as intérêt. Je compte.
+	do GameState.ajouter_marque(&"promis_a_jacquot", &"promesse", &"e1_adieu")
+- [Passer] Faut que j'y aille.
+	Jacquot: Ouais. Faut toujours.
+Jacquot: Tiens, écoute. C'est l'air du dépôt.
+Jacquot: Tu le siffleras là-bas.
+
+=> END

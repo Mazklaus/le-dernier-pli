@@ -1,0 +1,20 @@
+# Étape 1, scène 3b : la cantine. Gabarit GD n°2 (la gamelle) : +1 Vivres sans choix.
+# Écouter l'histoire d'Aurèle : Nom retenu « Il s'appelait Aurèle » (la pipe passe à Tobie).
+
+~ debut
+
+Ravaude: Te voilà, mon maigre. Tends ta gamelle.
+do GameState.appliquer_effets({&"vivres": 1})
+Ravaude: Mange chaud, ça te...
+Ravaude: ... C'est de la cire noire, ça, sur ta sacoche.
+- Pourquoi vous faites cette tête ?
+	Ravaude: Parce que j'en ai déjà vu une. Il y a vingt ans.
+	Ravaude: Un grand gars, Aurèle. Il riait fort, il fumait cette pipe-là.
+	Ravaude: Il est parti avec la cire noire. Il est jamais revenu.
+	Ravaude: Il y en a eu d'autres depuis. J'ai arrêté de retenir les noms.
+	Ravaude: Tiens. Prends-la. Elle a assez attendu dans ma poche.
+	do GameState.ajouter_marque(&"il_s_appelait_aurele", &"nom_retenu", &"e1_cantine")
+- [Manger sans rien dire]
+	Ravaude: C'est ça. Mange. Ça vaut mieux.
+
+=> END

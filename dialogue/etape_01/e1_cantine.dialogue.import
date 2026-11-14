@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://yt64dvqd5ujg"
+path="res://.godot/imported/e1_cantine.dialogue-a1634f559ccc1a87159a88f64c4485a1.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_01/e1_cantine.dialogue"
+dest_files=["res://.godot/imported/e1_cantine.dialogue-a1634f559ccc1a87159a88f64c4485a1.tres"]
+
+[params]
+
+defaults=true
