@@ -109,6 +109,7 @@ position = Vector2(520, 900)
 rencontre_id = &"e1_reveil"
 dialogue = ExtResource("2")
 libelle = "Parler à Jacquot"
+une_seule_fois = true
 metadata/note_level_design = "Jacquot réveille Tobie et indique l'abri du sergent"
 
 [node name="Visuel" type="ColorRect" parent="Rencontres/e1_reveil"]

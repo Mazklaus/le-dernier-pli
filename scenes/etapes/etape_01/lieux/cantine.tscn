@@ -165,6 +165,7 @@ position = Vector2(1300, 900)
 rencontre_id = &"e1_cantine"
 dialogue = ExtResource("4")
 libelle = "Parler à la Ravaude"
+une_seule_fois = true
 metadata/note_level_design = "Mère Ravaude derrière la marmite : gamelle, Aurèle"
 
 [node name="Visuel" type="ColorRect" parent="Rencontres/e1_cantine"]

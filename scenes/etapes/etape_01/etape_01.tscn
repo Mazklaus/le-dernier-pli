@@ -585,6 +585,7 @@ rencontre_id = &"e1_parapet"
 dialogue = ExtResource("13")
 libelle = "Monter"
 fin_etape = true
+une_seule_fois = true
 metadata/note_level_design = "Lamarre au pied de l'échelle : regarder le pli, monter, bilan"
 
 [node name="Visuel" type="ColorRect" parent="Surface/PiedEchelle/e1_parapet"]

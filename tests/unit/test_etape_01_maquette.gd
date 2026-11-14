@@ -142,3 +142,9 @@ func test_aucun_detail_ne_chevauche_un_autre_point_d_interaction() -> void:
 				continue
 			assert_true(absf(a.global_position.x - b.global_position.x) >= 200.0,
 				"%s trop près de %s" % [a.name, b.name])
+
+
+func test_les_rencontres_ne_se_rejouent_pas_sauf_le_guetteur() -> void:
+	for id in RENCONTRES:
+		var attendu := id != &"e1_guetteur"
+		assert_eq(_etape.trouver_declencheur(id).une_seule_fois, attendu, "une_seule_fois de %s" % id)
