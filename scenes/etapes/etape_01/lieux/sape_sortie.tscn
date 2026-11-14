@@ -101,7 +101,7 @@ offset_right = 1240.0
 offset_bottom = 522.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 40
-text = "5 Sape de sortie (verrou : la Cendre) · 1.5 écran(s)"
+text = "5 Sape de sortie (verrou : l'adieu de Jacquot) · 1.5 écran(s)"
 
 [node name="Rencontres" type="Node2D" parent="."]
 
@@ -196,7 +196,7 @@ text = "e1_adieu"
 [node name="VerrouCendre" type="StaticBody2D" parent="."]
 position = Vector2(1580.0, 675.0)
 script = ExtResource("5")
-rencontre = &"e1_cendre"
+rencontre = &"e1_adieu"
 
 [node name="Forme" type="CollisionShape2D" parent="VerrouCendre"]
 shape = SubResource("RectangleShape2D_6")
