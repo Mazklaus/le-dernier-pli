@@ -224,3 +224,19 @@ func test_bavure_forcee_deux_taches_differentes() -> void:
 	for icone: Node in bulle._options.find_children("*", "TextureRect", true, false):
 		if icone.name != "Tache":
 			assert_eq((icone as TextureRect).modulate, Color.WHITE, "le glyphe de la jauge reste net")
+
+
+func test_tache_reduite_sous_le_chiffre() -> void:
+	GameState.modifier_jauge(GameState.LUCIDITE, -5)
+	GameState.debug_forcer_cout_faux = true
+	var bulle: Node = add_child_autofree(SceneBulle.instantiate())
+	bulle.start(Dialogue, "couts")
+	await wait_process_frames(3)
+	bulle._replique.skip_typing()
+	await wait_process_frames(3)
+	GameState.debug_forcer_cout_faux = false
+	var tache: TextureRect = bulle._options.find_children("Tache", "TextureRect", true, false)[0]
+	var chiffre := tache.get_parent() as Label
+	var taille := float(chiffre.get_theme_font_size(&"font_size"))
+	assert_almost_eq(tache.size.y, roundf(taille * 0.7 / 3.0), 0.5, "un tiers de la hauteur du chiffre")
+	assert_gt(tache.position.y, chiffre.size.y / 2.0, "sous le milieu du chiffre")

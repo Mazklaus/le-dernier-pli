@@ -219,8 +219,9 @@ func _faire_baver(etiquette: Label) -> void:
 	_baves.append(etiquette)
 
 
-## Tache d'encre du DA sous un chiffre qui bave : une variante différente par chiffre,
-## centrée au tiers inférieur du chiffre et légèrement décalée vers le bas. Reste en effets
+## Tache d'encre du DA sous un chiffre qui bave, comme une goutte tombée de la plume :
+## un tiers de la hauteur du chiffre, centrée, son haut touchant le bas du chiffre (le
+## chiffre reste lisible, même faux). Une variante différente par chiffre. Reste en effets
 ## atténués (seul le tremblement se fige).
 func _ajouter_tache(etiquette: Label) -> TextureRect:
 	var tache := TextureRect.new()
@@ -231,12 +232,15 @@ func _ajouter_tache(etiquette: Label) -> TextureRect:
 	tache.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tache.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	tache.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	var cote := float(etiquette.get_theme_font_size(&"font_size"))
+	var taille_police := float(etiquette.get_theme_font_size(&"font_size"))
+	# Hauteur des chiffres ≈ 0,7 × la taille de police (Spectral).
+	var hauteur_chiffre := taille_police * 0.7
+	var cote := roundf(hauteur_chiffre / 3.0)
 	tache.size = Vector2(cote, cote)
 	etiquette.add_child(tache)
-	# Placée quand le chiffre a sa taille : centre au tiers inférieur, + 15 % vers le bas.
+	# Placée quand le chiffre a sa taille (texte centré verticalement dans le Label).
 	etiquette.resized.connect(func() -> void:
-		tache.position = Vector2(etiquette.size.x / 2.0 - cote / 2.0, etiquette.size.y * (2.0 / 3.0) - cote / 2.0 + cote * 0.15))
+		tache.position = Vector2(etiquette.size.x / 2.0 - cote / 2.0, etiquette.size.y / 2.0 + hauteur_chiffre / 2.0))
 	return tache
 
 
