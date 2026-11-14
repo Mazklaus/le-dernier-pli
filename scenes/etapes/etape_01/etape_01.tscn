@@ -556,7 +556,7 @@ arrivee = NodePath("../../../../Surface/Carrefour/porte_vieille_sape")
 arrivee = NodePath("../../../../Surface/Carrefour/porte_sape_sortie")
 
 [node name="Messager" parent="." instance=ExtResource("13")]
-position = Vector2(360, 2300)
+position = Vector2(460, 2300)
 
 [editable path="Lieux/AbriSergent"]
 [editable path="Lieux/Cantine"]

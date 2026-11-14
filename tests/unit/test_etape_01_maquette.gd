@@ -86,3 +86,18 @@ func test_les_verrous_s_ouvrent_apres_leur_rencontre() -> void:
 	assert_true(chicane.est_ouvert())
 	assert_false(cendre.est_ouvert())
 	GameState.reinitialiser()
+
+
+func test_le_reveil_est_a_portee_des_le_depart() -> void:
+	var depart: Marker2D = _etape.find_child("entree_couchette", true, false)
+	var reveil := _etape.trouver_declencheur(&"e1_reveil")
+	assert_true(absf(reveil.global_position.x - depart.global_position.x) < 96.0)
+
+
+func test_on_ne_quitte_pas_la_couchette_sans_le_reveil() -> void:
+	GameState.reinitialiser()
+	var sortie: Passage = _etape.find_child("SortieCouchette", true, false)
+	assert_false(sortie.est_disponible())
+	GameState.marquer_rencontre_vue(&"e1_reveil")
+	assert_true(sortie.est_disponible())
+	GameState.reinitialiser()
