@@ -39,3 +39,22 @@ static func creer_plan(chemin_base: String, vitesse: float, z: int) -> Parallax2
 ## Largeur totale d'un plan construit par creer_plan.
 static func largeur(plan: Parallax2D) -> float:
 	return float(plan.get_meta(&"largeur", 0.0))
+
+
+## Masque les gris de la maquette quand le décor est posé : fonds des sections (Surface/*/Fond),
+## sol et murs (leur « Visuel »). Le plan 3 les dessine.
+func masquer_fonds_gris() -> void:
+	var surface := get_parent().get_node_or_null("Surface") if get_parent() else null
+	if surface == null:
+		return
+	for section in surface.get_children():
+		var fond := section.get_node_or_null("Fond") as CanvasItem
+		if fond != null:
+			fond.visible = false
+		# Sol et murs : enfants directs de Surface (étape 2) ou des sections (étape 1).
+		for corps: Node in [section] + section.get_children():
+			var nom := String(corps.name)
+			if corps is StaticBody2D and (nom == "Sol" or nom.begins_with("Mur")):
+				var visuel := corps.get_node_or_null("Visuel") as CanvasItem
+				if visuel != null:
+					visuel.visible = false

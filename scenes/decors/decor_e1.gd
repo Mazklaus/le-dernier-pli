@@ -53,7 +53,7 @@ func _ready() -> void:
 	_creer_cendre()
 	_creer_voiles()
 	if masquer_fonds_maquette:
-		_masquer_fonds()
+		masquer_fonds_gris()
 	_habiller_chicane()
 	_habiller_echelle()
 
@@ -124,22 +124,6 @@ func _maj_voiles() -> void:
 		voile.modulate.a = move_toward(voile.modulate.a, cible, get_process_delta_time() / FONDU_VOILE)
 		if voile.modulate.a <= 0.0:
 			voile.visible = false
-
-
-func _masquer_fonds() -> void:
-	var surface := get_parent().get_node_or_null("Surface") if get_parent() else null
-	if surface == null:
-		return
-	for section in surface.get_children():
-		var fond := section.get_node_or_null("Fond") as CanvasItem
-		if fond != null:
-			fond.visible = false
-		# Sol et murs gris de la maquette : le plan 3 les dessine (et s'assombrit avec le jour).
-		for corps in section.get_children():
-			if corps is StaticBody2D and (String(corps.name) == "Sol" or String(corps.name).begins_with("Mur")):
-				var visuel := corps.get_node_or_null("Visuel") as CanvasItem
-				if visuel != null:
-					visuel.visible = false
 
 
 ## La Chicane (Verrou levé après e1_ordre) prend le dessin du DA à la place du rectangle gris ;

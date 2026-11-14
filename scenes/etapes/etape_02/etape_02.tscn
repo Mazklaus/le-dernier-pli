@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_02/etape_02.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_02/lieux/boyau_detour.tscn" id="2"]
@@ -12,6 +12,7 @@
 [ext_resource type="Resource" path="res://dialogue/etape_02/e2_sacoche.dialogue" id="10"]
 [ext_resource type="Resource" path="res://dialogue/etape_02/e2_cantique.dialogue" id="11"]
 [ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="12"]
+[ext_resource type="Script" path="res://scenes/decors/decor_e2.gd" id="decor_e2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(64, 1300)
@@ -36,7 +37,12 @@ size = Vector2(5300, 900)
 
 [node name="Etape02" type="Node2D"]
 script = ExtResource("1")
+limite_surface_y = 1350.0
 numero_etape = 2
+bornes_camera_surface = Vector2(0, 16320)
+
+[node name="Decors" type="Node2D" parent="."]
+script = ExtResource("decor_e2")
 
 [node name="Surface" type="Node2D" parent="."]
 
