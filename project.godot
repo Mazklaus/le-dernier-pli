@@ -81,7 +81,7 @@ debug_menu={
 
 [internationalization]
 
-locale/translations_pot_files=PackedStringArray("res://dialogue/etape_01/exemple.dialogue")
+locale/translations_pot_files=PackedStringArray("res://dialogue/etape_01/exemple.dialogue", "res://dialogue/etape_01/e1_guetteur.dialogue", "res://dialogue/etape_01/e1_sergent.dialogue", "res://dialogue/etape_01/e1_sape.dialogue", "res://dialogue/etape_01/e1_jacquot_sortie.dialogue", "res://dialogue/etape_01/e1_parapet.dialogue", "res://dialogue/etape_01/e1_cassien.dialogue", "res://dialogue/etape_01/e1_reveil.dialogue", "res://dialogue/etape_01/e1_ravaude.dialogue", "res://dialogue/etape_01/zz_test.dialogue")
 
 [rendering]
 

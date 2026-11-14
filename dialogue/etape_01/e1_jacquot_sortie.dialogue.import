@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://cnygsogvyqnl5"
+path="res://.godot/imported/e1_jacquot_sortie.dialogue-e61d396f7bc98595b4271c469e3a6720.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_01/e1_jacquot_sortie.dialogue"
+dest_files=["res://.godot/imported/e1_jacquot_sortie.dialogue-e61d396f7bc98595b4271c469e3a6720.tres"]
+
+[params]
+
+defaults=true

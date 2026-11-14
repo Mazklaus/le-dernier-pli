@@ -1,0 +1,24 @@
+# Étape 1, scène 2 : l'ordre. Gabarit GD n°1 (l'officier remet le pli).
+# Marques possibles (une seule) : Relique « Obéi sans question » ou Nom retenu « Hugues Lamarre ».
+
+~ debut
+
+Lamarre: Assieds-toi, Pied-Léger. Non, reste debout. C'est pas long.
+Lamarre: Un pli pour l'arrière. Cire noire. Tu sais ce que ça veut dire ?
+- Que c'est important.
+	Lamarre: Que c'est pas pour toi. Ni pour moi.
+- Que je pars longtemps.
+	Lamarre: Tu pars. Le reste, on verra.
+Lamarre: Tu le portes contre toi. Tu l'ouvres pas. Tu le perds pas.
+- [Le prendre sans un mot]
+	Lamarre: Bien. T'apprends vite.
+	do GameState.ajouter_marque(&"obei_sans_question", &"relique", &"e1_sergent")
+- C'est pour qui ?
+	Lamarre: Pour l'arrière. Tu demandes à chaque poste.
+	Lamarre: ... Encore un.
+	Lamarre: Oublie ça. Je m'appelle Hugues, au fait. Personne s'en sert.
+	do GameState.ajouter_marque(&"hugues_lamarre", &"nom_retenu", &"e1_sergent")
+Lamarre: Va te faire cendrer chez Cassien.
+Lamarre: Et passe chez la Ravaude, t'auras faim.
+
+=> END

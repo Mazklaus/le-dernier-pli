@@ -1,0 +1,26 @@
+# Étape 1, scène 3a : la Cendre. Gabarit GD n°5 (l'aumônier). Rencontre obligatoire.
+# Prier : +1 Lucidité. Accepter la médaille : Relique « Médaille de cendre ».
+
+~ debut
+
+Cassien: Approche, Tobie. Baisse la tête.
+Cassien: ... C'est la cire noire.
+- [Prier] Je suis prêt, mon père.
+	Cassien: Que la Cendre te garde, et que le Ciel t'entende.
+	Cassien: Même s'il n'entend plus personne.
+	do GameState.modifier_jauge(&"lucidite", 1)
+	Cassien: Prends ma médaille. Elle a plus besoin de moi.
+	- La prendre.
+		do GameState.ajouter_marque(&"medaille_de_cendre", &"relique", &"e1_cassien")
+		Cassien: Garde-la contre ta peau. Elle tient chaud.
+	- Gardez-la, mon père.
+		Cassien: Comme tu veux. Tu as toujours été plus têtu que tes lettres.
+- Qu'est-ce qu'il y a dedans ?
+	Cassien: ...
+	Cassien: Pardonne-nous.
+- [Refuser la cendre]
+	Cassien: Je te cendre quand même. C'est le règlement.
+	Cassien: Pardon.
+Cassien: Va. Et lis tes lettres, en chemin. N'oublie pas comment on fait.
+
+=> END

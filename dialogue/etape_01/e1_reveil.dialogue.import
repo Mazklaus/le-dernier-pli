@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://bwsebpbb0k3te"
+path="res://.godot/imported/e1_reveil.dialogue-fc6ce66953fe196de908d1ec2bb98ab3.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_01/e1_reveil.dialogue"
+dest_files=["res://.godot/imported/e1_reveil.dialogue-fc6ce66953fe196de908d1ec2bb98ab3.tres"]
+
+[params]
+
+defaults=true

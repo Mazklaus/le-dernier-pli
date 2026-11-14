@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://ci1hcjyoara04"
+path="res://.godot/imported/e1_sergent.dialogue-e36e2461b657669009977c635dfb737d.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_01/e1_sergent.dialogue"
+dest_files=["res://.godot/imported/e1_sergent.dialogue-e36e2461b657669009977c635dfb737d.tres"]
+
+[params]
+
+defaults=true
