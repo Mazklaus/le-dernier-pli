@@ -13,6 +13,10 @@ signal marque_gagnee(marque: Dictionary)
 signal promesse_resolue(id: StringName, etat: StringName)
 signal sceau_change(drapeau: StringName)  # &"abime", &"rechauffe", &"ouvert"
 signal etape_changee(etape: int)
+## Émis après depuis_dictionnaire() (menu debug, autosave) : les abonnés relisent tout l'état.
+signal etat_charge()
+## Entrée/sortie de zone sombre, pour l'audio (couche « autre » +20 % dans le noir) et le rendu.
+signal zone_sombre_changee(dans_zone: bool, lanterne: bool)
 
 const VIVRES: StringName = &"vivres"
 const HUILE: StringName = &"huile"
@@ -29,8 +33,10 @@ const LUCIDITE_MAX_NORMAL := 10
 const LUCIDITE_MAX_PERDU := 3
 const DEPART := {VIVRES: 6, HUILE: 4, LUCIDITE: 8}
 
-## Probabilité qu'un coût affiché soit faux de 1 au palier Égaré (non fixée par la spec : à valider).
-const PROBA_COUT_FAUX := 0.33
+## Spec v0.2 révisée, palier Égaré : tirage par rencontre (mensonge + leurre / leurre seul / rien).
+const PROBA_MENSONGE := 0.5
+const PROBA_LEURRE_SEUL := 0.25
+const PLI_NB_LIGNES := 6
 
 var vivres: int
 var huile: int
@@ -47,6 +53,10 @@ var etape: int
 var rencontres_marquees: Array[StringName] = []
 ## Dernière étape où une ligne du pli a été lue (une ligne par étape).
 var etape_derniere_lecture: int
+## Nombre de lignes du pli déjà lues en transparence (lues dans l'ordre, 0 à 6).
+var pli_lignes_lues: int
+## Objets portés (ex. le pain promis à Jacquot, l'objet d'ombre de la sape).
+var objets: Array[StringName] = []
 
 
 func _init() -> void:
@@ -67,6 +77,8 @@ func reinitialiser() -> void:
 	etape = 1
 	rencontres_marquees = []
 	etape_derniere_lecture = 0
+	pli_lignes_lues = 0
+	objets = []
 
 
 # --- Jauges --------------------------------------------------------------------
@@ -172,20 +184,50 @@ func appliquer_effets(effets: Dictionary) -> void:
 		modifier_jauge(StringName(nom), int(effets[nom]))
 
 
-## Coûts tels que l'interface doit les afficher. Au palier Égaré, chaque coût peut être
-## faux de 1 (jamais en dessous de 0). Le coût réellement payé reste celui de `couts`.
-func couts_affiches(couts: Dictionary, rng: RandomNumberGenerator = null) -> Dictionary:
-	var affiches := couts.duplicate()
-	if palier != EGARE:
-		return affiches
+## Coûts tels que l'interface doit les afficher pour TOUTES les options d'une rencontre
+## (spec v0.2 révisée). Reçoit la liste des dictionnaires de coûts, dans l'ordre des options,
+## et renvoie [{"couts": Dictionary, "cout_douteux": bool, "cout_faux": bool}, ...].
+## Au palier Égaré, un tirage par rencontre :
+##   50 % : une option affiche un coût faux de ±1 (jamais sous 0) + une autre option (leurre,
+##          coût vrai) ; les deux portent cout_douteux ;
+##   25 % : un leurre seul, sans mensonge ;
+##   25 % : rien.
+## Il faut au moins deux options avec un coût : une rencontre à un seul coût ne ment jamais.
+## `cout_faux` sert au debug et aux tests : l'UI n'affiche que `cout_douteux`.
+## Le coût réellement prélevé reste celui passé à appliquer_couts() : l'interface trompe, elle ne vole pas.
+func couts_affiches_rencontre(couts_options: Array, rng: RandomNumberGenerator = null) -> Array[Dictionary]:
+	var resultat: Array[Dictionary] = []
+	var candidates: Array[int] = []
+	for i in couts_options.size():
+		var couts: Dictionary = couts_options[i]
+		resultat.append({"couts": couts.duplicate(), "cout_douteux": false, "cout_faux": false})
+		if not couts.is_empty():
+			candidates.append(i)
+	if palier != EGARE or candidates.size() < 2:
+		return resultat
 	if rng == null:
 		rng = RandomNumberGenerator.new()
 		rng.randomize()
-	for nom in affiches:
-		if rng.randf() < PROBA_COUT_FAUX:
-			var decalage := 1 if rng.randf() < 0.5 else -1
-			affiches[nom] = maxi(0, int(affiches[nom]) + decalage)
-	return affiches
+	var tirage := rng.randf()
+	if tirage >= PROBA_MENSONGE + PROBA_LEURRE_SEUL:
+		return resultat
+	var a: int = candidates.pop_at(rng.randi_range(0, candidates.size() - 1))
+	if tirage >= PROBA_MENSONGE:
+		resultat[a]["cout_douteux"] = true
+		return resultat
+	var b: int = candidates[rng.randi_range(0, candidates.size() - 1)]
+	var affiches: Dictionary = resultat[a]["couts"]
+	var cles := affiches.keys()
+	var cle: Variant = cles[rng.randi_range(0, cles.size() - 1)]
+	var vrai := int(affiches[cle])
+	var faux := vrai + (1 if rng.randf() < 0.5 else -1)
+	if faux < 0:
+		faux = vrai + 1
+	affiches[cle] = faux
+	resultat[a]["cout_douteux"] = true
+	resultat[a]["cout_faux"] = true
+	resultat[b]["cout_douteux"] = true
+	return resultat
 
 
 ## Une option est disponible si toutes ses conditions sont remplies. Les coûts ne bloquent
@@ -201,6 +243,8 @@ func condition_remplie(condition: Dictionary) -> bool:
 	if condition.has("sceau") and not _sceau_est(StringName(condition["sceau"])):
 		return false
 	if condition.has("palier") and palier != StringName(condition["palier"]):
+		return false
+	if condition.has("objet") and not possede_objet(StringName(condition["objet"])):
 		return false
 	return true
 
@@ -266,9 +310,19 @@ func abimer_sceau() -> void:
 		sceau_change.emit(&"abime")
 
 
+## Spec v0.2 : les gestes volontaires sur le Sceau (réchauffer, lire, ouvrir) sont
+## désactivés à l'étape 1. Abîmer reste possible : c'est un accident (chute, fouille).
+func gestes_sceau_permis() -> bool:
+	return etape >= 2
+
+
 ## Réchauffer la cire à la lanterne : 1 Huile. Implique abîmé.
+func peut_rechauffer_sceau() -> bool:
+	return gestes_sceau_permis() and not sceau_rechauffe and not sceau_ouvert and huile >= 1
+
+
 func rechauffer_sceau() -> bool:
-	if sceau_rechauffe or sceau_ouvert or huile < 1:
+	if not peut_rechauffer_sceau():
 		return false
 	modifier_jauge(HUILE, -1)
 	abimer_sceau()
@@ -277,23 +331,61 @@ func rechauffer_sceau() -> bool:
 	return true
 
 
-## Lire une ligne du pli en transparence : sceau réchauffé, 1 Huile, une fois par étape.
+## Lire en transparence la prochaine ligne non lue du pli : sceau réchauffé, 1 Huile,
+## une ligne par étape au plus, six lignes en tout.
 func peut_lire_ligne() -> bool:
-	return sceau_rechauffe and not sceau_ouvert and huile >= 1 and etape_derniere_lecture != etape
+	return gestes_sceau_permis() and sceau_rechauffe and not sceau_ouvert and huile >= 1 \
+		and etape_derniere_lecture != etape and pli_lignes_lues < PLI_NB_LIGNES
 
 
-func lire_ligne_pli() -> bool:
+## Renvoie l'index (0 à 5) de la ligne lue, ou -1 si la lecture est impossible.
+func lire_ligne_pli() -> int:
 	if not peut_lire_ligne():
-		return false
+		return -1
 	modifier_jauge(HUILE, -1)
 	etape_derniere_lecture = etape
+	pli_lignes_lues += 1
+	return pli_lignes_lues - 1
+
+
+func peut_ouvrir_sceau() -> bool:
+	return gestes_sceau_permis() and not sceau_ouvert
+
+
+func ouvrir_sceau() -> bool:
+	if not peut_ouvrir_sceau():
+		return false
+	sceau_ouvert = true
+	sceau_change.emit(&"ouvert")
 	return true
 
 
-func ouvrir_sceau() -> void:
-	if not sceau_ouvert:
-		sceau_ouvert = true
-		sceau_change.emit(&"ouvert")
+# --- Objets --------------------------------------------------------------------------
+
+func ajouter_objet(id: StringName) -> void:
+	if id not in objets:
+		objets.append(id)
+
+
+func possede_objet(id: StringName) -> bool:
+	return id in objets
+
+
+func retirer_objet(id: StringName) -> bool:
+	if id not in objets:
+		return false
+	objets.erase(id)
+	return true
+
+
+## Manger un objet promis à quelqu'un (ex. le pain de Jacquot) : gain de Vivres,
+## et la Promesse liée passe à trahie si elle était encore ouverte.
+func manger_objet_promis(objet: StringName, gain_vivres: int, promesse: StringName) -> bool:
+	if not retirer_objet(objet):
+		return false
+	modifier_jauge(VIVRES, gain_vivres)
+	resoudre_promesse(promesse, false)
+	return true
 
 
 # --- Étapes et zones sombres --------------------------------------------------------
@@ -319,14 +411,32 @@ func entrer_zone_sombre(veut_allumer: bool) -> bool:
 	else:
 		lanterne_allumee = false
 		modifier_jauge(LUCIDITE, -1)
+	zone_sombre_changee.emit(true, lanterne_allumee)
 	return lanterne_allumee
 
 
 func sortir_zone_sombre() -> void:
 	lanterne_allumee = false
+	zone_sombre_changee.emit(false, false)
 
 
 # --- Fin ------------------------------------------------------------------------------
+
+## Spec v0.2 : les Promesses encore ouvertes sont résolues juste avant le calcul.
+## `resolutions` associe un id de Promesse à true (tenue) ou false (trahie), selon ce que
+## la scène finale décide ; une Promesse absente de `resolutions` reste ouverte et compte 0.
+func resoudre_promesses_avant_fin(resolutions: Dictionary) -> void:
+	for id in resolutions:
+		resoudre_promesse(StringName(id), bool(resolutions[id]))
+
+
+func promesses_ouvertes() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	for m in marques:
+		if m["famille"] == Marques.PROMESSE and m["etat"] == Marques.OUVERTE:
+			ids.append(m["id"])
+	return ids
+
 
 func fin() -> StringName:
 	return CalculFin.calculer(marques, sceau_ouvert)
@@ -349,6 +459,8 @@ func vers_dictionnaire() -> Dictionary:
 		"etape": etape,
 		"rencontres_marquees": rencontres_marquees.duplicate(),
 		"etape_derniere_lecture": etape_derniere_lecture,
+		"pli_lignes_lues": pli_lignes_lues,
+		"objets": objets.duplicate(),
 	}
 
 
@@ -369,3 +481,7 @@ func depuis_dictionnaire(d: Dictionary) -> void:
 	for r in d.get("rencontres_marquees", []):
 		rencontres_marquees.append(StringName(r))
 	etape_derniere_lecture = int(d.get("etape_derniere_lecture", 0))
+	pli_lignes_lues = clampi(int(d.get("pli_lignes_lues", 0)), 0, PLI_NB_LIGNES)
+	for o in d.get("objets", []):
+		objets.append(StringName(o))
+	etat_charge.emit()
