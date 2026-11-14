@@ -1,0 +1,102 @@
+# Étape 1 : détails à examiner, sans coût ni marque, 15 à 30 s chacun.
+# Un titre par point d'examen du plan du Level Designer.
+# Règles (Game Director) : chaque détail humanise quelqu'un ; une seule fausse note
+# (carrefour_cloches) ; rien sur le secret. La lettre de la couchette prépare une perte
+# qu'on retrouvera plus loin dans le voyage.
+
+~ couchette_lettre
+
+Tobie: Ma lettre. J'y ajoute une ligne par semaine, depuis l'hiver dernier.
+Tobie: « Cher l'arrière. Ici il pleut. Jacquot va bien. Moi aussi, à peu près. »
+Tobie: Je n'ai personne à qui l'envoyer. Cassien dit qu'une lettre, ça s'entraîne.
+
+=> END
+
+~ couchette_abecedaire
+
+Tobie: L'abécédaire de Cassien, au charbon sur une planche.
+Tobie: C comme Cendre. J comme Jacquot. P comme Pli.
+Tobie: À côté du P, il a écrit en petit : « et comme Patience. Tu y arriveras. »
+
+=> END
+
+~ boyau_chuchoteurs
+
+Tobie: Pons et Billard parlent de leur permission, à voix basse, comme d'un trésor.
+Tobie: Pons veut manger une pomme entière. Billard veut dormir dans un lit qui ne bouge pas.
+Tobie: Ça fait trois ans qu'ils en parlent. Ils ont l'air heureux quand même.
+
+=> END
+
+~ boyau_ecriteau
+
+Tobie: L'écriteau de la relève : « Prochaine relève : » et une date.
+Tobie: La date a été repeinte tant de fois que le bois est plus épais à cet endroit.
+Tobie: Quelqu'un a ajouté au couteau, dessous : « Patience, les gars. »
+
+=> END
+
+~ abri_carte
+
+Tobie: La carte du secteur. Elle est usée aux plis, comme une lettre trop relue.
+Tobie: Le sergent a dessiné une petite croix à chaque endroit où il a perdu un homme.
+Tobie: Il a écrit leurs prénoms à côté. Son écriture tremble moins que sa voix.
+
+=> END
+
+~ abri_gamelle
+
+Tobie: La gamelle du sergent. Un prénom gravé sur le couvercle : « Adèle ».
+Tobie: Il ne parle jamais d'elle. Mais la gamelle est la seule chose propre de l'abri.
+
+=> END
+
+~ carrefour_croix
+
+Tobie: La croix du carrefour. Des noms gravés au couteau, serrés jusqu'en bas.
+Tobie: Marceau, qui chantait faux à la messe. Il y a un caillou neuf sous son nom.
+Tobie: Jacquot en pose un chaque matin. Il dit que c'est pour que Marceau ne s'ennuie pas.
+
+=> END
+
+~ carrefour_cloches
+
+Soldat: Une, deux, trois... sept. Sept cloches. Aucune ne sonne. Comme hier.
+Soldat: ... Attends. T'as entendu ? Celle du milieu.
+Tobie: Je n'ai rien entendu. Les cloches n'ont même pas de battant.
+Soldat: Une, deux, trois... Sept. Aucune ne sonne.
+
+=> END
+
+~ cantine_tableau
+
+Tobie: Le tableau des rations. Chaque semaine, la Ravaude raye un chiffre et en écrit un plus petit.
+Tobie: Dans le coin, elle a dessiné un bonhomme qui mange. Il sourit. Il est très gros.
+
+=> END
+
+~ chapelle_ex_voto
+
+Tobie: Les ex-voto, cousus sur les sacs de la chapelle. Des prières sur des bouts de toile.
+Tobie: Un vieux, presque effacé : « Pour qu'Aurèle revienne. Il me doit une pipe. »
+Tobie: L'écriture ressemble à celle du tableau de la cantine.
+
+=> END
+
+~ sortie_sifflet
+
+Tobie: Le sifflet de Jacquot, pendu à l'étai par une ficelle.
+Tobie: Il le garde pour la garde de nuit. Il ne s'en est jamais servi : il siffle mieux sans.
+
+=> END
+
+~ echelle_barreaux
+
+Tobie: Des initiales gravées sur les barreaux. Chacun grave les siennes avant de monter.
+Tobie: Il y en a tant qu'on sent les lettres sous les doigts en grimpant.
+- [Graver tes initiales]
+	Tobie: T. Petit, de travers. À côté de celles de Jacquot, de l'an dernier.
+- [Ne rien graver]
+	Tobie: Je les graverai en revenant.
+
+=> END
