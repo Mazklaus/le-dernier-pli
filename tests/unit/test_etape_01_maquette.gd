@@ -101,3 +101,39 @@ func test_on_ne_quitte_pas_la_couchette_sans_le_reveil() -> void:
 	GameState.marquer_rencontre_vue(&"e1_reveil")
 	assert_true(sortie.est_disponible())
 	GameState.reinitialiser()
+
+
+const DETAILS: Array[String] = [
+	"couchette_lettre", "couchette_abecedaire", "boyau_chuchoteurs", "boyau_ecriteau",
+	"abri_carte", "abri_gamelle", "carrefour_croix", "carrefour_cloches",
+	"cantine_tableau", "chapelle_ex_voto", "sortie_sifflet", "echelle_barreaux",
+]
+
+
+func test_chaque_detail_est_un_declencheur_rejouable() -> void:
+	for nom in DETAILS:
+		var detail := _etape.trouver_declencheur(StringName("e1_detail_%s" % nom))
+		assert_not_null(detail, "détail manquant : %s" % nom)
+		if detail != null:
+			assert_eq(detail.titre, nom)
+			assert_eq(detail.dialogue.resource_path, "res://dialogue/etape_01/e1_details.dialogue")
+			assert_has(detail.dialogue.get_cues(), nom, "titre absent du dialogue : %s" % nom)
+			assert_false(detail.une_seule_fois, "%s doit rester rejouable" % nom)
+			assert_false(detail.fin_etape)
+			assert_eq(detail.rencontre_requise, &"")
+			assert_true(detail.libelle != "" and detail.libelle.length() <= 24, "libellé de %s" % nom)
+
+
+func test_aucun_detail_ne_chevauche_un_autre_point_d_interaction() -> void:
+	var points: Array[Node2D] = []
+	for n in _etape.find_children("*", "Area2D", true, false):
+		if n is DeclencheurDialogue or n is Passage:
+			points.append(n)
+	for a in points:
+		if not String(a.name).begins_with("e1_detail_"):
+			continue
+		for b in points:
+			if a == b or absf(a.global_position.y - b.global_position.y) > 400.0:
+				continue
+			assert_true(absf(a.global_position.x - b.global_position.x) >= 200.0,
+				"%s trop près de %s" % [a.name, b.name])

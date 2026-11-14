@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="2"]
-[ext_resource type="Resource" path="res://dialogue/etape_01/e1_ordre.dialogue" id="3"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_details.dialogue" id="3"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_ordre.dialogue" id="4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
@@ -101,6 +102,8 @@ text = "3 Abri du sergent (sous terre) · 1.5 écran(s)"
 
 [node name="Points" type="Node2D" parent="."]
 
+[node name="Details" type="Node2D" parent="."]
+
 [node name="PassageAbri" type="Area2D" parent="Passages" groups=["passages"]]
 position = Vector2(200, 750.0)
 collision_layer = 4
@@ -132,10 +135,60 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> boyau_arriere"
 
+[node name="e1_detail_abri_carte" parent="Details" instance=ExtResource("2")]
+position = Vector2(1000, 900)
+rencontre_id = &"e1_detail_abri_carte"
+dialogue = ExtResource("3")
+titre = "abri_carte"
+libelle = "Regarder la carte"
+metadata/note_level_design = "Carte du secteur usée aux plis"
+
+[node name="Visuel" type="ColorRect" parent="Details/e1_detail_abri_carte"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Details/e1_detail_abri_carte"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "abri_carte"
+
+[node name="e1_detail_abri_gamelle" parent="Details" instance=ExtResource("2")]
+position = Vector2(1700, 900)
+rencontre_id = &"e1_detail_abri_gamelle"
+dialogue = ExtResource("3")
+titre = "abri_gamelle"
+libelle = "Regarder la gamelle"
+metadata/note_level_design = "Gamelle du sergent gravée d'un prénom de femme"
+
+[node name="Visuel" type="ColorRect" parent="Details/e1_detail_abri_gamelle"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Details/e1_detail_abri_gamelle"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "abri_gamelle"
+
 [node name="e1_ordre" parent="Rencontres" instance=ExtResource("2")]
 position = Vector2(2450, 900)
 rencontre_id = &"e1_ordre"
-dialogue = ExtResource("3")
+dialogue = ExtResource("4")
 libelle = "Parler au sergent"
 metadata/note_level_design = "Lamarre assis devant la bougie, au fond : le pli, la lampe, une ration"
 

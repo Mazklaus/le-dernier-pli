@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="2"]
-[ext_resource type="Resource" path="res://dialogue/etape_01/e1_adieu.dialogue" id="3"]
-[ext_resource type="Script" path="res://scenes/interactions/verrou/verrou.gd" id="4"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_details.dialogue" id="3"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_adieu.dialogue" id="4"]
+[ext_resource type="Script" path="res://scenes/interactions/verrou/verrou.gd" id="5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
@@ -108,6 +109,8 @@ text = "5 Sape de sortie (verrou : la Cendre) · 1.5 écran(s)"
 
 [node name="Points" type="Node2D" parent="."]
 
+[node name="Details" type="Node2D" parent="."]
+
 [node name="PassageSapeSortie" type="Area2D" parent="Passages" groups=["passages"]]
 position = Vector2(200, 750.0)
 collision_layer = 4
@@ -139,10 +142,35 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> carrefour"
 
+[node name="e1_detail_sortie_sifflet" parent="Details" instance=ExtResource("2")]
+position = Vector2(900, 900)
+rencontre_id = &"e1_detail_sortie_sifflet"
+dialogue = ExtResource("3")
+titre = "sortie_sifflet"
+libelle = "Regarder le sifflet"
+metadata/note_level_design = "Sifflet de Jacquot accroché à l'étai"
+
+[node name="Visuel" type="ColorRect" parent="Details/e1_detail_sortie_sifflet"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Details/e1_detail_sortie_sifflet"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "sortie_sifflet"
+
 [node name="e1_adieu" parent="Rencontres" instance=ExtResource("2")]
 position = Vector2(1400, 900)
 rencontre_id = &"e1_adieu"
-dialogue = ExtResource("3")
+dialogue = ExtResource("4")
 libelle = "Parler à Jacquot"
 rencontre_requise = &"e1_cendre"
 titre_si_verrouille = "refus_sans_cendre"
@@ -167,7 +195,7 @@ text = "e1_adieu"
 
 [node name="VerrouCendre" type="StaticBody2D" parent="."]
 position = Vector2(1580.0, 675.0)
-script = ExtResource("4")
+script = ExtResource("5")
 rencontre = &"e1_cendre"
 
 [node name="Forme" type="CollisionShape2D" parent="VerrouCendre"]
