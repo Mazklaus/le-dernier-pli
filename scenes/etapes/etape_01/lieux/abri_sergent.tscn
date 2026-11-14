@@ -190,6 +190,7 @@ position = Vector2(2450, 900)
 rencontre_id = &"e1_ordre"
 dialogue = ExtResource("4")
 libelle = "Parler au sergent"
+une_seule_fois = true
 metadata/note_level_design = "Lamarre assis devant la bougie, au fond : le pli, la lampe, une ration"
 
 [node name="Visuel" type="ColorRect" parent="Rencontres/e1_ordre"]

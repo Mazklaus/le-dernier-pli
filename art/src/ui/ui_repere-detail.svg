@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+  <!-- pastille de papier déchiré : bord en dents irrégulières, contour 1,5 -->
+  <path d="M6 9 L10 5 L14 7 L19 3 L23 6 L28 4 L31 8 L36 10 L34 15 L37 20 L34 25 L36 30 L31 33 L27 37 L22 34 L17 37 L13 33 L7 34 L6 29 L3 24 L6 19 L3 14 Z" fill="#E8E5DA" stroke="#15130F" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- astérisque gravé à la plume, 24 px, encre pleine ; branches légèrement inégales -->
+  <g stroke="#15130F" stroke-linecap="round">
+    <path d="M20 8.5 L20.4 31" stroke-width="3.2"/>
+    <path d="M10 14.5 L30.2 25.6" stroke-width="2.8"/>
+    <path d="M30 14 L10.4 25.8" stroke-width="2.8"/>
+  </g>
+  <circle cx="20.2" cy="20" r="2.4" fill="#15130F"/>
+</svg>

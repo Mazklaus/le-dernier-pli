@@ -297,6 +297,7 @@ position = Vector2(1940, 780)
 rencontre_id = &"e2_poste"
 dialogue = ExtResource("6")
 libelle = "Parler au caporal"
+une_seule_fois = true
 metadata/note_level_design = "Brisse garde la chicane : sceau, ration, réchauffer la cire, témoin"
 
 [node name="Visuel" type="ColorRect" parent="Surface/Poste/e2_poste"]
@@ -349,6 +350,7 @@ position = Vector2(200, 900)
 rencontre_id = &"e2_barbeles"
 dialogue = ExtResource("8")
 libelle = "Avancer dans la brume"
+une_seule_fois = true
 metadata/note_level_design = "Lanterne ou noir ; dans le noir, ramper ou foncer (une fois pour les deux ceintures)"
 
 [node name="Visuel" type="ColorRect" parent="Surface/Brouillard/e2_barbeles"]
@@ -448,6 +450,7 @@ position = Vector2(3456, 900)
 rencontre_id = &"e2_mort"
 dialogue = ExtResource("9")
 libelle = "Regarder le mort"
+une_seule_fois = true
 metadata/note_level_design = "Le mort dans les fils, le bras tendu : doigt, poches ou nom"
 
 [node name="Visuel" type="ColorRect" parent="Surface/Brouillard/e2_mort"]
@@ -635,6 +638,7 @@ rencontre_id = &"e2_cantique"
 dialogue = ExtResource("11")
 libelle = "Écouter le vent"
 fin_etape = true
+une_seule_fois = true
 metadata/note_level_design = "Le cantique lointain ; lecture de la ligne 1 si sceau réchauffé ; la marche"
 
 [node name="Visuel" type="ColorRect" parent="Surface/Souche/e2_cantique"]
