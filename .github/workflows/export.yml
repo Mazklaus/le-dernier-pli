@@ -1,0 +1,221 @@
+# Export Godot 4 : Web (sans threads), Windows, Linux.
+# Publie le build web sur GitHub Pages (branche main) et, si le secret
+# BUTLER_API_KEY existe, sur itch.io via butler.
+name: Export
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  # A aligner sur la version utilisée par le squelette du Lead Prog.
+  GODOT_VERSION: "4.7.2"
+  GODOT_RELEASE: "stable"
+  # Renseigner quand le projet itch.io existe : "utilisateur/jeu"
+  ITCH_TARGET: ""
+  # Budget du build web (étape 1) fixé par le Lead Prog.
+  WEB_BUDGET_MB: 60
+  WEB_WARN_MB: 50
+
+concurrency:
+  group: export-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Conventions d'assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Nommage, formats, tailles, réglages d'import
+        run: python3 tools/check_assets.py .
+
+  tests:
+    name: Tests GUT
+    needs: checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache Godot
+        id: cache-godot-tests
+        uses: actions/cache@v4
+        with:
+          path: ~/godot-tests
+          key: godot-bin-${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}
+      - name: Installer Godot headless
+        if: steps.cache-godot-tests.outputs.cache-hit != 'true'
+        run: |
+          V="${GODOT_VERSION}-${GODOT_RELEASE}"
+          mkdir -p ~/godot-tests
+          curl -fsSL -o /tmp/godot.zip "https://github.com/godotengine/godot/releases/download/${V}/Godot_v${V}_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d ~/godot-tests
+          mv ~/godot-tests/Godot_v${V}_linux.x86_64 ~/godot-tests/godot
+      - name: Import
+        run: ~/godot-tests/godot --headless --import
+      - name: Lancer les tests
+        run: ~/godot-tests/godot --headless -s addons/gut/gut_cmdln.gd -gconfig=res://.gutconfig.json -gexit
+
+  export:
+    name: Export ${{ matrix.platform }}
+    needs: [checks, tests]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: web
+            preset: "Web"
+            output: build/web/index.html
+            itch_channel: html5
+          - platform: windows
+            preset: "Windows Desktop"
+            output: build/windows/le-dernier-pli.exe
+            itch_channel: windows
+          - platform: linux
+            preset: "Linux"
+            output: build/linux/le-dernier-pli.x86_64
+            itch_channel: linux
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Cache Godot et templates
+        id: cache-godot
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/godot
+            ~/.local/share/godot/export_templates
+          key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}
+
+      - name: Installer Godot headless et templates
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          V="${GODOT_VERSION}-${GODOT_RELEASE}"
+          BASE="https://github.com/godotengine/godot/releases/download/${V}"
+          mkdir -p ~/godot
+          curl -fsSL -o /tmp/godot.zip "${BASE}/Godot_v${V}_linux.x86_64.zip"
+          unzip -q /tmp/godot.zip -d ~/godot
+          mv ~/godot/Godot_v${V}_linux.x86_64 ~/godot/godot
+          curl -fsSL -o /tmp/templates.tpz "${BASE}/Godot_v${V}_export_templates.tpz"
+          TPL=~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}
+          mkdir -p "$TPL"
+          unzip -q /tmp/templates.tpz -d /tmp/tpl
+          mv /tmp/tpl/templates/* "$TPL"/
+
+      - name: Import des assets et dialogues
+        # Echoue si une ressource (texture, son, .dialogue) ne s'importe pas.
+        run: |
+          ~/godot/godot --headless --import 2>&1 | tee import.log
+          if grep -E "^(ERROR|SCRIPT ERROR)" import.log; then
+            echo "::error::Erreurs à l'import, voir import.log"; exit 1
+          fi
+
+      - name: Choisir le mode d'export
+        # PR et lancements manuels : debug (menu F1 du QA présent).
+        # Push sur main : release (ce qui est publié) + debug pour le QA.
+        id: mode
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "modes=debug release" >> "$GITHUB_OUTPUT"
+          else
+            echo "modes=debug" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Inscrire le SHA du build (affiché en jeu en debug)
+        run: echo "${GITHUB_SHA::7}" > build_sha.txt
+
+      - name: Export ${{ matrix.preset }}
+        run: |
+          for MODE in ${{ steps.mode.outputs.modes }}; do
+            OUT="build/${MODE}/${{ matrix.output }}"
+            mkdir -p "$(dirname "$OUT")"
+            ~/godot/godot --headless --export-${MODE} "${{ matrix.preset }}" "$OUT"
+            test -n "$(ls -A "$(dirname "$OUT")")"
+          done
+
+      - name: Budget de taille du build web
+        if: matrix.platform == 'web'
+        run: |
+          DIR="build/$(echo ${{ steps.mode.outputs.modes }} | awk '{print $NF}')/build/web"
+          MB=$(du -sm "$DIR" | cut -f1)
+          echo "Build web : ${MB} Mo (budget ${WEB_BUDGET_MB} Mo)" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$MB" -gt "$WEB_BUDGET_MB" ]; then
+            echo "::error::Build web ${MB} Mo, au-delà du budget de ${WEB_BUDGET_MB} Mo"; exit 1
+          elif [ "$MB" -gt "$WEB_WARN_MB" ]; then
+            echo "::warning::Build web ${MB} Mo, proche du budget de ${WEB_BUDGET_MB} Mo"
+          fi
+
+      - name: Artefact debug (QA)
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.platform }}-debug
+          path: build/debug/build/${{ matrix.platform }}
+          retention-days: 14
+
+      - name: Artefact release
+        if: contains(steps.mode.outputs.modes, 'release')
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.platform }}-release
+          path: build/release/build/${{ matrix.platform }}
+          retention-days: 14
+
+  deploy-pages:
+    name: Publier sur GitHub Pages
+    needs: export
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-web-release
+          path: web
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+  deploy-itch:
+    name: Publier sur itch.io
+    needs: export
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+    strategy:
+      matrix:
+        include:
+          - { platform: web, channel: html5 }
+          - { platform: windows, channel: windows }
+          - { platform: linux, channel: linux }
+    steps:
+      - name: Vérifier la configuration
+        id: check
+        run: |
+          if [ -z "$BUTLER_API_KEY" ] || [ -z "$ITCH_TARGET" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "itch.io non configuré, étape ignorée."
+          fi
+      - if: steps.check.outputs.skip != 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ matrix.platform }}-release
+          path: out
+      - if: steps.check.outputs.skip != 'true'
+        run: |
+          curl -fsSL -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip -q butler.zip && chmod +x butler
+          ./butler push out "${ITCH_TARGET}:${{ matrix.channel }}" --userversion "${GITHUB_SHA::7}"

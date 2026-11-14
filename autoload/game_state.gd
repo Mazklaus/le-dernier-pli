@@ -1,0 +1,371 @@
+extends Node
+## Autoload GameState : tout l'état du messager (spec jauges v0.1 du Game Designer).
+## Ne connaît ni l'audio ni l'UI : il émet des signaux, les autres s'y abonnent
+## (AudioDirector, HUD, carnet). Sérialisable en Dictionary pour l'autosave du jalon 2.
+##
+## Pas de class_name : le nom global est celui de l'autoload. Les tests instancient
+## ce script directement (preload(...).new()).
+
+signal jauge_changee(nom: StringName, ancienne: int, nouvelle: int)
+signal palier_change(ancien: StringName, nouveau: StringName)
+signal etat_declenche(etat: StringName)  # &"affame", &"perdu", &"lanterne_eteinte"
+signal marque_gagnee(marque: Dictionary)
+signal promesse_resolue(id: StringName, etat: StringName)
+signal sceau_change(drapeau: StringName)  # &"abime", &"rechauffe", &"ouvert"
+signal etape_changee(etape: int)
+
+const VIVRES: StringName = &"vivres"
+const HUILE: StringName = &"huile"
+const LUCIDITE: StringName = &"lucidite"
+const JAUGES: Array[StringName] = [VIVRES, HUILE, LUCIDITE]
+
+const CLAIR: StringName = &"clair"
+const TROUBLE: StringName = &"trouble"
+const EGARE: StringName = &"egare"
+
+const VIVRES_MAX := 10
+const HUILE_MAX := 6
+const LUCIDITE_MAX_NORMAL := 10
+const LUCIDITE_MAX_PERDU := 3
+const DEPART := {VIVRES: 6, HUILE: 4, LUCIDITE: 8}
+
+## Probabilité qu'un coût affiché soit faux de 1 au palier Égaré (non fixée par la spec : à valider).
+const PROBA_COUT_FAUX := 0.33
+
+var vivres: int
+var huile: int
+var lucidite: int
+var lucidite_max: int
+var palier: StringName
+var sceau_abime: bool
+var sceau_rechauffe: bool
+var sceau_ouvert: bool
+var lanterne_allumee: bool
+var marques: Array[Dictionary] = []
+var etape: int
+## Rencontres ayant déjà donné une marque (règle « une marque, une rencontre »).
+var rencontres_marquees: Array[StringName] = []
+## Dernière étape où une ligne du pli a été lue (une ligne par étape).
+var etape_derniere_lecture: int
+
+
+func _init() -> void:
+	reinitialiser()
+
+
+func reinitialiser() -> void:
+	vivres = DEPART[VIVRES]
+	huile = DEPART[HUILE]
+	lucidite = DEPART[LUCIDITE]
+	lucidite_max = LUCIDITE_MAX_NORMAL
+	palier = palier_pour(lucidite)
+	sceau_abime = false
+	sceau_rechauffe = false
+	sceau_ouvert = false
+	lanterne_allumee = false
+	marques = []
+	etape = 1
+	rencontres_marquees = []
+	etape_derniere_lecture = 0
+
+
+# --- Jauges --------------------------------------------------------------------
+
+func valeur(nom: StringName) -> int:
+	match nom:
+		VIVRES: return vivres
+		HUILE: return huile
+		LUCIDITE: return lucidite
+	push_error("Jauge inconnue : %s" % nom)
+	return 0
+
+
+func maximum(nom: StringName) -> int:
+	match nom:
+		VIVRES: return VIVRES_MAX
+		HUILE: return HUILE_MAX
+		LUCIDITE: return lucidite_max
+	return 0
+
+
+## LA fonction unique de modification de jauge. Borne la valeur, applique la conversion
+## Affamé, déclenche les états et marques de première fois, recalcule le palier.
+func modifier_jauge(nom: StringName, delta: int) -> void:
+	if nom not in JAUGES:
+		push_error("Jauge inconnue : %s" % nom)
+		return
+	if delta == 0:
+		return
+	var ancienne := valeur(nom)
+	var brute := ancienne + delta
+	var nouvelle := clampi(brute, 0, maximum(nom))
+	var impaye := brute < 0
+	_ecrire(nom, nouvelle)
+	if nouvelle != ancienne:
+		jauge_changee.emit(nom, ancienne, nouvelle)
+
+	match nom:
+		VIVRES:
+			if nouvelle == 0 and ancienne > 0:
+				etat_declenche.emit(&"affame")
+				_marque_automatique(Marques.LA_FAIM)
+			# Affamé : un coût en Vivres impossible à payer devient −1 Lucidité.
+			if impaye:
+				modifier_jauge(LUCIDITE, -1)
+		HUILE:
+			if nouvelle == 0 and lanterne_allumee:
+				lanterne_allumee = false
+				etat_declenche.emit(&"lanterne_eteinte")
+		LUCIDITE:
+			if nouvelle == 0 and lucidite_max != LUCIDITE_MAX_PERDU:
+				lucidite_max = LUCIDITE_MAX_PERDU
+				etat_declenche.emit(&"perdu")
+				_marque_automatique(Marques.CE_QUI_A_ETE_VU)
+			_recalculer_palier()
+
+
+func est_affame() -> bool:
+	return vivres == 0
+
+
+func est_perdu() -> bool:
+	return lucidite_max == LUCIDITE_MAX_PERDU
+
+
+static func palier_pour(valeur_lucidite: int) -> StringName:
+	if valeur_lucidite >= 7:
+		return CLAIR
+	if valeur_lucidite >= 4:
+		return TROUBLE
+	return EGARE  # 0 compris : la spec ne définit pas de palier à 0 (question ouverte).
+
+
+func _ecrire(nom: StringName, v: int) -> void:
+	match nom:
+		VIVRES: vivres = v
+		HUILE: huile = v
+		LUCIDITE: lucidite = v
+
+
+func _recalculer_palier() -> void:
+	var nouveau := palier_pour(lucidite)
+	if nouveau != palier:
+		var ancien := palier
+		palier = nouveau
+		palier_change.emit(ancien, nouveau)
+
+
+# --- Coûts, effets, conditions des options de dialogue ---------------------------
+# Format commun (indépendant de Dialogue Manager) :
+#   couts  = {"vivres": 1, "huile": 2}            valeurs positives = ce qu'on paie
+#   effets = {"vivres": 1, "lucidite": -1}        deltas signés
+#   condition = {"jauge_min": {"huile": 1}, "marque": &"doigt_de_saint",
+#                "sceau": &"ouvert" | &"ferme" | &"abime" | &"rechauffe", "palier": &"egare"}
+
+func appliquer_couts(couts: Dictionary) -> void:
+	for nom in couts:
+		modifier_jauge(StringName(nom), -absi(int(couts[nom])))
+
+
+func appliquer_effets(effets: Dictionary) -> void:
+	for nom in effets:
+		modifier_jauge(StringName(nom), int(effets[nom]))
+
+
+## Coûts tels que l'interface doit les afficher. Au palier Égaré, chaque coût peut être
+## faux de 1 (jamais en dessous de 0). Le coût réellement payé reste celui de `couts`.
+func couts_affiches(couts: Dictionary, rng: RandomNumberGenerator = null) -> Dictionary:
+	var affiches := couts.duplicate()
+	if palier != EGARE:
+		return affiches
+	if rng == null:
+		rng = RandomNumberGenerator.new()
+		rng.randomize()
+	for nom in affiches:
+		if rng.randf() < PROBA_COUT_FAUX:
+			var decalage := 1 if rng.randf() < 0.5 else -1
+			affiches[nom] = maxi(0, int(affiches[nom]) + decalage)
+	return affiches
+
+
+## Une option est disponible si toutes ses conditions sont remplies. Les coûts ne bloquent
+## pas : un coût en Vivres impayable se convertit (Affamé), les autres sont bornés à 0.
+func condition_remplie(condition: Dictionary) -> bool:
+	if condition.has("jauge_min"):
+		var mins: Dictionary = condition["jauge_min"]
+		for nom in mins:
+			if valeur(StringName(nom)) < int(mins[nom]):
+				return false
+	if condition.has("marque") and not possede_marque(StringName(condition["marque"])):
+		return false
+	if condition.has("sceau") and not _sceau_est(StringName(condition["sceau"])):
+		return false
+	if condition.has("palier") and palier != StringName(condition["palier"]):
+		return false
+	return true
+
+
+func _sceau_est(etat: StringName) -> bool:
+	match etat:
+		&"ouvert": return sceau_ouvert
+		&"ferme": return not sceau_ouvert
+		&"intact": return not sceau_abime and not sceau_ouvert
+		&"abime": return sceau_abime
+		&"rechauffe": return sceau_rechauffe
+	push_error("État de sceau inconnu : %s" % etat)
+	return false
+
+
+# --- Marques -----------------------------------------------------------------------
+
+## Ajoute une marque. Renvoie false si la rencontre a déjà donné une marque
+## ou si la marque est déjà possédée (une marque ne se gagne qu'une fois).
+func ajouter_marque(id: StringName, famille: StringName, rencontre: StringName = &"") -> bool:
+	if possede_marque(id):
+		return false
+	if rencontre != &"" and rencontre in rencontres_marquees:
+		return false
+	var m := Marques.creer(id, famille)
+	marques.append(m)
+	if rencontre != &"":
+		rencontres_marquees.append(rencontre)
+	marque_gagnee.emit(m)
+	return true
+
+
+func possede_marque(id: StringName) -> bool:
+	return not trouver_marque(id).is_empty()
+
+
+func trouver_marque(id: StringName) -> Dictionary:
+	for m in marques:
+		if m["id"] == id:
+			return m
+	return {}
+
+
+## Fixe une Promesse ouverte à tenue ou trahie. Une promesse résolue ne change plus.
+func resoudre_promesse(id: StringName, tenue: bool) -> bool:
+	var m := trouver_marque(id)
+	if m.is_empty() or m["famille"] != Marques.PROMESSE or m["etat"] != Marques.OUVERTE:
+		return false
+	m["etat"] = Marques.TENUE if tenue else Marques.TRAHIE
+	promesse_resolue.emit(id, m["etat"])
+	return true
+
+
+func _marque_automatique(id: StringName) -> void:
+	ajouter_marque(id, Marques.CICATRICE)
+
+
+# --- Sceau (drapeaux jamais remis à faux) ----------------------------------------
+
+func abimer_sceau() -> void:
+	if not sceau_abime:
+		sceau_abime = true
+		sceau_change.emit(&"abime")
+
+
+## Réchauffer la cire à la lanterne : 1 Huile. Implique abîmé.
+func rechauffer_sceau() -> bool:
+	if sceau_rechauffe or sceau_ouvert or huile < 1:
+		return false
+	modifier_jauge(HUILE, -1)
+	abimer_sceau()
+	sceau_rechauffe = true
+	sceau_change.emit(&"rechauffe")
+	return true
+
+
+## Lire une ligne du pli en transparence : sceau réchauffé, 1 Huile, une fois par étape.
+func peut_lire_ligne() -> bool:
+	return sceau_rechauffe and not sceau_ouvert and huile >= 1 and etape_derniere_lecture != etape
+
+
+func lire_ligne_pli() -> bool:
+	if not peut_lire_ligne():
+		return false
+	modifier_jauge(HUILE, -1)
+	etape_derniere_lecture = etape
+	return true
+
+
+func ouvrir_sceau() -> void:
+	if not sceau_ouvert:
+		sceau_ouvert = true
+		sceau_change.emit(&"ouvert")
+
+
+# --- Étapes et zones sombres --------------------------------------------------------
+
+## La marche : −1 Vivres à chaque passage ; −1 Lucidité en quittant une étape ≥ 2
+## (lecture de la courbe : on entre en étape 2 à 8, en étape 3 à 7).
+func passer_etape() -> void:
+	modifier_jauge(VIVRES, -1)
+	if etape >= 2:
+		modifier_jauge(LUCIDITE, -1)
+	etape += 1
+	etape_changee.emit(etape)
+
+
+## Entrée dans une zone sombre. Renvoie true si la lanterne est allumée.
+## Sans huile, la zone se joue forcément dans le noir.
+func entrer_zone_sombre(veut_allumer: bool) -> bool:
+	if veut_allumer and huile >= 1:
+		lanterne_allumee = false
+		modifier_jauge(HUILE, -1)
+		# La dernière goutte suffit à traverser cette zone.
+		lanterne_allumee = true
+	else:
+		lanterne_allumee = false
+		modifier_jauge(LUCIDITE, -1)
+	return lanterne_allumee
+
+
+func sortir_zone_sombre() -> void:
+	lanterne_allumee = false
+
+
+# --- Fin ------------------------------------------------------------------------------
+
+func fin() -> StringName:
+	return CalculFin.calculer(marques, sceau_ouvert)
+
+
+# --- Sérialisation (autosave jalon 2) ---------------------------------------------------
+
+func vers_dictionnaire() -> Dictionary:
+	return {
+		"version": 1,
+		"vivres": vivres,
+		"huile": huile,
+		"lucidite": lucidite,
+		"lucidite_max": lucidite_max,
+		"sceau_abime": sceau_abime,
+		"sceau_rechauffe": sceau_rechauffe,
+		"sceau_ouvert": sceau_ouvert,
+		"lanterne_allumee": lanterne_allumee,
+		"marques": marques.duplicate(true),
+		"etape": etape,
+		"rencontres_marquees": rencontres_marquees.duplicate(),
+		"etape_derniere_lecture": etape_derniere_lecture,
+	}
+
+
+func depuis_dictionnaire(d: Dictionary) -> void:
+	reinitialiser()
+	lucidite_max = int(d.get("lucidite_max", LUCIDITE_MAX_NORMAL))
+	vivres = clampi(int(d.get("vivres", vivres)), 0, VIVRES_MAX)
+	huile = clampi(int(d.get("huile", huile)), 0, HUILE_MAX)
+	lucidite = clampi(int(d.get("lucidite", lucidite)), 0, lucidite_max)
+	palier = palier_pour(lucidite)
+	sceau_abime = bool(d.get("sceau_abime", false))
+	sceau_rechauffe = bool(d.get("sceau_rechauffe", false))
+	sceau_ouvert = bool(d.get("sceau_ouvert", false))
+	lanterne_allumee = bool(d.get("lanterne_allumee", false))
+	for m: Dictionary in d.get("marques", []):
+		marques.append({"id": StringName(m["id"]), "famille": StringName(m["famille"]), "etat": StringName(m.get("etat", ""))})
+	etape = int(d.get("etape", 1))
+	for r in d.get("rencontres_marquees", []):
+		rencontres_marquees.append(StringName(r))
+	etape_derniere_lecture = int(d.get("etape_derniere_lecture", 0))

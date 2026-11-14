@@ -1,0 +1,13 @@
+# Godot
+.godot/
+/android/
+*.translation
+# Exports et fichiers générés
+build/
+build_sha.txt
+export_credentials.cfg
+# Python
+__pycache__/
+# Systèmes
+.DS_Store
+Thumbs.db
