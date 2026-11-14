@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 GameState="*res://autoload/game_state.gd"
 AudioDirector="*res://autoload/audio_director.gd"
+Reglages="*res://autoload/reglages.gd"
 SceneRouter="*res://autoload/scene_router.gd"
 DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 BuildInfo="*res://autoload/build_info.gd"
