@@ -432,6 +432,7 @@ mouse_filter = 2
 [node name="e1_guetteur" parent="Surface/Carrefour" instance=ExtResource("10")]
 position = Vector2(3940, 780)
 rencontre_id = &"e1_guetteur"
+personnage = &"guetteur"
 dialogue = ExtResource("12")
 libelle = "Regarder au périscope"
 metadata/note_level_design = "Le Guetteur au périscope, facultatif. -1 lucidité au deuxième regard"
@@ -582,6 +583,7 @@ position = Vector2(120, 900)
 [node name="e1_parapet" parent="Surface/PiedEchelle" instance=ExtResource("10")]
 position = Vector2(480, 900)
 rencontre_id = &"e1_parapet"
+personnage = &"lamarre"
 dialogue = ExtResource("13")
 libelle = "Monter"
 fin_etape = true
