@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://cmpsojl48kynm"
+path="res://.godot/imported/e1_parapet.dialogue-8c365afda27ec7fe30080b5bcc5310cf.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_01/e1_parapet.dialogue"
+dest_files=["res://.godot/imported/e1_parapet.dialogue-8c365afda27ec7fe30080b5bcc5310cf.tres"]
+
+[params]
+
+defaults=true

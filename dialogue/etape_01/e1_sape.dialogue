@@ -1,0 +1,32 @@
+# Étape 1, scène 3c : la sape effondrée. Gabarit GD n°4 (zone sombre).
+# Lanterne : −1 Huile, une ration (+1 Vivres). Noir : −1 Lucidité, la voix et le petit battant (objet d'ombre).
+# Pas de marque. L'objet d'ombre est à donner par la scène (pas d'API d'inventaire pour l'instant).
+
+~ debut
+
+Tobie: La vieille sape. Personne n'y descend plus.
+- [Allumer la lanterne]
+	do GameState.entrer_zone_sombre(true)
+	=> lumiere
+- [Avancer dans le noir]
+	do GameState.entrer_zone_sombre(false)
+	=> noir
+
+~ lumiere
+
+Tobie: Une ration oubliée, encore emballée. Quelqu'un est parti vite.
+do GameState.appliquer_effets({&"vivres": 1})
+Tobie: Un mot gravé dans le bois, à moitié effacé : « ...RELE ».
+do GameState.sortir_zone_sombre()
+
+=> END
+
+~ noir
+
+Tobie: Il fait si noir que je compte mes pas.
+Tobie: Sous la terre, quelqu'un chante. Très lentement.
+Tobie: Un seul mot, encore et encore. Un mot de messe.
+Tobie: Ma main trouve quelque chose de froid. Un petit battant de cloche.
+do GameState.sortir_zone_sombre()
+
+=> END
