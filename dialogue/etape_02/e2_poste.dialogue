@@ -1,6 +1,6 @@
 # Étape 2, rencontre 1 : le poste avancé. Gabarit GD n°3. Verrou du chemin.
 # Le caporal Brisse réchauffe la cire gratuitement et devient témoin.
-# Réchauffer gratuit : +1 Huile puis rechauffer_sceau() (qui coûte 1), en attendant une API dédiée.
+# Réchauffer gratuit : rechauffer_sceau(true), la flamme est celle de Brisse.
 # Verrou de la chicane : e2_poste_passe (sceau intact ou payé). Détour : titre « boyau », déclenché à l'entrée du boyau.
 # Témoin : rencontre fictive &"temoin_garde_sceau", en attendant un drapeau dédié dans GameState.
 
@@ -30,8 +30,7 @@ Brisse: Personne n'en saura rien. À part moi.
 - [Accepter] Faites. [if GameState.condition_remplie({"sceau": &"ferme"}) and not GameState.condition_remplie({"sceau": &"rechauffe"}) /]
 	Tobie: La cire va ramollir. Elle comptera comme abîmée, pour toujours.
 	- [Confirmer] Allez-y.
-		do GameState.appliquer_effets({&"huile": 1})
-		do GameState.rechauffer_sceau()
+		do GameState.rechauffer_sceau(true)
 		do GameState.marquer_rencontre_vue(&"temoin_garde_sceau")
 		Brisse: Doucement... Voilà. Elle est rouge, maintenant. Comme du sang.
 		Brisse: Tu verras peut-être à travers le papier, avec une lampe. Moi, j'ai rien dit.
