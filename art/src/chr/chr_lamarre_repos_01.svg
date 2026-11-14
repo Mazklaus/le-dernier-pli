@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="320" viewBox="0 0 800 320"><defs>
+<pattern id="hach-1" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><rect width="5" height="5" fill="#E8E5DA"/>
+      <line x1="0" y1="0" x2="0" y2="5" stroke="#15130F" stroke-width=".7"/>
+    </pattern>
+<pattern id="hach-2" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><rect width="4" height="4" fill="#E8E5DA"/>
+      <line x1="0" y1="0" x2="0" y2="4" stroke="#15130F" stroke-width="1"/>
+      <line x1="0" y1="2" x2="4" y2="2" stroke="#15130F" stroke-width=".6"/>
+    </pattern>
+<pattern id="molletiere" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-22)">
+      <rect width="9" height="9" fill="#E8E5DA"/>
+      <line x1="0" y1="0" x2="9" y2="0" stroke="#15130F" stroke-width="1.6"/>
+      <line x1="0" y1="4.5" x2="9" y2="4.5" stroke="#15130F" stroke-width=".5"/>
+    </pattern>
+<pattern id="pointille" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#E8E5DA"/>
+      <circle cx="2" cy="2" r=".7" fill="#15130F"/>
+    </pattern>
+</defs><defs><g id="lamarre" stroke="#15130F" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M88 300 L84 386 L113 386 L117 300 Z M124 300 L128 386 L157 386 L153 300 Z" fill="url(#hach-1)" stroke-width="2.2"/>
+      <path d="M80 382 L76 405 L116 405 L114 382 Z M126 382 L126 405 L166 405 L160 382 Z" fill="#15130F" stroke-width="1.6"/>
+      <!-- capote -->
+      <path d="M66 122 Q120 108 174 122 L182 314 L150 318 L146 306 L120 316 L94 306 L90 318 L58 314 Z" fill="url(#hach-2)" stroke-width="2.6"/>
+      <path d="M120 120 L120 312" stroke="#E8E5DA" stroke-width="2.4"/>
+      <path d="M120 120 L120 312" stroke-width="1"/>
+      <circle cx="128" cy="150" r="3" fill="#E8E5DA" stroke-width="1.2"/><circle cx="128" cy="180" r="3" fill="#E8E5DA" stroke-width="1.2"/><circle cx="128" cy="240" r="3" fill="#E8E5DA" stroke-width="1.2"/>
+      <!-- ceinturon -->
+      <path d="M62 208 L178 208 L178 222 L62 222 Z" fill="#15130F" stroke-width="1"/>
+      <rect x="112" y="206" width="16" height="18" fill="#E8E5DA" stroke-width="1.8"/>
+      <!-- bras -->
+      <path d="M66 124 L52 258 L74 264 L88 150 Z" fill="url(#hach-2)" stroke-width="2.4"/>
+      <path d="M174 124 L188 258 L166 264 L152 150 Z" fill="url(#hach-2)" stroke-width="2.4"/>
+      <!-- galons de sergent -->
+      <path d="M56 170 L68 160 L80 170 M57 180 L69 170 L81 180" stroke="#E8E5DA" stroke-width="3" fill="none"/>
+      <path d="M56 170 L68 160 L80 170 M57 180 L69 170 L81 180" stroke-width="1" fill="none"/>
+      <!-- mains -->
+      <path d="M52 258 Q50 276 62 278 Q74 276 74 264 Z" fill="#E8E5DA" stroke-width="2"/>
+      <path d="M166 264 Q166 278 178 278 Q190 276 188 258 Z" fill="#E8E5DA" stroke-width="2"/>
+      <!-- bougie tenue -->
+      <path d="M174 250 L174 228 L182 228 L182 250" fill="#E8E5DA" stroke-width="1.8"/>
+      <path d="M178 226 Q172 216 178 206 Q184 216 178 226 Z" fill="#E8E5DA" stroke-width="1.4"/>
+      <!-- col -->
+      <path d="M94 116 L120 132 L146 116 L146 104 L94 104 Z" fill="url(#hach-1)" stroke-width="2.2"/>
+      <!-- tête carrée -->
+      <path d="M98 66 L142 66 L146 108 Q120 120 94 108 Z" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M96 94 Q120 116 144 94 L146 108 Q120 120 94 108 Z" fill="url(#pointille)" stroke="none"/>
+      <path d="M104 80 L116 82 M124 82 L136 80" stroke-width="3.4"/>
+      <path d="M108 87 L114 87 M126 87 L132 87" stroke-width="1.6"/>
+      <path d="M104 98 Q112 92 120 96 Q128 92 136 98 Q128 104 120 100 Q112 104 104 98 Z" fill="#15130F" stroke-width="1"/>
+      <path d="M100 74 L106 78" stroke-width="1"/>
+      <!-- casque à bord, cabossé -->
+      <path d="M86 70 Q92 40 120 38 Q150 40 154 70 L166 72 Q166 78 160 78 L80 78 Q74 78 74 72 Z" fill="url(#hach-2)" stroke-width="2.4"/>
+      <path d="M128 42 L134 52 L142 48" fill="none" stroke-width="1.8"/>
+    </g></defs><g transform="translate(-1.40 -26.22) scale(0.845) translate(0 405) scale(1 1.000) translate(0 -405)"><use href="#lamarre"/></g><g transform="translate(198.60 -26.22) scale(0.845) translate(0 405) scale(1 1.004) translate(0 -405)"><use href="#lamarre"/></g><g transform="translate(398.60 -26.22) scale(0.845) translate(0 405) scale(1 1.008) translate(0 -405)"><use href="#lamarre"/></g><g transform="translate(598.60 -26.22) scale(0.845) translate(0 405) scale(1 1.004) translate(0 -405)"><use href="#lamarre"/></g></svg>
