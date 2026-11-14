@@ -38,10 +38,7 @@ func test_constantes_de_la_spec() -> void:
 	assert_eq(InviteInteraction.PERSISTANCE, 0.6)
 	assert_eq(InviteInteraction.DUREE_EFFACEMENT, 0.4)
 	assert_eq(InviteInteraction.MARGE_ECRAN, 24.0)
-	assert_eq(RepereExamen.TAILLE, 24.0)
-	assert_eq(RepereExamen.RAPPORT_PASTILLE, 1.5)
-	assert_eq(RepereExamen.COULEUR, StylePapier.ENCRE)
-	assert_eq(RepereExamen.COULEUR_PASTILLE, StylePapier.PAPIER)
+	assert_eq(RepereExamen.TAILLE, 40.0)
 	assert_eq(RepereExamen.PORTEE, Messager.RAYON_INTERACTION * 2.0)
 
 
@@ -125,11 +122,8 @@ func test_est_detail_force_le_repere() -> void:
 
 
 
-func test_pastille_dechiree_stable_et_a_la_bonne_taille() -> void:
+func test_repere_dessine_par_le_sprite_du_da() -> void:
 	var detail := _declencheur(&"e9_detail_test", 100)
-	var contour := detail.repere.contour_pastille()
-	assert_eq(contour, detail.repere.contour_pastille(), "même contour à chaque dessin")
-	var rayon_max := 0.0
-	for p in contour:
-		rayon_max = maxf(rayon_max, p.length())
-	assert_almost_eq(rayon_max, 24.0 * 1.5 / 2.0, 2.0)
+	var dessin := detail.repere.get_node("Dessin") as Sprite2D
+	assert_not_null(dessin.texture)
+	assert_eq(dessin.texture.get_size(), Vector2(RepereExamen.TAILLE, RepereExamen.TAILLE))
