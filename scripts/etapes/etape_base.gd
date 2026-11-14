@@ -67,11 +67,12 @@ func _sur_teleporte_bornes(_position_globale: Vector2) -> void:
 	maj_bornes_camera()
 
 
-## Relie les Passages de l'étape à la musique par lieu (lieux_musique).
+## Relie les Passages de l'étape (tous les Interactif de type Passage) à la musique et à la
+## nuit par lieu (lieux_musique, lieux_nuit).
 func brancher_musique_lieux() -> void:
 	if lieux_musique.is_empty() and lieux_nuit.is_empty():
 		return
-	for n in get_tree().get_nodes_in_group(&"passages"):
+	for n in get_tree().get_nodes_in_group(Interactif.GROUPE):
 		if n is Passage and is_ancestor_of(n):
 			var passage := n as Passage
 			if not passage.franchi.is_connected(_sur_passage_franchi):
