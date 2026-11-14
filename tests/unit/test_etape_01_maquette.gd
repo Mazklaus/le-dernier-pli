@@ -80,11 +80,16 @@ func test_les_verrous_s_ouvrent_apres_leur_rencontre() -> void:
 	var chicane: Verrou = _etape.find_child("Chicane", true, false)
 	var cendre: Verrou = _etape.find_child("VerrouCendre", true, false)
 	assert_eq(chicane.rencontre, &"e1_ordre")
-	assert_eq(cendre.rencontre, &"e1_cendre")
+	# L'adieu de Jacquot est obligatoire : il ne se joue qu'avec la Cendre (rencontre_requise).
+	assert_eq(cendre.rencontre, &"e1_adieu")
 	assert_false(chicane.est_ouvert())
 	GameState.marquer_rencontre_vue(&"e1_ordre")
 	assert_true(chicane.est_ouvert())
 	assert_false(cendre.est_ouvert())
+	GameState.marquer_rencontre_vue(&"e1_cendre")
+	assert_false(cendre.est_ouvert(), "la Cendre seule ne suffit plus : il faut l'adieu")
+	GameState.marquer_rencontre_vue(&"e1_adieu")
+	assert_true(cendre.est_ouvert())
 	GameState.reinitialiser()
 
 
