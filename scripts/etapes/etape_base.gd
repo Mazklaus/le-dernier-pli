@@ -39,6 +39,7 @@ func _ready() -> void:
 	brancher_suivi_voix()
 	brancher_musique_lieux()
 	brancher_bornes_camera()
+	SceneRouter.etape_prete.emit(self)
 
 
 ## Borne la caméra à la surface (bornes_camera_surface), la libère sous terre, à chaque

@@ -149,3 +149,9 @@ func test_lieux_nuit_basculent_l_eclairage() -> void:
 	vers_place.interagir(m)
 	assert_false(etape.nuit)
 	assert_eq(eclairage.color, Color.WHITE)
+
+
+func test_l_etape_s_annonce_quand_elle_est_prete() -> void:
+	watch_signals(SceneRouter)
+	var autre: EtapeBase = add_child_autofree(EtapeBase.new())
+	assert_signal_emitted_with_parameters(SceneRouter, "etape_prete", [autre])

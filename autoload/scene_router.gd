@@ -4,6 +4,10 @@ extends Node
 ## La racine d'une étape peut exposer aller_rencontre(id) pour le saut de débogage.
 
 signal etape_chargee(numero: int)
+## Émis par l'étape elle-même à la fin de son _ready (EtapeBase) : la scène est dans l'arbre,
+## on peut s'abonner à ses signaux (ex. phase_changee). etape_chargee part avant le
+## changement de scène effectif.
+signal etape_prete(etape: Node)
 
 const ECRAN_TITRE := "res://scenes/titre/titre.tscn"
 const NB_ETAPES := 7
