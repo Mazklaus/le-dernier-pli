@@ -268,10 +268,18 @@ func _regler_son_du_noir(noeud: Node, duree: float) -> void:
 	if not noeud.has_meta(&"volume_db_plein"):
 		noeud.set_meta(&"volume_db_plein", noeud.get(&"volume_db"))
 	var cible: float = noeud.get_meta(&"volume_db_plein") if _dans_le_noir else MixageSon.GAIN_MUET_DB
+	# Un seul fondu à la fois par émetteur : entrer et sortir du noir en moins de
+	# DUREE_FONDU_NOIR ne doit pas laisser deux tweens se disputer volume_db.
+	if noeud.has_meta(&"fondu_noir"):
+		var precedent: Tween = noeud.get_meta(&"fondu_noir")
+		if precedent and precedent.is_valid():
+			precedent.kill()
 	if duree <= 0.0:
 		noeud.set(&"volume_db", cible)
 		return
-	create_tween().set_trans(Tween.TRANS_SINE).tween_property(noeud, "volume_db", cible, duree)
+	var fondu := create_tween().set_trans(Tween.TRANS_SINE)
+	fondu.tween_property(noeud, "volume_db", cible, duree)
+	noeud.set_meta(&"fondu_noir", fondu)
 
 
 ## Lance le fondu vers le mélange cible (ou l'applique d'un coup si `instantane`).
