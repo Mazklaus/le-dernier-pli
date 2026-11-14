@@ -8,6 +8,11 @@ extends CanvasLayer
 const ENCRE := StylePapier.ENCRE
 const LAVIS := StylePapier.LAVIS
 const ROUGE_HALO := Color(0.608, 0.11, 0.11, 0.35)
+## Amplitude du tremblement de la bavure, en pixels (renforcée à la demande de l'UI/UX).
+const TREMBLEMENT := 3.0
+## Hauteur de la goutte en fraction de la taille de police (~ moitié du chiffre, 12 px à 1080).
+const RAPPORT_TACHE := 0.5
+const TACHES := ["bavure-tache_01", "bavure-tache_02", "bavure-tache_03"]
 ## Taille de la réplique selon Reglages.taille_texte (petit, normal, grand, très grand), à 1080.
 const TAILLES_TEXTE := [28, 32, 38, 44]
 ## Icône de coût du DA par jauge (ui_cout-*.png, 32 px).
@@ -33,6 +38,7 @@ var _replique: DialogueLabel
 var _options: VBoxContainer
 var _boutons: Array[Button] = []
 var _baves: Array[Label] = []
+var _variante_tache: int = 0
 var _rng := RandomNumberGenerator.new()
 
 
@@ -58,7 +64,7 @@ func _process(_delta: float) -> void:
 		return
 	for etiquette in _baves:
 		if is_instance_valid(etiquette):
-			etiquette.position.y = _rng.randf_range(-1.5, 1.5)
+			etiquette.position.y = _rng.randf_range(-TREMBLEMENT, TREMBLEMENT)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -144,6 +150,7 @@ func _montrer_options() -> void:
 	for r: DialogueResponse in ligne.responses:
 		brutes.append({"texte": r.text, "tags": r.tags, "autorisee": r.is_allowed})
 	options_affichees = OptionsDialogue.presenter(brutes, _rng)
+	_variante_tache = _rng.randi_range(0, TACHES.size() - 1)
 	_retenir_hud(options_affichees.any(func(o: Dictionary) -> bool: return not (o["couts_affiches"] as Dictionary).is_empty()))
 	for i in options_affichees.size():
 		var bouton := _bouton_option(i, options_affichees[i])
@@ -188,12 +195,14 @@ func _bouton_option(i: int, option: Dictionary) -> Button:
 		icone.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		icone.tooltip_text = String(nom)
 		signe.add_child(icone)
-		var cout := _etiquette("−%d" % int(affiches[nom]), police_texte, roundi(_taille() * 0.78), ENCRE)
+		# Chiffres de coût en lavis ; ceux qui bavent passent en encre pleine épaissie.
+		var cout := _etiquette("−%d" % int(affiches[nom]), police_texte, roundi(_taille() * 0.78), LAVIS)
 		cout.set_meta(&"jauge", nom)
-		if option["bave"]:
-			_faire_baver(cout)
-			icone.modulate = Color(1, 0.85, 0.85)
 		signe.add_child(cout)
+		if option["bave"]:
+			# Le glyphe de la jauge reste net : seul le chiffre bave, avec sa tache.
+			_faire_baver(cout)
+			_ajouter_tache(cout)
 	if option["bave"] and affiches.is_empty():
 		_faire_baver(texte)
 	if bouton.disabled:
@@ -207,10 +216,56 @@ func _faire_baver(etiquette: Label) -> void:
 	etiquette.add_theme_constant_override(&"shadow_outline_size", 6)
 	etiquette.add_theme_constant_override(&"shadow_offset_x", 0)
 	etiquette.add_theme_constant_override(&"shadow_offset_y", 0)
-	etiquette.add_theme_color_override(&"font_outline_color", Color(ENCRE, 0.5))
-	etiquette.add_theme_constant_override(&"outline_size", 2)
+	# Encre pleine épaissie : contraste noir contre le lavis des coûts normaux.
+	etiquette.add_theme_color_override(&"font_color", ENCRE)
+	etiquette.add_theme_color_override(&"font_outline_color", ENCRE)
+	etiquette.add_theme_constant_override(&"outline_size", 3)
 	etiquette.set_meta(&"bave", true)
 	_baves.append(etiquette)
+
+
+## Tache d'encre du DA sous un chiffre qui bave, comme une goutte tombée de la plume :
+## opaque, haute d'environ la moitié du chiffre (~12 px à 1080), centrée, son haut touchant
+## le bas du chiffre. Le sprite 32×32 est recadré sur sa zone utile pour ne pas rapetisser.
+## Une variante différente par chiffre. Reste en effets atténués (le tremblement se fige).
+func _ajouter_tache(etiquette: Label) -> TextureRect:
+	var tache := TextureRect.new()
+	tache.name = "Tache"
+	tache.texture = recadrer(StylePapier.icone(TACHES[_variante_tache % TACHES.size()]))
+	_variante_tache += 1
+	tache.show_behind_parent = true
+	tache.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tache.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	tache.stretch_mode = TextureRect.STRETCH_SCALE
+	var taille_police := float(etiquette.get_theme_font_size(&"font_size"))
+	# Hauteur des chiffres ≈ 0,7 × la taille de police (Spectral).
+	var hauteur_chiffre := taille_police * 0.7
+	var hauteur := roundf(taille_police * RAPPORT_TACHE)
+	var largeur := hauteur
+	if tache.texture != null and tache.texture.get_height() > 0:
+		largeur = roundf(hauteur * tache.texture.get_width() / tache.texture.get_height())
+	tache.size = Vector2(largeur, hauteur)
+	etiquette.add_child(tache)
+	# Placée quand le chiffre a sa taille (texte centré verticalement dans le Label).
+	etiquette.resized.connect(func() -> void:
+		tache.position = Vector2(etiquette.size.x / 2.0 - largeur / 2.0, etiquette.size.y / 2.0 + hauteur_chiffre / 2.0))
+	return tache
+
+
+## Texture recadrée sur ses pixels non transparents (AtlasTexture), ou telle quelle.
+static func recadrer(texture: Texture2D) -> Texture2D:
+	if texture == null:
+		return null
+	var image := texture.get_image()
+	if image == null:
+		return texture
+	var zone := image.get_used_rect()
+	if zone.size == Vector2i.ZERO or zone.size == image.get_size():
+		return texture
+	var atlas := AtlasTexture.new()
+	atlas.atlas = texture
+	atlas.region = Rect2(zone)
+	return atlas
 
 
 func _vider_options() -> void:

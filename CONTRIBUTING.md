@@ -24,6 +24,7 @@
 Nommage et formats vérifiés par `tools/check_assets.py` (voir `tools/README` du Tools Programmer et `docs/architecture.md`) :
 - Graphismes : `chr_<perso>_<anim>_NN`, `env_eN_planN_<nom>[_NN]`, `fx_<nom>`, `ui_<nom>`, calque rouge `<nom>_red`.
 - Audio : `amb_<etape>_<couche>.ogg`, `mus_<etape>_<moment>.ogg`, `sfx_<famille>_<action>_NN.wav`, `vox_<personnage>_NN.wav`.
+- Chaque PNG, WAV ou OGG de `assets/` est versionné **avec son `.import`** (réglages d'import partagés, pas de fichier qui apparaît chez chacun). Pour le générer : ouvrir le projet dans Godot, ou `godot --headless --import`. La CI refuse un asset sans `.import`.
 
 ## Branches et commits
 

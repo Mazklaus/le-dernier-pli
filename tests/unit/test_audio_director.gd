@@ -68,3 +68,54 @@ func test_jouer_musique_theme_joue_a_plein_volume_sans_fondu() -> void:
 	assert_almost_eq(ad._musique.volume_db, 0.0, 0.01)
 	ad.arreter_musique(0.0)
 	assert_false(ad._musique.playing)
+
+
+func test_variantes_de_trouve_les_fichiers_numerotes() -> void:
+	var ad := _director_etape_1()
+	assert_eq(ad.variantes_de("sfx_pas_boue").size(), 6)
+	assert_eq(ad.variantes_de("vox_tobie"), ["vox_tobie_01", "vox_tobie_02", "vox_tobie_03"])
+	assert_eq(ad.variantes_de("sfx_inexistant").size(), 0)
+
+
+func test_jouer_variante_ne_repete_pas_deux_fois_de_suite() -> void:
+	var ad := _director_etape_1()
+	ad.audio_deverrouille = true
+	var precedente := ""
+	for i in 20:
+		ad.jouer_variante("sfx_pas_planche")
+		var choix: String = ad._derniere_variante["sfx_pas_planche"]
+		assert_ne(choix, precedente)
+		precedente = choix
+
+
+func test_arreter_sfx_coupe_le_maintien() -> void:
+	var ad := _director_etape_1()
+	ad.audio_deverrouille = true
+	ad.jouer_variante("sfx_ui_maintien", AudioDirectorScript.BUS_UI)
+	var en_cours := ad.get_children().filter(func(n: Node) -> bool: return n.has_meta(&"sfx"))
+	assert_eq(en_cours.size(), 1)
+	ad.arreter_sfx("sfx_ui_maintien")
+	assert_false((en_cours[0] as AudioStreamPlayer).playing)
+
+
+func test_etape_2_joue_surface_et_autre() -> void:
+	var ad: Node = AudioDirectorScript.new()
+	add_child_autofree(ad)
+	ad.jouer_etape(2)
+	assert_eq(ad._couches.keys(), ["surface", "autre"])
+
+
+func test_les_fils_ne_s_entendent_que_dans_le_noir() -> void:
+	var ad := _director_etape_1()
+	var fils := AudioStreamPlayer2D.new()
+	fils.volume_db = -6.0
+	fils.add_to_group(AudioDirectorScript.GROUPE_SON_DU_NOIR)
+	add_child_autofree(fils)
+	ad._regler_son_du_noir(fils, 0.0)
+	assert_eq(fils.volume_db, MixageSon.GAIN_MUET_DB, "muet hors du noir")
+	ad._dans_le_noir = true
+	ad._maj_sons_du_noir(0.0)
+	assert_almost_eq(fils.volume_db, -6.0, 0.01, "retrouve le volume réglé dans la scène")
+	ad._dans_le_noir = false
+	ad._maj_sons_du_noir(0.0)
+	assert_eq(fils.volume_db, MixageSon.GAIN_MUET_DB)
