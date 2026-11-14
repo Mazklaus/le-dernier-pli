@@ -180,3 +180,27 @@ func test_options_numerotees_avec_un_point() -> void:
 	await wait_process_frames(3)
 	var etiquettes: Array[Node] = bulle._options.find_children("*", "Label", true, false)
 	assert_eq((etiquettes[0] as Label).text, "1.")
+
+
+func test_debug_force_le_cout_faux_a_l_egare() -> void:
+	GameState.modifier_jauge(GameState.LUCIDITE, -5)
+	assert_eq(GameState.palier, GameState.EGARE)
+	GameState.debug_forcer_cout_faux = true
+	var couts: Array = [{&"vivres": 1}, {&"huile": 1}]
+	for essai in 20:
+		var affiches := GameState.couts_affiches_rencontre(couts)
+		assert_true(affiches.any(func(a: Dictionary) -> bool: return a["cout_faux"]), "coût faux à chaque tirage")
+		assert_eq(affiches.filter(func(a: Dictionary) -> bool: return a["cout_douteux"]).size(), 2, "coût faux + leurre")
+	GameState.debug_forcer_cout_faux = false
+
+
+func test_icone_et_chiffre_serres() -> void:
+	var bulle: Node = add_child_autofree(SceneBulle.instantiate())
+	bulle.start(Dialogue, "couts")
+	await wait_process_frames(3)
+	bulle._replique.skip_typing()
+	await wait_process_frames(3)
+	var icone: TextureRect = bulle._options.find_children("*", "TextureRect", true, false)[0]
+	var signe := icone.get_parent() as HBoxContainer
+	assert_eq(signe.get_theme_constant(&"separation"), 6)
+	assert_eq(signe.get_child_count(), 2)

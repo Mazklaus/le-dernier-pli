@@ -174,6 +174,11 @@ func _bouton_option(i: int, option: Dictionary) -> Button:
 	rangee.add_child(texte)
 	var affiches: Dictionary = option["couts_affiches"]
 	for nom: StringName in affiches:
+		# Icône et chiffre serrés (6 px) pour se lire comme un seul signe.
+		var signe := HBoxContainer.new()
+		signe.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		signe.add_theme_constant_override(&"separation", 6)
+		rangee.add_child(signe)
 		var icone := TextureRect.new()
 		icone.texture = StylePapier.icone(ICONES_COUTS.get(nom, ""))
 		icone.custom_minimum_size = Vector2.ONE * roundf(_taille() * 0.9)
@@ -182,13 +187,13 @@ func _bouton_option(i: int, option: Dictionary) -> Button:
 		icone.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		icone.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		icone.tooltip_text = String(nom)
-		rangee.add_child(icone)
+		signe.add_child(icone)
 		var cout := _etiquette("−%d" % int(affiches[nom]), police_texte, roundi(_taille() * 0.78), ENCRE)
 		cout.set_meta(&"jauge", nom)
 		if option["bave"]:
 			_faire_baver(cout)
 			icone.modulate = Color(1, 0.85, 0.85)
-		rangee.add_child(cout)
+		signe.add_child(cout)
 	if option["bave"] and affiches.is_empty():
 		_faire_baver(texte)
 	if bouton.disabled:
