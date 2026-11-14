@@ -144,3 +144,39 @@ func test_pas_de_traduction_de_disposition_sans_ecran_ni_sur_le_web() -> void:
 	# En CI (headless), et sur le web (#23), le glyphe vient de la touche physique.
 	assert_false(InviteInteraction.disposition_disponible())
 	assert_eq(InviteInteraction.glyphe_action(&"interagir"), "E")
+
+
+func test_retenu_le_hud_ne_s_efface_pas() -> void:
+	Reglages.changer(&"hud_contextuel", true)
+	var hud := _hud()
+	hud.retenir(true)
+	hud._estomper()
+	await wait_seconds(HudJauges.DUREE_FONDU + 0.2)
+	assert_almost_eq(hud.modulate.a, 1.0, 0.01)
+	hud.retenir(false)
+	hud._estomper()
+	await wait_seconds(HudJauges.DUREE_FONDU + 0.2)
+	assert_almost_eq(hud.modulate.a, 0.0, 0.01, "relâché : le mode contextuel reprend")
+
+
+func test_la_bulle_retient_le_hud_pendant_un_choix_avec_couts() -> void:
+	var hud := _hud()
+	var bulle: Node = add_child_autofree(SceneBulle.instantiate())
+	bulle.start(Dialogue, "couts")
+	await wait_process_frames(3)
+	bulle._replique.skip_typing()
+	await wait_process_frames(3)
+	assert_true(hud._retenu, "options avec coûts : HUD retenu")
+	bulle.choisir(0)
+	await wait_process_frames(3)
+	assert_false(hud._retenu, "choix fait : HUD relâché")
+
+
+func test_options_numerotees_avec_un_point() -> void:
+	var bulle: Node = add_child_autofree(SceneBulle.instantiate())
+	bulle.start(Dialogue, "couts")
+	await wait_process_frames(3)
+	bulle._replique.skip_typing()
+	await wait_process_frames(3)
+	var etiquettes: Array[Node] = bulle._options.find_children("*", "Label", true, false)
+	assert_eq((etiquettes[0] as Label).text, "1.")

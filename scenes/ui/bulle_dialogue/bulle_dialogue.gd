@@ -99,6 +99,16 @@ func choisir(i: int) -> void:
 	_suivante(reponse.next_id)
 
 
+func _exit_tree() -> void:
+	_retenir_hud(false)
+
+
+## Garde le HUD des jauges pleinement visible pendant un choix avec coûts.
+func _retenir_hud(actif: bool) -> void:
+	if is_inside_tree():
+		get_tree().call_group(HudJauges.GROUPE, &"retenir", actif)
+
+
 func _suivante(id: String) -> void:
 	_attend_suite = false
 	_afficher(await ressource.get_next_dialogue_line(id, _etats))
@@ -134,6 +144,7 @@ func _montrer_options() -> void:
 	for r: DialogueResponse in ligne.responses:
 		brutes.append({"texte": r.text, "tags": r.tags, "autorisee": r.is_allowed})
 	options_affichees = OptionsDialogue.presenter(brutes, _rng)
+	_retenir_hud(options_affichees.any(func(o: Dictionary) -> bool: return not (o["couts_affiches"] as Dictionary).is_empty()))
 	for i in options_affichees.size():
 		var bouton := _bouton_option(i, options_affichees[i])
 		_options.add_child(bouton)
@@ -156,7 +167,7 @@ func _bouton_option(i: int, option: Dictionary) -> Button:
 	rangee.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	rangee.add_theme_constant_override(&"separation", 14)
 	bouton.add_child(rangee)
-	rangee.add_child(_etiquette(str(i + 1), police_texte, roundi(_taille() * 0.76), LAVIS))
+	rangee.add_child(_etiquette("%d." % (i + 1), police_texte, roundi(_taille() * 0.76), LAVIS))
 	var texte := _etiquette(option["texte"], police_texte, roundi(_taille() * 0.93), ENCRE)
 	texte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	texte.clip_text = true
@@ -198,6 +209,7 @@ func _faire_baver(etiquette: Label) -> void:
 
 
 func _vider_options() -> void:
+	_retenir_hud(false)
 	for b in _boutons:
 		b.queue_free()
 	_boutons.clear()
