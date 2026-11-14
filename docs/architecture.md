@@ -53,7 +53,7 @@ Fichiers `.dialogue` (Dialogue Manager 4). Conditions et effets appellent l'API 
 
 ## Rendu et assets
 
-Base 1920x1080, stretch `canvas_items`, aspect `expand`. Filtrage linéaire sans mipmaps (jamais `nearest`). Textures ≤ 4096 px, décors découpés en tuiles de 2048. Calques rouges suffixés `_red`. Une seule passe plein écran. Budget du build web de l'étape 1 : 60 Mo.
+Base 1920x1080, stretch `canvas_items`, aspect `expand`. Filtrage linéaire sans mipmaps (jamais `nearest`). Textures ≤ 4096 px, décors découpés en tuiles de 2048. Calques rouges suffixés `_red`. Une seule passe plein écran. Budget du build web : 60 Mo **téléchargés** (somme des fichiers compressés en gzip, ce que servent GitHub Pages et itch.io), mesuré par la CI à chaque export web. Le poids sur disque est affiché à côté pour information.
 
 ## Web
 

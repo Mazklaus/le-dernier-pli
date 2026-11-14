@@ -100,6 +100,10 @@ func _creer_voiles() -> void:
 		var voile := Sprite2D.new()
 		voile.texture = load(chemin) as Texture2D
 		voile.centered = false
+		# La texture est une petite tuile qui se raccorde (DA) : on la répète sur tout l'écran.
+		voile.region_enabled = true
+		voile.region_rect = Rect2(0, 0, 1920, 1080)
+		voile.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 		voile.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		voile.modulate.a = 0.0
 		voile.visible = false
