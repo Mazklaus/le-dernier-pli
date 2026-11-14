@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3]
+[gd_scene load_steps=31 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_01/etape_01.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_01/lieux/couchette.tscn" id="2"]
@@ -14,6 +14,7 @@
 [ext_resource type="Resource" path="res://dialogue/etape_01/e1_guetteur.dialogue" id="12"]
 [ext_resource type="Resource" path="res://dialogue/etape_01/e1_parapet.dialogue" id="13"]
 [ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="14"]
+[ext_resource type="Script" path="res://scenes/decors/decor_e1.gd" id="decor_e1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(3840, 180)
@@ -68,6 +69,9 @@ lieux_musique = {
 &"abri_sergent": "theme",
 &"chapelle": "theme"
 }
+
+[node name="Decors" type="Node2D" parent="."]
+script = ExtResource("decor_e1")
 
 [node name="Surface" type="Node2D" parent="."]
 

@@ -1,0 +1,53 @@
+extends GutTest
+## Décor de surface de l'étape 1 : cinq plans aux vitesses et largeurs de la planche du DA,
+## cendre en boucle, fonds gris de la maquette masqués, Chicane habillée.
+
+const ETAPE := preload("res://scenes/etapes/etape_01/etape_01.tscn")
+## [vitesse, largeur attendue] (planche du DA, niveau de 10624 px).
+const ATTENDU := [[0.05, 2355.0], [0.2, 3661.0], [0.5, 6272.0], [1.0, 10624.0], [1.4, 14106.0]]
+
+var _etape: EtapeBase
+var _decor: DecorE1
+
+
+func before_each() -> void:
+	_etape = ETAPE.instantiate()
+	add_child_autofree(_etape)
+	await wait_process_frames(2)
+	_decor = _etape.get_node("Decors") as DecorE1
+
+
+func test_cinq_plans_aux_bonnes_vitesses_et_largeurs() -> void:
+	assert_eq(_decor.plans.size(), 5)
+	for i in mini(_decor.plans.size(), ATTENDU.size()):
+		var plan := _decor.plans[i]
+		assert_almost_eq(plan.scroll_scale.x, float(ATTENDU[i][0]), 0.001, plan.name)
+		assert_almost_eq(DecorParallaxe.largeur(plan), float(ATTENDU[i][1]), 1.0, plan.name)
+
+
+func test_premier_plan_devant_les_autres_derriere() -> void:
+	for plan in _decor.plans:
+		if plan.scroll_scale.x > 1.0:
+			assert_gt(plan.z_index, 0, plan.name)
+		else:
+			assert_lt(plan.z_index, 0, plan.name)
+
+
+func test_cendre_entre_le_plan_2_et_le_plan_3() -> void:
+	assert_not_null(_decor.cendre)
+	var z := (_decor.cendre.get_parent() as Node2D).z_index
+	assert_gt(z, _decor.plans[2].z_index)
+	assert_lt(z, _decor.plans[3].z_index)
+	var avant := _decor.cendre.region_rect.position.y
+	await wait_process_frames(10)
+	assert_ne(_decor.cendre.region_rect.position.y, avant, "la cendre tombe")
+
+
+func test_fonds_maquette_masques_et_chicane_habillee() -> void:
+	for section in _etape.get_node("Surface").get_children():
+		var fond := section.get_node_or_null("Fond") as CanvasItem
+		if fond != null:
+			assert_false(fond.visible, section.name)
+	var chicane := _etape.get_node("Surface/BoyauArriere/Chicane")
+	assert_not_null(chicane.get_node_or_null("Dessin"))
+	assert_false((chicane.get_node("Visuel") as CanvasItem).visible)
