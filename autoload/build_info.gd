@@ -1,5 +1,5 @@
 extends CanvasLayer
-## Autoload BuildInfo : affiche le SHA du commit en coin d'écran dans les builds debug,
+## Autoload BuildInfo : affiche le SHA du commit en bas à gauche dans les builds debug,
 ## pour que le QA le reporte dans chaque issue. Le fichier build_sha.txt est écrit par la CI.
 
 const FICHIER_SHA := "res://build_sha.txt"
@@ -26,10 +26,10 @@ func _ready() -> void:
 	label.add_theme_font_size_override(&"font_size", 12)
 	label.add_theme_color_override(&"font_color", Color("#4A463D"))
 	plaque.add_child(label)
-	plaque.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	plaque.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	plaque.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	plaque.grow_horizontal = Control.GROW_DIRECTION_END
 	plaque.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	plaque.offset_right = -24
+	plaque.offset_left = 24
 	plaque.offset_bottom = -24
 	plaque.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(plaque)

@@ -6,7 +6,7 @@ body:
     id: build
     attributes:
       label: Build (SHA)
-      description: Le SHA affiché en bas à droite de l'écran.
+      description: Le SHA affiché en bas à gauche de l'écran.
       placeholder: "a1b2c3d"
     validations:
       required: true

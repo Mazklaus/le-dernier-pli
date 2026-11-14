@@ -21,7 +21,7 @@ Conventions d'assets : `python3 tools/check_assets.py`.
 
 ## Builds
 
-Chaque pull request produit des builds **debug** Web, Windows et Linux (onglet Actions, artefacts `build-<plateforme>-debug`), avec le menu de débogage (F1) et le SHA du commit en bas à droite. Chaque merge sur `main` publie la version release sur GitHub Pages.
+Chaque pull request produit des builds **debug** Web, Windows et Linux (onglet Actions, artefacts `build-<plateforme>-debug`), avec le menu de débogage (F1) et le SHA du commit en bas à gauche. Chaque merge sur `main` publie la version release sur GitHub Pages.
 
 ## Documentation
 
