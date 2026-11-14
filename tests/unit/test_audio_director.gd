@@ -119,3 +119,17 @@ func test_les_fils_ne_s_entendent_que_dans_le_noir() -> void:
 	ad._dans_le_noir = false
 	ad._maj_sons_du_noir(0.0)
 	assert_eq(fils.volume_db, MixageSon.GAIN_MUET_DB)
+
+
+func test_un_seul_fondu_du_noir_par_emetteur() -> void:
+	var ad := _director_etape_1()
+	var fils := AudioStreamPlayer2D.new()
+	fils.add_to_group(AudioDirectorScript.GROUPE_SON_DU_NOIR)
+	add_child_autofree(fils)
+	ad._dans_le_noir = true
+	ad._regler_son_du_noir(fils, 3.0)
+	var premier: Tween = fils.get_meta(&"fondu_noir")
+	ad._dans_le_noir = false
+	ad._regler_son_du_noir(fils, 3.0)
+	assert_false(premier.is_valid(), "le premier fondu est tué")
+	assert_ne(fils.get_meta(&"fondu_noir"), premier)
