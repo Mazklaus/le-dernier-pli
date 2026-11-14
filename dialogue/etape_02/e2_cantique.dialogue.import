@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://d1dk6cuwsta5t"
+path="res://.godot/imported/e2_cantique.dialogue-a34e4d059ff908aba8fe2cb2a6d7cc37.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_02/e2_cantique.dialogue"
+dest_files=["res://.godot/imported/e2_cantique.dialogue-a34e4d059ff908aba8fe2cb2a6d7cc37.tres"]
+
+[params]
+
+defaults=true

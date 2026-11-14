@@ -1,0 +1,28 @@
+# Étape 2, rencontre 4 : la sacoche. Le choix à 2 points de l'étape.
+# Prendre ses vivres (+1 Vivres, sans marque) ; porter sa lettre (Promesse « La lettre de Matthieu »,
+# résolue à l'étape 7) ; rendre ses rites (−2 Vivres, Nom retenu « Il s'appelait Matthieu ») ; laisser.
+# Garde-fou : faire naître une question (où est-il ? où est son pli ?), sans chiffre ni série.
+
+~ debut
+
+Tobie: Au fond du trou, une sacoche de coureur. La même que la mienne.
+Tobie: Pas de corps autour. Pas de traces. Juste la sacoche, posée comme on pose un sac à la maison.
+Tobie: Un prénom brodé sur la sangle : Matthieu. Au fond, une tache de cire noire. Pas de pli.
+Tobie: Une lettre, pliée en quatre.
+Tobie: « Ma Lise. Je n'ai pas le droit de te dire où je vais. Je ne le sais pas moi-même. »
+Tobie: « Je crois que » ... La phrase s'arrête là.
+Tobie: Où es-tu allé, Matthieu ? Et où est ton pli ?
+- [Prendre ses vivres] Il n'en a plus besoin.
+	do GameState.appliquer_effets({&"vivres": 1})
+	Tobie: Deux biscuits et une pomme sèche. Je laisse la lettre où elle est.
+- [Prendre la lettre] Je la porterai jusqu'au bout.
+	Tobie: Je la glisse contre mon pli. Quelqu'un, là-bas, saura peut-être qui est Lise.
+	do GameState.ajouter_marque(&"la_lettre_de_matthieu", &"promesse", &"e2_sacoche")
+- [Lui rendre ses rites] Laisser ma ration en offrande. [#cout_vivres=2]
+	Tobie: Je pose mon pain dans la sacoche, et je dis la prière des morts. Mal, mais en entier.
+	Tobie: Matthieu. Je retiendrai ton nom.
+	do GameState.ajouter_marque(&"il_s_appelait_matthieu", &"nom_retenu", &"e2_sacoche")
+- [Laisser la sacoche]
+	Tobie: Je referme la sacoche. Ce n'est pas à moi de l'ouvrir.
+
+=> END

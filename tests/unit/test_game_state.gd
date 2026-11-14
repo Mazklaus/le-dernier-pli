@@ -181,6 +181,23 @@ func test_rechauffer_coute_une_huile_et_implique_abime() -> void:
 	assert_true(gs.sceau_rechauffe)
 
 
+func test_rechauffer_gratuit_ne_coute_pas_d_huile_meme_a_plein() -> void:
+	gs.passer_etape()
+	gs.modifier_jauge(&"huile", 10)
+	assert_eq(gs.huile, gs.HUILE_MAX)
+	assert_true(gs.rechauffer_sceau(true))
+	assert_eq(gs.huile, gs.HUILE_MAX, "la flamme de Brisse ne prend rien")
+	assert_true(gs.sceau_abime)
+	assert_true(gs.sceau_rechauffe)
+
+
+func test_rechauffer_gratuit_possible_sans_huile() -> void:
+	gs.passer_etape()
+	gs.modifier_jauge(&"huile", -10)
+	assert_false(gs.peut_rechauffer_sceau())
+	assert_true(gs.peut_rechauffer_sceau(true))
+
+
 func test_lignes_du_pli_dans_l_ordre_une_par_etape() -> void:
 	gs.passer_etape()
 	gs.rechauffer_sceau()
