@@ -2,12 +2,11 @@ class_name RepereExamen
 extends Node2D
 ## Repère au-dessus d'un détail pas encore examiné (spec UI/UX v2) : le sprite du DA
 ## ui_repere-detail (astérisque à la plume sur papier déchiré, 40×40 à 1080), lisible sur tout
-## fond, immobile, visible de plus loin que l'invite (deux fois le rayon d'interaction) pour
-## qu'on ne rate pas le détail en marchant. Disparaît une fois examiné.
+## fond, immobile, visible dès que le détail est à l'écran (UI/UX : la règle la plus simple pour
+## un joueur curieux). Disparaît une fois examiné.
 
 const SPRITE := "res://assets/graphics/ui/ui_repere-detail.png"
 const TAILLE := 40.0
-const PORTEE := Messager.RAYON_INTERACTION * 2.0
 ## Hauteur au-dessus de l'origine du détail.
 const HAUTEUR := 190.0
 const DUREE_FONDU := 0.25
@@ -38,9 +37,17 @@ func est_examine() -> bool:
 
 
 func doit_paraitre() -> bool:
-	if est_examine():
+	if est_examine() or not is_inside_tree():
 		return false
-	var messager := get_tree().get_first_node_in_group(Messager.GROUPE) as Node2D
-	if messager == null:
-		return false
-	return messager.global_position.distance_to(get_parent().global_position) <= PORTEE
+	return est_a_l_ecran(global_position, ecran_monde())
+
+
+## Le rectangle visible de la vue, en coordonnées du monde (caméra comprise).
+func ecran_monde() -> Rect2:
+	var vue := get_viewport()
+	return vue.get_canvas_transform().affine_inverse() * vue.get_visible_rect()
+
+
+## Le repère compte comme à l'écran si son dessin y entre, même en partie.
+static func est_a_l_ecran(point: Vector2, ecran: Rect2) -> bool:
+	return ecran.grow(TAILLE / 2.0).has_point(point)
