@@ -65,6 +65,7 @@ size = Vector2(64, 1080)
 script = ExtResource("1")
 limite_surface_y = 1150.0
 numero_etape = 1
+bornes_camera_surface = Vector2(0, 10624)
 lieux_musique = {
 &"abri_sergent": "theme",
 &"chapelle": "theme"

@@ -66,6 +66,19 @@ func placer_devant(declencheur: Node2D) -> void:
 	_silhouette.scale.x = regard
 
 
+## Bornes horizontales de la caméra (surface d'une étape, pour le décor parallaxe).
+func borner_camera(gauche: int, droite: int) -> void:
+	_camera.limit_left = gauche
+	_camera.limit_right = droite
+	_camera.reset_smoothing()
+
+
+func liberer_camera() -> void:
+	_camera.limit_left = -10000000
+	_camera.limit_right = 10000000
+	_camera.reset_smoothing()
+
+
 ## Déplacement instantané (passages, saut de débogage) : la caméra suit sans glisser.
 func teleporter(position_globale: Vector2) -> void:
 	global_position = position_globale

@@ -51,3 +51,25 @@ func test_fonds_maquette_masques_et_chicane_habillee() -> void:
 	var chicane := _etape.get_node("Surface/BoyauArriere/Chicane")
 	assert_not_null(chicane.get_node_or_null("Dessin"))
 	assert_false((chicane.get_node("Visuel") as CanvasItem).visible)
+
+
+func test_camera_bornee_a_la_surface_libre_sous_terre() -> void:
+	var messager := _etape.trouver_messager()
+	var camera := messager.get_node("%Camera") as Camera2D
+	messager.teleporter(_etape.find_child("porte_cantine", true, false).global_position)
+	assert_eq(camera.limit_left, 0)
+	assert_eq(camera.limit_right, 10624)
+	messager.teleporter(_etape.find_child("entree_cantine", true, false).global_position)
+	assert_lt(camera.limit_left, -100000, "sous terre : pas de borne")
+
+
+func test_decalage_parallaxe_depuis_le_bord_gauche_de_l_ecran() -> void:
+	# Planche du DA : x du plan = bord gauche de la caméra × (1 − vitesse), et non le centre.
+	var messager := _etape.trouver_messager()
+	messager.teleporter(_etape.find_child("porte_cantine", true, false).global_position)
+	await wait_process_frames(5)
+	var bord_gauche := -get_viewport().get_canvas_transform().origin.x
+	assert_gt(bord_gauche, 0.0)
+	for plan in _decor.plans:
+		var attendu := bord_gauche * (1.0 - plan.scroll_scale.x)
+		assert_almost_eq(plan.get_child(0).global_position.x, attendu, 2.0, plan.name)
