@@ -40,7 +40,7 @@ Nommage et formats vérifiés par `tools/check_assets.py` (voir `tools/README` d
 
 ## Bugs
 
-Issues GitHub avec le modèle « Bug ». Toujours indiquer le SHA affiché en bas à droite du build. Labels :
+Issues GitHub avec le modèle « Bug ». Toujours indiquer le SHA affiché en bas à gauche du build. Labels :
 - `type:bug`
 - `sev:bloquante`, `sev:majeure`, `sev:mineure`, `sev:cosmetique`
 - `plateforme:web`, `plateforme:windows`, `plateforme:linux`
