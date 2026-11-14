@@ -101,3 +101,21 @@ func test_repere_visible_de_loin_et_efface_une_fois_examine() -> void:
 	m.global_position = Vector2(500 + 50, 500)
 	GameState.marquer_rencontre_vue(&"e9_detail_test")
 	assert_false(detail.repere.doit_paraitre(), "examiné : plus de repère")
+
+
+func test_les_douze_details_de_l_etape_1_ont_leur_repere() -> void:
+	# Garde-fou : un renommage d'id ne doit pas faire disparaître un astérisque sans prévenir.
+	var etape: EtapeBase = add_child_autofree(load("res://scenes/etapes/etape_01/etape_01.tscn").instantiate())
+	var avec_repere := 0
+	for n in get_tree().get_nodes_in_group(Interactif.GROUPE):
+		if n is DeclencheurDialogue and etape.is_ancestor_of(n) and (n as DeclencheurDialogue).repere != null:
+			avec_repere += 1
+	assert_eq(avec_repere, 12, "12 détails à examiner (Level Designer, #29)")
+
+
+func test_est_detail_force_le_repere() -> void:
+	var d: DeclencheurDialogue = SceneDeclencheur.instantiate()
+	d.rencontre_id = &"e9_ecriteau"
+	d.est_detail = true
+	add_child_autofree(d)
+	assert_not_null(d.repere)

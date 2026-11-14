@@ -24,9 +24,9 @@ signal dialogue_termine(declencheur: DeclencheurDialogue)
 @export var une_seule_fois: bool = false
 ## À la fin du dialogue principal, passe à l'étape suivante.
 @export var fin_etape: bool = false
-## Repère gravé (astérisque) au-dessus du détail tant qu'il n'est pas examiné. Activé
+## Détail à examiner : repère gravé (astérisque) tant qu'il n'est pas examiné. Activé
 ## d'office pour les détails à examiner (rencontre_id contenant « _detail_ »).
-@export var repere_examen: bool = false
+@export var est_detail: bool = false
 
 var en_cours: bool = false
 var repere: RepereExamen = null
@@ -34,7 +34,7 @@ var repere: RepereExamen = null
 
 func _ready() -> void:
 	super()
-	if repere_examen or String(rencontre_id).contains("_detail_"):
+	if est_detail or String(rencontre_id).contains("_detail_"):
 		repere = RepereExamen.new()
 		repere.rencontre_id = rencontre_id
 		add_child(repere)
