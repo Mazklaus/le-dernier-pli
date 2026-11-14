@@ -9,6 +9,10 @@ const SCENE := "res://scenes/ui/interface_jeu/interface_jeu.tscn"
 @onready var invite: InviteInteraction = %InviteInteraction
 
 
+func _process(_delta: float) -> void:
+	invite.zones_interdites = hud.zones_plaques()
+
+
 ## Branche l'interface sur le messager de l'étape.
 func brancher(messager: Messager) -> void:
 	invite.suivre(messager)

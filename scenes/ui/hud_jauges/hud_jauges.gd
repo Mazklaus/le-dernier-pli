@@ -69,6 +69,15 @@ func _process(delta: float) -> void:
 	_sceau.position = secousse
 
 
+## Rectangles écran des deux plaques (l'invite d'interaction ne passe jamais dessous).
+func zones_plaques() -> Array[Rect2]:
+	var zones: Array[Rect2] = []
+	for plaque: Control in [_ceinture, _coin]:
+		if plaque != null and plaque.is_visible_in_tree():
+			zones.append(plaque.get_global_rect())
+	return zones
+
+
 ## Relit tout l'état de GameState (au démarrage, après un chargement, un réglage).
 func actualiser() -> void:
 	var chiffres: bool = Reglages.valeur(&"valeurs_chiffrees")
