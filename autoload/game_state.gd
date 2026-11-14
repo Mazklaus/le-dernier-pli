@@ -329,14 +329,17 @@ func gestes_sceau_permis() -> bool:
 
 
 ## Réchauffer la cire à la lanterne : 1 Huile. Implique abîmé.
-func peut_rechauffer_sceau() -> bool:
-	return gestes_sceau_permis() and not sceau_rechauffe and not sceau_ouvert and huile >= 1
+## `gratuit` : un tiers réchauffe la cire à sa flamme (ex. le caporal Brisse, étape 2) :
+## pas d'Huile requise ni prélevée.
+func peut_rechauffer_sceau(gratuit: bool = false) -> bool:
+	return gestes_sceau_permis() and not sceau_rechauffe and not sceau_ouvert and (gratuit or huile >= 1)
 
 
-func rechauffer_sceau() -> bool:
-	if not peut_rechauffer_sceau():
+func rechauffer_sceau(gratuit: bool = false) -> bool:
+	if not peut_rechauffer_sceau(gratuit):
 		return false
-	modifier_jauge(HUILE, -1)
+	if not gratuit:
+		modifier_jauge(HUILE, -1)
 	abimer_sceau()
 	sceau_rechauffe = true
 	sceau_change.emit(&"rechauffe")

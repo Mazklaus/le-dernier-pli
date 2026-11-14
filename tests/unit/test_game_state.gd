@@ -181,6 +181,21 @@ func test_rechauffer_coute_une_huile_et_implique_abime() -> void:
 	assert_true(gs.sceau_rechauffe)
 
 
+func test_rechauffer_gratuit_sans_huile_ni_prelevement() -> void:
+	gs.passer_etape()
+	gs.modifier_jauge(&"huile", 2)
+	assert_eq(gs.huile, 6, "huile au maximum")
+	assert_true(gs.rechauffer_sceau(true))
+	assert_eq(gs.huile, 6, "rien de prélevé")
+	assert_true(gs.sceau_rechauffe)
+	assert_true(gs.sceau_abime)
+	gs.reinitialiser()
+	gs.passer_etape()
+	gs.modifier_jauge(&"huile", -10)
+	assert_false(gs.peut_rechauffer_sceau(), "payant : il faut 1 Huile")
+	assert_true(gs.peut_rechauffer_sceau(true), "gratuit : possible sans Huile")
+
+
 func test_lignes_du_pli_dans_l_ordre_une_par_etape() -> void:
 	gs.passer_etape()
 	gs.rechauffer_sceau()
