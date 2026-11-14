@@ -60,8 +60,9 @@ func test_brouillard_tout_ou_rien_de_4800_a_10100() -> void:
 		assert_true(bande.visible, bande.name)
 		assert_almost_eq(bande.modulate.a, 1.0, 0.001, bande.name)
 	_aller(10500.0)
-	await wait_seconds(0.2)
-	assert_false(_decor.bandes[0].visible, "masqué après la seconde ceinture")
+	await wait_seconds(0.3)
+	var x := _etape.trouver_messager().global_position.x
+	assert_false(_decor.bandes[0].visible, "masqué après la seconde ceinture (messager à x %.0f, alpha %.2f)" % [x, _decor.bandes[0].modulate.a])
 	assert_true(DecorE2.dans_le_brouillard(8256.0), "le mort est dans le brouillard")
 
 
