@@ -1,0 +1,156 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_reveil.dialogue" id="2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(1920, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(1920, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
+size = Vector2(64, 750)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
+size = Vector2(64, 750)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5"]
+size = Vector2(160, 300)
+
+[node name="Couchette" type="Node2D"]
+
+[node name="Fond" type="ColorRect" parent="."]
+offset_left = 0.0
+offset_top = 450.0
+offset_right = 1920.0
+offset_bottom = 900.0
+color = Color(0.55, 0.53, 0.5, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Sol" type="StaticBody2D" parent="."]
+position = Vector2(960.0, 990.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Sol"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Visuel" type="ColorRect" parent="Sol"]
+offset_left = -960.0
+offset_top = -90.0
+offset_right = 960.0
+offset_bottom = 90.0
+color = Color(0.35, 0.35, 0.35, 1)
+mouse_filter = 2
+
+[node name="Plafond" type="StaticBody2D" parent="."]
+position = Vector2(960.0, 390.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Plafond"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="Visuel" type="ColorRect" parent="Plafond"]
+offset_left = -960.0
+offset_top = -60.0
+offset_right = 960.0
+offset_bottom = 60.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="MurGauche" type="StaticBody2D" parent="."]
+position = Vector2(-32.0, 705.0)
+
+[node name="Forme" type="CollisionShape2D" parent="MurGauche"]
+shape = SubResource("RectangleShape2D_3")
+
+[node name="Visuel" type="ColorRect" parent="MurGauche"]
+offset_left = -32.0
+offset_top = -375.0
+offset_right = 32.0
+offset_bottom = 375.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="MurDroit" type="StaticBody2D" parent="."]
+position = Vector2(1952.0, 705.0)
+
+[node name="Forme" type="CollisionShape2D" parent="MurDroit"]
+shape = SubResource("RectangleShape2D_4")
+
+[node name="Visuel" type="ColorRect" parent="MurDroit"]
+offset_left = -32.0
+offset_top = -375.0
+offset_right = 32.0
+offset_bottom = 375.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="Titre" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 466.0
+offset_right = 1240.0
+offset_bottom = 522.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 40
+text = "1 Couchette (sous terre) · 1 écran(s)"
+
+[node name="Rencontres" type="Node2D" parent="."]
+
+[node name="Passages" type="Node2D" parent="."]
+
+[node name="Points" type="Node2D" parent="."]
+
+[node name="e1_reveil" parent="Rencontres" instance=ExtResource("1")]
+position = Vector2(520, 900)
+rencontre_id = &"e1_reveil"
+dialogue = ExtResource("2")
+libelle = "Parler à Jacquot"
+metadata/note_level_design = "Jacquot réveille Tobie et indique l'abri du sergent"
+
+[node name="Visuel" type="ColorRect" parent="Rencontres/e1_reveil"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.75, 0.1, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Rencontres/e1_reveil"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e1_reveil"
+
+[node name="SortieCouchette" type="Area2D" parent="Passages" groups=["passages"]]
+position = Vector2(1700, 750.0)
+metadata/vers = "boyau_arriere"
+metadata/note_level_design = "Escalier de rondins vers le boyau arrière"
+
+[node name="Forme" type="CollisionShape2D" parent="Passages/SortieCouchette"]
+shape = SubResource("RectangleShape2D_5")
+
+[node name="Visuel" type="ColorRect" parent="Passages/SortieCouchette"]
+offset_left = -80.0
+offset_top = -150.0
+offset_right = 80.0
+offset_bottom = 150.0
+color = Color(0.2, 0.35, 0.6, 0.35)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Passages/SortieCouchette"]
+offset_left = -80.0
+offset_top = 158.0
+offset_right = 1120.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-> boyau_arriere"
+
+[node name="entree_couchette" type="Marker2D" parent="Points"]
+position = Vector2(360, 900)
+
+[node name="sortie_couchette" type="Marker2D" parent="Points"]
+position = Vector2(1560, 900)
