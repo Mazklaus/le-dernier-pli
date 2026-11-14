@@ -33,3 +33,19 @@ Sentinelle: Passe.
 Lamarre: Cours, et compte pas.
 
 => END
+
+~ couts
+
+Ravaude: Choisis.
+- Partager [#cout_vivres=1]
+	Ravaude: Merci.
+- Allumer [#cout_huile=1, #sans_prelevement]
+	Ravaude: Lumière.
+- Interdit [if GameState.valeur(&"huile") >= 99] [#cache]
+	Ravaude: Jamais.
+- Grisé [if GameState.valeur(&"huile") >= 99]
+	Ravaude: Jamais.
+- Rien
+	Ravaude: Bon.
+
+=> END

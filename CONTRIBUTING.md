@@ -8,7 +8,7 @@
 - Identifiants de données en `StringName` (`&"vivres"`), pas en chaînes libres.
 - Ordre dans un script : `extends`, `class_name`, doc `##`, signaux, constantes, `@export`, variables, `_init`/`_ready`, fonctions publiques, fonctions privées.
 - Pas de `class_name` sur un autoload. Pas de chemin de nœud fragile (`get_node("../../X")`) : préférer `@export` ou `%NomUnique`.
-- Aucune touche codée en dur : toujours une action de l'Input Map. Actions actuelles : `deplacer_gauche`, `deplacer_droite`, `interagir`, `annuler`, `clic`, `debug_menu`. Les touches sont en `physical_keycode` (A/D = Q/D en AZERTY).
+- Aucune touche codée en dur : toujours une action de l'Input Map. Actions actuelles : `deplacer_gauche`, `deplacer_droite`, `interagir`, `annuler`, `clic`, `choix_1` à `choix_4` (chiffres et pavé numérique), `debug_menu`. Les touches sont en `physical_keycode` (A/D = Q/D en AZERTY).
 - Personne n'écrit les variables de `GameState` directement : passer par son API.
 - Une règle de jeu non triviale vient avec un test GUT dans `tests/unit/`.
 - Indentation : tabulations (`.editorconfig`).
