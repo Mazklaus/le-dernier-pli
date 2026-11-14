@@ -254,7 +254,17 @@ def ecrire_tuiles(plan: int, nom: str, contenu: str, largeur: int) -> int:
 def fx() -> None:
     """Calques séparés que le code montre, cache ou déplace."""
     FX.mkdir(parents=True, exist_ok=True)
-    # trois bandes de brouillard en aplat de mine, bord haut découpé net, raccord en boucle sur x
+    # Trois bandes de brouillard opaques mais gravées : valeur de mine gardée, texture de densité croissante
+    # (loin = mine rayée de papier, milieu = mine hachurée de lavis, près = contre-hachure de lavis), bord haut découpé net et souligné.
+    motifs = (
+        ('<pattern id="b1" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(38)">'
+         f'<rect width="7" height="7" fill="{MINE}"/><line x1="0" y1="0" x2="0" y2="7" stroke="{PAPIER}" stroke-width="1.2"/></pattern>'),
+        ('<pattern id="b2" width="4.5" height="4.5" patternUnits="userSpaceOnUse" patternTransform="rotate(38)">'
+         f'<rect width="4.5" height="4.5" fill="{MINE}"/><line x1="0" y1="0" x2="0" y2="4.5" stroke="{LAVIS}" stroke-width="1.2"/></pattern>'),
+        ('<pattern id="b3" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(38)">'
+         f'<rect width="4" height="4" fill="{MINE}"/><line x1="0" y1="0" x2="0" y2="4" stroke="{LAVIS}" stroke-width="1.4"/>'
+         f'<line x1="0" y1="2" x2="4" y2="2" stroke="{LAVIS}" stroke-width="1"/></pattern>'),
+    )
     for i, (haut, amp, seed) in enumerate(((420, 14, 71), (620, 10, 72), (850, 6, 73))):
         r = rnd(seed)
         pts = [(0, haut)]
@@ -263,9 +273,12 @@ def fx() -> None:
             x += r.randint(220, 460)
             pts.append((x, haut + r.uniform(-amp, amp)))
         pts.append((1920, haut))
-        d = "M" + " L".join(f"{px:.0f} {py:.0f}" for px, py in pts) + f" L1920 {H} L0 {H} Z"
+        bord = "M" + " L".join(f"{px:.0f} {py:.0f}" for px, py in pts)
+        d = bord + f" L1920 {H} L0 {H} Z"
         (FX / f"fx_brouillard_{i + 1:02d}.svg").write_text(
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="{H}" viewBox="0 0 1920 {H}"><path d="{d}" fill="{MINE}"/></svg>\n')
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="{H}" viewBox="0 0 1920 {H}"><defs>{motifs[i]}</defs>'
+            f'<path d="{d}" fill="url(#b{i + 1})"/>'
+            f'<path d="{bord}" fill="none" stroke="{LAVIS}" stroke-width="1.5"/></svg>\n')
     # cheval de frise qui ferme la chicane de Brisse (retiré quand le verrou s'ouvre)
     (FX / "fx_cheval-frise.svg").write_text(
         f'<svg xmlns="http://www.w3.org/2000/svg" width="200" height="220" viewBox="0 0 200 220">{DEFS2}'
