@@ -45,3 +45,26 @@ func test_jouer_timbre_inconnu_ne_joue_rien() -> void:
 	var avant := ad.get_child_count()
 	ad.jouer_timbre("personne")
 	assert_eq(ad.get_child_count(), avant, "aucun lecteur créé sans fichier vox_")
+
+
+func test_arreter_musique_sans_musique_ne_fait_rien() -> void:
+	var ad := _director_etape_1()
+	ad.arreter_musique()
+	assert_false(ad._musique.playing)
+
+
+func test_jouer_musique_absente_ne_joue_rien() -> void:
+	var ad := _director_etape_1()
+	ad.audio_deverrouille = true
+	ad.jouer_musique(1, "inexistant", 0.0)
+	assert_false(ad._musique.playing)
+
+
+func test_jouer_musique_theme_joue_a_plein_volume_sans_fondu() -> void:
+	var ad := _director_etape_1()
+	ad.audio_deverrouille = true
+	ad.jouer_musique(1, "theme", 0.0)
+	assert_true(ad._musique.playing)
+	assert_almost_eq(ad._musique.volume_db, 0.0, 0.01)
+	ad.arreter_musique(0.0)
+	assert_false(ad._musique.playing)

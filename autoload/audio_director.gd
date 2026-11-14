@@ -35,6 +35,8 @@ const COUCHES_AUTRE: Array[String] = ["autre"]
 const COUCHES_VOIX: Array[String] = ["surface-voix"]
 ## Variantes de timbre de dialogue : vox_<personnage>_01 à _03.
 const VARIANTES_TIMBRE := 3
+## Entrée et sortie de la musique, en secondes.
+const DUREE_FONDU_MUSIQUE := 4.0
 
 var audio_deverrouille: bool = false
 var _musique: AudioStreamPlayer
@@ -46,6 +48,7 @@ var _mix_autre: float = 0.0
 var _gain_voix: float = 1.0
 var _dans_le_noir: bool = false
 var _fondu: Tween
+var _fondu_musique: Tween
 var _passe_bas: AudioEffectLowPassFilter
 var _suivi_joueur: Node2D
 var _points_voix: Array[Vector2] = []
@@ -84,6 +87,8 @@ func jouer_etape(numero: int) -> void:
 		lecteur.queue_free()
 	_couches.clear()
 	arreter_suivi_voix()
+	if _fondu_musique and _fondu_musique.is_valid():
+		_fondu_musique.kill()
 	_musique.stop()
 	var slug: String = SLUGS_ETAPES.get(numero, "")
 	if slug.is_empty():
@@ -97,9 +102,40 @@ func jouer_etape(numero: int) -> void:
 
 
 ## Musique d'un moment de l'étape courante (mus_<slug>_<moment>.ogg).
-func jouer_musique(numero: int, moment: String) -> void:
+## La musique est rare : elle monte en fondu à un moment précis (déclenché par un dialogue,
+## `do AudioDirector.jouer_musique(1, "theme")`) et se retire avec arreter_musique().
+## Rejouer le même morceau alors qu'il tourne ne le relance pas.
+func jouer_musique(numero: int, moment: String, fondu: float = DUREE_FONDU_MUSIQUE) -> void:
 	var slug: String = SLUGS_ETAPES.get(numero, "")
-	_jouer_boucle(_musique, "res://assets/audio/mus_%s_%s.ogg" % [slug, moment])
+	var chemin := "res://assets/audio/mus_%s_%s.ogg" % [slug, moment]
+	if _musique.playing and _musique.stream and _musique.stream.resource_path == chemin:
+		_fondu_musique_vers(0.0, fondu)
+		return
+	_musique.volume_db = MixageSon.GAIN_MUET_DB
+	_jouer_boucle(_musique, chemin)
+	if _musique.playing:
+		_fondu_musique_vers(0.0, fondu)
+
+
+## Retire la musique en fondu puis l'arrête (silence d'exploration).
+func arreter_musique(fondu: float = DUREE_FONDU_MUSIQUE) -> void:
+	if not _musique.playing:
+		return
+	_fondu_musique_vers(MixageSon.GAIN_MUET_DB, fondu, true)
+
+
+func _fondu_musique_vers(volume_db: float, duree: float, arreter_apres: bool = false) -> void:
+	if _fondu_musique and _fondu_musique.is_valid():
+		_fondu_musique.kill()
+	if duree <= 0.0:
+		_musique.volume_db = volume_db
+		if arreter_apres:
+			_musique.stop()
+		return
+	_fondu_musique = create_tween().set_trans(Tween.TRANS_SINE)
+	_fondu_musique.tween_property(_musique, "volume_db", volume_db, duree)
+	if arreter_apres:
+		_fondu_musique.tween_callback(_musique.stop)
 
 
 ## Timbre de dialogue d'un personnage (pas de doublage) : une variante au hasard parmi
