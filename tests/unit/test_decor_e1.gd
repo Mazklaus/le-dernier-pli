@@ -83,3 +83,31 @@ func test_echelle_dans_l_ombre_puis_claire_apres_l_adieu() -> void:
 	GameState.marquer_rencontre_vue(&"e1_adieu")
 	assert_eq(_decor.echelle.texture.resource_path, DecorE1.ECHELLE_CLAIRE)
 	GameState.reinitialiser()
+
+
+func test_sols_et_murs_gris_masques() -> void:
+	for chemin in ["Surface/BoyauArriere/Sol", "Surface/Carrefour/Sol", "Surface/PiedEchelle/Sol",
+			"Surface/BoyauArriere/MurGauche", "Surface/Carrefour/MurDroit"]:
+		var visuel := _etape.get_node(chemin + "/Visuel") as CanvasItem
+		assert_false(visuel.visible, chemin)
+
+
+func test_voiles_en_tout_ou_rien_selon_l_abscisse() -> void:
+	assert_eq(_decor.voiles.size(), 2)
+	var hachure: Sprite2D = _decor.voiles[0][0]
+	var contre: Sprite2D = _decor.voiles[1][0]
+	var z := (hachure.get_parent() as Node2D).z_index
+	assert_gt(z, _decor.plans[2].z_index)
+	assert_lt(z, _decor.plans[3].z_index)
+	var messager := _etape.trouver_messager()
+	messager.teleporter(Vector2(7000, 700))
+	await wait_seconds(0.25)
+	assert_almost_eq(hachure.modulate.a, 1.0, 0.01, "après x 6600")
+	assert_false(contre.visible, "avant x 9000")
+	messager.teleporter(Vector2(9500, 700))
+	await wait_seconds(0.25)
+	assert_almost_eq(contre.modulate.a, 1.0, 0.01, "après x 9000")
+	messager.teleporter(Vector2(3000, 700))
+	await wait_seconds(0.25)
+	assert_false(hachure.visible, "retour en arrière : caché")
+	assert_false(contre.visible)

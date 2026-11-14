@@ -132,3 +132,8 @@ func test_les_points_d_interaction_sont_espaces() -> void:
 				continue
 			assert_true(absf(a.global_position.x - b.global_position.x) >= 200.0,
 				"%s trop près de %s" % [a.name, b.name])
+
+
+func test_les_rencontres_ne_se_rejouent_pas() -> void:
+	for id in RENCONTRES:
+		assert_true(_etape.trouver_declencheur(id).une_seule_fois, "%s se rejoue" % id)

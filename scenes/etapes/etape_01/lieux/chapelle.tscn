@@ -165,6 +165,7 @@ position = Vector2(1400, 900)
 rencontre_id = &"e1_cendre"
 dialogue = ExtResource("4")
 libelle = "S'approcher de Cassien"
+une_seule_fois = true
 metadata/note_level_design = "Cassien devant l'autel de sacs : la Cendre au front"
 
 [node name="Visuel" type="ColorRect" parent="Rencontres/e1_cendre"]
