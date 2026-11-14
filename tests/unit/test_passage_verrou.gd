@@ -112,3 +112,46 @@ func test_signal_rencontre_vue_marquee_une_seule_fois() -> void:
 	GameState.marquer_rencontre_vue(&"e1_ordre")
 	GameState.marquer_rencontre_vue(&"e1_ordre")
 	assert_signal_emit_count(GameState, "rencontre_vue_marquee", 1)
+
+
+func test_fondu_au_noir_teleporte_dans_le_noir() -> void:
+	_marqueur("entree_chambre", Vector2(-3000, 400))
+	var p := _passage(&"chambre")
+	p.fondu_noir = 0.2
+	watch_signals(p)
+	p.interagir(m)
+	assert_true(m.bloque, "messager immobile pendant le fondu")
+	assert_false(p.est_disponible(), "pas de double passage pendant le fondu")
+	assert_eq(m.global_position, Vector2(100, 900), "pas encore téléporté")
+	await wait_seconds(0.3)
+	assert_eq(m.global_position, Vector2(-3000, 400))
+	assert_signal_emitted(p, "franchi")
+	await wait_seconds(0.3)
+	assert_false(m.bloque)
+	assert_true(p.est_disponible())
+	var noirs := get_tree().root.find_children("Noir", "ColorRect", true, false)
+	assert_eq(noirs.size(), 0, "voile retiré")
+
+
+func test_lieux_nuit_basculent_l_eclairage() -> void:
+	etape.lieux_nuit = [&"chambre"]
+	_marqueur("entree_chambre", Vector2(-3000, 400))
+	_marqueur("entree_place", Vector2(3000, 400))
+	var vers_chambre := _passage(&"chambre")
+	var vers_place := _passage(&"place")
+	etape.brancher_musique_lieux()
+	watch_signals(etape)
+	vers_chambre.interagir(m)
+	assert_true(etape.nuit)
+	assert_signal_emitted_with_parameters(etape, "phase_changee", [true])
+	var eclairage := etape.get_node("Eclairage") as CanvasModulate
+	assert_eq(eclairage.color, etape.teinte_nuit)
+	vers_place.interagir(m)
+	assert_false(etape.nuit)
+	assert_eq(eclairage.color, Color.WHITE)
+
+
+func test_l_etape_s_annonce_quand_elle_est_prete() -> void:
+	watch_signals(SceneRouter)
+	var autre: EtapeBase = add_child_autofree(EtapeBase.new())
+	assert_signal_emitted_with_parameters(SceneRouter, "etape_prete", [autre])

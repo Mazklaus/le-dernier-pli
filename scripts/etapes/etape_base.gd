@@ -18,9 +18,20 @@ const NOEUD_REPERES_VOIX := "ReperesVoix"
 ## associé (fondu entrant) ; vers tout autre lieu, elle s'arrête (fondu sortant).
 ## Ex. étape 1 : {&"abri_sergent": "theme", &"chapelle": "theme"}.
 @export var lieux_musique: Dictionary = {}
+## Lieux de nuit : franchir un Passage vers l'un d'eux bascule l'étape en nuit (CanvasModulate
+## « Eclairage » teinté teinte_nuit, signal phase_changee) ; vers tout autre lieu, retour au
+## jour. Ex. étape 3 : [&"chambre", &"chemin_nuit"]. Le basculement a lieu dans le noir si le
+## Passage a un fondu_noir.
+@export var lieux_nuit: Array[StringName] = []
+@export var teinte_nuit: Color = Color(0.32, 0.35, 0.48)
 ## Bornes horizontales de la caméra à la surface (le décor parallaxe est calculé pour elles) ;
 ## levées sous terre. x > y : pas de borne.
 @export var bornes_camera_surface: Vector2 = Vector2(1, 0)
+
+
+signal phase_changee(nuit: bool)
+
+var nuit: bool = false
 
 
 func _ready() -> void:
@@ -28,6 +39,7 @@ func _ready() -> void:
 	brancher_suivi_voix()
 	brancher_musique_lieux()
 	brancher_bornes_camera()
+	SceneRouter.etape_prete.emit(self)
 
 
 ## Borne la caméra à la surface (bornes_camera_surface), la libère sous terre, à chaque
@@ -55,11 +67,12 @@ func _sur_teleporte_bornes(_position_globale: Vector2) -> void:
 	maj_bornes_camera()
 
 
-## Relie les Passages de l'étape à la musique par lieu (lieux_musique).
+## Relie les Passages de l'étape (tous les Interactif de type Passage) à la musique et à la
+## nuit par lieu (lieux_musique, lieux_nuit).
 func brancher_musique_lieux() -> void:
-	if lieux_musique.is_empty():
+	if lieux_musique.is_empty() and lieux_nuit.is_empty():
 		return
-	for n in get_tree().get_nodes_in_group(&"passages"):
+	for n in get_tree().get_nodes_in_group(Interactif.GROUPE):
 		if n is Passage and is_ancestor_of(n):
 			var passage := n as Passage
 			if not passage.franchi.is_connected(_sur_passage_franchi):
@@ -67,10 +80,26 @@ func brancher_musique_lieux() -> void:
 
 
 func _sur_passage_franchi(_passage: Passage, vers: StringName) -> void:
-	if lieux_musique.has(vers):
-		AudioDirector.jouer_musique(numero_etape, String(lieux_musique[vers]))
-	else:
-		AudioDirector.arreter_musique()
+	if not lieux_musique.is_empty():
+		if lieux_musique.has(vers):
+			AudioDirector.jouer_musique(numero_etape, String(lieux_musique[vers]))
+		else:
+			AudioDirector.arreter_musique()
+	if not lieux_nuit.is_empty():
+		definir_nuit(vers in lieux_nuit)
+
+
+## Bascule jour / nuit : teinte de la scène (pas de l'interface) et signal pour les ambiances.
+func definir_nuit(actif: bool) -> void:
+	var eclairage := get_node_or_null("Eclairage") as CanvasModulate
+	if eclairage == null:
+		eclairage = CanvasModulate.new()
+		eclairage.name = "Eclairage"
+		add_child(eclairage)
+	eclairage.color = teinte_nuit if actif else Color.WHITE
+	if actif != nuit:
+		nuit = actif
+		phase_changee.emit(nuit)
 
 
 ## Relie le gain des voix de surface (AudioDirector) à la position du messager.
