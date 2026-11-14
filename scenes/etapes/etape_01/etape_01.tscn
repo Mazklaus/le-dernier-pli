@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3]
+[gd_scene load_steps=30 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_01/etape_01.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_01/lieux/couchette.tscn" id="2"]
@@ -10,9 +10,10 @@
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="8"]
 [ext_resource type="Script" path="res://scenes/interactions/verrou/verrou.gd" id="9"]
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="10"]
-[ext_resource type="Resource" path="res://dialogue/etape_01/e1_guetteur.dialogue" id="11"]
-[ext_resource type="Resource" path="res://dialogue/etape_01/e1_parapet.dialogue" id="12"]
-[ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="13"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_details.dialogue" id="11"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_guetteur.dialogue" id="12"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_parapet.dialogue" id="13"]
+[ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="14"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(3840, 180)
@@ -203,6 +204,56 @@ text = "Chicane : retirée après e1_ordre"
 [node name="entree_boyau_arriere" type="Marker2D" parent="Surface/BoyauArriere"]
 position = Vector2(400, 900)
 
+[node name="e1_detail_boyau_chuchoteurs" parent="Surface/BoyauArriere" instance=ExtResource("10")]
+position = Vector2(1100, 900)
+rencontre_id = &"e1_detail_boyau_chuchoteurs"
+dialogue = ExtResource("11")
+titre = "boyau_chuchoteurs"
+libelle = "Écouter les soldats"
+metadata/note_level_design = "Deux soldats parlent de leur permission"
+
+[node name="Visuel" type="ColorRect" parent="Surface/BoyauArriere/e1_detail_boyau_chuchoteurs"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/BoyauArriere/e1_detail_boyau_chuchoteurs"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "boyau_chuchoteurs"
+
+[node name="e1_detail_boyau_ecriteau" parent="Surface/BoyauArriere" instance=ExtResource("10")]
+position = Vector2(2100, 900)
+rencontre_id = &"e1_detail_boyau_ecriteau"
+dialogue = ExtResource("11")
+titre = "boyau_ecriteau"
+libelle = "Lire l'écriteau"
+metadata/note_level_design = "Écriteau de relève à la date repeinte"
+
+[node name="Visuel" type="ColorRect" parent="Surface/BoyauArriere/e1_detail_boyau_ecriteau"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/BoyauArriere/e1_detail_boyau_ecriteau"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "boyau_ecriteau"
+
 [node name="porte_abri_sergent" type="Marker2D" parent="Surface/BoyauArriere"]
 position = Vector2(3060, 900)
 
@@ -303,6 +354,56 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> chapelle"
 
+[node name="e1_detail_carrefour_croix" parent="Surface/Carrefour" instance=ExtResource("10")]
+position = Vector2(1400, 900)
+rencontre_id = &"e1_detail_carrefour_croix"
+dialogue = ExtResource("11")
+titre = "carrefour_croix"
+libelle = "Lire les noms"
+metadata/note_level_design = "Croix de fortune, noms gravés au couteau"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Carrefour/e1_detail_carrefour_croix"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Carrefour/e1_detail_carrefour_croix"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "carrefour_croix"
+
+[node name="e1_detail_carrefour_cloches" parent="Surface/Carrefour" instance=ExtResource("10")]
+position = Vector2(3200, 900)
+rencontre_id = &"e1_detail_carrefour_cloches"
+dialogue = ExtResource("11")
+titre = "carrefour_cloches"
+libelle = "Écouter le soldat"
+metadata/note_level_design = "Seule fausse note : il entend une cloche, Tobie rien"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Carrefour/e1_detail_carrefour_cloches"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Carrefour/e1_detail_carrefour_cloches"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "carrefour_cloches"
+
 [node name="BanquettePeriscope" type="StaticBody2D" parent="Surface/Carrefour"]
 position = Vector2(3940.0, 840.0)
 
@@ -320,7 +421,7 @@ mouse_filter = 2
 [node name="e1_guetteur" parent="Surface/Carrefour" instance=ExtResource("10")]
 position = Vector2(3940, 780)
 rencontre_id = &"e1_guetteur"
-dialogue = ExtResource("11")
+dialogue = ExtResource("12")
 libelle = "Regarder au périscope"
 metadata/note_level_design = "Le Guetteur au périscope, facultatif. -1 lucidité au deuxième regard"
 
@@ -470,7 +571,7 @@ position = Vector2(120, 900)
 [node name="e1_parapet" parent="Surface/PiedEchelle" instance=ExtResource("10")]
 position = Vector2(480, 900)
 rencontre_id = &"e1_parapet"
-dialogue = ExtResource("12")
+dialogue = ExtResource("13")
 libelle = "Monter"
 fin_etape = true
 metadata/note_level_design = "Lamarre au pied de l'échelle : regarder le pli, monter, bilan"
@@ -491,6 +592,31 @@ offset_bottom = -312.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 28
 text = "e1_parapet"
+
+[node name="e1_detail_echelle_barreaux" parent="Surface/PiedEchelle" instance=ExtResource("10")]
+position = Vector2(740, 900)
+rencontre_id = &"e1_detail_echelle_barreaux"
+dialogue = ExtResource("11")
+titre = "echelle_barreaux"
+libelle = "Toucher les barreaux"
+metadata/note_level_design = "Initiales gravées par ceux qui sont montés"
+
+[node name="Visuel" type="ColorRect" parent="Surface/PiedEchelle/e1_detail_echelle_barreaux"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/PiedEchelle/e1_detail_echelle_barreaux"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "echelle_barreaux"
 
 [node name="Echelle" type="StaticBody2D" parent="Surface/PiedEchelle"]
 position = Vector2(820.0, 550.0)
@@ -555,7 +681,7 @@ arrivee = NodePath("../../../../Surface/Carrefour/porte_vieille_sape")
 [node name="PassageSapeSortie" parent="Lieux/SapeSortie/Passages"]
 arrivee = NodePath("../../../../Surface/Carrefour/porte_sape_sortie")
 
-[node name="Messager" parent="." instance=ExtResource("13")]
+[node name="Messager" parent="." instance=ExtResource("14")]
 position = Vector2(460, 2300)
 
 [editable path="Lieux/AbriSergent"]
