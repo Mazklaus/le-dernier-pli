@@ -96,3 +96,26 @@ func test_arreter_sfx_coupe_le_maintien() -> void:
 	assert_eq(en_cours.size(), 1)
 	ad.arreter_sfx("sfx_ui_maintien")
 	assert_false((en_cours[0] as AudioStreamPlayer).playing)
+
+
+func test_etape_2_joue_surface_et_autre() -> void:
+	var ad: Node = AudioDirectorScript.new()
+	add_child_autofree(ad)
+	ad.jouer_etape(2)
+	assert_eq(ad._couches.keys(), ["surface", "autre"])
+
+
+func test_les_fils_ne_s_entendent_que_dans_le_noir() -> void:
+	var ad := _director_etape_1()
+	var fils := AudioStreamPlayer2D.new()
+	fils.volume_db = -6.0
+	fils.add_to_group(AudioDirectorScript.GROUPE_SON_DU_NOIR)
+	add_child_autofree(fils)
+	ad._regler_son_du_noir(fils, 0.0)
+	assert_eq(fils.volume_db, MixageSon.GAIN_MUET_DB, "muet hors du noir")
+	ad._dans_le_noir = true
+	ad._maj_sons_du_noir(0.0)
+	assert_almost_eq(fils.volume_db, -6.0, 0.01, "retrouve le volume réglé dans la scène")
+	ad._dans_le_noir = false
+	ad._maj_sons_du_noir(0.0)
+	assert_eq(fils.volume_db, MixageSon.GAIN_MUET_DB)

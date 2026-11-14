@@ -27,7 +27,13 @@ const SLUGS_ETAPES := {
 ## (amb_<slug>_<couche>.ogg). Les boucles de lieux sont posées dans les scènes.
 const COUCHES_AMBIANCE := {
 	1: ["surface-lit", "surface-voix", "autre"],
+	2: ["surface", "autre"],
 }
+## Groupe des émetteurs qu'on n'entend que dans le noir sans lanterne (ex. les fils de
+## l'étape 2). Le Level Designer met l'AudioStreamPlayer2D dans ce groupe, en autoplay :
+## AudioDirector le garde muet et le fait monter en fondu quand le messager est dans le noir.
+const GROUPE_SON_DU_NOIR := &"son_du_noir"
+const DUREE_FONDU_NOIR := 3.0
 ## Couches de la famille « autre » (ce que la Lucidité qui baisse laisse passer) ;
 ## toutes les autres couches sont du « réel ».
 const COUCHES_AUTRE: Array[String] = ["autre"]
@@ -63,6 +69,7 @@ func _ready() -> void:
 	GameState.etat_declenche.connect(_sur_etat_declenche)
 	GameState.etat_charge.connect(_sur_etat_charge)
 	GameState.zone_sombre_changee.connect(_sur_zone_sombre_changee)
+	get_tree().node_added.connect(_sur_noeud_ajoute)
 	set_process(false)
 
 
@@ -234,11 +241,37 @@ func _sur_etat_declenche(etat: StringName) -> void:
 func _sur_etat_charge() -> void:
 	_dans_le_noir = false
 	_appliquer_mixage(true)
+	_maj_sons_du_noir(0.0)
 
 
 func _sur_zone_sombre_changee(dans_zone: bool, lanterne: bool) -> void:
 	_dans_le_noir = dans_zone and not lanterne
 	_appliquer_mixage()
+	_maj_sons_du_noir(DUREE_FONDU_NOIR)
+
+
+## Un émetteur du noir qui entre dans l'arbre prend tout de suite le bon volume.
+func _sur_noeud_ajoute(noeud: Node) -> void:
+	if noeud.is_in_group(GROUPE_SON_DU_NOIR):
+		_regler_son_du_noir(noeud, 0.0)
+
+
+func _maj_sons_du_noir(duree: float) -> void:
+	for noeud in get_tree().get_nodes_in_group(GROUPE_SON_DU_NOIR):
+		_regler_son_du_noir(noeud, duree)
+
+
+func _regler_son_du_noir(noeud: Node, duree: float) -> void:
+	if not (noeud is AudioStreamPlayer or noeud is AudioStreamPlayer2D):
+		return
+	# Volume « plein » réglé par le Level Designer dans la scène, mémorisé au premier passage.
+	if not noeud.has_meta(&"volume_db_plein"):
+		noeud.set_meta(&"volume_db_plein", noeud.get(&"volume_db"))
+	var cible: float = noeud.get_meta(&"volume_db_plein") if _dans_le_noir else MixageSon.GAIN_MUET_DB
+	if duree <= 0.0:
+		noeud.set(&"volume_db", cible)
+		return
+	create_tween().set_trans(Tween.TRANS_SINE).tween_property(noeud, "volume_db", cible, duree)
 
 
 ## Lance le fondu vers le mélange cible (ou l'applique d'un coup si `instantane`).
