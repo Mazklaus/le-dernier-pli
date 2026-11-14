@@ -41,9 +41,9 @@ Ravaude: Choisis.
 	Ravaude: Merci.
 - Allumer [#cout_huile=1, #sans_prelevement]
 	Ravaude: Lumière.
-- Interdit [if GameState.valeur(&"huile") >= 99] [#cache]
+- Interdit [if GameState.valeur(&"huile") >= 99 /] [#cache]
 	Ravaude: Jamais.
-- Grisé [if GameState.valeur(&"huile") >= 99]
+- Grisé [if GameState.valeur(&"huile") >= 99 /]
 	Ravaude: Jamais.
 - Rien
 	Ravaude: Bon.

@@ -80,7 +80,10 @@ static func glyphe_action(action: StringName) -> String:
 			var touche := evenement as InputEventKey
 			var code := touche.keycode
 			if touche.physical_keycode != KEY_NONE:
-				code = DisplayServer.keyboard_get_keycode_from_physical(touche.physical_keycode)
+				code = touche.physical_keycode
+				# Disposition du joueur (Q/D en AZERTY) ; indisponible sans écran (tests, CI).
+				if DisplayServer.get_name() != "headless":
+					code = DisplayServer.keyboard_get_keycode_from_physical(touche.physical_keycode)
 			var nom := OS.get_keycode_string(code)
 			if nom.is_empty():
 				nom = OS.get_keycode_string(touche.physical_keycode)

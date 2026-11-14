@@ -49,7 +49,8 @@ func test_presenter_hors_egare() -> void:
 	assert_false(p[1]["disponible"])
 	assert_eq(p[2]["index"], 3)
 	assert_eq_deep(p[2]["couts_affiches"], {&"huile": 1})
-	assert_eq_deep(p[2]["a_prelever"], {}, "sans_prelevement : affiché, jamais prélevé")
+	# sans_prelevement : affiché, jamais prélevé
+	assert_eq_deep(p[2]["a_prelever"], {})
 
 
 func test_hallucination_bave() -> void:
