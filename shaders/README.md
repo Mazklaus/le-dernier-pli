@@ -1,20 +1,16 @@
-# Shaders du DA : trait tremblé et papier (Tools Programmer)
+# Shader écran gravure (Tools Programmer)
 
-À copier dans `res://shaders/`. Testés le 14/11 sous Godot 4.7.2, renderer Compatibility (OpenGL 3, même GLSL que WebGL2) : compilation sans erreur, rendu vérifié (captures dans la PR).
+`ecran_gravure.gdshader` : une seule passe plein écran (une seule copie d'écran par image) qui applique le trait tremblé, le papier de l'étape avec son grain, et préserve exactement le rouge `#9B1C1C` et la couleur d'accent des étapes 5 et 6. Testé sous Godot 4.7.2, renderer Compatibility (OpenGL 3, même GLSL que WebGL2).
 
 ## Mise en place dans une scène d'étape
-Deux `CanvasLayer` au-dessus du monde et sous l'interface, chacun avec un `ColorRect` plein écran (`mouse_filter = Ignore`) :
-1. calque 10 : `trait_tremble.gdshader`
-2. calque 11 : `papier.gdshader`
-3. calque 20 et plus : l'UI (ni tremblement ni remappage).
+Un `CanvasLayer` (calque 10) au-dessus du monde et sous l'UI, avec un `ColorRect` plein écran (`mouse_filter = Ignore`) portant un `ShaderMaterial` avec ce shader. L'UI va sur un calque supérieur (20 et plus), elle n'est ni déformée ni remappée.
+Au changement d'étape : `PapierEtapes.appliquer(materiau, etape)` (`scripts/rendu/papier_etapes.gd`).
 
-## trait_tremble.gdshader
-Déformation plein écran par bruit, 3 variantes qui tournent à 6 images/s. Paramètres : `amplitude_px` (1,5 au repos, à monter quand la Lucidité baisse), `echelle_px`, `images_par_seconde`, `variantes`. Indépendant de la résolution (calé sur 1080p).
-
-## papier.gdshader
-Remappe l'encre de référence `#15130F` et le papier `#E8E5DA` vers l'encre et le papier de l'étape (inversion possible aux étapes 5 et 6), laisse passer le rouge, ajoute un grain qui change 6 fois par seconde. Paramètres : `couleur_papier`, `couleur_encre`, `couleur_rouge`, `seuil_rouge`, `rouge_efface` (0 à 1, pour les effets de Lucidité), `grain`, `taille_grain_px`, `grain_par_seconde`.
-
-`papier_etapes.gd` (`PapierEtapes.appliquer(materiau, etape)`) contient les valeurs des 7 étapes de la planche de style. Les couleurs d'accent des étapes 5 et 6 (ocre, vert-de-gris) restent dans les assets.
+## Paramètres
+- Trait tremblé : `amplitude_px` (1,5 au repos, à monter quand la Lucidité baisse), `echelle_px`, `images_par_seconde` (6), `variantes` (3).
+- Papier : `couleur_papier`, `couleur_encre` (inversion aux étapes 5 et 6), `grain` (réduit d'un tiers sur papier foncé), `taille_grain_px`, `grain_par_seconde`.
+- Rouge : `couleur_rouge` (jamais remappé ni granuleux), `seuil_rouge`, `rouge_efface` (0 à 1, effets de Lucidité).
+- Accent : `accent_actif`, `couleur_accent` (ocre `#B08A3E` en 5, vert-de-gris `#5F7F72` en 6), `tolerance_accent`.
 
 ## Contrainte pour les assets
-Le remappage suppose des assets dessinés avec la palette de la planche (encre, lavis, mine, papier, rouge). Un rouge doit rester bien saturé (`r - max(g, b)` au-dessus de 0,18) pour être reconnu.
+Dessiner avec la palette exacte de la planche (encre `#15130F`, papier `#E8E5DA`, lavis, mine, rouge, accents). Le rouge doit rester saturé (`r - max(g, b)` > 0,18) et l'accent à moins de 0,12 de sa valeur exacte pour être reconnus.
