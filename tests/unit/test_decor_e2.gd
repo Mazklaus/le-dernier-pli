@@ -63,7 +63,8 @@ func test_brouillard_tout_ou_rien_de_4800_a_10100() -> void:
 	await wait_seconds(0.3)
 	var x := _etape.trouver_messager().global_position.x
 	assert_false(_decor.bandes[0].visible, "masqué après la seconde ceinture (messager à x %.0f, alpha %.2f)" % [x, _decor.bandes[0].modulate.a])
-	assert_true(DecorE2.dans_le_brouillard(8256.0), "le mort est dans le brouillard")
+	assert_true(_decor.dans_le_brouillard(8256.0), "le mort est dans le brouillard")
+	assert_eq(_decor.bornes_brouillard, Vector2(4800, 10100), "bornes lues sur la ZoneSombre")
 
 
 func test_gris_de_la_maquette_masques() -> void:
@@ -89,24 +90,26 @@ func test_cheval_de_frise_part_avec_la_chicane() -> void:
 
 
 func test_le_fil_retombe_derriere_tobie_apres_la_seconde_ceinture() -> void:
+	var verrou := _etape.get_node("Surface/Brouillard/FilRetour") as VerrouRetour
 	assert_not_null(_decor.fil_retombe)
-	assert_false(_decor.fil_retombe.visible)
-	_aller(10300.0)
-	await wait_process_frames(3)
-	assert_false(_decor.fil_tombe, "ceinture pas encore ouverte : rien ne tombe")
-	GameState.marquer_rencontre_vue(&"e2_barbeles_ceinture2")
-	_aller(9900.0)
-	await wait_process_frames(3)
-	assert_false(_decor.fil_tombe, "pas encore franchie")
+	assert_eq(_decor.fil_retombe.get_parent(), verrou, "le dessin est posé sur le verrou")
+	assert_almost_eq(verrou.global_position.x, 10030.0, 0.5)
+	assert_false(verrou.is_visible_in_tree())
 	_aller(10300.0)
 	await wait_physics_frames(3)
-	assert_true(_decor.fil_tombe)
-	assert_true(_decor.fil_retombe.visible)
-	var forme := _decor.fil_retombe.get_node("Forme") as CollisionShape2D
-	assert_false(forme.disabled, "le retour est fermé")
+	assert_false(verrou.est_ferme, "ceinture pas encore ouverte : rien ne tombe")
+	GameState.marquer_rencontre_vue(&"e2_barbeles_ceinture2")
 	_aller(9900.0)
-	await wait_process_frames(3)
-	assert_true(_decor.fil_retombe.visible, "le fil reste tombé")
+	await wait_physics_frames(3)
+	assert_false(verrou.est_ferme, "pas encore franchie")
+	_aller(10300.0)
+	await wait_physics_frames(3)
+	assert_true(verrou.est_ferme)
+	assert_true(verrou.is_visible_in_tree())
+	assert_false((verrou.get_node("Forme") as CollisionShape2D).disabled, "le retour est fermé")
+	_aller(9900.0)
+	await wait_physics_frames(3)
+	assert_true(verrou.est_ferme, "le fil reste tombé")
 
 
 func test_sacoche_au_fond_du_grand_trou() -> void:

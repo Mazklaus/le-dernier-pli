@@ -60,11 +60,22 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_maj_voiles()
+	_couvrir_ecran()
 	if cendre == null:
 		return
 	var attenue: bool = Reglages.valeur(&"effets_attenues")
 	_defilement = fmod(_defilement + CHUTE_CENDRE * (0.4 if attenue else 1.0) * delta, 1080.0)
 	cendre.region_rect.position.y = -_defilement
+
+
+## Cendre et voiles couvrent tout l'écran, même plus large que 16/9 (stretch expand) : leur
+## région (texture répétée) prend la taille de la vue.
+func _couvrir_ecran() -> void:
+	var taille := get_viewport_rect().size.max(Vector2(1920.0, 1080.0))
+	if cendre != null:
+		cendre.region_rect.size = taille
+	for paire: Array in voiles:
+		(paire[0] as Sprite2D).region_rect.size = taille
 
 
 ## Cendre plein écran qui défile en boucle verticale (texture répétée dans une région fixe),
