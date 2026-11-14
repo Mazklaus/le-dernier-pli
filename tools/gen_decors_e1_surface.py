@@ -129,15 +129,15 @@ def plan3() -> str:
         out.append(f'<path d="M{cx + dx} {top - 2} Q{cx + dx - 6} {top - 14} {cx + dx} {top - 26} Q{cx + dx + 6} {top - 14} {cx + dx} {top - 2} Z" fill="{PAPIER}" stroke="{ENCRE}" stroke-width="1.6"/>')
     out.append(f'<path d="M{cx - 70} 820 L{cx + 70} 820 L{cx + 80} {SOL} L{cx - 80} {SOL} Z" fill="url(#sacs)" stroke="{ENCRE}" stroke-width="3"/>')
 
-    # étai aux bâtons gravés du compteur de cloches (carrefour 3200, la fausse note)
-    out.append(f'<path d="M7040 744 L7040 {SOL}" stroke="{ENCRE}" stroke-width="22"/>')
-    for k in range(12):
-        x = 7032 + (k % 5) * 4
-        y = 770 + (k // 5) * 30
-        if k % 5 == 4:
-            out.append(f'<path d="M7030 {y + 16} L7050 {y - 2}" stroke="{PAPIER}" stroke-width="2"/>')
-        else:
-            out.append(f'<path d="M{x} {y} L{x} {y + 18}" stroke="{PAPIER}" stroke-width="2"/>')
+    # poteau des cloches muettes (carrefour_cloches, la fausse note) : trois cloches sans battant
+    out.append(f'<path d="M7040 640 L7040 {SOL}" stroke="{ENCRE}" stroke-width="18"/>')
+    out.append(f'<path d="M6966 652 L7114 652" stroke="{ENCRE}" stroke-width="8"/>')
+    for bx, by in ((6984, 0), (7040, 10), (7096, 0)):
+        y0 = 656 + by
+        out.append(f'<path d="M{bx} {y0} L{bx} {y0 + 10}" stroke="{ENCRE}" stroke-width="2"/>')
+        out.append(f'<path d="M{bx - 14} {y0 + 46} Q{bx - 12} {y0 + 12} {bx} {y0 + 10} Q{bx + 12} {y0 + 12} {bx + 14} {y0 + 46} Z" fill="url(#h1)" stroke="{ENCRE}" stroke-width="3"/>')
+        # bouche vide : ellipse papier, aucun battant
+        out.append(f'<ellipse cx="{bx}" cy="{y0 + 46}" rx="14" ry="4" fill="{PAPIER}" stroke="{ENCRE}" stroke-width="2"/>')
 
     # banquette de tir et périscope (carrefour 3940)
     out.append(f'<path d="M7640 {SOL} L7640 840 L7940 840 L7940 {SOL} Z" fill="url(#sacs)" stroke="{ENCRE}" stroke-width="3"/>')
@@ -152,11 +152,11 @@ def plan3() -> str:
         out.append(f'<path d="M{lx} 592 Q{lx + 7} 604 {lx} 616 Q{lx - 7} 604 {lx} 592 Z" fill="{PAPIER}" stroke="{ENCRE}" stroke-width="1.6"/>')
         out.append(f'<rect x="{lx - 18}" y="574" width="36" height="7" fill="{ENCRE}"/>')
 
-    # barbelés qui vibrent au pied de l'échelle (détail 740 → 10404)
-    for k, y in enumerate((548, 572, 596)):
-        out.append(f'<path d="M10260 {y} Q10330 {y + 14} 10400 {y} T10540 {y}" fill="none" stroke="{ENCRE}" stroke-width="2.6" stroke-dasharray="6 5"/>')
-        out.append(f'<path d="M10262 {y + 3} Q10332 {y + 17} 10402 {y + 3} T10542 {y + 3}" fill="none" stroke="{ENCRE}" stroke-width="1.2"/>')
-    out.append(f'<path d="M10250 {SOL} L10256 520 M10560 {SOL} L10552 520" stroke="{ENCRE}" stroke-width="10"/>')
+    # barbelés au-dessus du parapet, au-dessus de l'échelle (x 10464) et de Lamarre (10144)
+    for y in (452, 474, 496):
+        out.append(f'<path d="M10240 {y} Q10330 {y + 12} 10420 {y} T10600 {y}" fill="none" stroke="{ENCRE}" stroke-width="2.6" stroke-dasharray="6 5"/>')
+        out.append(f'<path d="M10242 {y + 3} Q10332 {y + 15} 10422 {y + 3} T10602 {y + 3}" fill="none" stroke="{ENCRE}" stroke-width="1.2"/>')
+    out.append(f'<path d="M10236 {CRETE + 6} L10232 436 M10604 {CRETE + 6} L10610 436" stroke="{ENCRE}" stroke-width="8"/>')
 
     # caillebotis et terre
     out.append(f'<rect x="0" y="{SOL}" width="{LARGEUR}" height="40" fill="url(#caille)" stroke="{ENCRE}" stroke-width="3"/>')
