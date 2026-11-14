@@ -76,14 +76,20 @@ static func glyphe_action(action: StringName) -> String:
 			var code := touche.keycode
 			if touche.physical_keycode != KEY_NONE:
 				code = touche.physical_keycode
-				# Disposition du joueur (Q/D en AZERTY) ; indisponible sans écran (tests, CI).
-				if DisplayServer.get_name() != "headless":
+				# Disposition du joueur (Q/D en AZERTY) ; indisponible sans écran (tests, CI)
+				# et sur le web (#23), où l'on garde le nom de la touche physique.
+				if disposition_disponible():
 					code = DisplayServer.keyboard_get_keycode_from_physical(touche.physical_keycode)
 			var nom := OS.get_keycode_string(code)
 			if nom.is_empty():
 				nom = OS.get_keycode_string(touche.physical_keycode)
 			return nom
 	return "?"
+
+
+## Le serveur d'affichage sait-il traduire une touche physique dans la disposition du joueur ?
+static func disposition_disponible() -> bool:
+	return DisplayServer.get_name() != "headless" and not OS.has_feature("web")
 
 
 func _actualiser() -> void:
