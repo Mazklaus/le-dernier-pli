@@ -1,0 +1,696 @@
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://scenes/etapes/etape_02/etape_02.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/etapes/etape_02/lieux/boyau_detour.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="3"]
+[ext_resource type="Resource" path="res://dialogue/etape_02/e2_details.dialogue" id="4"]
+[ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="5"]
+[ext_resource type="Resource" path="res://dialogue/etape_02/e2_poste.dialogue" id="6"]
+[ext_resource type="Script" path="res://scenes/interactions/verrou/verrou.gd" id="7"]
+[ext_resource type="Resource" path="res://dialogue/etape_02/e2_barbeles.dialogue" id="8"]
+[ext_resource type="Resource" path="res://dialogue/etape_02/e2_mort.dialogue" id="9"]
+[ext_resource type="Resource" path="res://dialogue/etape_02/e2_sacoche.dialogue" id="10"]
+[ext_resource type="Resource" path="res://dialogue/etape_02/e2_cantique.dialogue" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="12"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(64, 1300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(64, 1300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
+size = Vector2(160, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
+size = Vector2(60, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5"]
+size = Vector2(60, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6"]
+size = Vector2(60, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7"]
+size = Vector2(5300, 900)
+
+[node name="Etape02" type="Node2D"]
+script = ExtResource("1")
+numero_etape = 2
+
+[node name="Surface" type="Node2D" parent="."]
+
+[node name="Sol" type="StaticBody2D" parent="Surface"]
+
+[node name="Forme" type="CollisionPolygon2D" parent="Surface/Sol"]
+polygon = PackedVector2Array(0, 900, 1600, 900, 1808, 780, 3400, 780, 3608, 900, 12000, 900, 12277, 1060, 13600, 1060, 13877, 900, 16320, 900, 16320, 1300, 0, 1300)
+
+[node name="Visuel" type="Polygon2D" parent="Surface/Sol"]
+color = Color(0.35, 0.35, 0.35, 1)
+polygon = PackedVector2Array(0, 900, 1600, 900, 1808, 780, 3400, 780, 3608, 900, 12000, 900, 12277, 1060, 13600, 1060, 13877, 900, 16320, 900, 16320, 1300, 0, 1300)
+
+[node name="MurGauche" type="StaticBody2D" parent="Surface"]
+position = Vector2(-32.0, 650.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/MurGauche"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Visuel" type="ColorRect" parent="Surface/MurGauche"]
+offset_left = -32.0
+offset_top = -650.0
+offset_right = 32.0
+offset_bottom = 650.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="MurDroit" type="StaticBody2D" parent="Surface"]
+position = Vector2(16352.0, 650.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/MurDroit"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="Visuel" type="ColorRect" parent="Surface/MurDroit"]
+offset_left = -32.0
+offset_top = -650.0
+offset_right = 32.0
+offset_bottom = 650.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="Parapet" type="Node2D" parent="Surface"]
+position = Vector2(0, 0)
+
+[node name="Fond" type="ColorRect" parent="Surface/Parapet"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 960.0
+offset_bottom = 1100.0
+color = Color(0.82, 0.82, 0.8, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Titre" type="Label" parent="Surface/Parapet"]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1240.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "1 Parapet · 0,5 écran · l'échelle est retirée derrière Tobie"
+
+[node name="Poste" type="Node2D" parent="Surface"]
+position = Vector2(960, 0)
+
+[node name="Fond" type="ColorRect" parent="Surface/Poste"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 3840.0
+offset_bottom = 1100.0
+color = Color(0.82, 0.82, 0.8, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Titre" type="Label" parent="Surface/Poste"]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1240.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "2 Poste avancé · 2 écrans · caporal Brisse, dernier visage"
+
+[node name="Brouillard" type="Node2D" parent="Surface"]
+position = Vector2(4800, 0)
+
+[node name="Fond" type="ColorRect" parent="Surface/Brouillard"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 6720.0
+offset_bottom = 1100.0
+color = Color(0.82, 0.82, 0.8, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Titre" type="Label" parent="Surface/Brouillard"]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1240.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "3 Brouillard et barbelés · 3,5 écrans · zone sombre"
+
+[node name="TrousObus" type="Node2D" parent="Surface"]
+position = Vector2(11520, 0)
+
+[node name="Fond" type="ColorRect" parent="Surface/TrousObus"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 2880.0
+offset_bottom = 1100.0
+color = Color(0.82, 0.82, 0.8, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Titre" type="Label" parent="Surface/TrousObus"]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1240.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "4 Trous d'obus · 1,5 écran · la sacoche, aucun détail"
+
+[node name="Souche" type="Node2D" parent="Surface"]
+position = Vector2(14400, 0)
+
+[node name="Fond" type="ColorRect" parent="Surface/Souche"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1920.0
+offset_bottom = 1100.0
+color = Color(0.82, 0.82, 0.8, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Titre" type="Label" parent="Surface/Souche"]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1240.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "5 Souche du cantique · 1 écran · fin d'étape"
+
+[node name="entree_parapet" type="Marker2D" parent="Surface/Parapet"]
+position = Vector2(200, 900)
+
+[node name="e2_detail_parapet_sac" parent="Surface/Parapet" instance=ExtResource("3")]
+position = Vector2(600, 900)
+rencontre_id = &"e2_detail_parapet_sac"
+dialogue = ExtResource("4")
+titre = "parapet_sac"
+libelle = "Regarder le sac"
+metadata/note_level_design = "Dernier sac de sable, numéro de compagnie"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Parapet/e2_detail_parapet_sac"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Parapet/e2_detail_parapet_sac"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "parapet_sac"
+
+[node name="e2_detail_poste_registre" parent="Surface/Poste" instance=ExtResource("3")]
+position = Vector2(1040, 780)
+rencontre_id = &"e2_detail_poste_registre"
+dialogue = ExtResource("4")
+titre = "poste_registre"
+libelle = "Lire le registre"
+metadata/note_level_design = "Registre du poste : les relèves jamais venues"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Poste/e2_detail_poste_registre"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Poste/e2_detail_poste_registre"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "poste_registre"
+
+[node name="e2_detail_poste_bougie" parent="Surface/Poste" instance=ExtResource("3")]
+position = Vector2(1440, 780)
+rencontre_id = &"e2_detail_poste_bougie"
+dialogue = ExtResource("4")
+titre = "poste_bougie"
+libelle = "Regarder la bougie"
+metadata/note_level_design = "Bougie de Brisse dans une boîte de conserve"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Poste/e2_detail_poste_bougie"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Poste/e2_detail_poste_bougie"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "poste_bougie"
+
+[node name="VersBoyau" type="Area2D" parent="Surface/Poste" groups=["passages"]]
+position = Vector2(1690, 630.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("5")
+vers = &"boyau_detour"
+libelle = "Descendre au vieux boyau"
+rencontre_requise = &"e2_poste_detour"
+metadata/vers = "boyau_detour"
+metadata/note_level_design = "Vieux boyau sous le poste : ouvert seulement après « détour » (e2_poste_detour)"
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Poste/VersBoyau"]
+shape = SubResource("RectangleShape2D_3")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Poste/VersBoyau"]
+offset_left = -80.0
+offset_top = -150.0
+offset_right = 80.0
+offset_bottom = 150.0
+color = Color(0.2, 0.35, 0.6, 0.35)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Poste/VersBoyau"]
+offset_left = -80.0
+offset_top = 158.0
+offset_right = 1120.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-> boyau_detour"
+
+[node name="e2_poste" parent="Surface/Poste" instance=ExtResource("3")]
+position = Vector2(1940, 780)
+rencontre_id = &"e2_poste"
+dialogue = ExtResource("6")
+libelle = "Parler au caporal"
+metadata/note_level_design = "Brisse garde la chicane : sceau, ration, réchauffer la cire, témoin"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Poste/e2_poste"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.75, 0.1, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Poste/e2_poste"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e2_poste"
+
+[node name="Chicane" type="StaticBody2D" parent="Surface/Poste"]
+position = Vector2(2270.0, 630.0)
+script = ExtResource("7")
+rencontre = &"e2_poste_passe"
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Poste/Chicane"]
+shape = SubResource("RectangleShape2D_4")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Poste/Chicane"]
+offset_left = -30.0
+offset_top = -150.0
+offset_right = 30.0
+offset_bottom = 150.0
+color = Color(0.6, 0.15, 0.15, 1)
+mouse_filter = 2
+
+[node name="NoteChicane" type="Label" parent="Surface/Poste"]
+offset_left = 2120.0
+offset_top = 400.0
+offset_right = 3320.0
+offset_bottom = 440.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Chicane : ouverte par e2_poste_passe"
+
+[node name="entree_poste_aval" type="Marker2D" parent="Surface/Poste"]
+position = Vector2(2840, 900)
+
+[node name="e2_barbeles" parent="Surface/Brouillard" instance=ExtResource("3")]
+position = Vector2(200, 900)
+rencontre_id = &"e2_barbeles"
+dialogue = ExtResource("8")
+libelle = "Avancer dans la brume"
+metadata/note_level_design = "Lanterne ou noir ; dans le noir, ramper ou foncer (une fois pour les deux ceintures)"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Brouillard/e2_barbeles"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.75, 0.1, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Brouillard/e2_barbeles"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e2_barbeles"
+
+[node name="CeintureUne" type="StaticBody2D" parent="Surface/Brouillard"]
+position = Vector2(430.0, 750.0)
+script = ExtResource("7")
+rencontre = &"e2_barbeles"
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Brouillard/CeintureUne"]
+shape = SubResource("RectangleShape2D_5")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Brouillard/CeintureUne"]
+offset_left = -30.0
+offset_top = -150.0
+offset_right = 30.0
+offset_bottom = 150.0
+color = Color(0.6, 0.15, 0.15, 1)
+mouse_filter = 2
+
+[node name="NoteCeintureUne" type="Label" parent="Surface/Brouillard"]
+offset_left = 280.0
+offset_top = 520.0
+offset_right = 1480.0
+offset_bottom = 560.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Première ceinture"
+
+[node name="e2_detail_brouillard_piquet" parent="Surface/Brouillard" instance=ExtResource("3")]
+position = Vector2(1400, 900)
+rencontre_id = &"e2_detail_brouillard_piquet"
+dialogue = ExtResource("4")
+titre = "brouillard_piquet"
+libelle = "Toucher le piquet"
+metadata/note_level_design = "Piquet au chiffon noué (version au toucher dans le noir)"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Brouillard/e2_detail_brouillard_piquet"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Brouillard/e2_detail_brouillard_piquet"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "brouillard_piquet"
+
+[node name="e2_detail_brouillard_casque" parent="Surface/Brouillard" instance=ExtResource("3")]
+position = Vector2(2600, 900)
+rencontre_id = &"e2_detail_brouillard_casque"
+dialogue = ExtResource("4")
+titre = "brouillard_casque"
+libelle = "Regarder le casque"
+metadata/note_level_design = "Casque posé à l'endroit (version au toucher dans le noir)"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Brouillard/e2_detail_brouillard_casque"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Brouillard/e2_detail_brouillard_casque"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "brouillard_casque"
+
+[node name="e2_mort" parent="Surface/Brouillard" instance=ExtResource("3")]
+position = Vector2(3456, 900)
+rencontre_id = &"e2_mort"
+dialogue = ExtResource("9")
+libelle = "Regarder le mort"
+metadata/note_level_design = "Le mort dans les fils, le bras tendu : doigt, poches ou nom"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Brouillard/e2_mort"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.75, 0.1, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Brouillard/e2_mort"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e2_mort"
+
+[node name="e2_detail_mort_plaque" parent="Surface/Brouillard" instance=ExtResource("3")]
+position = Vector2(3700, 900)
+rencontre_id = &"e2_detail_mort_plaque"
+dialogue = ExtResource("4")
+titre = "mort_plaque"
+libelle = "Regarder la plaque"
+metadata/note_level_design = "Plaque d'identité rongée (version au toucher dans le noir)"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Brouillard/e2_detail_mort_plaque"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Brouillard/e2_detail_mort_plaque"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "mort_plaque"
+
+[node name="e2_barbeles_ceinture2" parent="Surface/Brouillard" instance=ExtResource("3")]
+position = Vector2(4992, 900)
+rencontre_id = &"e2_barbeles_ceinture2"
+dialogue = ExtResource("8")
+libelle = "Franchir les fils"
+titre = "seconde_ceinture"
+une_seule_fois = true
+metadata/note_level_design = "Seconde ceinture : même geste, puis sortie du noir"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Brouillard/e2_barbeles_ceinture2"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.75, 0.1, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Brouillard/e2_barbeles_ceinture2"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e2_barbeles_ceinture2"
+
+[node name="CeintureDeux" type="StaticBody2D" parent="Surface/Brouillard"]
+position = Vector2(5230.0, 750.0)
+script = ExtResource("7")
+rencontre = &"e2_barbeles_ceinture2"
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Brouillard/CeintureDeux"]
+shape = SubResource("RectangleShape2D_6")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Brouillard/CeintureDeux"]
+offset_left = -30.0
+offset_top = -150.0
+offset_right = 30.0
+offset_bottom = 150.0
+color = Color(0.6, 0.15, 0.15, 1)
+mouse_filter = 2
+
+[node name="NoteCeintureDeux" type="Label" parent="Surface/Brouillard"]
+offset_left = 5080.0
+offset_top = 520.0
+offset_right = 6280.0
+offset_bottom = 560.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "Seconde ceinture"
+
+[node name="ZoneSombre" type="Area2D" parent="Surface/Brouillard" groups=["zones_sombres"]]
+position = Vector2(2650.0, 450.0)
+monitoring = false
+monitorable = false
+metadata/note_level_design = "Zone sombre : entrée par e2_barbeles, sortie par seconde_ceinture"
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Brouillard/ZoneSombre"]
+shape = SubResource("RectangleShape2D_7")
+
+[node name="BandeBrouillard1" type="ColorRect" parent="Surface/Brouillard/ZoneSombre"]
+offset_left = -2650.0
+offset_top = -90.0
+offset_right = 2650.0
+offset_bottom = 30.0
+color = Color(0.549, 0.529, 0.478, 0.55)
+mouse_filter = 2
+z_index = 5
+
+[node name="BandeBrouillard2" type="ColorRect" parent="Surface/Brouillard/ZoneSombre"]
+offset_left = -2650.0
+offset_top = 110.0
+offset_right = 2650.0
+offset_bottom = 270.0
+color = Color(0.549, 0.529, 0.478, 0.55)
+mouse_filter = 2
+z_index = 5
+
+[node name="BandeBrouillard3" type="ColorRect" parent="Surface/Brouillard/ZoneSombre"]
+offset_left = -2650.0
+offset_top = 310.0
+offset_right = 2650.0
+offset_bottom = 450.0
+color = Color(0.549, 0.529, 0.478, 0.55)
+mouse_filter = 2
+z_index = 5
+
+[node name="e2_sacoche" parent="Surface/TrousObus" instance=ExtResource("3")]
+position = Vector2(1380, 1060)
+rencontre_id = &"e2_sacoche"
+dialogue = ExtResource("10")
+libelle = "Regarder la sacoche"
+une_seule_fois = true
+metadata/note_level_design = "La sacoche de Matthieu au fond du trou, sans corps : choix à 2 points"
+
+[node name="Visuel" type="ColorRect" parent="Surface/TrousObus/e2_sacoche"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.75, 0.1, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/TrousObus/e2_sacoche"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e2_sacoche"
+
+[node name="e2_detail_souche_entailles" parent="Surface/Souche" instance=ExtResource("3")]
+position = Vector2(400, 900)
+rencontre_id = &"e2_detail_souche_entailles"
+dialogue = ExtResource("4")
+titre = "souche_entailles"
+libelle = "Lire les initiales"
+metadata/note_level_design = "Initiales d'amoureux d'avant la guerre"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Souche/e2_detail_souche_entailles"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Souche/e2_detail_souche_entailles"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "souche_entailles"
+
+[node name="e2_cantique" parent="Surface/Souche" instance=ExtResource("3")]
+position = Vector2(800, 900)
+rencontre_id = &"e2_cantique"
+dialogue = ExtResource("11")
+libelle = "Écouter le vent"
+fin_etape = true
+metadata/note_level_design = "Le cantique lointain ; lecture de la ligne 1 si sceau réchauffé ; la marche"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Souche/e2_cantique"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.75, 0.1, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Souche/e2_cantique"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e2_cantique"
+
+[node name="SoucheVisuel" type="ColorRect" parent="Surface/Souche"]
+offset_left = 1050.0
+offset_top = 480.0
+offset_right = 1150.0
+offset_bottom = 900.0
+color = Color(0.12, 0.12, 0.12, 1)
+mouse_filter = 2
+
+[node name="e2_detail_souche_village" parent="Surface/Souche" instance=ExtResource("3")]
+position = Vector2(1300, 900)
+rencontre_id = &"e2_detail_souche_village"
+dialogue = ExtResource("4")
+titre = "souche_village"
+libelle = "Regarder le village"
+metadata/note_level_design = "Le village où aucune cloche ne sonne"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Souche/e2_detail_souche_village"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Souche/e2_detail_souche_village"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "souche_village"
+
+[node name="Lieux" type="Node2D" parent="."]
+
+[node name="BoyauDetour" parent="Lieux" instance=ExtResource("2")]
+position = Vector2(0, 1600)
+
+[node name="Messager" parent="." instance=ExtResource("12")]
+position = Vector2(200, 900)
