@@ -49,7 +49,7 @@ La racine de `etape_NN.tscn` est un `Node2D` dont le script peut exposer `aller_
 
 ## Dialogues
 
-Fichiers `.dialogue` (Dialogue Manager 4). Conditions et effets appellent l'API publique de GameState, par exemple `[if GameState.valeur(&"vivres") >= 2]` et `do GameState.appliquer_couts({&"vivres": 1})`. Voir `dialogue/etape_01/exemple.dialogue`. Tout fichier qui ne compile pas fait échouer la CI (import et test `test_dialogues.gd`).
+Fichiers `.dialogue` (Dialogue Manager 4). Conditions et effets appellent l'API publique de GameState, par exemple `[if GameState.valeur(&"vivres") >= 2 /]` (condition d'une option : le ` /]` final est obligatoire, sinon la condition est ignorée) et `do GameState.ajouter_marque(...)`. Les coûts d'une option se déclarent en tags (`[#cout_vivres=1]`, voir `scripts/regles/options_dialogue.gd`) : la bulle les affiche avant le choix et les prélève. Voir `dialogue/etape_01/exemple.dialogue`. Tout fichier qui ne compile pas fait échouer la CI (import et test `test_dialogues.gd`).
 
 ## Rendu et assets
 

@@ -13,8 +13,7 @@ Jacquot: Et toi aussi, après.
 
 Jacquot: Alors c'est toi qui vas voir l'arrière.
 Jacquot: Moi j'ai raté la gamelle. La Ravaude dit que j'ai l'air trop gras.
-- [Partager ta ration] Prends la moitié.
-	do GameState.appliquer_couts({&"vivres": 1})
+- [Partager ta ration] Prends la moitié. [#cout_vivres=1]
 	Jacquot: T'es bête. ... Bon. Merci.
 	do GameState.ajouter_marque(&"jacquot", &"nom_retenu", &"e1_adieu")
 - Je te rapporte du pain blanc. Promis.

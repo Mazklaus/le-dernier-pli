@@ -21,7 +21,7 @@ func after_all() -> void:
 func test_disponible_par_defaut() -> void:
 	assert_true(d.est_disponible())
 	assert_eq(d.titre_a_jouer(), "debut")
-	assert_true(d.is_in_group(DeclencheurDialogue.GROUPE))
+	assert_true(d.is_in_group(Interactif.GROUPE))
 
 
 func test_sans_dialogue_indisponible() -> void:
