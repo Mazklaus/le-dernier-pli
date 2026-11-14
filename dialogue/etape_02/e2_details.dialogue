@@ -1,5 +1,5 @@
 # Étape 2 : détails à examiner, sans coût ni marque, rejouables, 15 à 30 s chacun.
-# Titres du plan du Level Designer. Aucun chiffre ni série liés aux coureurs (garde-fou du Game Director).
+# Titres du plan du Level Designer. Les titres *_toucher sont les versions dans le noir (lanterne éteinte). Aucun chiffre ni série liés aux coureurs (garde-fou du Game Director).
 
 ~ parapet_sac
 
@@ -15,6 +15,13 @@ Tobie: Un repère. Quelqu'un est passé par ici et voulait retrouver son chemin.
 
 => END
 
+~ brouillard_piquet_toucher
+
+Tobie: Ma main heurte un piquet. Il y a un chiffon noué au sommet, raide de froid.
+Tobie: Un repère. Quelqu'un a voulu retrouver ce chemin. Au retour.
+
+=> END
+
 ~ brouillard_casque
 
 Tobie: Un casque posé à l'endroit, bien droit, comme sur une étagère.
@@ -22,10 +29,24 @@ Tobie: Pas un trou, pas une bosse. Son propriétaire l'a posé là exprès. Et i
 
 => END
 
-~ mort_main
+~ brouillard_casque_toucher
 
-Tobie: La main du mort, celle qui montre. Il porte une alliance, trop grande pour ses doigts maigres.
-Tobie: Quelqu'un, quelque part, attend encore qu'il rentre la lui rendre.
+Tobie: Mon pied cogne quelque chose de creux. Un casque, posé à l'endroit, bien droit.
+Tobie: Quelqu'un l'a rangé là, comme chez soi. Il ne l'a jamais repris.
+
+=> END
+
+~ mort_plaque
+
+Tobie: La plaque d'identité du mort, au bout d'une chaînette. La rouille a mangé les lettres.
+Tobie: On devine un prénom court. Ou peut-être pas. On ne lit plus rien.
+
+=> END
+
+~ mort_plaque_toucher
+
+Tobie: Sous mes doigts, une plaque de métal froide, au bout d'une chaînette.
+Tobie: Les lettres ont fondu dans la rouille. Mes doigts ne lisent rien non plus.
 
 => END
 

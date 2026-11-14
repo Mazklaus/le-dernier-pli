@@ -4,6 +4,9 @@
 
 ~ debut
 
+if not GameState.lanterne_allumee
+	Tobie: Je heurte quelqu'un dans le noir. Une épaule. Un uniforme mouillé.
+	Tobie: Pardon... Il ne répond pas. Il ne s'écarte pas. Il est froid.
 Tobie: Un soldat mort, debout dans les fils. Ils le tiennent mieux que ses jambes.
 Tobie: Son bras est tendu, comme un panneau. Personne ne l'a décroché.
 - [Suivre son doigt]
