@@ -33,8 +33,6 @@ const COUCHES_AMBIANCE := {
 const COUCHES_AUTRE: Array[String] = ["autre"]
 ## Couches de voix dont le gain suit la position du messager (repères de surface).
 const COUCHES_VOIX: Array[String] = ["surface-voix"]
-## Variantes de timbre de dialogue : vox_<personnage>_01 à _03.
-const VARIANTES_TIMBRE := 3
 ## Entrée et sortie de la musique, en secondes.
 const DUREE_FONDU_MUSIQUE := 4.0
 
@@ -53,6 +51,8 @@ var _passe_bas: AudioEffectLowPassFilter
 var _suivi_joueur: Node2D
 var _points_voix: Array[Vector2] = []
 var _rng := RandomNumberGenerator.new()
+var _cache_variantes: Dictionary = {}
+var _derniere_variante: Dictionary = {}
 
 
 func _ready() -> void:
@@ -142,14 +142,35 @@ func _fondu_musique_vers(volume_db: float, duree: float, arreter_apres: bool = f
 ## vox_<personnage>_01 à _03, sur le bus Voix. `personnage` est le slug du fichier
 ## (tobie, lamarre, cassien, jacquot, ravaude, guetteur, voix-sous-terre).
 func jouer_timbre(personnage: String) -> void:
-	var variantes: Array[String] = []
-	for n in range(1, VARIANTES_TIMBRE + 1):
-		var nom := "vox_%s_%02d" % [personnage, n]
-		if ResourceLoader.exists("res://assets/audio/%s.wav" % nom):
-			variantes.append(nom)
+	jouer_variante("vox_%s" % personnage, BUS_VOIX)
+
+
+## Bruitage à variantes : tire au hasard un fichier existant parmi <base>_01 à _NN
+## (ex. jouer_variante("sfx_pas_boue") pour un pas). Évite de rejouer deux fois de suite
+## la même variante quand il y en a plusieurs.
+func jouer_variante(base: String, bus: StringName = BUS_SFX) -> void:
+	var variantes := variantes_de(base)
 	if variantes.is_empty():
 		return
-	jouer_sfx(variantes[_rng.randi_range(0, variantes.size() - 1)], BUS_VOIX)
+	var choix := variantes[_rng.randi_range(0, variantes.size() - 1)]
+	if variantes.size() > 1 and choix == _derniere_variante.get(base, ""):
+		choix = variantes[(variantes.find(choix) + 1) % variantes.size()]
+	_derniere_variante[base] = choix
+	jouer_sfx(choix, bus)
+
+
+## Noms des variantes existantes de <base> (_01, _02… jusqu'au premier trou), mis en cache.
+func variantes_de(base: String) -> Array[String]:
+	if _cache_variantes.has(base):
+		return _cache_variantes[base]
+	var noms: Array[String] = []
+	for n in range(1, 100):
+		var nom := "%s_%02d" % [base, n]
+		if not ResourceLoader.exists("res://assets/audio/%s.wav" % nom):
+			break
+		noms.append(nom)
+	_cache_variantes[base] = noms
+	return noms
 
 
 func jouer_sfx(nom: String, bus: StringName = BUS_SFX) -> void:
