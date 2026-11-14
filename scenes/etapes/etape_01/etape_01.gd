@@ -14,6 +14,7 @@ const POINT_DE_DEPART: StringName = &"entree_couchette"
 
 
 func _ready() -> void:
+	super()
 	var messager := trouver_messager()
 	var depart := find_child(String(POINT_DE_DEPART), true, false) as Marker2D
 	if messager != null and depart != null:

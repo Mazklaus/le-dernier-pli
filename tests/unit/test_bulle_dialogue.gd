@@ -59,3 +59,10 @@ func test_glyphe_et_libelle_de_l_invite() -> void:
 	assert_true(texte.begins_with("["))
 	var long := InviteInteraction.texte_pour("Un libellé beaucoup trop long pour la plaque")
 	assert_true(long.length() <= 24 + 4 + InviteInteraction.glyphe_action(&"interagir").length())
+
+
+func test_l_etape_ajoute_l_interface_en_jeu() -> void:
+	var etape: EtapeBase = add_child_autofree(load("res://scenes/bac_a_sable/bac_a_sable.tscn").instantiate())
+	var interfaces := etape.get_children().filter(func(n: Node) -> bool: return n is InterfaceJeu)
+	assert_eq(interfaces.size(), 1)
+	assert_eq(etape.ajouter_interface(), interfaces[0], "pas de deuxième interface")
