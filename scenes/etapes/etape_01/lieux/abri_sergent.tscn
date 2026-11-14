@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
-[ext_resource type="Resource" path="res://dialogue/etape_01/e1_ordre.dialogue" id="2"]
+[ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="2"]
+[ext_resource type="Resource" path="res://dialogue/etape_01/e1_ordre.dialogue" id="3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
@@ -102,6 +103,12 @@ text = "3 Abri du sergent (sous terre) · 1.5 écran(s)"
 
 [node name="PassageAbri" type="Area2D" parent="Passages" groups=["passages"]]
 position = Vector2(200, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("1")
+vers = &"boyau_arriere"
+libelle = "Remonter"
 metadata/vers = "boyau_arriere"
 metadata/note_level_design = "Escalier vers le boyau arrière"
 
@@ -125,10 +132,10 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> boyau_arriere"
 
-[node name="e1_ordre" parent="Rencontres" instance=ExtResource("1")]
+[node name="e1_ordre" parent="Rencontres" instance=ExtResource("2")]
 position = Vector2(2450, 900)
 rencontre_id = &"e1_ordre"
-dialogue = ExtResource("2")
+dialogue = ExtResource("3")
 libelle = "Parler au sergent"
 metadata/note_level_design = "Lamarre assis devant la bougie, au fond : le pli, la lampe, une ration"
 

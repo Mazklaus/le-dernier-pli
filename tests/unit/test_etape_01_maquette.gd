@@ -56,3 +56,33 @@ func test_le_messager_demarre_dans_la_couchette() -> void:
 	var depart: Marker2D = _etape.find_child("entree_couchette", true, false)
 	assert_not_null(messager)
 	assert_eq(messager.global_position, depart.global_position)
+
+
+func test_chaque_passage_a_une_arrivee_et_un_libelle() -> void:
+	var passages := get_tree().get_nodes_in_group(&"passages").filter(
+		func(n: Node) -> bool: return _etape.is_ancestor_of(n))
+	assert_eq(passages.size(), 13)
+	for p in passages:
+		var passage := p as Passage
+		assert_not_null(passage, "%s n'a pas le script Passage" % p.name)
+		if passage != null:
+			assert_not_null(passage.trouver_arrivee(), "pas d'arrivée pour %s" % passage.name)
+			assert_true(passage.libelle != "" and passage.libelle.length() <= 24, "libellé de %s" % passage.name)
+
+
+func test_le_retour_d_un_lieu_arrive_devant_sa_porte() -> void:
+	var retour: Passage = _etape.find_child("PassageCantine", true, false)
+	assert_eq(retour.trouver_arrivee().name, &"porte_cantine")
+
+
+func test_les_verrous_s_ouvrent_apres_leur_rencontre() -> void:
+	GameState.reinitialiser()
+	var chicane: Verrou = _etape.find_child("Chicane", true, false)
+	var cendre: Verrou = _etape.find_child("VerrouCendre", true, false)
+	assert_eq(chicane.rencontre, &"e1_ordre")
+	assert_eq(cendre.rencontre, &"e1_cendre")
+	assert_false(chicane.est_ouvert())
+	GameState.marquer_rencontre_vue(&"e1_ordre")
+	assert_true(chicane.est_ouvert())
+	assert_false(cendre.est_ouvert())
+	GameState.reinitialiser()
