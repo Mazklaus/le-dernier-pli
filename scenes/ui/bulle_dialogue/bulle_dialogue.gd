@@ -8,6 +8,9 @@ extends CanvasLayer
 const ENCRE := StylePapier.ENCRE
 const LAVIS := StylePapier.LAVIS
 const ROUGE_HALO := Color(0.608, 0.11, 0.11, 0.35)
+## Amplitude du tremblement de la bavure, en pixels (renforcée à la demande de l'UI/UX).
+const TREMBLEMENT := 3.0
+const TACHES := ["bavure-tache_01", "bavure-tache_02", "bavure-tache_03"]
 ## Taille de la réplique selon Reglages.taille_texte (petit, normal, grand, très grand), à 1080.
 const TAILLES_TEXTE := [28, 32, 38, 44]
 ## Icône de coût du DA par jauge (ui_cout-*.png, 32 px).
@@ -33,6 +36,7 @@ var _replique: DialogueLabel
 var _options: VBoxContainer
 var _boutons: Array[Button] = []
 var _baves: Array[Label] = []
+var _variante_tache: int = 0
 var _rng := RandomNumberGenerator.new()
 
 
@@ -58,7 +62,7 @@ func _process(_delta: float) -> void:
 		return
 	for etiquette in _baves:
 		if is_instance_valid(etiquette):
-			etiquette.position.y = _rng.randf_range(-1.5, 1.5)
+			etiquette.position.y = _rng.randf_range(-TREMBLEMENT, TREMBLEMENT)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -144,6 +148,7 @@ func _montrer_options() -> void:
 	for r: DialogueResponse in ligne.responses:
 		brutes.append({"texte": r.text, "tags": r.tags, "autorisee": r.is_allowed})
 	options_affichees = OptionsDialogue.presenter(brutes, _rng)
+	_variante_tache = _rng.randi_range(0, TACHES.size() - 1)
 	_retenir_hud(options_affichees.any(func(o: Dictionary) -> bool: return not (o["couts_affiches"] as Dictionary).is_empty()))
 	for i in options_affichees.size():
 		var bouton := _bouton_option(i, options_affichees[i])
@@ -190,10 +195,11 @@ func _bouton_option(i: int, option: Dictionary) -> Button:
 		signe.add_child(icone)
 		var cout := _etiquette("−%d" % int(affiches[nom]), police_texte, roundi(_taille() * 0.78), ENCRE)
 		cout.set_meta(&"jauge", nom)
-		if option["bave"]:
-			_faire_baver(cout)
-			icone.modulate = Color(1, 0.85, 0.85)
 		signe.add_child(cout)
+		if option["bave"]:
+			# Le glyphe de la jauge reste net : seul le chiffre bave, avec sa tache.
+			_faire_baver(cout)
+			_ajouter_tache(cout)
 	if option["bave"] and affiches.is_empty():
 		_faire_baver(texte)
 	if bouton.disabled:
@@ -211,6 +217,31 @@ func _faire_baver(etiquette: Label) -> void:
 	etiquette.add_theme_constant_override(&"outline_size", 2)
 	etiquette.set_meta(&"bave", true)
 	_baves.append(etiquette)
+
+
+## Tache d'encre du DA sous un chiffre qui bave, comme une goutte tombée de la plume :
+## un tiers de la hauteur du chiffre, centrée, son haut touchant le bas du chiffre (le
+## chiffre reste lisible, même faux). Une variante différente par chiffre. Reste en effets
+## atténués (seul le tremblement se fige).
+func _ajouter_tache(etiquette: Label) -> TextureRect:
+	var tache := TextureRect.new()
+	tache.name = "Tache"
+	tache.texture = StylePapier.icone(TACHES[_variante_tache % TACHES.size()])
+	_variante_tache += 1
+	tache.show_behind_parent = true
+	tache.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tache.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	tache.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	var taille_police := float(etiquette.get_theme_font_size(&"font_size"))
+	# Hauteur des chiffres ≈ 0,7 × la taille de police (Spectral).
+	var hauteur_chiffre := taille_police * 0.7
+	var cote := roundf(hauteur_chiffre / 3.0)
+	tache.size = Vector2(cote, cote)
+	etiquette.add_child(tache)
+	# Placée quand le chiffre a sa taille (texte centré verticalement dans le Label).
+	etiquette.resized.connect(func() -> void:
+		tache.position = Vector2(etiquette.size.x / 2.0 - cote / 2.0, etiquette.size.y / 2.0 + hauteur_chiffre / 2.0))
+	return tache
 
 
 func _vider_options() -> void:
