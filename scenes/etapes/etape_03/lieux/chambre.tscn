@@ -1,0 +1,226 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
+[ext_resource type="Resource" path="res://dialogue/etape_03/e3_details.dialogue" id="2"]
+[ext_resource type="Resource" path="res://dialogue/etape_03/e3_procession.dialogue" id="3"]
+[ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(1440, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(1440, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
+size = Vector2(64, 750)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
+size = Vector2(64, 750)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5"]
+size = Vector2(160, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6"]
+size = Vector2(160, 300)
+
+[node name="Chambre" type="Node2D"]
+
+[node name="Fond" type="ColorRect" parent="."]
+offset_left = 0.0
+offset_top = 450.0
+offset_right = 1440.0
+offset_bottom = 900.0
+color = Color(0.55, 0.53, 0.5, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Sol" type="StaticBody2D" parent="."]
+position = Vector2(720.0, 990.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Sol"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Visuel" type="ColorRect" parent="Sol"]
+offset_left = -720.0
+offset_top = -90.0
+offset_right = 720.0
+offset_bottom = 90.0
+color = Color(0.35, 0.35, 0.35, 1)
+mouse_filter = 2
+
+[node name="Plafond" type="StaticBody2D" parent="."]
+position = Vector2(720.0, 390.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Plafond"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="Visuel" type="ColorRect" parent="Plafond"]
+offset_left = -720.0
+offset_top = -60.0
+offset_right = 720.0
+offset_bottom = 60.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="MurGauche" type="StaticBody2D" parent="."]
+position = Vector2(-32.0, 705.0)
+
+[node name="Forme" type="CollisionShape2D" parent="MurGauche"]
+shape = SubResource("RectangleShape2D_3")
+
+[node name="Visuel" type="ColorRect" parent="MurGauche"]
+offset_left = -32.0
+offset_top = -375.0
+offset_right = 32.0
+offset_bottom = 375.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="MurDroit" type="StaticBody2D" parent="."]
+position = Vector2(1472.0, 705.0)
+
+[node name="Forme" type="CollisionShape2D" parent="MurDroit"]
+shape = SubResource("RectangleShape2D_4")
+
+[node name="Visuel" type="ColorRect" parent="MurDroit"]
+offset_left = -32.0
+offset_top = -375.0
+offset_right = 32.0
+offset_bottom = 375.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="Titre" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 466.0
+offset_right = 1240.0
+offset_bottom = 514.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "5 Chambre d'Ilde (nuit, fermée) · 0.75 écran(s)"
+
+[node name="Rencontres" type="Node2D" parent="."]
+
+[node name="Details" type="Node2D" parent="."]
+
+[node name="Passages" type="Node2D" parent="."]
+
+[node name="Points" type="Node2D" parent="."]
+
+[node name="entree_chambre" type="Marker2D" parent="Points"]
+position = Vector2(150, 900)
+
+[node name="e3_detail_chambre_volet" parent="Details" instance=ExtResource("1")]
+position = Vector2(400, 900)
+rencontre_id = &"e3_detail_chambre_volet"
+dialogue = ExtResource("2")
+titre = "chambre_volet"
+libelle = "Toucher le volet"
+metadata/note_level_design = "Volet cloqué de l'extérieur"
+
+[node name="Visuel" type="ColorRect" parent="Details/e3_detail_chambre_volet"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Details/e3_detail_chambre_volet"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "chambre_volet"
+
+[node name="e3_procession" parent="Rencontres" instance=ExtResource("1")]
+position = Vector2(700, 900)
+rencontre_id = &"e3_procession"
+dialogue = ExtResource("3")
+libelle = "Écouter à la fenêtre"
+une_seule_fois = true
+metadata/note_level_design = "La procession chante sous la fenêtre : suivre ou rester"
+
+[node name="Visuel" type="ColorRect" parent="Rencontres/e3_procession"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.75, 0.1, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Rencontres/e3_procession"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e3_procession"
+
+[node name="VersCheminNuit" type="Area2D" parent="Passages" groups=["passages"]]
+position = Vector2(1000, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("4")
+vers = &"chemin_nuit"
+libelle = "Suivre les chants"
+rencontre_requise = &"e3_suivre"
+metadata/vers = "chemin_nuit"
+metadata/note_level_design = "La porte, la nuit : suivre la procession"
+
+[node name="Forme" type="CollisionShape2D" parent="Passages/VersCheminNuit"]
+shape = SubResource("RectangleShape2D_5")
+
+[node name="Visuel" type="ColorRect" parent="Passages/VersCheminNuit"]
+offset_left = -80.0
+offset_top = -150.0
+offset_right = 80.0
+offset_bottom = 150.0
+color = Color(0.2, 0.35, 0.6, 0.35)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Passages/VersCheminNuit"]
+offset_left = -80.0
+offset_top = 158.0
+offset_right = 1120.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-> chemin_nuit"
+
+[node name="VersCheminAube" type="Area2D" parent="Passages" groups=["passages"]]
+position = Vector2(1250, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("4")
+vers = &"chemin_aube"
+libelle = "Sortir à l'aube"
+rencontre_requise = &"e3_rester"
+fondu_noir = 0.8
+metadata/vers = "chemin_aube"
+metadata/note_level_design = "La porte, à l'aube : fondu, puis le jour"
+
+[node name="Forme" type="CollisionShape2D" parent="Passages/VersCheminAube"]
+shape = SubResource("RectangleShape2D_6")
+
+[node name="Visuel" type="ColorRect" parent="Passages/VersCheminAube"]
+offset_left = -80.0
+offset_top = -150.0
+offset_right = 80.0
+offset_bottom = 150.0
+color = Color(0.2, 0.35, 0.6, 0.35)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Passages/VersCheminAube"]
+offset_left = -80.0
+offset_top = 158.0
+offset_right = 1120.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-> chemin_aube"
