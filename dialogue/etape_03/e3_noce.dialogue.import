@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://cmo46i7msmi83"
+path="res://.godot/imported/e3_noce.dialogue-c0393b0b0fb34849764777447c34e30a.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_03/e3_noce.dialogue"
+dest_files=["res://.godot/imported/e3_noce.dialogue-c0393b0b0fb34849764777447c34e30a.tres"]
+
+[params]
+
+defaults=true

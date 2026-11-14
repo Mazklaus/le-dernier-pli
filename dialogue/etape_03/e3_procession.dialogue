@@ -1,0 +1,70 @@
+# Étape 3, rencontre 5 : la procession. Obligatoire, à la fenêtre de la chambre, la nuit.
+# Le choix à 2 points : rester (Promesse « Promis à Ilde » tenue, marque e3_rester, l'aube)
+# ou suivre (Promesse trahie, marque e3_suivre, zone sombre jusqu'à la route).
+# Titre « champs » : la nuit, requiert e3_suivre. S'agenouiller : −2 Lucidité, Relique « Front contre terre ».
+# Titre « route » : fin d'étape, version nuit (e3_suivre) ou aube.
+# Garde-fou : la terre répond, on ne dit jamais quoi ni qui.
+
+~ debut
+
+Tobie: Des voix, sous la fenêtre. Elles chantent très bas, sans paroles.
+Tobie: Entre les lames du volet : des cierges. Tout le village marche dans la rue noire, Ilde en tête.
+Tobie: Ils vont vers les champs. Personne ne parle. Même les enfants.
+if GameState.possede_marque(&"promis_a_ilde")
+	Tobie: J'ai promis. Quoi que j'entende.
+- [Rester] Je me recouche.
+	do GameState.resoudre_promesse(&"promis_a_ilde", true)
+	do GameState.marquer_rencontre_vue(&"e3_rester")
+	Tobie: Je tire le drap sur ma tête. Le chant passe, s'éloigne, se perd.
+	Tobie: Je ne dors pas. Puis si.
+	Tobie: À l'aube, la clé tourne. Ilde ne dit rien. Elle regarde mes genoux. Ils sont propres.
+	Ilde: La route des champs. C'est par là que tu repars.
+- [Suivre la procession] Le volet cède, il est vieux.
+	do GameState.resoudre_promesse(&"promis_a_ilde", false)
+	do GameState.marquer_rencontre_vue(&"e3_suivre")
+	Tobie: Je passe par la fenêtre. Les cierges sont déjà loin. Entre eux et moi, il fait noir.
+	- [Allumer la lanterne] [#cout_huile=1, #sans_prelevement]
+		do GameState.entrer_zone_sombre(true)
+		Tobie: Je garde la flamme basse, dans ma main. Comme eux.
+	- [Suivre les cierges dans le noir] [#cout_lucidite=1, #sans_prelevement]
+		do GameState.entrer_zone_sombre(false)
+		Tobie: Je marche vers les petites lumières. Les haies me frôlent. Le chant me tient la main.
+
+=> END
+
+~ champs
+
+Tobie: Un champ labouré. Tout le village est à genoux, en cercle, le front contre la terre.
+Tobie: Ils murmurent vers le sol. Le même chant, mais plus bas encore, comme pour quelqu'un qui dort.
+Tobie: Personne ne me regarde. Il y a une place vide dans le cercle.
+- [S'agenouiller avec eux] [#cout_lucidite=2]
+	Tobie: Je pose le front contre la terre froide. Elle sent la pluie et le fer.
+	Tobie: Et très loin dessous, quelque chose répond.
+	Tobie: Je me relève trop vite. Personne n'a bougé.
+	do GameState.ajouter_marque(&"front_contre_terre", &"relique", &"e3_procession")
+- [Repartir] Ce n'est pas ma prière.
+	Tobie: Je recule sans bruit. Le chant ne s'arrête pas pour moi.
+
+=> END
+
+~ route
+
+if GameState.rencontre_vue(&"e3_suivre")
+	=> route_nuit
+Tobie: Le chemin des champs, au petit jour. Des cierges éteints, plantés dans la terre en cercle.
+Tobie: La cire a coulé jusqu'au sol. Ils ont prié longtemps, ici. Je ne saurai pas pour qui.
+Tobie: La route repart vers l'est. Derrière moi, le village étend son linge.
+
+=> END
+
+~ route_nuit
+
+Tobie: Au bout du champ, la route. Je me retourne une fois.
+Tobie: Ilde s'est relevée. Elle me regarde partir, son cierge à la main.
+if GameState.possede_marque(&"front_contre_terre")
+	Tobie: Elle regarde mes genoux, pleins de terre. Elle ne dit rien. Elle hoche la tête.
+else
+	Tobie: Elle regarde mes genoux, propres. Elle ne dit rien. Elle se remet à genoux.
+do GameState.sortir_zone_sombre()
+
+=> END
