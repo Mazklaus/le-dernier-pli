@@ -4,8 +4,9 @@ extends DecorParallaxe
 ## parallaxes de 1300 px de haut pour un niveau de 16320 px.
 ## - Brouillard : trois bandes gravées qui bouclent sur x, affichées en tout-ou-rien tant que le
 ##   messager est entre x 4800 et 10100 (de la première ceinture à la sortie de la seconde).
-##   La bande lointaine passe derrière le plan 2, la moyenne derrière le jeu, la proche devant
-##   le messager (elle lui mange les jambes).
+##   La bande lointaine passe derrière le plan 2, la moyenne derrière le plan 3, la proche
+##   devant le plan 3 mais derrière le messager et les personnages (DA : les silhouettes
+##   restent entières), à la vitesse du sol.
 ## - Cheval de frise : ferme la chicane de Brisse, part avec le Verrou (e2_poste_passe).
 ## - Fil qui retombe : une fois la seconde ceinture ouverte et franchie, le fil se referme
 ##   derrière Tobie et bloque le retour (verrou de retour).
@@ -26,7 +27,7 @@ const PLANS := [
 const BANDES := [
 	["fx_brouillard_01", 0.35, -35],
 	["fx_brouillard_02", 0.75, -25],
-	["fx_brouillard_03", 1.2, 10],
+	["fx_brouillard_03", 1.0, -10],
 ]
 const LARGEUR_BANDE := 1920.0
 const BROUILLARD := Vector2(4800.0, 10100.0)
