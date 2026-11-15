@@ -127,7 +127,7 @@ func test_geste_de_tobie_joue_par_le_messager_tourne_vers_la_croix() -> void:
 	if not silhouette.est_dessine():
 		pass_test("planches de Tobie absentes")
 		return
-	_faux_geste(silhouette, &"entailler")
+	_faux_geste_tobie(silhouette, &"entailler")
 	d.global_position = Vector2(500, 0)
 	messager.global_position = Vector2(560, 0)
 	assert_true(d.jouer_geste_replique("Tobie", PackedStringArray(["geste=tobie:entailler"])))
@@ -142,7 +142,7 @@ func test_geste_de_tobie_joue_par_le_messager_tourne_vers_la_croix() -> void:
 
 
 ## Faux geste de 2 images sur chaque calque (les vraies planches viennent de la DA).
-func _faux_geste(silhouette: SilhouetteTobie, nom: StringName) -> void:
+func _faux_geste_tobie(silhouette: SilhouetteTobie, nom: StringName) -> void:
 	for calque in silhouette.calques():
 		calque.sprite_frames.add_animation(nom)
 		calque.sprite_frames.set_animation_loop(nom, false)
@@ -158,8 +158,8 @@ func test_geste_de_tobie_vers_le_repere_du_geste() -> void:
 	if not silhouette.est_dessine():
 		pass_test("planches de Tobie absentes")
 		return
-	_faux_geste(silhouette, &"graver")
-	_faux_geste(silhouette, &"accrocher")
+	_faux_geste_tobie(silhouette, &"graver")
+	_faux_geste_tobie(silhouette, &"accrocher")
 	var repere := Marker2D.new()
 	repere.name = "geste_graver"
 	repere.position = Vector2(140, 0)
