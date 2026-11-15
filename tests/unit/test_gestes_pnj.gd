@@ -101,3 +101,23 @@ func test_la_procession_de_nuit_a_ses_calques_et_ilde_en_tete() -> void:
 	assert_gt(volet.get_image().get_pixel(960, 530).a, 0.9)
 	var ilde := load("res://assets/graphics/chr/chr_ilde-cierge_marche_01.png") as Texture2D
 	assert_eq(ilde.get_size(), Vector2(800, 320))
+
+
+## Étape 4 : sœur Maude, le caporal Fernand, frère Anselme.
+const GESTES_E4 := {
+	&"maude": [&"laver", &"baiser-ruban"],
+	&"fernand": [&"se-redresser", &"hocher-tete", &"montrer"],
+	&"anselme": [&"examiner", &"ranger-bocal", &"montrer", &"cendrer"],
+}
+
+
+func test_les_gestes_de_l_etape_4_ont_leur_planche() -> void:
+	for nom: StringName in GESTES_E4:
+		assert_true(ResourceLoader.exists("res://assets/graphics/chr/chr_%s_repos_01.png" % nom), String(nom))
+		for geste: StringName in GESTES_E4[nom]:
+			var chemin := Personnage.chemin_geste(nom, geste)
+			assert_ne(chemin, "", "%s : %s" % [nom, geste])
+			if chemin != "":
+				var t := load(chemin) as Texture2D
+				assert_eq(t.get_height(), 320, chemin)
+				assert_between(t.get_width() / 200, 3, 6, chemin)
