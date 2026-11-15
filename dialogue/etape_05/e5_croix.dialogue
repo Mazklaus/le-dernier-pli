@@ -1,0 +1,35 @@
+# Étape 5, rencontre 4 : le cimetière des coureurs. Le pic de l'étape, choix à 2 points, une marque parmi trois.
+# Dire les noms : −2 Lucidité, Nom retenu « Ceux d'avant ». Graver son nom : Cicatrice « Son propre nom », drapeau nom_grave.
+# Rendre l'insigne (Relique l_insigne_du_saint) : Nom retenu « Il s'appelait Aubin », drapeau insigne_rendu.
+# Garde-fous du Game Director : aucun nombre total, ni dates, ni ordre. On lit des noms, on ne compte pas.
+# Personne ne dit que le saint de la crypte était un coureur.
+
+~ debut
+
+Tobie: Des croix plus petites, bien alignées. Pas plantées au hasard, celles-là. Rangées.
+Tobie: Sur chacune, une petite cloche sans battant, clouée. L'insigne des coureurs.
+Tobie: Et un nom, gravé au couteau. Je lis mal. Lettre par lettre.
+Tobie: G. A. S. Gaspard. Le mort du brouillard.
+Tobie: M. A. T... Matthieu. La sacoche sans pli.
+Tobie: Une croix n'a pas de cloche. Juste le clou, et une trace plus claire sur le bois. Aubin, dit le nom.
+Tobie: Au bout du rang, une dernière croix. Pas de nom. Pas de cloche. La terre est fraîche, à ses pieds.
+Tobie: Quelqu'un l'a préparée. Il n'y a personne d'autre sur ce chemin.
+- [Dire les noms à voix haute] [#cout_lucidite=2]
+	Tobie: Je les dis tous. Un par un, jusqu'au bout du rang. Ma voix se casse au milieu. Je recommence.
+	Tobie: Ils ont été coureurs. Quelqu'un doit savoir qu'ils sont passés.
+	do GameState.ajouter_marque(&"ceux_d_avant", &"nom_retenu", &"e5_croix")
+- [Graver mon nom sur la croix vide]
+	Tobie: T. O. B. Le couteau glisse sur le nœud du bois. Je me coupe le pouce. Je finis quand même.
+	Tobie: Au moins, elle sera à quelqu'un.
+	do GameState.ajouter_marque(&"son_propre_nom", &"cicatrice", &"e5_croix")
+	do GameState.marquer_rencontre_vue(&"nom_grave")
+- [Rendre l'insigne] [if GameState.possede_marque(&"l_insigne_du_saint") /]
+	Tobie: Je sors la petite cloche de la crypte. Je l'accroche au clou vide.
+	Tobie: Elle couvre exactement la trace claire sur le bois. Même usure. Même place.
+	Tobie: Aubin. Je retiendrai ton nom.
+	do GameState.ajouter_marque(&"il_s_appelait_aubin", &"nom_retenu", &"e5_croix")
+	do GameState.marquer_rencontre_vue(&"insigne_rendu")
+- [Passer]
+	Tobie: Je passe vite. Je ne regarde pas la croix du bout.
+
+=> END

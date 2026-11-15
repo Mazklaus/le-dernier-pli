@@ -1,0 +1,36 @@
+# Étape 5, clôture : la clairière. Fin d'étape. Lecture du pli : −1 Huile, la prochaine ligne non lue.
+# Au plus deux lectures avant (étapes 2 et 4) : ligne 1, 2 ou 3. La ligne 3 tombe juste après les croix :
+# garde-fou du Game Director, elle doit inquiéter, pas expliquer (Tobie ne fait pas le lien à voix haute).
+
+~ debut
+
+Tobie: Les croix s'arrêtent d'un coup, comme au bord d'un champ. Le ciel s'ouvre. Il est immense.
+Tobie: En bas, la terre descend vers une ombre de pierre. Un toit d'église, à moitié enterré.
+Tobie: Je m'assois dans l'herbe. Je sors le pli.
+- [Lire en transparence] [if GameState.peut_lire_ligne() /] [#cout_huile=1, #sans_prelevement]
+	=> lecture
+- [Le garder fermé]
+	Tobie: Il est tiède contre ma poitrine. Je le range.
+Tobie: Je descends vers l'église. Derrière moi, je n'entends pas mes pas. J'en entends d'autres.
+
+=> END
+
+~ lecture
+
+do GameState.lire_ligne_pli()
+Tobie: Je lève le papier vers le ciel. La cire rouge laisse passer une ligne.
+if GameState.pli_lignes_lues == 1
+	Tobie: « À celle qui écoute sous les cloches tues, »
+	Tobie: Une prière. Une sainte qui écoute. Ici, il n'y a personne pour écouter.
+elif GameState.pli_lignes_lues == 2
+	Tobie: « au nom de la Cendre et selon le Pacte du Sceau Noir : »
+	Tobie: Un pacte. Je ne savais pas que la Cendre signait des choses avec quelqu'un.
+elif GameState.pli_lignes_lues == 3
+	Tobie: « voici le quatorzième. »
+	Tobie: Le quatorzième quoi. Le mot reste là, sur le papier, comme un caillou dans une botte.
+	Tobie: Derrière moi, entre les croix, le vent ne fait plus aucun bruit.
+else
+	Tobie: Le ciel est trop clair. Je ne distingue rien.
+Tobie: Je descends vers l'église. Derrière moi, je n'entends pas mes pas. J'en entends d'autres.
+
+=> END

@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://bmh8agprxld58"
+path="res://.godot/imported/e5_sentier.dialogue-b5a2f96a370d84abe1edb335bad60511.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_05/e5_sentier.dialogue"
+dest_files=["res://.godot/imported/e5_sentier.dialogue-b5a2f96a370d84abe1edb335bad60511.tres"]
+
+[params]
+
+defaults=true
