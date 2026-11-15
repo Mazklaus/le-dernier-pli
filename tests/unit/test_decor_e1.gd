@@ -143,3 +143,12 @@ func test_rideau_sur_le_verrou_de_la_sape_de_sortie() -> void:
 	var verrou := _etape.get_node("Lieux/SapeSortie/VerrouCendre")
 	assert_not_null(verrou.get_node_or_null("Dessin"))
 	assert_false((verrou.get_node("Visuel") as CanvasItem).visible)
+
+
+func test_figurants_de_surface_poses_derriere_tobie() -> void:
+	# #129 : des voix à la surface, il faut des soldats visibles près des repères de voix forts.
+	assert_eq(_decor.figurants.size(), DecorE1.FIGURANTS.size())
+	for s in _decor.figurants:
+		assert_eq(s.hframes, 4, s.name)
+		assert_lt(s.z_index, 0, "%s derrière Tobie" % s.name)
+		assert_gt(s.z_index, _decor.plans[3].z_index, "%s devant le plan 3" % s.name)
