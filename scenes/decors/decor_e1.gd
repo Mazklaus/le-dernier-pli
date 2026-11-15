@@ -49,6 +49,18 @@ const SAPE_LUMIERE := "vieille-sape-lumiere"
 const RENCONTRE_SAPE: StringName = &"e1_sape"
 const OBJET_NOIR: StringName = &"petit_battant"
 const RIDEAU := "res://assets/graphics/fx/fx_rideau-sape.png"
+## Figurants de la surface (#129, validé GD) : [calque fx, x du milieu], assis au sol (y 900),
+## derrière Tobie, devant le plan 3. Planches de 4 images de respiration, jouées lentement.
+## Ils ne parlent pas : traits en lavis, aucune interaction.
+const FIGURANTS := [
+	["fx_soldats-pons-billard", 1100.0],
+	["fx_soldats-boyau", 1880.0],
+	["fx_soldats-carrefour", 4900.0],
+]
+const Z_FIGURANTS := -19
+const SOL_SURFACE := 900.0
+## Durée d'une image de respiration (s) ; chaque groupe est décalé pour ne pas respirer ensemble.
+const SOUFFLE_FIGURANTS := 0.45
 ## Vitesse de chute de la cendre, en pixels par seconde.
 const CHUTE_CENDRE := 40.0
 
@@ -59,6 +71,8 @@ var cendre: Sprite2D
 var echelle: Sprite2D
 ## [Sprite2D, seuil x] par voile.
 var voiles: Array = []
+var figurants: Array[Sprite2D] = []
+var _temps_figurants: float = 0.0
 var sape_noir: Node2D
 var sape_lumiere: Node2D
 var _sape_allumee: bool = false
@@ -81,10 +95,12 @@ func _ready() -> void:
 	_habiller_echelle()
 	_habiller_lieux()
 	_habiller_rideau()
+	_poser_figurants()
 
 
 func _process(delta: float) -> void:
 	_maj_voiles()
+	_respirer_figurants(delta)
 	_couvrir_ecran()
 	if cendre == null:
 		return
@@ -281,3 +297,30 @@ func _habiller_rideau() -> void:
 	dessin.texture = load(RIDEAU) as Texture2D
 	dessin.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	verrou.add_child(dessin)
+
+
+func _poser_figurants() -> void:
+	for f: Array in FIGURANTS:
+		var chemin := DOSSIER_FX + String(f[0]) + ".png"
+		if not ResourceLoader.exists(chemin):
+			continue
+		var sprite := Sprite2D.new()
+		sprite.name = String(f[0])
+		sprite.texture = load(chemin) as Texture2D
+		sprite.hframes = 4
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		sprite.z_index = Z_FIGURANTS
+		# image de 320 px de haut, sol du dessin à 4 px du bas
+		sprite.position = Vector2(float(f[1]), SOL_SURFACE - 160.0 + 4.0)
+		add_child(sprite)
+		figurants.append(sprite)
+
+
+## Respiration lente, chaque groupe décalé d'une image ; figée en effets atténués.
+func _respirer_figurants(delta: float) -> void:
+	if figurants.is_empty() or Reglages.valeur(&"effets_attenues"):
+		return
+	_temps_figurants += delta
+	var pas := int(_temps_figurants / SOUFFLE_FIGURANTS)
+	for i in figurants.size():
+		figurants[i].frame = (pas + i) % 4
