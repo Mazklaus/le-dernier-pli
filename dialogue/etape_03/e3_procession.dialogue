@@ -8,7 +8,8 @@
 ~ debut
 
 Tobie: Des voix, sous la fenêtre. Elles chantent très bas, sans paroles.
-# [ciné e3_procession_nuit] entre les lames du volet, les cierges ; tout le village dans la rue noire, Ilde en tête.
+# Cinématique : entre les lames du volet, les cierges ; tout le village dans la rue noire, Ilde en tête.
+do Cinematiques.jouer(&"e3_procession_nuit")
 Tobie: Ils vont vers les champs. Personne ne parle. Même les enfants.
 if GameState.possede_marque(&"promis_a_ilde")
 	Tobie: J'ai promis. Quoi que j'entende.
