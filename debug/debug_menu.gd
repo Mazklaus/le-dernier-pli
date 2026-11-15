@@ -60,6 +60,9 @@ var _spins: Dictionary = {}  # StringName -> SpinBox
 var _checks: Dictionary = {}  # StringName -> CheckBox
 var _encounter_pick: OptionButton
 var _force_lie: CheckBox
+## Mémoire vidéo occupée par les textures (mesure du budget web), rafraîchie chaque seconde.
+var _memoire: Label
+var _memoire_attente: float = 0.0
 
 
 func _ready() -> void:
@@ -87,6 +90,10 @@ func _build_ui() -> void:
 	var title := Label.new()
 	title.text = "DEBUG (F1)"
 	box.add_child(title)
+
+	_memoire = Label.new()
+	_memoire.name = "MemoireVideo"
+	box.add_child(_memoire)
 
 	for id in GAUGES:
 		var row := HBoxContainer.new()
@@ -127,7 +134,24 @@ func _build_ui() -> void:
 	box.add_child(jump_row)
 
 
+func _process(delta: float) -> void:
+	if not _panel.visible:
+		return
+	_memoire_attente -= delta
+	if _memoire_attente <= 0.0:
+		_memoire_attente = 1.0
+		_memoire.text = texte_memoire()
+
+
+## « textures : 212 Mo (vidéo : 240 Mo) », pour la mesure du budget web.
+static func texte_memoire() -> String:
+	var textures := Performance.get_monitor(Performance.RENDER_TEXTURE_MEM_USED) / 1048576.0
+	var video := Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED) / 1048576.0
+	return "textures : %d Mo (vidéo : %d Mo)" % [roundi(textures), roundi(video)]
+
+
 func _refresh() -> void:
+	_memoire.text = texte_memoire()
 	for id in GAUGES:
 		var spin := _spins[id] as SpinBox
 		spin.max_value = _gauge_max(id)  # Lucidité : 10, puis 3 après Perdu
