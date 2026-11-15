@@ -283,6 +283,15 @@ def main() -> None:
     total += ecrire("chambre", chambre(), 1440)
     total += ecrire("chemin-nuit", chemin(True), 3840)
     total += ecrire("chemin-aube", chemin(False), 3840)
+    # La croisée de la fenêtre de la chambre, seule, sur fond transparent : posée par le code
+    # au-dessus du cortège de la procession (vu par la fenêtre), en (300, 520) dans le lieu.
+    fx = DST.parent.parent / "fx"
+    fx.mkdir(parents=True, exist_ok=True)
+    (fx / "fx_croisee-chambre.svg").write_text(
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="200" height="230" viewBox="300 520 200 230">{DEFS}'
+        f'<rect x="300" y="520" width="200" height="220" fill="none" {ST} stroke-width="3"/>'
+        f'<path d="M400 520 V740 M300 630 H500" stroke="{PAPIER}" stroke-width="3"/>'
+        f'<rect x="292" y="740" width="216" height="10" fill="{PAPIER}" {ST} stroke-width="2"/></svg>\n', encoding="utf-8")
     print(f"{total} tuiles de lieux dans art/src/env/e3")
 
 

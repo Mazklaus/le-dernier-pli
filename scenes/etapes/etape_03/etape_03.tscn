@@ -36,6 +36,10 @@ size = Vector2(64, 1080)
 script = ExtResource("1")
 numero_etape = 3
 lieux_nuit = Array[StringName]([&"chambre", &"chemin_nuit"])
+teintes_lieux = {
+&"chambre": Color(0.32, 0.35, 0.48, 1),
+&"chemin_nuit": Color(0.85, 0.88, 1, 1)
+}
 limite_surface_y = 1300.0
 bornes_camera_surface = Vector2(0, 7680)
 
@@ -124,6 +128,7 @@ text = "lisiere_fusils"
 [node name="e3_lisiere" parent="Surface/Lisiere" instance=ExtResource("7")]
 position = Vector2(1500, 900)
 rencontre_id = &"e3_lisiere"
+personnage = &"enfants"
 dialogue = ExtResource("9")
 libelle = "Regarder les enfants"
 une_seule_fois = true
@@ -243,6 +248,10 @@ text = "place_lampions"
 [node name="e3_noce" parent="Surface/RuePlace" instance=ExtResource("7")]
 position = Vector2(2420, 900)
 rencontre_id = &"e3_noce"
+compagnons = {
+&"rose": Vector2(-200, 0),
+&"violoneux": Vector2(200, 0)
+}
 dialogue = ExtResource("11")
 libelle = "Rejoindre la noce"
 une_seule_fois = true

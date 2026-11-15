@@ -26,12 +26,15 @@ const AMPLITUDE_REPOS := 1.5
 ## associé (fondu entrant) ; vers tout autre lieu, elle s'arrête (fondu sortant).
 ## Ex. étape 1 : {&"abri_sergent": "theme", &"chapelle": "theme"}.
 @export var lieux_musique: Dictionary = {}
-## Lieux de nuit : franchir un Passage vers l'un d'eux bascule l'étape en nuit (CanvasModulate
-## « Eclairage » teinté teinte_nuit, signal phase_changee) ; vers tout autre lieu, retour au
-## jour. Ex. étape 3 : [&"chambre", &"chemin_nuit"]. Le basculement a lieu dans le noir si le
-## Passage a un fondu_noir.
+## Lieux de nuit : y entrer (Passage, saut de débogage) bascule l'étape en nuit (signal
+## phase_changee) et teinte l'écran gravure (uniforme teinte : tout sauf le rouge et l'accent) ;
+## vers tout autre lieu, retour au jour. Ex. étape 3 : [&"chambre", &"chemin_nuit"].
+## Le basculement a lieu dans le noir si le Passage a un fondu_noir.
 @export var lieux_nuit: Array[StringName] = []
+## Teinte de nuit par défaut, pour un lieu de nuit absent de teintes_lieux.
 @export var teinte_nuit: Color = Color(0.32, 0.35, 0.48)
+## Teinte par lieu de nuit (lieu -> Color), prioritaire sur teinte_nuit.
+@export var teintes_lieux: Dictionary = {}
 ## Bornes horizontales de la caméra à la surface (le décor parallaxe est calculé pour elles) ;
 ## levées sous terre. x > y : pas de borne.
 @export var bornes_camera_surface: Vector2 = Vector2(1, 0)
@@ -43,6 +46,7 @@ const AMPLITUDE_REPOS := 1.5
 signal phase_changee(nuit: bool)
 
 var nuit: bool = false
+var _tween_teinte: Tween
 
 
 func _ready() -> void:
@@ -147,7 +151,7 @@ func entrer_lieu(lieu: StringName) -> void:
 		else:
 			AudioDirector.arreter_musique()
 	if not lieux_nuit.is_empty():
-		definir_nuit(lieu in lieux_nuit)
+		definir_nuit(lieu in lieux_nuit, lieu)
 
 
 ## Lieu (sous-scène de « Lieux ») qui contient ce nœud, nommé comme son marqueur d'entrée
@@ -163,17 +167,34 @@ func lieu_de(noeud: Node) -> StringName:
 	return &""
 
 
-## Bascule jour / nuit : teinte de la scène (pas de l'interface) et signal pour les ambiances.
-func definir_nuit(actif: bool) -> void:
-	var eclairage := get_node_or_null("Eclairage") as CanvasModulate
-	if eclairage == null:
-		eclairage = CanvasModulate.new()
-		eclairage.name = "Eclairage"
-		add_child(eclairage)
-	eclairage.color = teinte_nuit if actif else Color.WHITE
+## Bascule jour / nuit : teinte de l'écran gravure (pas de l'interface) et signal pour les
+## ambiances. lieu choisit la teinte dans teintes_lieux (sinon teinte_nuit).
+func definir_nuit(actif: bool, lieu: StringName = &"") -> void:
+	definir_teinte(Color(teintes_lieux.get(lieu, teinte_nuit)) if actif else Color.WHITE)
 	if actif != nuit:
 		nuit = actif
 		phase_changee.emit(nuit)
+
+
+## Teinte de l'écran gravure (blanc : aucune). duree > 0 : fondu.
+func definir_teinte(couleur: Color, duree: float = 0.0) -> void:
+	var materiau := ajouter_gravure()
+	if _tween_teinte != null:
+		_tween_teinte.kill()
+	if duree <= 0.0:
+		materiau.set_shader_parameter(&"teinte", couleur)
+		return
+	_tween_teinte = create_tween()
+	_tween_teinte.tween_method(func(c: Color) -> void: materiau.set_shader_parameter(&"teinte", c),
+			teinte_actuelle(), couleur, duree)
+
+
+func teinte_actuelle() -> Color:
+	var materiau := materiau_gravure()
+	if materiau == null:
+		return Color.WHITE
+	var t: Variant = materiau.get_shader_parameter(&"teinte")
+	return t as Color if t is Color else Color.WHITE
 
 
 ## Relie le gain des voix de surface (AudioDirector) à la position du messager.
