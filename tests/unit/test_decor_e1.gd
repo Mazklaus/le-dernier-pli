@@ -118,3 +118,28 @@ func test_voiles_en_tout_ou_rien_selon_l_abscisse() -> void:
 	await wait_seconds(0.25)
 	assert_false(hachure.visible, "retour en arrière : caché")
 	assert_false(contre.visible)
+
+
+func test_lieux_souterrains_habilles_sans_gris_ni_voile() -> void:
+	for lieu in _etape.get_node("Lieux").get_children():
+		assert_not_null(lieu.get_node_or_null("Dessin"), lieu.name)
+		assert_false((lieu.get_node("Fond") as CanvasItem).visible, lieu.name)
+		var voile := lieu.get_node_or_null("ZoneSombre/Visuel") as CanvasItem
+		if voile != null:
+			assert_false(voile.visible, "%s : voile de la ZoneSombre" % lieu.name)
+
+
+func test_vieille_sape_noire_puis_eclairee_selon_la_lanterne() -> void:
+	assert_true(_decor.sape_noir.visible, "avant le choix : le noir")
+	assert_false(_decor.sape_lumiere.visible)
+	GameState.zone_sombre_changee.emit(true, true)
+	assert_true(_decor.sape_lumiere.visible, "lanterne allumée : la sape éclairée")
+	assert_false(_decor.sape_noir.visible)
+	GameState.zone_sombre_changee.emit(true, false)
+	assert_true(_decor.sape_noir.visible, "dans le noir")
+
+
+func test_rideau_sur_le_verrou_de_la_sape_de_sortie() -> void:
+	var verrou := _etape.get_node("Lieux/SapeSortie/VerrouCendre")
+	assert_not_null(verrou.get_node_or_null("Dessin"))
+	assert_false((verrou.get_node("Visuel") as CanvasItem).visible)

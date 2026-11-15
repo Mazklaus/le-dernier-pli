@@ -5,6 +5,9 @@ extends DecorParallaxe
 ## est peinte dans les tuiles (crans à x 6600 et 9000) : aucun modulate.
 ## Masque les fonds, sols et murs gris de la maquette (Surface/*/Fond, Sol, Mur*) quand le décor est posé, et habille
 ## la Chicane (fx_chicane), la banquette du périscope (fx_banquette) et l'échelle de sortie (ombre, puis claire après e1_adieu).
+## Habille aussi les pièces souterraines (Lieux/*) d'un fond peint fixe, masque leurs gris de maquette
+## et le voile de la ZoneSombre (l'obscurité de la vieille sape est peinte, version noir ou lumière),
+## et pose le rideau de la sape de sortie sur le VerrouCendre.
 
 const DOSSIER := "res://assets/graphics/env/e1/env_e1_"
 const CENDRE := "res://assets/graphics/fx/fx_cendre.png"
@@ -31,6 +34,21 @@ const VOILES := [
 ]
 const DOSSIER_FX := "res://assets/graphics/fx/"
 const FONDU_VOILE := 0.1
+## [nœud du lieu, nom du dessin] : env_e1_plan3_<nom>_NN.png, posé en (0, 0) dans le lieu.
+const LIEUX := [
+	["Couchette", "couchette"],
+	["AbriSergent", "abri-sergent"],
+	["Cantine", "cantine"],
+	["Chapelle", "chapelle"],
+	["VieilleSape", "vieille-sape-noir"],
+	["SapeSortie", "sape-sortie"],
+]
+const Z_LIEU := -20
+## Vieille sape : la version éclairée remplace le noir quand la lanterne a été allumée à e1_sape.
+const SAPE_LUMIERE := "vieille-sape-lumiere"
+const RENCONTRE_SAPE: StringName = &"e1_sape"
+const OBJET_NOIR: StringName = &"petit_battant"
+const RIDEAU := "res://assets/graphics/fx/fx_rideau-sape.png"
 ## Vitesse de chute de la cendre, en pixels par seconde.
 const CHUTE_CENDRE := 40.0
 
@@ -41,6 +59,9 @@ var cendre: Sprite2D
 var echelle: Sprite2D
 ## [Sprite2D, seuil x] par voile.
 var voiles: Array = []
+var sape_noir: Node2D
+var sape_lumiere: Node2D
+var _sape_allumee: bool = false
 
 var _defilement: float = 0.0
 
@@ -58,6 +79,8 @@ func _ready() -> void:
 	_habiller_chicane()
 	_habiller_banquette()
 	_habiller_echelle()
+	_habiller_lieux()
+	_habiller_rideau()
 
 
 func _process(delta: float) -> void:
@@ -197,3 +220,100 @@ func actualiser_echelle() -> void:
 		return
 	var claire := GameState.rencontre_vue(RENCONTRE_ECHELLE)
 	echelle.texture = load(ECHELLE_CLAIRE if claire else ECHELLE_OMBRE) as Texture2D
+
+
+## Pièces souterraines : un fond peint par lieu (tuiles fixes, sans parallaxe), les gris masqués.
+func _habiller_lieux() -> void:
+	var lieux := get_parent().get_node_or_null("Lieux") if get_parent() else null
+	if lieux == null:
+		return
+	for l: Array in LIEUX:
+		var lieu := lieux.get_node_or_null(String(l[0])) as Node2D
+		if lieu == null:
+			continue
+		var dessin := _dessin_lieu(String(l[1]), "Dessin")
+		if dessin == null:
+			continue
+		lieu.add_child(dessin)
+		_masquer_gris_lieu(lieu)
+		if String(l[0]) == "VieilleSape":
+			sape_noir = dessin
+			sape_lumiere = _dessin_lieu(SAPE_LUMIERE, "DessinLumiere")
+			if sape_lumiere != null:
+				lieu.add_child(sape_lumiere)
+	if sape_lumiere != null:
+		GameState.zone_sombre_changee.connect(_sur_zone_sombre)
+		GameState.etat_charge.connect(actualiser_vieille_sape)
+		actualiser_vieille_sape()
+
+
+func _dessin_lieu(nom: String, nom_noeud: String) -> Node2D:
+	var dessin := Node2D.new()
+	dessin.name = nom_noeud
+	dessin.z_index = Z_LIEU
+	var x := 0.0
+	for n in range(1, 10):
+		var chemin := "%splan3_%s_%02d.png" % [DOSSIER, nom, n]
+		if not ResourceLoader.exists(chemin):
+			break
+		var tuile := Sprite2D.new()
+		tuile.texture = load(chemin) as Texture2D
+		tuile.centered = false
+		tuile.position = Vector2(x, 0.0)
+		tuile.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		dessin.add_child(tuile)
+		x += tuile.texture.get_width()
+	if dessin.get_child_count() == 0:
+		dessin.free()
+		return null
+	return dessin
+
+
+## Fond, sol, plafond et murs gris de la maquette, et le voile noir de la ZoneSombre (QA, #88).
+func _masquer_gris_lieu(lieu: Node) -> void:
+	for chemin: String in ["Fond", "ZoneSombre/Visuel"]:
+		var gris := lieu.get_node_or_null(chemin) as CanvasItem
+		if gris != null:
+			gris.visible = false
+	for corps: Node in lieu.get_children():
+		var nom := String(corps.name)
+		if corps is StaticBody2D and (nom == "Sol" or nom == "Plafond" or nom.begins_with("Mur")):
+			var visuel := corps.get_node_or_null("Visuel") as CanvasItem
+			if visuel != null:
+				visuel.visible = false
+
+
+## Le choix fait à e1_sape : lanterne allumée -> la sape éclairée (la niche, le mot gravé) ;
+## dans le noir -> la sape noire, seule la lueur du petit battant. Avant le choix : le noir.
+func _sur_zone_sombre(dans_zone: bool, lanterne: bool) -> void:
+	if dans_zone:
+		_sape_allumee = lanterne
+		_appliquer_vieille_sape()
+
+
+func actualiser_vieille_sape() -> void:
+	_sape_allumee = GameState.rencontre_vue(RENCONTRE_SAPE) and not GameState.possede_objet(OBJET_NOIR)
+	_appliquer_vieille_sape()
+
+
+func _appliquer_vieille_sape() -> void:
+	if sape_noir == null or sape_lumiere == null:
+		return
+	sape_lumiere.visible = _sape_allumee
+	sape_noir.visible = not _sape_allumee
+
+
+## Le VerrouCendre de la sape de sortie : une couverture tendue en travers (contre le gaz), qui
+## disparaît avec le verrou après e1_adieu.
+func _habiller_rideau() -> void:
+	var verrou := get_parent().get_node_or_null("Lieux/SapeSortie/VerrouCendre") if get_parent() else null
+	if verrou == null or not ResourceLoader.exists(RIDEAU):
+		return
+	var visuel := verrou.get_node_or_null("Visuel") as CanvasItem
+	if visuel != null:
+		visuel.visible = false
+	var dessin := Sprite2D.new()
+	dessin.name = "Dessin"
+	dessin.texture = load(RIDEAU) as Texture2D
+	dessin.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	verrou.add_child(dessin)
