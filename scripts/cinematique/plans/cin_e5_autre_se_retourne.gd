@@ -1,15 +1,18 @@
 extends CinematiquePlans
 ## e5_autre_se_retourne (planches de la DA, tools/gen_cin_e5.py) : au bout de la boucle, l'Autre
-## s'arrête, sa tête tourne à moitié (jamais jusqu'au visage), revient, et il repart du même pas.
-## Un plan plein écran à 10 i/s : fond cin_autre_01, 6 images de 200×170 (cin_autre_02, grille
-## 3 × 2) en (880, 500) : 0 il marche, 1 il s'arrête, 2 et 3 la tête tourne, 4 elle revient,
-## 5 il repart. Un temps sur 0, puis 1 à 3, une tenue sur 3, puis 4 et 5, une tenue sur 5.
+## marche sur place au loin (« il ne s'approche pas, il ne s'éloigne pas »), s'arrête, sa tête
+## tourne à moitié (jamais jusqu'au visage), revient, et il repart du même pas.
+## Un plan plein écran : fond cin_autre_01, 6 images de 200×170 (cin_autre_02, grille 3 × 2) en
+## (880, 500). 0 et 5 sont les deux appuis de la marche : alternés à 3 i/s, il marche sur place.
+## 1 il s'arrête, 2 et 3 la tête tourne (10 i/s), tenue sur 3, 4 elle revient, puis la marche
+## reprend et une tenue finale. Le sprite ne bouge jamais : fond et images opaques, alignés au pixel.
 
 const FOND := "res://assets/graphics/cin/cin_autre_01.png"
 const GESTE := "res://assets/graphics/cin/cin_autre_02.png"
-const TENUE_DEBUT := 1.0
-const TENUE_TETE := 0.8
-const TENUE_FIN := 1.0
+const MARCHE := 2.0
+const CADENCE_MARCHE := 1.0 / 3.0
+const TENUE_TETE := 1.2
+const TENUE_FIN := 0.5
 
 var couche: CanvasLayer
 
@@ -25,12 +28,21 @@ func construire() -> Animation:
 
 	var anim := Animation.new()
 	cle(anim, "Plans:visible", 0.0, true)
-	cle(anim, "Plans/Autre:frame", 0.0, 0)
-	var t := images(anim, "Plans/Autre", TENUE_DEBUT, 1, 3) - Cinematique.PAS + TENUE_TETE
-	t = images(anim, "Plans/Autre", t, 4, 5) - Cinematique.PAS + TENUE_FIN
+	var t := marcher(anim, 0.0)
+	t = images(anim, "Plans/Autre", t, 1, 3) - Cinematique.PAS + TENUE_TETE
+	t = images(anim, "Plans/Autre", t, 4, 4)
+	t = marcher(anim, t) + TENUE_FIN
 	anim.length = snappedf(t, Cinematique.PAS)
 	cle(anim, "Plans:visible", anim.length, false)
 	return anim
+
+
+## Les appuis 0 et 5 en alternance pendant MARCHE secondes, à partir de debut ; rend la fin.
+func marcher(anim: Animation, debut: float) -> float:
+	var pas := roundi(MARCHE / CADENCE_MARCHE)
+	for k in pas:
+		cle(anim, "Plans/Autre:frame", debut + k * CADENCE_MARCHE, 0 if k % 2 == 0 else 5)
+	return debut + MARCHE
 
 
 func apres() -> void:

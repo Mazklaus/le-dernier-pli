@@ -26,16 +26,25 @@ func test_script_de_plans_sur_le_noeud_du_level_designer() -> void:
 	assert_eq(autre.position, Vector2(880, 500))
 
 
-func test_les_six_images_dans_l_ordre_avec_les_tenues() -> void:
+func test_il_marche_sur_place_s_arrete_tourne_la_tete_et_repart() -> void:
 	if not _planches_livrees():
 		pass_test("planches de la DA pas encore livrées (#174)")
 		return
 	var anim := (_cine().get_node("Animation") as AnimationPlayer).get_animation(&"jouer")
 	var piste := anim.find_track(NodePath("Plans/Autre:frame"), Animation.TYPE_VALUE)
 	var images: Array = []
+	var temps: Array = []
 	for k in anim.track_get_key_count(piste):
 		images.append(anim.track_get_key_value(piste, k))
-	assert_eq(images, [0, 1, 2, 3, 4, 5])
-	var tenue_tete := anim.track_get_key_time(piste, 4) - anim.track_get_key_time(piste, 3)
-	assert_almost_eq(tenue_tete, 0.8, 0.001, "la tête tournée tient 0,8 s")
-	assert_almost_eq(anim.length - anim.track_get_key_time(piste, 5), 1.0, 0.001, "une seconde sur la dernière")
+		temps.append(snappedf(anim.track_get_key_time(piste, k), 0.01))
+	assert_eq(images, [0, 5, 0, 5, 0, 5, 1, 2, 3, 4, 0, 5, 0, 5, 0, 5])
+	assert_eq(temps, [0.0, 0.3, 0.7, 1.0, 1.3, 1.7, 2.0, 2.1, 2.2, 3.4, 3.5, 3.8, 4.2, 4.5, 4.8, 5.2])
+	assert_almost_eq(anim.length, 6.0, 0.001, "dans la fourchette 5 à 15 s")
+
+
+func test_le_sprite_ne_bouge_jamais() -> void:
+	if not _planches_livrees():
+		pass_test("planches de la DA pas encore livrées (#174)")
+		return
+	var anim := (_cine().get_node("Animation") as AnimationPlayer).get_animation(&"jouer")
+	assert_eq(anim.find_track(NodePath("Plans/Autre:position"), Animation.TYPE_VALUE), -1)
