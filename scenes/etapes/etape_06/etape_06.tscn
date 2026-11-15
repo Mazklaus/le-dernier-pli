@@ -1,0 +1,146 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scenes/etapes/etape_06/etape_06.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/etapes/etape_06/lieux/nef.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/etapes/etape_06/lieux/village.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/etapes/etape_06/lieux/niche_veilleur.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/etapes/etape_06/lieux/seuil.tscn" id="5"]
+[ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(1920, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(64, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
+size = Vector2(64, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
+size = Vector2(160, 300)
+
+[node name="Etape06" type="Node2D"]
+script = ExtResource("1")
+numero_etape = 6
+
+[node name="Surface" type="Node2D" parent="."]
+
+[node name="Fissure" type="Node2D" parent="Surface"]
+position = Vector2(0, 0)
+
+[node name="Fond" type="ColorRect" parent="Surface/Fissure"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1920.0
+offset_bottom = 900.0
+color = Color(0.82, 0.82, 0.8, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Sol" type="StaticBody2D" parent="Surface/Fissure"]
+position = Vector2(960.0, 990.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Fissure/Sol"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Fissure/Sol"]
+offset_left = -960.0
+offset_top = -90.0
+offset_right = 960.0
+offset_bottom = 90.0
+color = Color(0.35, 0.35, 0.35, 1)
+mouse_filter = 2
+
+[node name="MurGauche" type="StaticBody2D" parent="Surface/Fissure"]
+position = Vector2(-32.0, 540.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Fissure/MurGauche"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Fissure/MurGauche"]
+offset_left = -32.0
+offset_top = -540.0
+offset_right = 32.0
+offset_bottom = 540.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="MurDroit" type="StaticBody2D" parent="Surface/Fissure"]
+position = Vector2(1952.0, 540.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Fissure/MurDroit"]
+shape = SubResource("RectangleShape2D_3")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Fissure/MurDroit"]
+offset_left = -32.0
+offset_top = -540.0
+offset_right = 32.0
+offset_bottom = 540.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="Titre" type="Label" parent="Surface/Fissure"]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1240.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "1 Fissure · le sol de la forêt s'ouvre"
+
+[node name="entree_fissure" type="Marker2D" parent="Surface/Fissure"]
+position = Vector2(300, 900)
+
+[node name="Descendre" type="Area2D" parent="Surface/Fissure" groups=["passages"]]
+position = Vector2(1200, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("6")
+vers = &"nef"
+libelle = "Se laisser glisser"
+metadata/vers = "nef"
+metadata/note_level_design = "La fente dans le sol : on se laisse glisser dans la nef"
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Fissure/Descendre"]
+shape = SubResource("RectangleShape2D_4")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Fissure/Descendre"]
+offset_left = -80.0
+offset_top = -150.0
+offset_right = 80.0
+offset_bottom = 150.0
+color = Color(0.2, 0.35, 0.6, 0.35)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Fissure/Descendre"]
+offset_left = -80.0
+offset_top = 158.0
+offset_right = 1120.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-> nef"
+
+[node name="Lieux" type="Node2D" parent="."]
+
+[node name="Nef" parent="Lieux" instance=ExtResource("2")]
+position = Vector2(0, 1400)
+
+[node name="Village" parent="Lieux" instance=ExtResource("3")]
+position = Vector2(7000, 1400)
+
+[node name="NicheVeilleur" parent="Lieux" instance=ExtResource("4")]
+position = Vector2(14000, 1400)
+
+[node name="Seuil" parent="Lieux" instance=ExtResource("5")]
+position = Vector2(21000, 1400)
+
+[node name="PassageNiche" parent="Lieux/NicheVeilleur/Passages"]
+arrivee = NodePath("../../../../Lieux/Village/Points/porte_niche")
+
+[node name="Messager" parent="." instance=ExtResource("7")]
+position = Vector2(300, 900)
+
+[editable path="Lieux/NicheVeilleur"]
