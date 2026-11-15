@@ -216,3 +216,20 @@ func test_epilogue_ne_boucle_pas_et_retire_l_ambiance() -> void:
 func test_les_cinq_epilogues_existent() -> void:
 	for lettre in ["a", "b", "c", "d", "e"]:
 		assert_true(ResourceLoader.exists("res://assets/audio/mus_destinataire_fin-%s.ogg" % lettre), lettre)
+
+
+func test_etapes_5_et_6_ont_leurs_couches() -> void:
+	var ad: Node = AudioDirectorScript.new()
+	add_child_autofree(ad)
+	ad.jouer_etape(5)
+	assert_eq(ad._couches.keys(), ["foret", "autre"])
+	ad.jouer_etape(6)
+	assert_eq(ad._couches.keys(), ["profondeur", "autre"])
+
+
+func test_toutes_les_couches_existent() -> void:
+	for numero: int in AudioDirectorScript.COUCHES_AMBIANCE:
+		var slug: String = AudioDirectorScript.SLUGS_ETAPES[numero]
+		for couche: String in AudioDirectorScript.COUCHES_AMBIANCE[numero]:
+			var chemin := "res://assets/audio/amb_%s_%s.ogg" % [slug, couche]
+			assert_true(ResourceLoader.exists(chemin), chemin)
