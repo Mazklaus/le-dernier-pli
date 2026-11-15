@@ -304,7 +304,7 @@ z_index = -1
 [node name="e6_chute_fissure" type="Node2D" parent="."]
 script = ExtResource("cine_chute")
 id = &"e6_chute_fissure"
-duree = 5.2
+duree = 6.4
 metadata/note_level_design = "Le sol cède : la caméra suit la glissade jusqu'au fond ; lancée par la première réplique de e6_nef"
 
 [node name="Camera" type="Camera2D" parent="e6_chute_fissure"]

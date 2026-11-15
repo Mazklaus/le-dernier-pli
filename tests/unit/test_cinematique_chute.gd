@@ -1,6 +1,6 @@
 extends GutTest
 ## Cinématique e6_chute_fissure : plan A (la fente s'ouvre), plan B (Tobie dévale le chemin de la
-## DA, posé par son centre), au pas de 1/10 s, sous la gravure. Planches de la DA (#179).
+## DA, posé par son centre ; une chute lourde), au pas de 1/10 s, sous la gravure. Planches de la DA (#179).
 
 const NEF := "res://scenes/etapes/etape_06/lieux/nef.tscn"
 
@@ -47,7 +47,7 @@ func test_script_de_plans_sur_le_noeud_du_level_designer() -> void:
 	assert_eq([fente.hframes, fente.vframes], [3, 2])
 	assert_eq(fente.position, Vector2(660, 300))
 	var tobie := c.get_node("Plans/B/Tobie") as Sprite2D
-	assert_eq([tobie.hframes, tobie.vframes], [6, 1])
+	assert_eq([tobie.hframes, tobie.vframes], [7, 1])
 	assert_eq(tobie.position, Vector2(210, 70), "centre (330, 190) au départ")
 
 
@@ -61,7 +61,7 @@ func test_plan_a_puis_plan_b() -> void:
 	assert_eq(_dixiemes(anim, "Plans/B:visible"), [0, 16])
 	assert_eq(_valeurs(anim, "Plans/B:visible"), [false, true])
 	assert_eq(_dixiemes(anim, "Plans/A:visible"), [0, 16])
-	assert_almost_eq(anim.length, 5.2, 0.001)
+	assert_almost_eq(anim.length, 6.4, 0.001)
 	assert_between(anim.length, 5.0, 15.0)
 
 
@@ -70,11 +70,12 @@ func test_tobie_suit_le_chemin_par_son_centre() -> void:
 		pass_test("planches de la DA pas encore livrées (#179)")
 		return
 	var anim := _anim()
-	assert_eq(_valeurs(anim, "Plans/B/Tobie:frame"), [0, 0, 1, 2, 3, 1, 2, 3, 1, 2, 3, 4, 5])
+	assert_eq(_valeurs(anim, "Plans/B/Tobie:frame"), [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6])
 	assert_eq(_dixiemes(anim, "Plans/B/Tobie:frame"),
-		[16, 19, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42])
+		[16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 43, 47, 52, 58])
 	var positions := _valeurs(anim, "Plans/B/Tobie:position")
-	assert_eq(positions.size(), 13)
+	assert_eq(positions.size(), 15)
+	assert_eq(positions[10], positions[12], "immobile de l'impact à la terre retombée")
 	assert_eq(positions[-1], Vector2(1380, 660), "centre (1500, 780) à l'arrivée")
 	var piste := anim.find_track(NodePath("Plans/B/Tobie:position"), Animation.TYPE_VALUE)
 	assert_eq(anim.value_track_get_update_mode(piste), Animation.UPDATE_DISCRETE, "pas de glissé")
