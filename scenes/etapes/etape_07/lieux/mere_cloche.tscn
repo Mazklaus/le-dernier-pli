@@ -105,6 +105,7 @@ position = Vector2(200, 900)
 [node name="e7_mere_cloche" parent="Rencontres" instance=ExtResource("1")]
 position = Vector2(960, 900)
 rencontre_id = &"e7_mere_cloche"
+personnage = &"mere-cloche"
 dialogue = ExtResource("2")
 libelle = "Lever les yeux"
 fin_etape = true

@@ -18,7 +18,7 @@ Tobie: Je descends vers l'église. Derrière moi, je n'entends pas mes pas. J'en
 ~ lecture
 
 do GameState.lire_ligne_pli()
-Tobie: La cire rouge laisse passer une ligne.
+Tobie: Sous la cire noire, le papier laisse passer une ligne.
 if GameState.pli_lignes_lues == 1
 	Tobie: « À celle qui écoute sous les cloches tues, »
 	Tobie: Une prière. Une sainte qui écoute. Ici, il n'y a personne pour écouter.
