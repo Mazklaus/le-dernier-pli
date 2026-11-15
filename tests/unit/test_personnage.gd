@@ -22,6 +22,19 @@ func test_planche_decoupee_en_4_images_lentes() -> void:
 	p.free()
 
 
+func test_le_mort_est_une_image_figee() -> void:
+	var p := Personnage.creer(&"mort")
+	assert_not_null(p)
+	assert_eq(p.sprite_frames.get_frame_count(SilhouetteTobie.REPOS), 1)
+	p.free()
+
+
+func test_brisse_et_le_mort_a_l_etape_2() -> void:
+	var etape: EtapeBase = add_child_autofree(load("res://scenes/etapes/etape_02/etape_02.tscn").instantiate())
+	assert_eq(etape.trouver_declencheur(&"e2_poste").dessin.nom, &"brisse")
+	assert_eq(etape.trouver_declencheur(&"e2_mort").dessin.nom, &"mort")
+
+
 func test_personnage_inconnu_ou_vide() -> void:
 	assert_null(Personnage.creer(&""))
 	assert_null(Personnage.creer(&"personne"))

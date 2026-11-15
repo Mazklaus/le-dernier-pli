@@ -302,6 +302,7 @@ text = "-> boyau_detour"
 [node name="e2_poste" parent="Surface/Poste" instance=ExtResource("3")]
 position = Vector2(1940, 780)
 rencontre_id = &"e2_poste"
+personnage = &"brisse"
 dialogue = ExtResource("6")
 libelle = "Parler au caporal"
 une_seule_fois = true
@@ -455,6 +456,7 @@ text = "brouillard_casque"
 [node name="e2_mort" parent="Surface/Brouillard" instance=ExtResource("3")]
 position = Vector2(3456, 900)
 rencontre_id = &"e2_mort"
+personnage = &"mort"
 dialogue = ExtResource("9")
 libelle = "Regarder le mort"
 une_seule_fois = true
