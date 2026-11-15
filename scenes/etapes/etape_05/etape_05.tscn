@@ -520,9 +520,6 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 28
 text = "e5_campement"
 
-[node name="reserve_detail_campement" type="Marker2D" parent="Surface/Campement"]
-position = Vector2(1650, 900)
-
 [node name="Cimetiere" type="Node2D" parent="Surface"]
 position = Vector2(8640, 0)
 
@@ -658,9 +655,6 @@ offset_bottom = 88.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 32
 text = "5 Clairière · 1 écran · fin d'étape"
-
-[node name="reserve_detail_clairiere" type="Marker2D" parent="Surface/Clairiere"]
-position = Vector2(350, 900)
 
 [node name="e5_detail_clairiere_ciel" parent="Surface/Clairiere" instance=ExtResource("3")]
 position = Vector2(700, 900)
