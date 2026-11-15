@@ -231,56 +231,20 @@ func _habiller_lieux() -> void:
 		var lieu := lieux.get_node_or_null(String(l[0])) as Node2D
 		if lieu == null:
 			continue
-		var dessin := _dessin_lieu(String(l[1]), "Dessin")
+		var dessin := dessin_lieu(DOSSIER + "plan3_" + String(l[1]), "Dessin", Z_LIEU)
 		if dessin == null:
 			continue
 		lieu.add_child(dessin)
-		_masquer_gris_lieu(lieu)
+		masquer_gris_lieu(lieu)
 		if String(l[0]) == "VieilleSape":
 			sape_noir = dessin
-			sape_lumiere = _dessin_lieu(SAPE_LUMIERE, "DessinLumiere")
+			sape_lumiere = dessin_lieu(DOSSIER + "plan3_" + SAPE_LUMIERE, "DessinLumiere", Z_LIEU)
 			if sape_lumiere != null:
 				lieu.add_child(sape_lumiere)
 	if sape_lumiere != null:
 		GameState.zone_sombre_changee.connect(_sur_zone_sombre)
 		GameState.etat_charge.connect(actualiser_vieille_sape)
 		actualiser_vieille_sape()
-
-
-func _dessin_lieu(nom: String, nom_noeud: String) -> Node2D:
-	var dessin := Node2D.new()
-	dessin.name = nom_noeud
-	dessin.z_index = Z_LIEU
-	var x := 0.0
-	for n in range(1, 10):
-		var chemin := "%splan3_%s_%02d.png" % [DOSSIER, nom, n]
-		if not ResourceLoader.exists(chemin):
-			break
-		var tuile := Sprite2D.new()
-		tuile.texture = load(chemin) as Texture2D
-		tuile.centered = false
-		tuile.position = Vector2(x, 0.0)
-		tuile.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-		dessin.add_child(tuile)
-		x += tuile.texture.get_width()
-	if dessin.get_child_count() == 0:
-		dessin.free()
-		return null
-	return dessin
-
-
-## Fond, sol, plafond et murs gris de la maquette, et le voile noir de la ZoneSombre (QA, #88).
-func _masquer_gris_lieu(lieu: Node) -> void:
-	for chemin: String in ["Fond", "ZoneSombre/Visuel"]:
-		var gris := lieu.get_node_or_null(chemin) as CanvasItem
-		if gris != null:
-			gris.visible = false
-	for corps: Node in lieu.get_children():
-		var nom := String(corps.name)
-		if corps is StaticBody2D and (nom == "Sol" or nom == "Plafond" or nom.begins_with("Mur")):
-			var visuel := corps.get_node_or_null("Visuel") as CanvasItem
-			if visuel != null:
-				visuel.visible = false
 
 
 ## Le choix fait à e1_sape : lanterne allumée -> la sape éclairée (la niche, le mot gravé) ;
