@@ -18,12 +18,13 @@ L'écran de l'étape 6 est inversé (encre blanche sur nuit) : le vide est laiss
   cin_chute_03  le fond 1920 x 1080 : la fente en haut à gauche et sa lumière, la coulée de
                 terre et de racines en diagonale, la pierre taillée en bas à droite (un
                 chapiteau couché, des feuilles sculptées) ;
-  cin_chute_04  6 images de 240 x 240 sur fond transparent, en ligne : Tobie qui dévale.
-                0 il glisse sur le dos, les pieds devant ; 1 à 3 il roule en boule (trois
-                quarts de tour) ; 4 il s'étale ; 5 à quatre pattes sur la pierre.
-                À poser par son centre sur le chemin CHEMIN ci-dessous (centre de l'image, en
-                px du plan) : il descend la coulée en 2,6 s environ, images 0 puis 1-2-3 en
-                boucle, et finit sur 4 puis 5, tenue 1 s.
+  cin_chute_04  7 images de 240 x 240 sur fond transparent, en ligne : la chute lourde.
+                0 il glisse sur le dos le long des racines ; 1 une seule culbute ; 2 l'impact,
+                étalé sur le chapiteau ; 3 immobile, la terre retombe sur lui ; 4 immobile,
+                couvert de terre ; 5 il se soulève lentement ; 6 à quatre pattes.
+                À poser par son centre sur le chemin CHEMIN ci-dessous (instant, image, centre en
+                px du plan) : glissade 1,6 s, culbute, impact à 2,0 s, immobilité totale de
+                2,0 à 3,6 s (dont 0,7 s sans rien, puis la terre), relevé lent, tenue jusqu'à 4,8 s.
 
 Aucun rouge (la silhouette de Tobie est trop petite pour le ruban, comme à l'étape 5). Aucune
 cloche.
@@ -42,10 +43,15 @@ ZONE_A = (660, 300, 600, 560)
 SOL_A = 780                    # le sol de la clairière dans le plan A
 PIEDS_A = 960
 # Chemin de Tobie dans le plan B : (instant en s depuis le début du plan, image, centre x, y)
-CHEMIN = [(0.0, 0, 330, 190), (0.3, 0, 440, 262), (0.6, 1, 560, 330), (0.8, 2, 660, 392),
-          (1.0, 3, 760, 450), (1.2, 1, 860, 506), (1.4, 2, 960, 560), (1.6, 3, 1060, 616),
-          (1.8, 1, 1160, 668), (2.0, 2, 1258, 716), (2.2, 3, 1350, 760), (2.4, 4, 1452, 790),
-          (2.6, 5, 1500, 780)]
+CHEMIN = [(0.0, 0, 330, 190), (0.2, 0, 450, 268), (0.4, 0, 570, 338), (0.6, 0, 690, 408),
+          (0.8, 0, 810, 476), (1.0, 0, 930, 540), (1.2, 0, 1050, 604), (1.4, 0, 1160, 662),
+          (1.6, 0, 1254, 708),
+          (1.8, 1, 1350, 730),                       # une seule culbute
+          (2.0, 2, 1452, 800),                       # l'impact sur le chapiteau
+          (2.7, 3, 1452, 800),                       # immobile ; la terre retombe sur lui
+          (3.1, 4, 1452, 800),                       # immobile, couvert de terre
+          (3.6, 5, 1480, 790),                       # il se soulève lentement
+          (4.2, 6, 1500, 780)]                       # à quatre pattes ; tenue jusqu'à 4,8 s
 
 
 # ----------------------------------------------------------------------------- Tobie
@@ -75,7 +81,9 @@ def tobie_debout(x: float, pied: float, bras: str = "bas", s: float = 1.0) -> st
     epg, epd = (-34, -248), (36, -248)
     poses = {"bas": ((-50, -190, -54, -136), (52, -190, 50, -140)),
              "ecartes": ((-90, -240, -138, -220), (92, -236, 136, -214)),
-             "leves": ((-66, -300, -60, -360), (62, -304, 70, -362))}
+             "leves": ((-66, -300, -60, -360), (62, -304, 70, -362)),
+             # perte d'équilibre : les deux bras battent l'air, de travers, haut et bas
+             "battent": ((-100, -290, -150, -330), (96, -270, 150, -250))}
     for (ex, ey), (cx, cy, mx, my) in zip((epg, epd), poses[bras]):
         p(f"M{ex} {ey} Q{cx - 6} {cy} {mx} {my} L{mx + 14} {my + 4} Q{cx + 10} {cy + 4} {ex + 14} {ey + 6} Z", "url(#h2)", 2.4)
         o.append(f'<circle cx="{mx + 7}" cy="{my + 2}" r="10" fill="{PAPIER}" {STP} stroke-width="2"/>')
@@ -183,11 +191,11 @@ def trou(k: int) -> str:
 
 def tobie_a(k: int) -> str:
     """Tobie dans la fente, coupé par la lèvre avant du trou à mesure qu'il tombe."""
-    bras = {0: "bas", 1: "ecartes", 2: "leves", 3: "leves", 4: "leves"}.get(k)
+    bras = {0: "bas", 1: "ecartes", 2: "battent", 3: "battent", 4: "leves"}.get(k)
     if bras is None:
         return ""
     chute = {0: 0, 1: 6, 2: 60, 3: 200, 4: 330}[k]
-    penche = {0: 0, 1: -4, 2: 8, 3: 4, 4: 0}[k]
+    penche = {0: 0, 1: -4, 2: 16, 3: 12, 4: 0}[k]   # positif : le buste part en arrière
     corps = f'<g transform="rotate({penche} {PIEDS_A} {SOL_A})">{tobie_debout(PIEDS_A, SOL_A + chute, bras)}</g>'
     if chute < 20:
         return corps
@@ -240,16 +248,36 @@ def coulee() -> str:
     return "".join(o)
 
 
+def terre(k: int) -> str:
+    """La terre qui retombe sur lui pendant qu'il ne bouge plus : des mottes en l'air (3), puis
+    posées sur son dos et autour (4, 5)."""
+    r = rnd(630 + k)
+    o = []
+    if k == 3:
+        for _ in range(9):
+            x, y = r.uniform(-90, 90), r.uniform(-110, -10)
+            o.append(f'<ellipse cx="{x:.0f}" cy="{y:.0f}" rx="{r.uniform(3, 7):.0f}" ry="{r.uniform(2, 5):.0f}" fill="url(#h2)" {STP} stroke-width="1.4"/>')
+        o.append(f'<path d="M-40 -110 l4 30 M10 -116 l-2 40 M50 -104 l3 26" stroke="{MINE}" stroke-width="1.4" stroke-dasharray="4 5"/>')
+    if k in (4, 5):
+        o.append(f'<path d="M-70 4 Q-30 -10 10 -2 Q40 -12 70 2 L66 10 Q0 6 -66 12 Z" fill="url(#h2)" {STP} stroke-width="1.6"/>')
+        for _ in range(6):
+            x = r.uniform(-100, 100)
+            o.append(f'<ellipse cx="{x:.0f}" cy="{r.uniform(22, 30):.0f}" rx="{r.uniform(3, 6):.0f}" ry="3" fill="url(#h2)" {STP} stroke-width="1.2"/>')
+    return "".join(o)
+
+
 def image_b(k: int) -> str:
     """Tobie seul, centré dans une image de 240 x 240 transparente."""
-    corps = {0: tobie_glisse(), 1: tobie_boule(0), 2: tobie_boule(120), 3: tobie_boule(240),
-             4: tobie_etale(), 5: tobie_quatre_pattes()}[k]
+    corps = {0: tobie_glisse(), 1: tobie_boule(200), 2: tobie_etale(), 3: tobie_etale() + terre(3),
+             4: tobie_etale() + terre(4),
+             5: f'<g transform="translate(0 6) rotate(-6)">{tobie_quatre_pattes()}</g>' + terre(5),
+             6: tobie_quatre_pattes()}[k]
     return f'<g transform="translate(120 120)">{corps}</g>'
 
 
 def ligne_b() -> str:
-    corps = "".join(f'<svg x="{k * 240}" y="0" width="240" height="240" viewBox="0 0 240 240">{image_b(k)}</svg>' for k in range(6))
-    return svg(corps, (0, 0, 1440, 240))
+    corps = "".join(f'<svg x="{k * 240}" y="0" width="240" height="240" viewBox="0 0 240 240">{image_b(k)}</svg>' for k in range(7))
+    return svg(corps, (0, 0, 1680, 240))
 
 
 def main() -> None:
