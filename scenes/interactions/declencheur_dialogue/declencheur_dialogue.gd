@@ -8,6 +8,9 @@ extends Interactif
 
 signal dialogue_commence(declencheur: DeclencheurDialogue)
 signal dialogue_termine(declencheur: DeclencheurDialogue)
+## Une réplique de la rencontre demande un geste ([#geste=…]) : les objets animés du lieu
+## (ex. la couverture anti-gaz) peuvent l'écouter, en plus des personnages dessinés.
+signal geste_demande(cible: StringName, geste: StringName)
 
 ## Identifiant de rencontre du plan (ex. &"e1_adieu").
 @export var rencontre_id: StringName
@@ -109,9 +112,39 @@ func interagir(_messager: Messager) -> void:
 	dialogue_commence.emit(self)
 	if son_debut != "":
 		AudioDirector.jouer_variante(son_debut)
+	DialogueManager.got_dialogue.connect(_sur_replique)
 	DialogueManager.show_dialogue_balloon(dialogue, titre_a_jouer())
 	await DialogueManager.dialogue_ended
+	DialogueManager.got_dialogue.disconnect(_sur_replique)
 	terminer(verrouille)
+
+
+func _sur_replique(ligne: DialogueLine) -> void:
+	jouer_geste_replique(ligne.character, ligne.tags)
+
+
+## Joue le geste demandé par une réplique : sur le personnage visé, sinon (locuteur sans
+## dessin propre, comme « Le sonneur ») sur le personnage principal. Une réplique de Tobie
+## ne fait bouger personne d'autre. Vrai si un personnage a joué le geste.
+func jouer_geste_replique(locuteur: String, tags: PackedStringArray) -> bool:
+	var demande := OptionsDialogue.geste(locuteur, tags)
+	if demande.is_empty():
+		return false
+	var cible: StringName = demande["cible"]
+	var geste: StringName = demande["geste"]
+	geste_demande.emit(cible, geste)
+	var p := personnage_nomme(cible)
+	if p == null and not demande["explicite"] and cible != &"tobie":
+		p = dessin
+	return p != null and p.jouer_geste(geste)
+
+
+## Le personnage dessiné de la rencontre qui porte ce nom (principal, cortège exclu, ou
+## compagnon), ou null.
+func personnage_nomme(nom_personnage: StringName) -> Personnage:
+	if dessin != null and dessin.nom == nom_personnage:
+		return dessin
+	return get_node_or_null("Compagnon_%s" % nom_personnage) as Personnage
 
 
 ## Fin du dialogue : la rencontre n'est comptée comme vue que si son titre principal a été joué.

@@ -45,6 +45,35 @@ static func creer(nom_personnage: StringName) -> Personnage:
 	return p
 
 
+## Planche d'un geste (directive animation) : chr_<nom>_<geste>_01.png, ou "" si pas encore
+## dessinée.
+static func chemin_geste(nom_personnage: StringName, geste: StringName) -> String:
+	if nom_personnage == &"" or geste == &"" or String(geste) in ANIMATIONS:
+		return ""
+	var chemin := DOSSIER + "chr_%s_%s_01.png" % [nom_personnage, geste]
+	return chemin if ResourceLoader.exists(chemin) else ""
+
+
+## Joue un geste une fois à 10 i/s, puis revient à la respiration. Faux (et rien ne bouge)
+## tant que la planche du geste n'existe pas : les dialogues se balisent avant les dessins.
+func jouer_geste(geste: StringName) -> bool:
+	if sprite_frames == null:
+		return false
+	if not sprite_frames.has_animation(geste):
+		var chemin := chemin_geste(nom, geste)
+		if chemin == "":
+			return false
+		SilhouetteTobie.ajouter_planche(sprite_frames, geste, load(chemin) as Texture2D, false)
+	play(geste)
+	return true
+
+
 func _ready() -> void:
+	animation_finished.connect(_sur_animation_finie)
 	play(SilhouetteTobie.REPOS)
 	frame = dephasage % maxi(1, sprite_frames.get_frame_count(SilhouetteTobie.REPOS))
+
+
+func _sur_animation_finie() -> void:
+	if animation != SilhouetteTobie.REPOS:
+		play(SilhouetteTobie.REPOS)
