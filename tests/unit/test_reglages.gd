@@ -28,3 +28,8 @@ func test_volume_applique_au_bus() -> void:
 	var bus := AudioServer.get_bus_index("Musique")
 	assert_almost_eq(AudioServer.get_bus_volume_db(bus), linear_to_db(0.5), 0.01)
 	r.free()
+
+
+func test_mouvement_reduit_faux_hors_web() -> void:
+	# Le premier lancement web lit prefers-reduced-motion ; hors web, rien ne change.
+	assert_false(Reglages.mouvement_reduit_demande())
