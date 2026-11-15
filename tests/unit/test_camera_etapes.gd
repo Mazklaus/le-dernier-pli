@@ -19,5 +19,6 @@ func test_la_vue_suit_le_messager_dans_chaque_etape() -> void:
 		for c in etape.find_children("*", "Node2D", true, false):
 			if c is Cinematique and c.get_node_or_null("Camera") is Camera2D:
 				assert_false((c.get_node("Camera") as Camera2D).enabled, "étape %d : caméra de %s éteinte" % [numero, c.id])
-		etape.free()
+		etape.queue_free()
+		await wait_process_frames(1)
 	GameState.reinitialiser()
