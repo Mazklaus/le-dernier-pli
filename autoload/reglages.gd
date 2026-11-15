@@ -68,7 +68,17 @@ static func mouvement_reduit_demande() -> bool:
 		return false
 	var reponse: Variant = JavaScriptBridge.eval(
 		"!!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)", true)
-	return reponse == true
+	return reponse_vraie(reponse)
+
+
+## La réponse de JavaScriptBridge.eval peut être un bool, un entier (0 / 1) ou null.
+static func reponse_vraie(reponse: Variant) -> bool:
+	if reponse == null:
+		return false
+	match typeof(reponse):
+		TYPE_BOOL, TYPE_INT, TYPE_FLOAT:
+			return bool(reponse)
+	return false
 
 
 func sauver() -> void:
