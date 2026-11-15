@@ -81,3 +81,41 @@ func test_replique_de_tobie_ne_fait_pas_bouger_le_personnage() -> void:
 	assert_false(d.jouer_geste_replique("Tobie", PackedStringArray(["geste=tendre"])))
 	assert_eq(d.dessin.animation, SilhouetteTobie.REPOS)
 	assert_signal_emitted_with_parameters(d, "geste_demande", [&"tobie", &"tendre"])
+
+
+func test_tag_tenir() -> void:
+	var g := OptionsDialogue.geste("Tobie", PackedStringArray(["geste=mort:tourner-tete", "tenir"]))
+	assert_true(g["tenir"])
+	assert_false(OptionsDialogue.geste("Lamarre", PackedStringArray(["geste=tendre"]))["tenir"])
+
+
+func test_geste_tenu_garde_sa_derniere_image() -> void:
+	_faux_geste(d.dessin, &"tendre")
+	assert_true(d.jouer_geste_replique("Lamarre", PackedStringArray(["geste=tendre", "tenir"])))
+	await wait_seconds(0.4)
+	assert_eq(d.dessin.animation, &"tendre", "tenu jusqu'au geste suivant")
+	assert_eq(d.dessin.frame, 1)
+	_faux_geste(d.dessin, &"congedier")
+	assert_true(d.jouer_geste_replique("Lamarre", PackedStringArray(["geste=congedier"])))
+	await wait_seconds(0.4)
+	assert_eq(d.dessin.animation, SilhouetteTobie.REPOS, "le geste suivant revient au repos")
+
+
+func test_pose_debut_geste_immobile() -> void:
+	_faux_geste(d.dessin, &"lever-bras")
+	assert_true(d.dessin.poser_debut_geste(&"lever-bras"))
+	assert_eq(d.dessin.animation, &"lever-bras")
+	assert_eq(d.dessin.frame, 0)
+	assert_false(d.dessin.is_playing())
+	assert_false(d.dessin.poser_debut_geste(&"geste_inexistant"))
+
+
+func test_le_mort_bras_pendant_avant_la_rencontre() -> void:
+	if Personnage.chemin_geste(&"mort", &"lever-bras") == "":
+		pass_test("planche du mort pas encore livrée (DA, #149)")
+		return
+	GameState.reinitialiser()
+	var etape: EtapeBase = add_child_autofree(load("res://scenes/etapes/etape_02/etape_02.tscn").instantiate())
+	var mort := etape.trouver_declencheur(&"e2_mort").dessin
+	assert_eq(mort.animation, &"lever-bras")
+	assert_eq(mort.frame, 0)

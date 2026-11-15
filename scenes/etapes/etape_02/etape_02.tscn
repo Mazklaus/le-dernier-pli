@@ -462,6 +462,7 @@ text = "brouillard_casque"
 position = Vector2(3456, 900)
 rencontre_id = &"e2_mort"
 personnage = &"mort"
+pose_initiale = &"lever-bras"
 dialogue = ExtResource("9")
 libelle = "Regarder le mort"
 une_seule_fois = true
