@@ -20,9 +20,9 @@ Tobie: Son bras se lève, comme un panneau. [#geste=mort:lever-bras]
 	Tobie: Pardon. Tu n'en as plus besoin.
 - [Lui demander son nom] [#cout_lucidite=1]
 	Tobie: Comment tu t'appelles ?
-	Tobie: ... [#geste=mort:tourner-tete]
+	Tobie: ... La tête du mort tourne vers moi. Lentement.
 	Gaspard: Gaspard.
-	Tobie: Il regarde de nouveau le chemin. Il n'a jamais bougé. [#geste=mort:detourner-tete]
+	Tobie: Il regarde de nouveau le chemin. Il n'a jamais bougé.
 	do GameState.ajouter_marque(&"il_s_appelait_gaspard", &"nom_retenu", &"e2_mort")
 
 => END
