@@ -8,7 +8,10 @@ extends RefCounted
 ##                       (ex. GameState.entrer_zone_sombre() dans la sape) ;
 ##   [#cache]           option cachée (et non grisée) quand sa condition [if …] échoue ;
 ##   [#hallucination]   option fausse (Trouble et en dessous) : elle bave à l'écran ;
-##   [#timbre=slug]     timbre de voix d'une réplique, quand le nom affiché ne suffit pas.
+##   [#timbre=slug]     timbre de voix d'une réplique, quand le nom affiché ne suffit pas ;
+##   [#enfoui]          à l'Égaré (palier lu au moment du choix), le coût en Lucidité de
+##                      l'option baisse de 1, sans descendre sous 0 (GD, étape 6). Le coût
+##                      réduit est affiché, puis la règle des coûts douteux s'applique.
 ## Fonctions pures sur des PackedStringArray de tags : testables sans Dialogue Manager.
 
 const PREFIXE_COUT := "cout_"
@@ -16,6 +19,7 @@ const TAG_CACHE := "cache"
 const TAG_SANS_PRELEVEMENT := "sans_prelevement"
 const TAG_HALLUCINATION := "hallucination"
 const TAG_TIMBRE := "timbre"
+const TAG_ENFOUI := "enfoui"
 const ACCENTS := {"à": "a", "â": "a", "ä": "a", "ç": "c", "é": "e", "è": "e", "ê": "e", "ë": "e",
 	"î": "i", "ï": "i", "ô": "o", "ö": "o", "ù": "u", "û": "u", "ü": "u", "ÿ": "y", "œ": "oe", "æ": "ae"}
 
@@ -64,6 +68,8 @@ static func presenter(options: Array, rng: RandomNumberGenerator = null) -> Arra
 		if not autorisee and a_tag(tags, TAG_CACHE):
 			continue
 		var c := couts(tags)
+		if a_tag(tags, TAG_ENFOUI):
+			c = cout_enfoui(c, GameState.palier)
 		visibles.append({
 			"index": i,
 			"texte": String(o.get("texte", "")).strip_edges(),
@@ -80,6 +86,18 @@ static func presenter(options: Array, rng: RandomNumberGenerator = null) -> Arra
 		if affiches[i]["cout_douteux"]:
 			visibles[i]["bave"] = true
 	return visibles
+
+
+## Coûts d'une option [#enfoui] : −1 Lucidité à l'Égaré, jamais sous 0 (clé retirée à 0).
+static func cout_enfoui(c: Dictionary, palier: StringName) -> Dictionary:
+	var resultat := c.duplicate()
+	if palier == GameState.EGARE and resultat.has(GameState.LUCIDITE):
+		var reste := maxi(0, int(resultat[GameState.LUCIDITE]) - 1)
+		if reste == 0:
+			resultat.erase(GameState.LUCIDITE)
+		else:
+			resultat[GameState.LUCIDITE] = reste
+	return resultat
 
 
 ## Slug du timbre de voix d'une réplique (vox_<slug>_NN.wav), ou "" pour la narration.
