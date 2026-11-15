@@ -16,7 +16,7 @@ extends RefCounted
 ##                      chr_<nom>_tendre_01) quand elle s'affiche ; [#geste=rose:danser]
 ##                      vise un autre personnage de la rencontre (directive animation du GD) ;
 ##   [#tenir]           avec un geste : le personnage garde la dernière image du geste au lieu
-##                      de revenir à la respiration, jusqu'au geste suivant (le mort, étape 2).
+##                      de revenir à la respiration, jusqu'au geste suivant.
 ## Fonctions pures sur des PackedStringArray de tags : testables sans Dialogue Manager.
 
 const PREFIXE_COUT := "cout_"
