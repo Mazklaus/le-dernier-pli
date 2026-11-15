@@ -7,7 +7,7 @@
 
 Tobie: Un village sous la terre. Des maisons creusées dans l'argile, des fumées, une odeur de pain.
 Tobie: Au milieu, une longue table. Des familles, des vieux, des enfants qui se poussent du coude.
-Tobie: Une table au milieu d'une place, comme au village le jour de la noce. Mais ici, la musique, c'est les cuillères.
+Tobie: Une table au milieu d'une place, comme au village le jour de la noce. Ici, la musique, ce sont les cuillères.
 Tobie: Une chaise est vide. Un couvert est mis devant. Une femme me fait signe de m'asseoir.
 Tobie: Personne ne demande qui je suis. Ils savent, peut-être.
 if GameState.palier == GameState.EGARE
