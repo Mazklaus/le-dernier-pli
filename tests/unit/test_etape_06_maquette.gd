@@ -54,6 +54,15 @@ func test_chaque_rencontre_et_chaque_detail_est_place() -> void:
 			assert_true(_etape.trouver_declencheur(id).une_seule_fois, "%s se rejoue" % id)
 
 
+func test_on_ne_contourne_pas_la_descente_dans_le_noir() -> void:
+	var pente := _etape.find_child("Pente", true, false) as Verrou
+	assert_eq(pente.rencontre, &"e6_nef")
+	var nef := _etape.trouver_declencheur(&"e6_nef")
+	var eloi := _etape.trouver_declencheur(&"e6_eloi")
+	assert_gt(pente.global_position.x, nef.global_position.x)
+	assert_lt(pente.global_position.x, eloi.global_position.x)
+
+
 func test_eloi_ouvre_la_fin_de_la_nef_et_la_tablee_le_seuil() -> void:
 	var eboulement := _etape.find_child("Eboulement", true, false) as Verrou
 	assert_eq(eboulement.rencontre, &"e6_eloi")
