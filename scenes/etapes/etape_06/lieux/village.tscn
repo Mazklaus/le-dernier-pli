@@ -1,10 +1,11 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_06/e6_details.dialogue" id="2"]
 [ext_resource type="Resource" path="res://dialogue/etape_06/e6_tablee.dialogue" id="3"]
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="4"]
 
+[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(4800, 180)
 
@@ -25,6 +26,9 @@ size = Vector2(160, 300)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7"]
 size = Vector2(160, 300)
+
+[sub_resource type="RectangleShape2D" id="cine_zone_e6_eboulement"]
+size = Vector2(240, 300)
 
 [node name="Village" type="Node2D"]
 
@@ -267,3 +271,29 @@ offset_bottom = 198.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> seuil"
+
+[node name="e6_eboulement" type="Node2D" parent="."]
+script = ExtResource("cine_script")
+id = &"e6_eboulement"
+duree = 6.0
+metadata/note_level_design = "La voûte tombe derrière Tobie (Eboule, x 928) ; lancée à l'entrée du village"
+
+[node name="Camera" type="Camera2D" parent="e6_eboulement"]
+position = Vector2(1000, 760)
+
+[node name="Depart" type="Marker2D" parent="e6_eboulement"]
+position = Vector2(1000, 760)
+scale = Vector2(1.5, 1.5)
+
+[node name="Arrivee" type="Marker2D" parent="e6_eboulement"]
+position = Vector2(1000, 740)
+scale = Vector2(1.2, 1.2)
+
+[node name="Zone" type="Area2D" parent="e6_eboulement"]
+position = Vector2(1120, 750)
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+
+[node name="Forme" type="CollisionShape2D" parent="e6_eboulement/Zone"]
+shape = SubResource("cine_zone_e6_eboulement")
