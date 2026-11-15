@@ -63,7 +63,14 @@ jobs:
       - name: Import
         run: ~/godot-tests/godot --headless --import
       - name: Lancer les tests
-        run: ~/godot-tests/godot --headless -s addons/gut/gut_cmdln.gd -gconfig=res://.gutconfig.json -gexit
+        # GUT ignore en silence un script de test qui ne se charge pas (erreur de parse) :
+        # on échoue explicitement si un script n'a pas pu être chargé.
+        run: |
+          set -o pipefail
+          ~/godot-tests/godot --headless -s addons/gut/gut_cmdln.gd -gconfig=res://.gutconfig.json -gexit 2>&1 | tee gut.log
+          if grep -E "^SCRIPT ERROR: Parse Error|Failed to load script|Ignoring script" gut.log; then
+            echo "::error::Un script ne se charge pas (voir ci-dessus) : GUT l'a ignoré"; exit 1
+          fi
 
   export:
     name: Export ${{ matrix.platform }}
