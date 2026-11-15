@@ -191,3 +191,28 @@ func test_etape_4_joue_hopital_et_autre() -> void:
 	add_child_autofree(ad)
 	ad.jouer_etape(4)
 	assert_eq(ad._couches.keys(), ["hopital", "autre"])
+
+
+func test_etape_7_joue_salle_et_autre() -> void:
+	var ad: Node = AudioDirectorScript.new()
+	add_child_autofree(ad)
+	ad.jouer_etape(7)
+	assert_eq(ad._couches.keys(), ["salle", "autre"])
+
+
+func test_epilogue_ne_boucle_pas_et_retire_l_ambiance() -> void:
+	var ad: Node = AudioDirectorScript.new()
+	add_child_autofree(ad)
+	ad.audio_deverrouille = true
+	ad.jouer_etape(7)
+	ad.jouer_epilogue("fin-b", 0.0)
+	assert_true(ad._musique.playing)
+	assert_false((ad._musique.stream as AudioStreamOggVorbis).loop, "un épilogue se joue une fois")
+	assert_true(ad._couches.is_empty(), "le Cantique reste seul sous le carton")
+	var original: AudioStreamOggVorbis = load("res://assets/audio/mus_destinataire_fin-b.ogg")
+	assert_true(original.loop, "la ressource partagée garde son réglage d'import")
+
+
+func test_les_cinq_epilogues_existent() -> void:
+	for lettre in ["a", "b", "c", "d", "e"]:
+		assert_true(ResourceLoader.exists("res://assets/audio/mus_destinataire_fin-%s.ogg" % lettre), lettre)
