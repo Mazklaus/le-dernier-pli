@@ -8,8 +8,8 @@ extends Control
 
 enum Etat { LIGNES, MEMOIRE, FINI }
 
-## Zone de papier sous le cadre de la gravure (1920×1080 : le cadre s'arrête vers y 785).
-const ZONE_TEXTE := Rect2(200.0, 800.0, 1520.0, 260.0)
+## Zone de papier sous le cadre de la gravure (1920×1080 : le cadre s'arrête vers y 785 ; marge du bas égale à l'écart sous le filet, DA).
+const ZONE_TEXTE := Rect2(200.0, 800.0, 1520.0, 240.0)
 const FONDU := 1.2
 ## Temps de lecture d'une ligne : un socle, plus un temps par caractère.
 const LECTURE_SOCLE := 2.0
