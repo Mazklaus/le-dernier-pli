@@ -1,0 +1,32 @@
+# Étape 6, rencontre 2 : Éloi, le jeune Enfoui. Obligatoire. Sa lumière referme la zone sombre.
+# Le suivre : −1 Lucidité, gratuit avec la Relique front_contre_terre ; tag #enfoui (−1 au palier Égaré, PR #109). Le fuir : −1 Vivres.
+# Garde-fou : il appelle Tobie « petit », jamais autrement. Rien sur la guerre ni sur les coureurs.
+
+~ debut
+
+Tobie: Une lumière verte, aux deux tiers de la nef. Elle ne bouge pas. Elle m'attend.
+Tobie: Un garçon de mon âge. Pâle comme une racine, des yeux très grands. Un bocal de vers luisants à la main.
+Éloi: ... petit ... tu es venu ... par ici.
+Tobie: Il ne parle pas ma langue. Des consonnes douces, comme de l'eau sous la terre. Mais je comprends.
+if GameState.possede_marque(&"front_contre_terre")
+	Tobie: Il me regarde longtemps. Puis il touche son front, et il touche la terre.
+	Tobie: Le geste des champs, la nuit, chez Ilde. Il sourit, comme si on se connaissait.
+- [Le suivre] [if GameState.possede_marque(&"front_contre_terre") /] [#cache]
+	=> suivre
+- [Le suivre] [if not GameState.possede_marque(&"front_contre_terre") /] [#cout_lucidite=1, #enfoui, #cache]
+	=> suivre
+- [Fuir] [#cout_vivres=1]
+	Tobie: Je recule. Je cours dans le noir, je tombe, je me relève. Je ne sais plus où est le haut.
+	Tobie: Longtemps après, la lumière verte est là, devant moi. Il ne dit rien. Il ne m'en veut pas.
+	Éloi: ... par ici, petit.
+	do GameState.sortir_zone_sombre()
+
+=> END
+
+~ suivre
+
+Tobie: Je marche derrière lui. Sa lumière éclaire juste assez pour un pas, puis le suivant.
+Tobie: Il se retourne parfois pour vérifier que je suis là. Comme Jacquot, dans les boyaux.
+do GameState.sortir_zone_sombre()
+
+=> END

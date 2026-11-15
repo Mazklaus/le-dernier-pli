@@ -1,0 +1,43 @@
+# Étape 6, clôture : le seuil, devant la porte de la Mère-Cloche. Fin d'étape. Accessible après e6_tablee.
+# Lecture du pli : −1 Huile, la prochaine ligne non lue (ligne 1 à 5 selon l'avancée ; la 5 pour qui suit le rythme).
+# Garde-fou : rien sur ce qu'il y a derrière la porte.
+
+~ debut
+
+Tobie: Au fond du village, une porte très haute. Couverte de cire noire, couche sur couche.
+Tobie: Comme si on l'avait scellée, puis rescellée, puis rescellée encore. Pendant des années.
+Éloi: Elle t'attend, petit.
+Tobie: Éloi ne va pas plus loin. Il pose son bocal de vers luisants à mes pieds, et il recule.
+Tobie: Je m'assois devant la porte. Je sors le pli.
+- [Lire en transparence] [if GameState.peut_lire_ligne() /] [#cout_huile=1, #sans_prelevement]
+	=> lecture
+- [Le garder fermé]
+	Tobie: Il est tiède contre ma poitrine. Je le range.
+Tobie: Derrière la porte, très loin, quelque chose respire. Ou c'est la terre.
+
+=> END
+
+~ lecture
+
+do GameState.lire_ligne_pli()
+Tobie: Je tiens le papier devant les vers luisants. La cire rouge laisse passer une ligne verte.
+if GameState.pli_lignes_lues == 1
+	Tobie: « À celle qui écoute sous les cloches tues, »
+	Tobie: Une sainte qui écoute. Sous les cloches. Je regarde la porte.
+elif GameState.pli_lignes_lues == 2
+	Tobie: « au nom de la Cendre et selon le Pacte du Sceau Noir : »
+	Tobie: Un pacte. Avec qui signe-t-on un pacte, sous la terre ?
+elif GameState.pli_lignes_lues == 3
+	Tobie: « voici le quatorzième. »
+	Tobie: Le quatorzième quoi. Le mot reste là, comme un caillou dans une botte.
+elif GameState.pli_lignes_lues == 4
+	Tobie: « Il ne sait rien, comme les autres. »
+	Tobie: Il. C'est moi, il. Je le sais sans savoir comment.
+elif GameState.pli_lignes_lues == 5
+	Tobie: « Qu'on le garde, et que la terre reste close »
+	Tobie: Qu'on le garde. Le pain, le couvert, la petite fille qui disait reste.
+else
+	Tobie: La lumière est trop faible. Je ne distingue rien.
+Tobie: Derrière la porte, très loin, quelque chose respire. Ou c'est la terre.
+
+=> END

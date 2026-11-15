@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://dsqqtyox25wa1"
+path="res://.godot/imported/e6_tablee.dialogue-ae15e8f908625841395d6ec0ee7b5999.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_06/e6_tablee.dialogue"
+dest_files=["res://.godot/imported/e6_tablee.dialogue-ae15e8f908625841395d6ec0ee7b5999.tres"]
+
+[params]
+
+defaults=true

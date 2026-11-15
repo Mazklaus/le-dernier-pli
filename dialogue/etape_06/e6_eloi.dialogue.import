@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://ccgdcmaempmyx"
+path="res://.godot/imported/e6_eloi.dialogue-a6c5d553a2be567c4cb73d883cbc2cb4.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_06/e6_eloi.dialogue"
+dest_files=["res://.godot/imported/e6_eloi.dialogue-a6c5d553a2be567c4cb73d883cbc2cb4.tres"]
+
+[params]
+
+defaults=true
