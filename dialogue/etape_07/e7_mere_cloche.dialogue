@@ -27,7 +27,7 @@ else
 
 Tobie: Un pli. Pour vous. Je ne l'ai pas ouvert.
 Tobie: Je le lui tends. Elle brise la cire sans hésiter.
-La Mère-Cloche: Comme les autres. Comme toujours. [#geste=lire-doigts]
+La Mère-Cloche: Comme les autres. Comme toujours. [#geste=lire-doigts, #tenir]
 La Mère-Cloche: Comment t'appelles-tu ?
 Tobie: Tobie. On m'appelait Pied-Léger.
 Tobie: Et puis je lui dis les autres noms. Ceux que j'ai portés avec le pli.
@@ -51,7 +51,7 @@ if GameState.possede_marque(&"ceux_d_avant")
 	Tobie: Et tous ceux du rang de croix, un par un.
 if GameState.possede_marque(&"il_s_appelait_mathurin")
 	Tobie: Mathurin, qui ne se bat plus.
-La Mère-Cloche: Personne ne m'avait apporté autant de noms. Je les garderai avec le tien. [#geste=graver]
+La Mère-Cloche: Personne ne m'avait apporté autant de noms. Je les garderai avec le tien. [#geste=graver, #tenir]
 Tobie: Mon nom, sous les autres. Ses doigts connaissent les lettres.
 La Mère-Cloche: Viens, petit battant. Ça ne fait pas mal. Rien ne fait mal, ici.
 
@@ -62,7 +62,7 @@ La Mère-Cloche: Viens, petit battant. Ça ne fait pas mal. Rien ne fait mal, ic
 Tobie: Je lui tends le pli comme on rend une gamelle au cuisinier. Sans un mot.
 Tobie: Elle le prend. Elle ne me demande pas mon nom. Je ne le lui donne pas.
 Tobie: Elle n'a même pas besoin de l'ouvrir.
-La Mère-Cloche: Quatorze. [#geste=toucher-sceau]
+La Mère-Cloche: Quatorze. [#geste=toucher-sceau, #tenir]
 
 => END
 

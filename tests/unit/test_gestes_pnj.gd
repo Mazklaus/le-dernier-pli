@@ -202,3 +202,51 @@ func test_la_chute_dans_la_fissure_a_ses_planches() -> void:
 		assert_not_null(t, k)
 		if t != null:
 			assert_eq(t.get_size(), tailles[k], k)
+
+
+## Étape 7 (#145) : Lise, la vieille Enfouie, et la Mère-Cloche (« La Mère-Cloche » parle :
+## son geste va au personnage principal de la rencontre, mere-cloche).
+const GESTES_E7 := {
+	&"lise": [&"lire-doigts", &"montrer"],
+	&"mere-cloche": [&"lire-doigts", &"graver", &"toucher-sceau"],
+}
+
+
+func test_les_gestes_de_l_etape_7_ont_leur_planche() -> void:
+	for nom: StringName in GESTES_E7:
+		assert_true(ResourceLoader.exists("res://assets/graphics/chr/chr_%s_repos_01.png" % nom), String(nom))
+		for geste: StringName in GESTES_E7[nom]:
+			var chemin := Personnage.chemin_geste(nom, geste)
+			assert_ne(chemin, "", "%s : %s" % [nom, geste])
+			if chemin == "":
+				continue
+			var t := load(chemin) as Texture2D
+			assert_eq(t.get_height(), 320, chemin)
+			assert_between(t.get_width() / 200, 3, 6, chemin)
+
+
+func _a_du_rouge(chemin: String, image: int = -1) -> bool:
+	# Le rouge du ruban est exact (#9B1C1C) ; image : -1 pour toute la planche, sinon une image.
+	var img := (load(chemin) as Texture2D).get_image()
+	var x0 := 0 if image < 0 else image * 200
+	var x1 := img.get_width() if image < 0 else x0 + 200
+	for y in range(0, img.get_height()):
+		for x in range(x0, x1):
+			var c := img.get_pixel(x, y)
+			if c.a > .9 and absf(c.r - .608) < .03 and absf(c.g - .110) < .03 and absf(c.b - .110) < .03:
+				return true
+	return false
+
+
+func test_le_ruban_du_pli_reste_rouge_chez_la_mere_cloche() -> void:
+	# Le seul rouge de la Mère-Cloche est le ruban du pli de Tobie (GD) : noué dans toucher-sceau
+	# jusqu'à la dernière image, tombé au sol à la fin de lire-doigts et pendant tout graver ;
+	# jamais au repos (elle n'a pas encore le pli).
+	var planche := func(g: StringName) -> String: return Personnage.chemin_geste(&"mere-cloche", g)
+	assert_false(_a_du_rouge(Personnage.chemin_planche(&"mere-cloche")), "repos")
+	assert_true(_a_du_rouge(planche.call(&"toucher-sceau"), 5), "toucher-sceau : noué jusqu'au bout")
+	assert_true(_a_du_rouge(planche.call(&"lire-doigts"), 5), "lire-doigts : tombé au sol")
+	for i in 6:
+		assert_true(_a_du_rouge(planche.call(&"graver"), i), "graver %d : toujours au sol" % i)
+	for p in ["chr_lise_repos_01.png", "chr_lise_lire-doigts_01.png", "chr_lise_montrer_01.png"]:
+		assert_false(_a_du_rouge("res://assets/graphics/chr/" + p), p)
