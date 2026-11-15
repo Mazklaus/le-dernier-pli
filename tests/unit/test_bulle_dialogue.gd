@@ -86,3 +86,9 @@ func test_le_focus_d_une_option_montre_l_apercu_sur_le_hud() -> void:
 	assert_false(hud.apercu.is_empty(), "aperçu du coût de l'option qui a le focus")
 	bulle._vider_options()
 	assert_true(hud.apercu.is_empty())
+
+
+func test_une_option_trop_longue_reste_dans_la_bulle() -> void:
+	var place: float = load("res://scenes/ui/bulle_dialogue/bulle_dialogue.gd").largeur_texte_option(32, 2)
+	assert_between(place, 120.0, 976.0)
+	assert_lt(place, load("res://scenes/ui/bulle_dialogue/bulle_dialogue.gd").largeur_texte_option(32, 0), "les coûts prennent de la place")

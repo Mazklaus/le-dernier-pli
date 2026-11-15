@@ -79,3 +79,15 @@ func test_le_carton_ramene_au_titre_une_fois_fini() -> void:
 	await wait_until(func() -> bool: return carton.colonne_lignes.get_child_count() > 0, 3.0)
 	carton.passer()
 	assert_eq(carton.etat, Epilogue.Etat.FINI, "la prochaine pression appelle SceneRouter.retour_titre()")
+
+
+func test_une_pression_avant_le_chargement_des_lignes_est_ignoree() -> void:
+	var carton: Epilogue = SceneEpilogue.instantiate()
+	add_child_autofree(carton)
+	var appui := InputEventAction.new()
+	appui.action = &"interagir"
+	appui.pressed = true
+	carton._unhandled_input(appui)
+	assert_eq(carton.etat, Epilogue.Etat.LIGNES, "pas encore de séquence : rien à passer")
+	await wait_until(func() -> bool: return carton.colonne_lignes.get_child_count() > 0, 3.0)
+	assert_eq(carton.etat, Epilogue.Etat.LIGNES, "le déroulé démarre normalement")

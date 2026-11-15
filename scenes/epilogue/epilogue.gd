@@ -153,6 +153,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			or event.is_action_pressed(&"ui_accept")):
 		return
 	get_viewport().set_input_as_handled()
+	# Lignes pas encore lues (await de lire_lignes) : rien à passer.
+	if _sequence == null:
+		return
 	if etat == Etat.FINI:
 		SceneRouter.retour_titre()
 	else:
