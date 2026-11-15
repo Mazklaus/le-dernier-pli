@@ -188,6 +188,7 @@ text = "abri_gamelle"
 [node name="e1_ordre" parent="Rencontres" instance=ExtResource("2")]
 position = Vector2(2450, 900)
 rencontre_id = &"e1_ordre"
+personnage = &"lamarre"
 dialogue = ExtResource("4")
 libelle = "Parler au sergent"
 une_seule_fois = true

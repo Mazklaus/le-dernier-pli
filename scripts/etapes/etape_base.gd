@@ -6,9 +6,17 @@ extends Node2D
 ## Voix de surface : si l'étape a un nœud « ReperesVoix » (Marker2D boyau_arriere, carrefour,
 ## periscope, pied_echelle), le gain des voix suit le messager tant qu'il est à la surface
 ## (y ≤ limite_surface_y), et revient plein sous terre. Mis à jour à chaque téléportation.
+## Écran gravure : un CanvasLayer (COUCHE_GRAVURE) porte le shader plein écran
+## shaders/ecran_gravure.gdshader (trait tremblé, papier de l'étape, grain, rouge préservé).
+## Tout ce qui doit échapper à l'effet (interface, bulles) va sur un calque supérieur.
 ## Une étape qui redéfinit _ready() doit appeler super().
 
 const NOEUD_REPERES_VOIX := "ReperesVoix"
+const NOEUD_GRAVURE := "EcranGravure"
+const COUCHE_GRAVURE := 10
+const SHADER_GRAVURE: Shader = preload("res://shaders/ecran_gravure.gdshader")
+## Amplitude du trait tremblé au repos (px à 1080p) ; 0 avec le réglage effets_attenues.
+const AMPLITUDE_REPOS := 1.5
 
 ## Ordonnée (globale) sous laquelle le messager est sous terre (lieux souterrains).
 @export var limite_surface_y: float = INF
@@ -38,6 +46,7 @@ var nuit: bool = false
 
 
 func _ready() -> void:
+	ajouter_gravure()
 	ajouter_interface()
 	brancher_suivi_voix()
 	brancher_musique_lieux()
@@ -154,6 +163,50 @@ func maj_suivi_voix() -> void:
 
 func _sur_teleporte(_position_globale: Vector2) -> void:
 	maj_suivi_voix()
+
+
+## Pose l'écran gravure (une seule fois) et lui applique le papier de l'étape.
+func ajouter_gravure() -> ShaderMaterial:
+	var existant := materiau_gravure()
+	if existant != null:
+		return existant
+	var couche := CanvasLayer.new()
+	couche.name = NOEUD_GRAVURE
+	couche.layer = COUCHE_GRAVURE
+	var rect := ColorRect.new()
+	rect.name = "Rect"
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var materiau := ShaderMaterial.new()
+	materiau.shader = SHADER_GRAVURE
+	rect.material = materiau
+	couche.add_child(rect)
+	add_child(couche)
+	PapierEtapes.appliquer(materiau, numero_etape)
+	_appliquer_effets_attenues()
+	if not Reglages.reglage_change.is_connected(_sur_reglage_change):
+		Reglages.reglage_change.connect(_sur_reglage_change)
+	return materiau
+
+
+## Matériau de l'écran gravure, pour piloter amplitude_px ou rouge_efface (Lucidité).
+## null si l'écran n'est pas encore posé.
+func materiau_gravure() -> ShaderMaterial:
+	var rect := get_node_or_null(NOEUD_GRAVURE + "/Rect") as ColorRect
+	return rect.material as ShaderMaterial if rect != null else null
+
+
+func _appliquer_effets_attenues() -> void:
+	var materiau := materiau_gravure()
+	if materiau == null:
+		return
+	var attenues := bool(Reglages.valeur(&"effets_attenues"))
+	materiau.set_shader_parameter(&"amplitude_px", 0.0 if attenues else AMPLITUDE_REPOS)
+
+
+func _sur_reglage_change(cle: StringName, _valeur: Variant) -> void:
+	if cle == &"effets_attenues":
+		_appliquer_effets_attenues()
 
 
 ## Instancie InterfaceJeu et la branche sur le messager, sauf si l'étape en a déjà une.

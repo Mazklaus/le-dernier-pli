@@ -107,6 +107,7 @@ text = "1 Couchette (sous terre) · 1 écran(s)"
 [node name="e1_reveil" parent="Rencontres" instance=ExtResource("1")]
 position = Vector2(520, 900)
 rencontre_id = &"e1_reveil"
+personnage = &"jacquot"
 dialogue = ExtResource("2")
 libelle = "Parler à Jacquot"
 une_seule_fois = true

@@ -44,7 +44,7 @@ var _options_posees: bool = false
 
 
 func _ready() -> void:
-	layer = 10
+	layer = 16
 	_rng.randomize()
 	if police_locuteur == null:
 		police_locuteur = StylePapier.police(StylePapier.POLICE_TITRE)

@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://scenes/ui/hud_jauges/hud_jauges.gd" id="3_hud"]
 
 [node name="InterfaceJeu" type="CanvasLayer"]
-layer = 5
+layer = 15
 script = ExtResource("1_script")
 
 [node name="HudJauges" type="Control" parent="."]
