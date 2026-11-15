@@ -48,6 +48,10 @@ const FIL_RETOMBE := "fx_fil-retombe"
 const CHEMIN_FIL_RETOUR := "Surface/Brouillard/FilRetour"
 
 const SACOCHE := "fx_sacoche-matthieu"
+## Les deux ceintures du brouillard (Verrou) : la chicane peinte est barrée tant qu'elles sont
+## fermées (piquet en X, brins, concertina) ; le calque part avec le Verrou. Centré sur le Verrou.
+const CEINTURE_FERMEE := "fx_ceinture-fermee"
+const CHEMINS_CEINTURES := ["Surface/Brouillard/CeintureUne", "Surface/Brouillard/CeintureDeux"]
 const POSITION_SACOCHE := Vector2(12900.0, 1060.0)
 
 ## Gris de la maquette que le décor remplace, en plus des fonds, du sol et des murs.
@@ -87,6 +91,7 @@ func _ready() -> void:
 				gris.visible = false
 	_habiller_chicane()
 	_habiller_fil_retour()
+	_habiller_ceintures()
 	_poser_sacoche()
 	_habiller_lieux()
 
@@ -178,6 +183,20 @@ func _habiller_chicane() -> void:
 		visuel.visible = false
 	chicane.add_child(cheval_frise)
 	_poser_au_sol(cheval_frise, Vector2(X_CHEVAL_FRISE, _sol_sous(chicane)))
+
+
+func _habiller_ceintures() -> void:
+	for chemin: String in CHEMINS_CEINTURES:
+		var ceinture: Node2D = get_parent().get_node_or_null(chemin) as Node2D if get_parent() else null
+		if ceinture == null:
+			continue
+		var dessin := _sprite_fx(CEINTURE_FERMEE)
+		if dessin == null:
+			return
+		var visuel := ceinture.get_node_or_null("Visuel") as CanvasItem
+		if visuel != null:
+			visuel.visible = false
+		ceinture.add_child(dessin)
 
 
 ## Le dessin du fil qui retombe, posé sur le VerrouRetour « FilRetour » du Level Designer :

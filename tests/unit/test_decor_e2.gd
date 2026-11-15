@@ -126,3 +126,10 @@ func test_vieux_boyau_habille_sans_gris() -> void:
 		assert_lt(dessin.z_index, 0, "derrière le jeu")
 	assert_false((boyau.get_node("Fond") as CanvasItem).visible)
 	assert_false((boyau.get_node("Plafond/Visuel") as CanvasItem).visible)
+
+
+func test_ceintures_fermees_dessinees_sans_barre_rouge() -> void:
+	for chemin: String in DecorE2.CHEMINS_CEINTURES:
+		var ceinture := _etape.get_node(chemin)
+		assert_not_null(ceinture.get_node_or_null("Dessin"), chemin)
+		assert_false((ceinture.get_node("Visuel") as CanvasItem).visible, "%s : rect rouge de maquette" % chemin)
