@@ -1,6 +1,6 @@
 extends GutTest
-## Gestes de l'étape 1 (directive animation) : planches de 200×320, 3 à 6 images, toutes balisées
-## dans les dialogues de l'étape 1 ; Tobie qui grimpe et la couverture qui retombe.
+## Gestes des personnages (directive animation) : planches de 200×320, 3 à 6 images, balisées
+## dans les dialogues ; Tobie qui grimpe, la couverture qui retombe, la remise du pli.
 
 const GESTES := {
 	&"lamarre": [&"tendre", &"montrer-pli", &"congedier", &"lever-main"],
@@ -51,3 +51,21 @@ func test_la_remise_du_pli_tient_dans_des_textures_de_4096() -> void:
 	for k: String in tailles:
 		var t := load("res://assets/graphics/cin/cin_remise-pli_%s.png" % k) as Texture2D
 		assert_eq(t.get_size(), tailles[k], k)
+
+
+## Étape 2 (#138) : Brisse et le mort.
+const GESTES_E2 := {
+	&"brisse": [&"lever-main", &"tendre", &"donner", &"chauffer-cire", &"montrer"],
+	&"mort": [&"lever-bras"],
+}
+
+
+func test_les_gestes_de_l_etape_2_ont_leur_planche() -> void:
+	for nom: StringName in GESTES_E2:
+		for geste: StringName in GESTES_E2[nom]:
+			var chemin := Personnage.chemin_geste(nom, geste)
+			assert_ne(chemin, "", "%s : %s" % [nom, geste])
+			if chemin != "":
+				var t := load(chemin) as Texture2D
+				assert_eq(t.get_height(), 320, chemin)
+				assert_between(t.get_width() / 200, 3, 6, chemin)
