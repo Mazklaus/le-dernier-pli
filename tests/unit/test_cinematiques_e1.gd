@@ -24,6 +24,7 @@ func test_remise_du_pli_deux_plans_plein_ecran() -> void:
 	assert_between(anim.length, 5.0, 15.0)
 	var plans := c.get_node("Plans") as CanvasLayer
 	assert_false(plans.visible, "masqués hors de la cinématique")
+	assert_lt(plans.layer, EtapeBase.COUCHE_GRAVURE, "sous l'écran gravure (même papier que le jeu)")
 	assert_eq((c.get_node("Plans/A/Geste") as Sprite2D).hframes * (c.get_node("Plans/A/Geste") as Sprite2D).vframes, 6)
 	assert_eq((c.get_node("Plans/B/Geste") as Sprite2D).position, Vector2(300, 300))
 
