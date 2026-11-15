@@ -18,13 +18,14 @@ const PLANS := [
 	["plan4_premier-plan", 1.4, 20],
 ]
 
-## [nœud du lieu sous Lieux, nom du fond]
+## [nœud du lieu sous Lieux, nom du fond, abscisse du fond dans le lieu]. La chambre (1440)
+## est peinte sur 1920 avec ses murs en coupe dans les marges : la caméra la centre.
 const LIEUX := [
-	["MaisonIlde", "maison-ilde"],
-	["Clocher", "clocher"],
-	["Chambre", "chambre"],
-	["CheminNuit", "chemin-nuit"],
-	["CheminAube", "chemin-aube"],
+	["MaisonIlde", "maison-ilde", 0.0],
+	["Clocher", "clocher", 0.0],
+	["Chambre", "chambre", -240.0],
+	["CheminNuit", "chemin-nuit", 0.0],
+	["CheminAube", "chemin-aube", 0.0],
 ]
 const Z_LIEU := -20
 
@@ -56,6 +57,7 @@ func _habiller_lieux() -> void:
 		var fond := Node2D.new()
 		fond.name = "Dessin"
 		fond.z_index = Z_LIEU
+		fond.position = Vector2(float(l[2]), 0.0)
 		var x := 0.0
 		for n in range(1, 10):
 			var chemin := "%splan3_%s_%02d.png" % [DOSSIER, String(l[1]), n]

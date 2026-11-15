@@ -173,6 +173,18 @@ def chambre() -> str:
     return "".join(out)
 
 
+def chambre_large() -> str:
+    """La chambre (1440) peinte sur 1920 : la caméra, centrée sur une pièce plus étroite que
+    l'écran, montre 240 px de chaque côté. Ces marges sont les murs de la maison en coupe
+    (lavis sous contre-hachure), comme une boîte : la pièce paraît close, ce qu'elle est.
+    Le fond est posé à x -240 dans le repère du lieu (DecorE3)."""
+    m = 240
+    coupe = (f'<rect width="{m}" height="{H}" fill="{LAVIS}"/><rect width="{m}" height="{H}" fill="url(#v2)"/>'
+             f'<path d="M{m - 3} 0 V{H}" {ST} stroke-width="5"/>')
+    return (f'<g transform="translate({m} 0)">{chambre()}</g>'
+            f'{coupe}<g transform="translate({1440 + 2 * m} 0) scale(-1 1)">{coupe}</g>')
+
+
 def cierge(x: int, haut: int, allume: bool) -> str:
     """Cierge planté dans la terre, enfoncé profond ; allumé la nuit, éteint et coulé à l'aube."""
     s = [f'<rect x="{x - 8}" y="{SOL - haut}" width="16" height="{haut}" fill="{PAPIER}" {ST} stroke-width="1.8"/>',
@@ -280,7 +292,7 @@ def ecrire(nom: str, contenu: str, largeur: int) -> int:
 def main() -> None:
     total = ecrire("maison-ilde", maison_ilde(), 1920)
     total += ecrire("clocher", clocher(), 1920)
-    total += ecrire("chambre", chambre(), 1440)
+    total += ecrire("chambre", chambre_large(), 1920)
     total += ecrire("chemin-nuit", chemin(True), 3840)
     total += ecrire("chemin-aube", chemin(False), 3840)
     # La croisée de la fenêtre de la chambre, seule, sur fond transparent : posée par le code
