@@ -164,8 +164,9 @@ jobs:
           OCTETS=0
           for f in "$DIR"/*; do OCTETS=$((OCTETS + $(gzip -9 -c "$f" | wc -c))); done
           MB=$(( (OCTETS + 1048575) / 1048576 ))
-          echo "Build web : ${MB} Mo téléchargés (gzip), ${BRUT} Mo sur disque (budget ${WEB_BUDGET_MB} Mo téléchargés)" >> "$GITHUB_STEP_SUMMARY"
-          for f in "$DIR"/*; do echo "- $(basename "$f") : $(du -h "$f" | cut -f1)" >> "$GITHUB_STEP_SUMMARY"; done
+          # Aussi dans le journal : lisible par l'API (gh api .../jobs/<id>/logs), contrairement au résumé.
+          echo "Build web : ${MB} Mo téléchargés (gzip), ${BRUT} Mo sur disque (budget ${WEB_BUDGET_MB} Mo téléchargés)" | tee -a "$GITHUB_STEP_SUMMARY"
+          for f in "$DIR"/*; do echo "- $(basename "$f") : $(du -h "$f" | cut -f1)" | tee -a "$GITHUB_STEP_SUMMARY"; done
           if [ "$MB" -gt "$WEB_BUDGET_MB" ]; then
             echo "::error::Build web ${MB} Mo, au-delà du budget de ${WEB_BUDGET_MB} Mo"; exit 1
           elif [ "$MB" -gt "$WEB_WARN_MB" ]; then
