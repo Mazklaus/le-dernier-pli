@@ -123,6 +123,14 @@ func test_les_gestes_de_l_etape_4_ont_leur_planche() -> void:
 				assert_between(t.get_width() / 200, 3, 6, chemin)
 
 
+func test_la_greffe_en_ombre_a_ses_planches() -> void:
+	# plan A : le drap et ses 6 images (2 x 3) ; plan B : la lampe et ses 4 images (2 x 2)
+	var tailles := {1: Vector2(1920, 1080), 2: Vector2(2560, 2520), 3: Vector2(1920, 1080), 4: Vector2(1600, 1600)}
+	for i: int in tailles:
+		var t := load("res://assets/graphics/cin/cin_greffe_%02d.png" % i) as Texture2D
+		assert_not_null(t, str(i))
+		if t != null:
+			assert_eq(t.get_size(), tailles[i], str(i))
 ## Étape 5 : les gestes de Tobie, chacun avec ses trois calques (base, ruban, cendre).
 func test_les_gestes_de_tobie_de_l_etape_5_ont_leurs_trois_calques() -> void:
 	for geste: String in ["entailler", "graver", "accrocher"]:
