@@ -23,6 +23,8 @@ var _libelles: Dictionary = {}  # jauge -> Label
 var _chiffres: Dictionary = {}  # jauge -> Label
 var _batons: Dictionary = {}  # jauge -> Batons
 var _sceau: TextureRect
+## Ruban du sceau (calque _red de la DA), posé sur l'icône ; il bat avec la Lucidité basse.
+var _ruban_sceau: TextureRect
 var _carnet: TextureRect
 var _ceinture: PanelContainer
 var _coin: PanelContainer
@@ -59,13 +61,17 @@ func _process(delta: float) -> void:
 		var icone: TextureRect = _icones[jauge]
 		var bas := GameState.valeur(jauge) <= SEUIL_BAS
 		icone.scale = Vector2.ONE * (1.0 + 0.08 * maxf(0.0, sin(_temps * TAU / 1.4))) if bas and not attenue else Vector2.ONE
-	# Trouble et Égaré : les icônes tremblent (plus fort à l'Égaré).
-	var force := 0.0 if attenue else {&"clair": 0.0, &"trouble": 0.6, &"egare": 1.4}.get(GameState.palier, 0.0) as float
+	# Trouble et Égaré : les icônes tremblent sur les coups du battement partagé (Battement),
+	# plus fort à l'Égaré ; le ruban du sceau bat en phase avec celui de Tobie.
+	var maintenant := Battement.maintenant()
+	var force := {&"trouble": 0.6, &"egare": 1.4}.get(GameState.palier, 0.0) as float
 	var secousse := Vector2.ZERO
-	if force > 0.0 and fmod(_temps, 1.8 / force) < 0.12:
-		secousse = Vector2(randf_range(-1.5, 1.5), randf_range(-1.0, 1.0)) * force
+	if Battement.coup(maintenant, GameState.palier, attenue):
+		var graine := Battement.image(maintenant)
+		secousse = Vector2(sin(graine * 12.9898) * 1.5, cos(graine * 78.233)) * force
 	for jauge: StringName in _icones:
 		(_icones[jauge] as TextureRect).position = secousse
+	_ruban_sceau.modulate.a = Battement.opacite(maintenant, GameState.palier, attenue)
 	_sceau.position = secousse
 
 
@@ -96,6 +102,7 @@ func actualiser() -> void:
 			chiffre.visible = chiffres
 			chiffre.text = "%d / %d" % [v, GameState.maximum(jauge)]
 	_sceau.texture = StylePapier.icone(icone_sceau())
+	_ruban_sceau.texture = StylePapier.icone(icone_sceau() + "_red")
 
 
 ## Nom court de l'icône du DA pour une jauge.
@@ -203,6 +210,10 @@ func _construire() -> void:
 	colonne.add_theme_constant_override(&"separation", 8)
 	_coin.add_child(colonne)
 	_sceau = _icone(96.0)
+	_ruban_sceau = _icone(96.0)
+	_ruban_sceau.name = "Ruban"
+	_ruban_sceau.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_sceau.add_child(_ruban_sceau)
 	colonne.add_child(_cellule(_sceau, "Le pli"))
 	_carnet = _icone(64.0)
 	_carnet.texture = StylePapier.icone("carnet")

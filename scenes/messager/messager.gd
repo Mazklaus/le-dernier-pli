@@ -27,9 +27,10 @@ var regard: int = 1
 var cible: Interactif = null
 
 var _a_portee: Array[Interactif] = []
+var _en_dialogue: bool = false
 
 @onready var _detecteur: Area2D = %Detecteur
-@onready var _silhouette: Node2D = %Silhouette
+@onready var _silhouette: SilhouetteTobie = %Silhouette
 @onready var _camera: Camera2D = %Camera
 
 
@@ -58,7 +59,18 @@ func _physics_process(delta: float) -> void:
 	if direction != 0.0:
 		regard = 1 if direction > 0.0 else -1
 		_silhouette.scale.x = regard
+	_silhouette.jouer(animation_voulue(direction))
 	_mettre_a_jour_cible()
+
+
+## Interagir pendant un dialogue (main au pli), marche quand il avance vraiment, repos sinon
+## (bloqué par un mur, en fondu de passage, à l'arrêt).
+func animation_voulue(direction: float) -> StringName:
+	if _en_dialogue:
+		return SilhouetteTobie.INTERAGIR
+	if direction != 0.0 and absf(get_real_velocity().x) > 1.0:
+		return SilhouetteTobie.MARCHE
+	return SilhouetteTobie.REPOS
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -130,11 +142,13 @@ func _sur_zone_sortie(zone: Area2D) -> void:
 
 func _sur_dialogue_commence(_ressource: Resource) -> void:
 	bloque = true
+	_en_dialogue = true
 	_mettre_a_jour_cible()
 
 
 func _sur_dialogue_fini(_ressource: Resource) -> void:
 	# On attend une frame : la touche qui ferme la dernière réplique ne doit pas
 	# relancer aussitôt le même dialogue.
+	_en_dialogue = false
 	await get_tree().process_frame
 	bloque = false

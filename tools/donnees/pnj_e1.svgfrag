@@ -1,0 +1,186 @@
+<!-- Personnages de l'étape 1, repris de la planche n° 2 de la DA (repère 240 x 420, sol à y 405). -->
+<defs>
+<pattern id="hach-1" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><rect width="5" height="5" fill="#E8E5DA"/>
+      <line x1="0" y1="0" x2="0" y2="5" stroke="#15130F" stroke-width=".7"/>
+    </pattern>
+<pattern id="hach-2" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><rect width="4" height="4" fill="#E8E5DA"/>
+      <line x1="0" y1="0" x2="0" y2="4" stroke="#15130F" stroke-width="1"/>
+      <line x1="0" y1="2" x2="4" y2="2" stroke="#15130F" stroke-width=".6"/>
+    </pattern>
+<pattern id="molletiere" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-22)">
+      <rect width="9" height="9" fill="#E8E5DA"/>
+      <line x1="0" y1="0" x2="9" y2="0" stroke="#15130F" stroke-width="1.6"/>
+      <line x1="0" y1="4.5" x2="9" y2="4.5" stroke="#15130F" stroke-width=".5"/>
+    </pattern>
+<pattern id="pointille" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#E8E5DA"/>
+      <circle cx="2" cy="2" r=".7" fill="#15130F"/>
+    </pattern>
+</defs>
+    <!-- SERGENT HUGUES LAMARRE : le rectangle. Large, carré, planté. -->
+    <g id="p-lamarre" stroke="#15130F" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M88 300 L84 386 L113 386 L117 300 Z M124 300 L128 386 L157 386 L153 300 Z" fill="url(#hach-1)" stroke-width="2.2"/>
+      <path d="M80 382 L76 405 L116 405 L114 382 Z M126 382 L126 405 L166 405 L160 382 Z" fill="#15130F" stroke-width="1.6"/>
+      <!-- capote -->
+      <path d="M66 122 Q120 108 174 122 L182 314 L150 318 L146 306 L120 316 L94 306 L90 318 L58 314 Z" fill="url(#hach-2)" stroke-width="2.6"/>
+      <path d="M120 120 L120 312" stroke="#E8E5DA" stroke-width="2.4"/>
+      <path d="M120 120 L120 312" stroke-width="1"/>
+      <circle cx="128" cy="150" r="3" fill="#E8E5DA" stroke-width="1.2"/><circle cx="128" cy="180" r="3" fill="#E8E5DA" stroke-width="1.2"/><circle cx="128" cy="240" r="3" fill="#E8E5DA" stroke-width="1.2"/>
+      <!-- ceinturon -->
+      <path d="M62 208 L178 208 L178 222 L62 222 Z" fill="#15130F" stroke-width="1"/>
+      <rect x="112" y="206" width="16" height="18" fill="#E8E5DA" stroke-width="1.8"/>
+      <!-- bras -->
+      <path d="M66 124 L52 258 L74 264 L88 150 Z" fill="url(#hach-2)" stroke-width="2.4"/>
+      <path d="M174 124 L188 258 L166 264 L152 150 Z" fill="url(#hach-2)" stroke-width="2.4"/>
+      <!-- galons de sergent -->
+      <path d="M56 170 L68 160 L80 170 M57 180 L69 170 L81 180" stroke="#E8E5DA" stroke-width="3" fill="none"/>
+      <path d="M56 170 L68 160 L80 170 M57 180 L69 170 L81 180" stroke-width="1" fill="none"/>
+      <!-- mains -->
+      <path d="M52 258 Q50 276 62 278 Q74 276 74 264 Z" fill="#E8E5DA" stroke-width="2"/>
+      <path d="M166 264 Q166 278 178 278 Q190 276 188 258 Z" fill="#E8E5DA" stroke-width="2"/>
+      <!-- bougie tenue -->
+      <path d="M174 250 L174 228 L182 228 L182 250" fill="#E8E5DA" stroke-width="1.8"/>
+      <path d="M178 226 Q172 216 178 206 Q184 216 178 226 Z" fill="#E8E5DA" stroke-width="1.4"/>
+      <!-- col -->
+      <path d="M94 116 L120 132 L146 116 L146 104 L94 104 Z" fill="url(#hach-1)" stroke-width="2.2"/>
+      <!-- tête carrée -->
+      <path d="M98 66 L142 66 L146 108 Q120 120 94 108 Z" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M96 94 Q120 116 144 94 L146 108 Q120 120 94 108 Z" fill="url(#pointille)" stroke="none"/>
+      <path d="M104 80 L116 82 M124 82 L136 80" stroke-width="3.4"/>
+      <path d="M108 87 L114 87 M126 87 L132 87" stroke-width="1.6"/>
+      <path d="M104 98 Q112 92 120 96 Q128 92 136 98 Q128 104 120 100 Q112 104 104 98 Z" fill="#15130F" stroke-width="1"/>
+      <path d="M100 74 L106 78" stroke-width="1"/>
+      <!-- casque à bord, cabossé -->
+      <path d="M86 70 Q92 40 120 38 Q150 40 154 70 L166 72 Q166 78 160 78 L80 78 Q74 78 74 72 Z" fill="url(#hach-2)" stroke-width="2.4"/>
+      <path d="M128 42 L134 52 L142 48" fill="none" stroke-width="1.8"/>
+    </g>
+    <!-- AUMÔNIER CASSIEN : la ligne. Mince, très haut, tout en noir. -->
+    <g id="p-cassien" stroke="#15130F" stroke-linejoin="round" stroke-linecap="round">
+      <!-- soutane -->
+      <path d="M102 104 Q120 98 138 104 L144 220 L154 405 L86 405 L96 220 Z" fill="#15130F" stroke-width="2.4"/>
+      <path d="M104 116 L100 220 L92 400" stroke="#E8E5DA" stroke-width=".8" fill="none" opacity=".6"/>
+      <path d="M136 116 L140 220 L148 400" stroke="#E8E5DA" stroke-width=".8" fill="none" opacity=".6"/>
+      <!-- étole claire avec croix -->
+      <path d="M110 106 L114 300 L122 300 L120 106 Z M130 106 L128 300 L136 300 L140 106 Z" fill="#E8E5DA" stroke-width="1.6"/>
+      <path d="M118 280 L118 292 M114 286 L122 286 M132 280 L132 292 M128 286 L136 286" stroke-width="1.2"/>
+      <!-- col blanc -->
+      <path d="M108 100 L132 100 L132 108 L108 108 Z" fill="#E8E5DA" stroke-width="1.6"/>
+      <!-- bras le long du corps, mains jointes -->
+      <path d="M102 112 Q92 150 104 180 L114 176 Q106 150 112 118 Z" fill="#15130F" stroke-width="2"/>
+      <path d="M138 112 Q148 150 136 180 L126 176 Q134 150 128 118 Z" fill="#15130F" stroke-width="2"/>
+      <path d="M108 176 Q120 168 132 176 L128 194 Q120 200 112 194 Z" fill="#E8E5DA" stroke-width="2"/>
+      <path d="M120 172 L120 196" stroke-width="1"/>
+      <!-- bague de cire noire -->
+      <circle cx="113" cy="186" r="3.6" fill="#15130F" stroke="#E8E5DA" stroke-width="1"/>
+      <!-- tremblement des mains -->
+      <path d="M100 178 Q98 184 100 190 M140 178 Q142 184 140 190" fill="none" stroke-width="1"/>
+      <!-- coupelle de cendre à la ceinture -->
+      <path d="M140 222 L148 252 M148 252 L132 252" fill="none" stroke="#E8E5DA" stroke-width="1"/>
+      <path d="M134 252 Q148 266 162 252 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <path d="M140 252 Q148 246 156 252" fill="url(#pointille)" stroke-width="1"/>
+      <!-- tête ovale, rasée -->
+      <ellipse cx="120" cy="66" rx="17" ry="25" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M120 46 L120 58 M114 52 L126 52" stroke="#4A463D" stroke-width="3.2"/>
+      <path d="M110 66 L117 66 M123 66 L130 66" stroke-width="1.8"/>
+      <path d="M110 71 Q113 74 117 71 M123 71 Q127 74 130 71" fill="none" stroke-width="1"/>
+      <path d="M120 70 L118 80 L121 80" fill="none" stroke-width="1.2"/>
+      <path d="M115 85 L125 85" stroke-width="1.4"/>
+      <path d="M115 92 L120 100 L125 92" fill="none" stroke-width="1"/>
+    </g>
+    <!-- JACQUOT « LE SIFFLEUR » : le cercle. Petit, rond, tout en rondeurs. -->
+    <g id="p-jacquot" stroke="#15130F" stroke-linejoin="round" stroke-linecap="round">
+      <!-- fusil à l'épaule -->
+      <path d="M92 330 L172 128" stroke-width="5"/>
+      <path d="M92 330 L84 352 L98 356 L104 334 Z" fill="#15130F" stroke-width="1.6"/>
+      <!-- jambes courtes -->
+      <path d="M96 300 L94 384 L116 384 L118 300 Z M124 300 L126 384 L148 384 L146 300 Z" fill="url(#molletiere)" stroke-width="2.2"/>
+      <path d="M90 382 L86 405 L118 405 L116 382 Z M124 382 L124 405 L156 405 L150 382 Z" fill="#15130F" stroke-width="1.6"/>
+      <!-- corps rond -->
+      <ellipse cx="120" cy="250" rx="54" ry="62" fill="url(#hach-1)" stroke-width="2.6"/>
+      <path d="M120 190 L120 310" stroke-width="1.2"/>
+      <circle cx="112" cy="220" r="2.6" fill="#15130F" stroke="none"/><circle cx="112" cy="250" r="2.6" fill="#15130F" stroke="none"/><circle cx="112" cy="280" r="2.6" fill="#15130F" stroke="none"/>
+      <!-- bras -->
+      <path d="M72 216 Q56 250 64 286 Q72 292 80 284 Q74 254 86 226 Z" fill="url(#hach-1)" stroke-width="2.2"/>
+      <path d="M166 214 Q180 190 174 150 Q166 144 160 152 Q164 184 150 210 Z" fill="url(#hach-1)" stroke-width="2.2"/>
+      <circle cx="68" cy="290" r="9" fill="#E8E5DA" stroke-width="2"/>
+      <circle cx="168" cy="146" r="9" fill="#E8E5DA" stroke-width="2"/>
+      <!-- écharpe nouée, pans au vent -->
+      <path d="M90 190 Q120 202 150 190 L150 204 Q120 214 90 204 Z" fill="#E8E5DA" stroke-width="2"/>
+      <path d="M140 200 Q160 214 176 206 L174 218 Q158 224 140 212 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <path d="M96 196 L144 198 M98 203 L142 205" stroke-width=".8"/>
+      <!-- tête ronde, traits sobres : yeux ouverts, sourcils droits, pas de joues -->
+      <circle cx="120" cy="160" r="28" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M107 157 L114 156.5 M126 156.5 L133 157" fill="none" stroke-width="2"/>
+      <path d="M106 151 L114 150 M126 150 L134 151" fill="none" stroke-width="1.2"/>
+            <circle cx="120" cy="175" r="2.2" fill="#15130F" stroke-width="1"/>
+      <!-- sifflement : trois petits traits d'air -->
+      <path d="M127 175 Q134 173 140 175" fill="none" stroke-width="1.1"/>
+      <!-- calot de travers -->
+      <path d="M94 146 Q100 126 124 126 Q144 128 150 140 L152 148 Q122 136 94 150 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M100 128 Q96 120 102 118" fill="none" stroke-width="1.6"/>
+    </g>
+    <!-- MÈRE RAVAUDE : la cloche. Large base, tête petite, chargée d'objets. -->
+    <g id="p-ravaude" stroke="#15130F" stroke-linejoin="round" stroke-linecap="round">
+      <!-- jupe en cloche -->
+      <path d="M72 232 Q60 320 44 405 L196 405 Q180 320 168 232 Z" fill="url(#hach-1)" stroke-width="2.6"/>
+      <path d="M44 405 L196 405" stroke-width="3"/>
+      <!-- tablier taché -->
+      <path d="M92 232 L148 232 L158 398 L82 398 Z" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M102 300 Q110 292 118 300 Q112 312 102 300 Z M132 344 Q140 338 146 346 Q140 354 132 344 Z" fill="url(#hach-2)" stroke="none"/>
+      <!-- poche du tablier avec la pipe d'Aurèle -->
+      <path d="M100 330 L130 330 L130 356 L100 356 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <path d="M112 330 L120 312 L132 312 Q136 312 136 318 L128 318" fill="none" stroke-width="2.4"/>
+      <!-- buste et châle croisé -->
+      <path d="M88 140 Q120 128 152 140 L172 238 L68 238 Z" fill="#E8E5DA" stroke-width="2.4"/>
+      <path d="M88 140 L148 236 L170 236 L150 140 Z" fill="url(#hach-2)" stroke-width="1.8"/>
+      <path d="M152 140 L92 236 L70 236 L90 140 Z" fill="url(#hach-2)" stroke-width="1.8"/>
+      <path d="M68 236 L172 236" stroke-width="5"/>
+      <!-- gobelets pendus à la ceinture -->
+      <path d="M162 240 L166 258 M172 240 L178 256" stroke-width="1.2"/>
+      <path d="M158 258 L172 258 L170 274 L160 274 Z M172 256 L186 256 L184 272 L174 272 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <!-- bras gauche : louche levée -->
+      <path d="M88 146 Q64 160 58 130 Q56 118 66 116 Q76 120 76 136 Q84 140 92 156 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <circle cx="64" cy="112" r="8" fill="#E8E5DA" stroke-width="2"/>
+      <path d="M62 106 L56 60" stroke-width="3"/>
+      <path d="M44 60 Q56 76 68 60 Z" fill="#15130F" stroke-width="1.6"/>
+      <!-- bras droit : marmite sur la hanche -->
+      <path d="M152 146 Q176 170 180 204 Q170 212 162 204 Q160 180 146 160 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M160 196 L204 196 L200 232 L164 232 Z" fill="url(#hach-1)" stroke-width="2.2"/>
+      <path d="M156 196 L208 196" stroke-width="3"/>
+      <!-- tête large sous un fichu -->
+      <circle cx="120" cy="108" r="26" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M100 118 Q120 140 140 118" fill="none" stroke-width="1.2"/>
+      <path d="M108 104 L116 104 M124 104 L132 104" stroke-width="2"/>
+      <path d="M112 120 Q120 116 128 120" fill="none" stroke-width="1.6"/>
+      <circle cx="96" cy="114" r="4" fill="none" stroke-width="1.4"/>
+      <path d="M92 104 Q92 76 120 76 Q148 76 148 104 Q136 92 120 92 Q104 92 92 104 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M144 98 L160 92 L156 104 L170 104" fill="none" stroke-width="2.2"/>
+    </g>
+    <!-- LE GUETTEUR : le crochet. Plié vers son périscope depuis des années. -->
+    <g id="p-guetteur" stroke="#15130F" stroke-linejoin="round" stroke-linecap="round">
+      <!-- périscope -->
+      <path d="M190 30 L204 30 L204 330 L190 330 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M184 18 L210 18 L210 34 L184 34 Z" fill="#15130F" stroke-width="1.6"/>
+      <path d="M184 22 L176 26 L176 32 L184 32" fill="#E8E5DA" stroke-width="1.4"/>
+      <path d="M176 156 L190 156 L190 172 L176 172 Z" fill="#15130F" stroke-width="1.4"/>
+      <path d="M186 330 L208 330 L212 405 L182 405 Z" fill="url(#hach-1)" stroke-width="2"/>
+      <!-- jambes fléchies -->
+      <path d="M80 300 L70 352 L80 400 L102 400 L94 356 L104 306 Z" fill="url(#molletiere)" stroke-width="2.2"/>
+      <path d="M118 300 L130 350 L124 398 L146 398 L152 350 L138 300 Z" fill="url(#molletiere)" stroke-width="2.2"/>
+      <path d="M74 396 L70 405 L106 405 L104 396 Z M120 394 L118 405 L154 405 L148 394 Z" fill="#15130F" stroke-width="1.6"/>
+      <!-- capote rapiécée, dos rond -->
+      <path d="M66 312 Q56 240 70 200 Q86 150 140 148 Q164 150 170 170 L154 196 Q150 250 146 312 L128 304 L112 316 L96 304 L80 316 Z" fill="url(#hach-2)" stroke-width="2.6"/>
+      <rect x="84" y="230" width="20" height="18" fill="#E8E5DA" stroke-width="1.6" transform="rotate(8 94 239)"/>
+      <path d="M86 232 L102 246 M102 232 L86 246" stroke-width=".8" transform="rotate(8 94 239)"/>
+      <rect x="120" y="270" width="16" height="14" fill="#E8E5DA" stroke-width="1.6" transform="rotate(-6 128 277)"/>
+      <!-- bras levé vers la poignée -->
+      <path d="M146 160 Q168 150 186 138 L192 148 Q172 166 150 178 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <circle cx="190" cy="140" r="7" fill="#E8E5DA" stroke-width="2"/>
+      <!-- tête collée à l'oculaire -->
+      <path d="M150 144 Q148 166 164 176 L178 172 L176 150 Q170 138 156 138 Z" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M168 160 L176 162" stroke-width="2.2"/>
+      <!-- longue barbe blanche -->
+      <path d="M150 170 Q152 200 160 214 Q164 196 172 176 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <path d="M156 178 L158 204 M162 180 L162 206 M167 178 L165 196" stroke-width=".8"/>
+      <!-- vieux casque rond -->
+      <path d="M144 146 Q146 122 166 122 Q182 124 182 146 L186 148 L140 150 Z" fill="#15130F" stroke-width="1.8"/>
+    </g>
