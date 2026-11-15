@@ -148,13 +148,18 @@ func passer() -> void:
 	etat = Etat.FINI
 
 
+## Les lignes sont-elles lues et la séquence lancée ? Avant (await de lire_lignes), une
+## pression n'a rien à passer.
+func accepte_entree() -> bool:
+	return _sequence != null
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if not (event.is_action_pressed(&"interagir") or event.is_action_pressed(&"clic") \
 			or event.is_action_pressed(&"ui_accept")):
 		return
 	get_viewport().set_input_as_handled()
-	# Lignes pas encore lues (await de lire_lignes) : rien à passer.
-	if _sequence == null:
+	if not accepte_entree():
 		return
 	if etat == Etat.FINI:
 		SceneRouter.retour_titre()
