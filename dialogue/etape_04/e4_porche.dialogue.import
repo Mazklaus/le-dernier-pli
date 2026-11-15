@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://52tbidx6bxaq"
+path="res://.godot/imported/e4_porche.dialogue-0f33986f6adec693bb233d37d8b1a783.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_04/e4_porche.dialogue"
+dest_files=["res://.godot/imported/e4_porche.dialogue-0f33986f6adec693bb233d37d8b1a783.tres"]
+
+[params]
+
+defaults=true

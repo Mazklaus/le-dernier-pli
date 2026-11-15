@@ -1,0 +1,62 @@
+# Étape 4 : détails à examiner, sans coût ni marque, rejouables, 15 à 30 s chacun.
+# Titres du plan du Level Designer. Garde-fous : aucun nom lisible avant les croix de l'étape 5,
+# aucun chiffre lié aux coureurs, jamais « offrande », « tribut » ni « sacrifice ».
+# crypte_noms est en zone sombre : version au toucher si la lanterne est éteinte.
+
+~ porche_tronc
+
+Tobie: Le tronc de l'aumône. Pas une pièce dedans : des boutons d'uniforme, par poignées.
+Tobie: Des boutons de toutes les compagnies. Ici, on paie avec ce qu'on a sur le dos.
+
+=> END
+
+~ salle_lits
+
+Tobie: Les lits sont numérotés à la peinture. Tous occupés. Il n'y a pas de lit vide.
+Tobie: Sur un montant, le numéro a été repeint par-dessus un autre. Puis encore par-dessus.
+
+=> END
+
+~ lingerie_draps
+
+Tobie: Des draps pliés, cousus en forme d'homme : des épaules, des bras, une tête ronde.
+Tobie: Des linceuls sur mesure. Quelqu'un ici prend les mesures de tout le monde.
+
+=> END
+
+~ atelier_bocaux
+
+Tobie: Des bocaux alignés. Une main, un cœur, une oreille. Chacun avec une étiquette.
+Tobie: Pas des noms de saints. Des prénoms de tous les jours. Paul. Odile. Martin.
+
+=> END
+
+~ atelier_planche
+
+Tobie: Une planche avec un homme dessiné, ouvert comme un livre. Des flèches, des noms latins.
+Tobie: Quelqu'un a corrigé le cœur à l'encre rouge. Il l'a mis plus bas. Comme s'il en avait vu beaucoup.
+
+=> END
+
+~ escalier_ex_voto
+
+Tobie: Le long de l'escalier, des bras et des jambes en cire, pendus à des clous.
+Tobie: On remercie le saint pour la jambe guérie. Ici, il y en a beaucoup plus que de marches.
+
+=> END
+
+~ crypte_noms
+
+if not GameState.lanterne_allumee
+	=> crypte_noms_toucher
+Tobie: Sous chaque niche, une plaque. Les noms ont été grattés au couteau, jusqu'à la pierre.
+Tobie: On voit qu'il y avait des lettres. On ne peut plus les lire. Quelqu'un a pris soin de ça.
+
+=> END
+
+~ crypte_noms_toucher
+
+Tobie: Sous la niche, une plaque. Mes doigts cherchent des lettres et ne trouvent que des rayures.
+Tobie: Quelqu'un a gratté les noms, profondément. Le métal est encore rugueux.
+
+=> END

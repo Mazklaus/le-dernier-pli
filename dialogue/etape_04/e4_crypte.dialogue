@@ -1,0 +1,42 @@
+# Étape 4, rencontre 4 : les saints qui respirent. Obligatoire, zone sombre courte (2 écrans).
+# Huile des lampes votives : +2 Huile (drapeau huile_votive_prise). Regarder les ex-voto : l'insigne, Relique « L'insigne du saint ».
+# Les deux sont possibles. Garde-fou du Game Director : l'insigne est trouvable, jamais montré ; une réaction brève, rien de plus.
+# La zone sombre est refermée au début de e4_benediction, en haut de l'escalier de remontée.
+
+~ debut
+
+Tobie: En bas de l'escalier, le noir. Il sent la cire froide et l'encens éteint.
+- [Allumer la lanterne] [if GameState.valeur(&"huile") >= 1 /] [#cout_huile=1, #sans_prelevement]
+	do GameState.entrer_zone_sombre(true)
+	Tobie: Des niches, partout. Dans chaque niche, un saint couché sous une vitre.
+- [Avancer dans le noir] [#cout_lucidite=1, #sans_prelevement]
+	do GameState.entrer_zone_sombre(false)
+	Tobie: Ma main rencontre du verre. Froid. Puis, sous ma paume, le verre se réchauffe. Et se refroidit.
+Tobie: Sur chaque vitre, une buée qui vient et qui s'en va. Lentement. Comme quelqu'un qui dort.
+=> crypte
+
+~ crypte
+
+- [Prendre l'huile des lampes votives] [if not GameState.rencontre_vue(&"huile_votive_prise") /]
+	Tobie: De petites lampes devant les niches, pleines d'huile sainte. Je les vide dans ma lampe, une par une.
+	Tobie: Derrière moi, la buée va plus vite sur les vitres.
+	do GameState.appliquer_effets({&"huile": 2})
+	do GameState.marquer_rencontre_vue(&"huile_votive_prise")
+	=> crypte
+- [Regarder les ex-voto] [if not GameState.rencontre_vue(&"e4_crypte_ex_voto") /]
+	do GameState.marquer_rencontre_vue(&"e4_crypte_ex_voto")
+	if GameState.lanterne_allumee
+		Tobie: Au pied des niches, des ex-voto entassés. Des jambes de cire, des chapelets, des médailles.
+		Tobie: Et dessous, une petite cloche de bronze sans battant. Usée.
+	else
+		Tobie: À tâtons, au pied des niches : de la cire en forme de jambe, des perles, des médailles.
+		Tobie: Et dessous, une petite cloche de métal. Pas de battant. Je connais cette forme par cœur.
+	Tobie: Comme la mienne.
+	- [La prendre]
+		do GameState.ajouter_marque(&"l_insigne_du_saint", &"relique", &"e4_crypte")
+		Tobie: Je la glisse dans ma poche, à côté de l'autre.
+	- [La laisser]
+		Tobie: Je la repose où elle était.
+	=> crypte
+- [Remonter]
+	=> END

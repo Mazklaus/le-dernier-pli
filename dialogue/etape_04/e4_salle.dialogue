@@ -1,0 +1,24 @@
+# Étape 4, rencontre 2 : la salle des Recousus, le caporal Fernand. Obligatoire.
+# Retenir son nom : −1 Lucidité, Nom retenu « Il s'appelait Fernand ». Fernand envoie Tobie à l'atelier.
+
+~ debut
+
+Tobie: Une salle voûtée, des lits en rang. Personne ne gémit. C'est ça qui est étrange.
+Tobie: Un bras de bronze sur un drap. Une mâchoire d'argent. Des doigts qui ne vont pas avec la main.
+Tobie: Un homme se redresse sur son lit. L'écusson de la Tranchée-Mère, cousu sur sa chemise de nuit.
+Fernand: Toi, tu viens de chez nous. Ça se sent. La boue de là-bas a une odeur.
+Fernand: Lamarre est toujours sergent ? Il gueule toujours ?
+Tobie: Toujours.
+Fernand: Bien. Il faut que quelque chose reste pareil.
+Fernand: Ils m'ont recousu avec la jambe d'un saint. Elle ne fait pas mal. Rien ne fait mal, ici.
+Fernand: Mais chaque matin, j'oublie un bout de mon nom. Hier c'était le début. Aujourd'hui je ne sais plus.
+Fernand: Dis-le avec moi. Fer-nand. Retiens-le, toi, puisque tu pars.
+- [Retenir son nom] Fer-nand. Je le garde. [#cout_lucidite=1]
+	Tobie: Je le répète jusqu'à ce qu'il me fasse mal à la tête. Fer-nand. Comme une pierre dans ma poche.
+	do GameState.ajouter_marque(&"il_s_appelait_fernand", &"nom_retenu", &"e4_salle")
+- [Se taire]
+	Tobie: Je ne dis rien. Il hoche la tête, comme s'il comprenait. Il a déjà oublié qu'il a demandé.
+Fernand: La porte du fond. Anselme t'attend.
+Fernand: Il attend toujours les coureurs.
+
+=> END

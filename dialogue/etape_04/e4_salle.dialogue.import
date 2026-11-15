@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://dlcrhdepnvvps"
+path="res://.godot/imported/e4_salle.dialogue-cf9abb9337da52028d42fb483f31489e.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_04/e4_salle.dialogue"
+dest_files=["res://.godot/imported/e4_salle.dialogue-cf9abb9337da52028d42fb483f31489e.tres"]
+
+[params]
+
+defaults=true
