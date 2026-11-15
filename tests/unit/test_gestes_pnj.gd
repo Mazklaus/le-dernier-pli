@@ -214,15 +214,28 @@ func test_les_gestes_de_l_etape_7_ont_leur_planche() -> void:
 			assert_between(t.get_width() / 200, 3, 6, chemin)
 
 
-func test_le_sceau_de_l_etape_7_est_de_cire_noire() -> void:
-	# Aucun rouge sur les planches de la Mère-Cloche : le pli est cacheté de cire noire.
-	for geste: StringName in GESTES_E7[&"mere-cloche"]:
-		var img := (load(Personnage.chemin_geste(&"mere-cloche", geste)) as Texture2D).get_image()
-		var rouge := false
-		for y in range(0, img.get_height(), 2):
-			for x in range(0, img.get_width(), 2):
-				var c := img.get_pixel(x, y)
-				if c.a > .5 and c.r - maxf(c.g, c.b) > .25:
-					rouge = true
-		assert_false(rouge, String(geste))
+func _a_du_rouge(chemin: String, image: int = -1) -> bool:
+	# Le rouge du ruban est exact (#9B1C1C) ; image : -1 pour toute la planche, sinon une image.
+	var img := (load(chemin) as Texture2D).get_image()
+	var x0 := 0 if image < 0 else image * 200
+	var x1 := img.get_width() if image < 0 else x0 + 200
+	for y in range(0, img.get_height()):
+		for x in range(x0, x1):
+			var c := img.get_pixel(x, y)
+			if c.a > .9 and absf(c.r - .608) < .03 and absf(c.g - .110) < .03 and absf(c.b - .110) < .03:
+				return true
+	return false
 
+
+func test_le_ruban_du_pli_reste_rouge_chez_la_mere_cloche() -> void:
+	# Le seul rouge de la Mère-Cloche est le ruban du pli de Tobie (GD) : noué dans toucher-sceau
+	# jusqu'à la dernière image, tombé au sol à la fin de lire-doigts et pendant tout graver ;
+	# jamais au repos (elle n'a pas encore le pli).
+	var planche := func(g: StringName) -> String: return Personnage.chemin_geste(&"mere-cloche", g)
+	assert_false(_a_du_rouge(Personnage.chemin_planche(&"mere-cloche")), "repos")
+	assert_true(_a_du_rouge(planche.call(&"toucher-sceau"), 5), "toucher-sceau : noué jusqu'au bout")
+	assert_true(_a_du_rouge(planche.call(&"lire-doigts"), 5), "lire-doigts : tombé au sol")
+	for i in 6:
+		assert_true(_a_du_rouge(planche.call(&"graver"), i), "graver %d : toujours au sol" % i)
+	for p in ["chr_lise_repos_01.png", "chr_lise_lire-doigts_01.png", "chr_lise_montrer_01.png"]:
+		assert_false(_a_du_rouge("res://assets/graphics/chr/" + p), p)
