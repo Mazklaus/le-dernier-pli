@@ -271,6 +271,7 @@ func _dessin_lieu(nom: String, nom_noeud: String) -> Node2D:
 
 ## Fond, sol, plafond et murs gris de la maquette, et le voile noir de la ZoneSombre (QA, #88).
 func _masquer_gris_lieu(lieu: Node) -> void:
+	masquer_maquette(lieu)
 	for chemin: String in ["Fond", "ZoneSombre/Visuel"]:
 		var gris := lieu.get_node_or_null(chemin) as CanvasItem
 		if gris != null:

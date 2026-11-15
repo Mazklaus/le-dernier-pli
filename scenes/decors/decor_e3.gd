@@ -80,6 +80,7 @@ func _habiller_lieux() -> void:
 
 
 func _masquer_gris_lieu(lieu: Node) -> void:
+	masquer_maquette(lieu)
 	var fond_gris := lieu.get_node_or_null("Fond") as CanvasItem
 	if fond_gris != null:
 		fond_gris.visible = false
