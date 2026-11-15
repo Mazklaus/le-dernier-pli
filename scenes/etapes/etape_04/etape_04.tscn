@@ -143,6 +143,7 @@ text = "porche_tronc"
 [node name="e4_porche" parent="Surface/Porche" instance=ExtResource("8")]
 position = Vector2(1150, 900)
 rencontre_id = &"e4_porche"
+personnage = &"maude"
 dialogue = ExtResource("10")
 libelle = "Parler à la portière"
 une_seule_fois = true

@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_07/e7_details.dialogue" id="2"]
 [ext_resource type="Resource" path="res://dialogue/etape_07/e7_cloches.dialogue" id="3"]
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="4"]
 
+[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
 
@@ -188,3 +189,19 @@ offset_bottom = 198.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> anneau_lise"
+
+[node name="e7_descente" type="Node2D" parent="."]
+script = ExtResource("cine_script")
+id = &"e7_descente"
+duree = 10.0
+metadata/note_level_design = "Plan large : les cloches cirées, l'escalier qui tourne autour de la plus grande ; lancée par une réplique de e7_cloches"
+
+[node name="Camera" type="Camera2D" parent="e7_descente"]
+position = Vector2(1440, 500)
+
+[node name="Depart" type="Marker2D" parent="e7_descente"]
+position = Vector2(1440, 500)
+scale = Vector2(0.6, 0.6)
+
+[node name="Arrivee" type="Marker2D" parent="e7_descente"]
+position = Vector2(1440, 700)

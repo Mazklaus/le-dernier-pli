@@ -95,7 +95,8 @@ func test_lire_une_ligne_du_pli_emet_le_signal_du_son() -> void:
 func test_periscope_et_echelle_a_l_etape_1() -> void:
 	var etape: EtapeBase = add_child_autofree(load("res://scenes/etapes/etape_01/etape_01.tscn").instantiate())
 	assert_eq(etape.trouver_declencheur(&"e1_guetteur").son_debut, "sfx_periscope_regarder")
-	assert_eq(etape.trouver_declencheur(&"e1_parapet").son_fin, "sfx_echelle_monter")
+	# l'échelle sonne dans la cinématique de sortie, quand Tobie commence à monter
+	assert_eq(etape.trouver_declencheur(&"e1_parapet").son_fin, "")
 
 
 func test_un_passage_peut_imposer_son_son() -> void:
