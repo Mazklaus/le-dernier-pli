@@ -83,6 +83,11 @@ func _masquer_gris_lieu(lieu: Node) -> void:
 	var fond_gris := lieu.get_node_or_null("Fond") as CanvasItem
 	if fond_gris != null:
 		fond_gris.visible = false
+	# Voile noir de maquette de la ZoneSombre (chemin de nuit) : il passait devant Tobie et
+	# assombrissait le ruban avant la détection du rouge. Le noir est peint dans le fond.
+	var voile_zone := lieu.get_node_or_null("ZoneSombre/Visuel") as CanvasItem
+	if voile_zone != null:
+		voile_zone.visible = false
 	for corps: Node in lieu.get_children():
 		var nom := String(corps.name)
 		if corps is StaticBody2D and (nom == "Sol" or nom == "Plafond" or nom.begins_with("Mur")):
