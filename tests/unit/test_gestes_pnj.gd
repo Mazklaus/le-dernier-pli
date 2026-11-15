@@ -69,3 +69,23 @@ func test_les_gestes_de_l_etape_2_ont_leur_planche() -> void:
 				var t := load(chemin) as Texture2D
 				assert_eq(t.get_height(), 320, chemin)
 				assert_between(t.get_width() / 200, 3, 6, chemin)
+
+
+## Étape 3 (#139) : les enfants, Ilde, Rose, le sonneur.
+const GESTES_E3 := {
+	&"enfants": [&"viser", &"hausser-epaules"],
+	&"ilde": [&"regarder-sacoche", &"tendre"],
+	&"rose": [&"danser"],
+	&"sonneur": [&"tirer-corde", &"serrer"],
+}
+
+
+func test_les_gestes_de_l_etape_3_ont_leur_planche() -> void:
+	for nom: StringName in GESTES_E3:
+		for geste: StringName in GESTES_E3[nom]:
+			var chemin := Personnage.chemin_geste(nom, geste)
+			assert_ne(chemin, "", "%s : %s" % [nom, geste])
+			if chemin != "":
+				var t := load(chemin) as Texture2D
+				assert_eq(t.get_height(), 320, chemin)
+				assert_between(t.get_width() / 200, 3, 6, chemin)

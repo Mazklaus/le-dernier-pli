@@ -55,42 +55,50 @@ def souffle(i: int) -> float:
 
 # ------------------------------------------------------------------ les enfants du verger
 
-def enfants(i: int) -> str:
+def enfants(i: int, recul: float = 0.0, hausse: float = 0.0) -> str:
+    """recul : le fusil de bâton se relève (degrés) ; hausse : les épaules montent (px)."""
     s = souffle(i)
     out = []
     # le grand, à gauche : vise avec son bâton, en appui sur une jambe
     out.append(f'<path d="M70 330 L62 400 L80 400 L84 334 Z M90 330 L98 398 L116 398 L104 328 Z" fill="url(#h1)" {ST} stroke-width="2.2"/>')
     out.append(f'<path d="M56 396 L54 405 L82 405 L80 396 Z M96 394 L96 405 L122 405 L118 394 Z" fill="{ENCRE}" {ST} stroke-width="1.4"/>')
-    out.append(f'<g transform="translate(0 {s * .6:.1f})">')
+    out.append(f'<g transform="translate({recul * .3:.1f} {s * .6 - hausse:.1f})">')
     out.append(f'<path d="M64 334 Q60 272 78 246 L104 244 Q118 280 110 334 Z" fill="{PAPIER}" {ST} stroke-width="2.4"/>')
     out.append(f'<path d="M66 300 H108" {ST} stroke-width="1.4"/><path d="M80 246 L84 334" stroke="{MINE}" stroke-width="1.4"/>')
     # bretelles, culotte courte rapiécée
     out.append(f'<path d="M78 248 L74 330 M100 246 L104 330" {ST} stroke-width="2"/>')
     out.append(f'<rect x="88" y="306" width="14" height="12" fill="url(#h2)" {ST} stroke-width="1.4"/>')
     # le fusil de bâton, épaulé, pointé vers la gauche (vers Tobie)
+    out.append(f'<g transform="rotate({recul - hausse * 1.5:.1f} 100 258)">')
     out.append(f'<path d="M100 262 L22 248 L22 242 L102 254 Z" fill="url(#h1)" {ST} stroke-width="2"/>')
     out.append(f'<path d="M96 254 Q110 262 104 276 L92 272 Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>')
     out.append(f'<path d="M66 262 Q56 258 48 252 L52 246 Q62 250 72 252 Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>')
+    out.append('</g>')
+    out.append(f'<g transform="translate(0 {hausse * .8:.1f})">')
     out.append(visage(88, 222, 18, sourire=True))
     out.append(f'<path d="M70 214 Q72 194 90 194 Q108 196 108 216 Q98 204 84 208 Q76 210 70 214 Z" fill="url(#h2)" {ST} stroke-width="2"/>')
-    out.append('</g>')
+    out.append('</g></g>')
     # le plus petit, à droite : le bâton sur l'épaule, il regarde en l'air
     out.append(f'<path d="M150 352 L146 400 L160 400 L162 354 Z M168 352 L172 400 L186 400 L178 350 Z" fill="url(#h1)" {ST} stroke-width="2"/>')
     out.append(f'<path d="M140 397 L140 405 L162 405 L160 397 Z M170 397 L170 405 L192 405 L188 397 Z" fill="{ENCRE}" {ST} stroke-width="1.4"/>')
-    out.append(f'<g transform="translate(0 {s * .5:.1f})">')
+    out.append(f'<g transform="translate(0 {s * .5 - hausse:.1f})">')
     out.append(f'<path d="M144 356 Q140 310 156 290 L176 290 Q190 316 184 356 Z" fill="url(#h1)" {ST} stroke-width="2.2"/>')
     out.append(f'<path d="M176 296 L198 220 L204 222 L182 300 Z" fill="url(#h1)" {ST} stroke-width="1.8"/>')
     out.append(f'<path d="M172 300 Q182 294 186 284 L194 290 Q188 304 176 310 Z" fill="{PAPIER}" {ST} stroke-width="1.6"/>')
+    out.append(f'<g transform="translate(0 {hausse * .8:.1f})">')
     out.append(visage(166, 272, 15))
     out.append(f'<path d="M150 266 Q150 248 166 248 Q182 248 182 266 Q172 256 160 260 Z" fill="url(#h2)" {ST} stroke-width="1.8"/>')
-    out.append('</g>')
+    out.append('</g></g>')
     return "".join(out)
 
 
 # ------------------------------------------------------------------ Maîtresse Ilde
 
-def ilde(i: int) -> str:
+def ilde(i: int, tete: float = 0.0, bras: str | None = None) -> str:
+    """tete : la tête penche vers la gauche et le bas (degrés) ; bras : remplace les bras croisés."""
     s = souffle(i)
+    croises = (f'<path d="M78 196 Q70 236 96 250 L140 246 Q150 238 140 230 L102 232 Q92 220 96 200 Z" fill="url(#h2)" {ST} stroke-width="2.2"/>'
+               f'<path d="M128 228 Q146 224 148 236 Q142 246 128 244 Z M106 236 Q118 230 130 238 Q122 248 108 246 Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>')
     out = [
         # sabots sous la robe longue
         f'<path d="M84 394 L80 405 L114 405 L112 394 Z M126 394 L126 405 L160 405 L156 394 Z" fill="{ENCRE}" {ST} stroke-width="1.4"/>',
@@ -111,25 +119,26 @@ def ilde(i: int) -> str:
         # le châle croisé sur la poitrine
         f'<path d="M84 172 Q120 196 156 172 L162 214 Q120 246 78 214 Z" fill="url(#h1)" {ST} stroke-width="2.2"/>',
         # bras croisés, mains posées l'une sur l'autre
-        f'<path d="M78 196 Q70 236 96 250 L140 246 Q150 238 140 230 L102 232 Q92 220 96 200 Z" fill="url(#h2)" {ST} stroke-width="2.2"/>',
-        f'<path d="M128 228 Q146 224 148 236 Q142 246 128 244 Z M106 236 Q118 230 130 238 Q122 248 108 246 Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>',
+        croises if bras is None else bras,
         # tête : visage rond, coiffe nouée
+        f'<g transform="rotate({-tete:.1f} 118 166)">',
         visage(118, 138, 24, sourire=True),
         f'<path d="M90 160 Q82 104 120 96 Q156 102 148 160 Q146 126 120 118 Q96 124 90 160 Z" fill="{PAPIER}" {ST} stroke-width="2.2"/>',
         f'<path d="M96 120 Q120 108 144 120" fill="none" stroke="{MINE}" stroke-width="1.4"/>',
         f'<path d="M136 160 L146 174 M140 158 L154 168" {ST} stroke-width="1.6"/>',
-        '</g>',
+        '</g></g>',
     ]
     return "".join(out)
 
 
 # ------------------------------------------------------------------ Rose, la mariée
 
-def rose(i: int) -> str:
+def rose(i: int, pivot: float = 0.0, vent: float | None = None) -> str:
+    """pivot : la danse fait tourner tout le corps autour des pieds (degrés)."""
     s = souffle(i)
-    vent = (0, 3, 5, 3)[i]
+    vent = (0, 3, 5, 3)[i] if vent is None else vent
     out = [
-        f'<g transform="translate(0 {s * .8:.1f})">',
+        f'<g transform="rotate({pivot:.1f} 122 400) translate(0 {s * .8:.1f})">',
         # le voile, derrière : il bouge un peu (seul mouvement de la noce qui ne s'arrête pas)
         f'<path d="M108 108 Q86 170 78 {300 + vent} L{96 + vent} {306 + vent} Q104 200 124 112 Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>',
         f'<path d="M100 150 Q90 220 {88 + vent / 2:.0f} 290" fill="none" stroke="{MINE}" stroke-width="1.2"/>',
@@ -189,9 +198,10 @@ def violoneux(i: int) -> str:
 
 # ------------------------------------------------------------------ le sonneur
 
-def sonneur(i: int) -> str:
+def sonneur(i: int, tire: float | None = None, bras: str | None = None) -> str:
+    """tire : la corde descend de tant de px ; bras : remplace les bras levés sur la corde."""
     # il tire, lentement : les mains descendent puis remontent, la corde avec elles
-    tire = (0, 10, 18, 10)[i]
+    tire = (0, 10, 18, 10)[i] if tire is None else tire
     s = souffle(i)
     return (
         # la corde : elle pend de rien, son bout coupé net flotte au-dessus des mains
@@ -206,10 +216,11 @@ def sonneur(i: int) -> str:
         f'<path d="M80 280 H154" stroke="{MINE}" stroke-width="1.4"/>'
         '</g>'
         # les bras levés vers la corde, les deux mains serrées dessus
+        + (bras if bras is not None else
         f'<path d="M100 {176 + tire * .25:.0f} Q112 {170 + tire} 132 {180 + tire} L136 {194 + tire} Q114 {188 + tire} 106 {200 + tire * .25:.0f} Z" fill="url(#h1)" {ST} stroke-width="2.2"/>'
         f'<path d="M134 {176 + tire} Q150 {160 + tire} 146 {148 + tire} L138 {146 + tire} Q140 {162 + tire} 126 {168 + tire} Z" fill="url(#h1)" {ST} stroke-width="2.2"/>'
         f'<path d="M132 {174 + tire} Q140 {170 + tire} 148 {176 + tire} L148 {192 + tire} Q140 {196 + tire} 132 {190 + tire} Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>'
-        f'<path d="M134 {140 + tire} Q140 {134 + tire} 146 {140 + tire} L146 {154 + tire} Q140 {158 + tire} 134 {152 + tire} Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>'
+        f'<path d="M134 {140 + tire} Q140 {134 + tire} 146 {140 + tire} L146 {154 + tire} Q140 {158 + tire} 134 {152 + tire} Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>') +
         # tête levée vers le haut, vers rien ; vieux, tondu, barbe blanche
         f'<g transform="translate(0 {s * .6 + tire * .25:.1f})">'
         # tête renversée en arrière, le regard tout en haut, vers la baie vide : on voit le dessous
