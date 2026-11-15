@@ -52,7 +52,7 @@ func _ready() -> void:
 	colonne_memoire.modulate.a = 0.0
 	invite = _ligne("Interagir : revenir au titre", TAILLE_MEMOIRE - 4, StylePapier.MINE)
 	invite.name = "Invite"
-	invite.position = Vector2(ZONE_TEXTE.position.x, ZONE_TEXTE.end.y - 4.0)
+	invite.position = Vector2(ZONE_TEXTE.position.x, ZONE_TEXTE.end.y - 32.0)
 	invite.size.x = ZONE_TEXTE.size.x
 	invite.modulate.a = 0.0
 	add_child(invite)
