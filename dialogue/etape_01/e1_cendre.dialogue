@@ -3,13 +3,13 @@
 
 ~ debut
 
-Cassien: Approche, Tobie. Baisse la tête.
+Cassien: Approche, Tobie. Baisse la tête. [#geste=cendrer]
 Cassien: ... C'est la cire noire.
 - [Prier] Je suis prêt, mon père.
 	Cassien: Que la Cendre te garde, et que le Ciel t'entende.
 	Cassien: Même s'il n'entend plus personne.
 	do GameState.modifier_jauge(&"lucidite", 1)
-	Cassien: Prends ma médaille. Elle a plus besoin de moi.
+	Cassien: Prends ma médaille. Elle a plus besoin de moi. [#geste=tendre]
 	- La prendre.
 		do GameState.ajouter_marque(&"medaille_de_cendre", &"relique", &"e1_cendre")
 		Cassien: Garde-la contre ta peau. Elle tient chaud.
@@ -19,7 +19,7 @@ Cassien: ... C'est la cire noire.
 	Cassien: ...
 	Cassien: Pardonne-nous.
 - [Refuser la cendre]
-	Cassien: Je te cendre quand même. C'est le règlement.
+	Cassien: Je te cendre quand même. C'est le règlement. [#geste=cendrer]
 	Cassien: Pardon.
 Cassien: Va. Et lis tes lettres, en chemin. N'oublie pas comment on fait.
 
