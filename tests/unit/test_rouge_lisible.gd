@@ -236,7 +236,8 @@ static func _lieu_habille(etape: EtapeBase, lieu: StringName) -> bool:
 	for noeud in lieux.get_children():
 		if etape.lieu_de(noeud) != lieu:
 			continue
-		if noeud.find_child("Dessin", true, false) != null:
+		# Enfant direct : le repère d'un détail (RepereExamen) a lui aussi un sprite « Dessin ».
+		if noeud.get_node_or_null("Dessin") != null:
 			return true
 		var fond := noeud.get_node_or_null("Fond") as CanvasItem
 		return fond != null and not fond.visible
