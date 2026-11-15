@@ -12,7 +12,7 @@ Tobie: En bas de l'escalier, le noir. Il sent la cire froide et l'encens éteint
 - [Avancer dans le noir] [#cout_lucidite=1, #sans_prelevement]
 	do GameState.entrer_zone_sombre(false)
 	Tobie: Ma main rencontre du verre. Froid. Puis, sous ma paume, le verre se réchauffe. Et se refroidit.
-Tobie: Sur chaque vitre, une buée qui vient et qui s'en va. Lentement. Comme quelqu'un qui dort.
+Tobie: Sur les vitres, la buée vient et s'en va. Comme quelqu'un qui dort.
 => crypte
 
 ~ crypte

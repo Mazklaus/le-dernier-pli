@@ -4,11 +4,10 @@
 
 ~ debut
 
-Tobie: Une vieille sœur à genoux devant une bassine. Elle me prend les pieds sans rien demander.
+Tobie: Une vieille sœur. Elle me prend les pieds sans rien demander. [#geste=maude:laver]
 Tobie: L'eau est chaude. Elle frotte la boue de trois jours, doigt par doigt.
 Tobie: Elle voit la cire noire sur ma sacoche. Ses mains s'arrêtent.
-Tobie: Elle se penche et baise le ruban. Puis elle reprend, plus doucement.
-Sœur Maude: On va te faire beau.
+Sœur Maude: On va te faire beau. [#geste=baiser-ruban]
 Sœur Maude: Il y a de la soupe. De la vraie, avec des os dedans.
 - [Manger la soupe]
 	Tobie: Elle me regarde manger comme on regarde un veau qui prend des forces.
