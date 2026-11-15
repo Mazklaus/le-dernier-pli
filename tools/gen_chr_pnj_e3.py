@@ -211,10 +211,19 @@ def sonneur(i: int) -> str:
         f'<path d="M132 {174 + tire} Q140 {170 + tire} 148 {176 + tire} L148 {192 + tire} Q140 {196 + tire} 132 {190 + tire} Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>'
         f'<path d="M134 {140 + tire} Q140 {134 + tire} 146 {140 + tire} L146 {154 + tire} Q140 {158 + tire} 134 {152 + tire} Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>'
         # tête levée vers le haut, vers rien ; vieux, tondu, barbe blanche
-        f'<g transform="translate(0 {s * .6 + tire * .25:.1f}) rotate(-12 112 150)">'
-        + visage(112, 132, 21, barbe=True) +
-        f'<path d="M92 126 Q94 104 112 102 Q130 104 132 124 Q122 114 112 114 Q100 114 92 126 Z" fill="url(#pt)" {ST} stroke-width="1.8"/>'
-        '</g>'
+        f'<g transform="translate(0 {s * .6 + tire * .25:.1f})">'
+        # tête renversée en arrière, le regard tout en haut, vers la baie vide : on voit le dessous
+        # du menton, la barbe pointe vers l'avant, les yeux sont remontés au ras du front
+        f'<path d="M98 150 Q104 168 122 166 Q134 160 130 146" fill="{PAPIER}" {ST} stroke-width="2"/>'
+        f'<ellipse cx="112" cy="128" rx="21" ry="20" fill="{PAPIER}" {ST} stroke-width="2.2"/>'
+        f'<path d="M92 138 Q84 150 86 166 Q100 160 106 146 Z" fill="{PAPIER}" {ST} stroke-width="1.6"/>'
+        f'<path d="M88 150 L90 158 M94 148 L96 156" stroke="{MINE}" stroke-width="1.2"/>'
+        f'<path d="M98 116 Q102 112 106 116 M114 114 Q118 110 122 114" fill="none" {ST} stroke-width="1.8"/>'
+        f'<circle cx="102" cy="114" r="1.8" fill="{ENCRE}"/><circle cx="118" cy="112" r="1.8" fill="{ENCRE}"/>'
+        f'<path d="M106 122 L100 128 L106 130" fill="none" {ST} stroke-width="1.4"/>'
+        f'<ellipse cx="104" cy="138" rx="4" ry="2.6" fill="{ENCRE}"/>'
+        f'<path d="M96 112 Q98 98 114 98 Q130 100 132 116 Q124 106 112 106 Q102 106 96 112 Z" fill="url(#pt)" {ST} stroke-width="1.8"/>'
+'</g>'
     )
 
 
