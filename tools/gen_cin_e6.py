@@ -270,7 +270,7 @@ def image_b(k: int) -> str:
     """Tobie seul, centré dans une image de 240 x 240 transparente."""
     corps = {0: tobie_glisse(), 1: tobie_boule(200), 2: tobie_etale(), 3: tobie_etale() + terre(3),
              4: tobie_etale() + terre(4),
-             5: f'<g transform="translate(0 6) rotate(-6)">{tobie_quatre_pattes()}</g>' + terre(5),
+             5: f'<g transform="translate(0 10) rotate(5)">{tobie_quatre_pattes()}</g>' + terre(5),
              6: tobie_quatre_pattes()}[k]
     return f'<g transform="translate(120 120)">{corps}</g>'
 

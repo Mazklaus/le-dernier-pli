@@ -155,6 +155,44 @@ func test_l_autre_se_retourne_a_ses_planches() -> void:
 	assert_eq(images.get_size(), Vector2(600, 340))
 
 
+## Étape 6 (#144) : Éloi, le jeune Enfoui, et le veilleur Mathurin.
+const GESTES_E6 := {
+	&"eloi": [&"lever-bocal", &"front-terre", &"se-retourner", &"poser-bocal"],
+	&"mathurin": [&"caresser-uniforme"],
+}
+
+
+func test_les_gestes_de_l_etape_6_ont_leur_planche() -> void:
+	for nom: StringName in GESTES_E6:
+		assert_true(ResourceLoader.exists("res://assets/graphics/chr/chr_%s_repos_01.png" % nom), String(nom))
+		for geste: StringName in GESTES_E6[nom]:
+			var chemin := Personnage.chemin_geste(nom, geste)
+			assert_ne(chemin, "", "%s : %s" % [nom, geste])
+			if chemin == "":
+				continue
+			var t := load(chemin) as Texture2D
+			assert_eq(t.get_height(), 320, chemin)
+			assert_between(t.get_width() / 200, 3, 6, chemin)
+
+
+func test_le_vert_de_gris_de_l_etape_6_est_exact() -> void:
+	# L'écran garde l'accent exact (ecran_gravure) : le bocal d'Éloi et l'uniforme de Mathurin
+	# doivent en contenir des pixels purs.
+	var accent := Color("#5F7F72")
+	for f in ["chr_eloi_repos_01.png", "chr_mathurin_repos_01.png"]:
+		var img := (load("res://assets/graphics/chr/" + f) as Texture2D).get_image()
+		var trouve := false
+		for y in range(0, img.get_height(), 2):
+			for x in range(0, 200, 2):
+				var c := img.get_pixel(x, y)
+				if c.a > .99 and absf(c.r - accent.r) < .01 and absf(c.g - accent.g) < .01 and absf(c.b - accent.b) < .01:
+					trouve = true
+					break
+			if trouve:
+				break
+		assert_true(trouve, f)
+
+
 func test_la_chute_dans_la_fissure_a_ses_planches() -> void:
 	# e6_chute_fissure (tools/gen_cin_e6.py) : plan A (fond, 6 images de 600×560 en grille 3 × 2),
 	# plan B (fond, la chute lourde : 7 images de 240×240 transparentes, en ligne).
