@@ -189,6 +189,7 @@ collision_mask = 0
 monitoring = false
 script = ExtResource("4")
 vers = &"escalier"
+son = "sfx_porte_fermer"
 libelle = "Descendre"
 rencontre_requise = &"e4_anselme"
 metadata/vers = "escalier"
