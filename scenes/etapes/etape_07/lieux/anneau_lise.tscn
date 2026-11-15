@@ -135,6 +135,7 @@ text = "lise_lettre"
 [node name="e7_lise" parent="Rencontres" instance=ExtResource("1")]
 position = Vector2(1440, 900)
 rencontre_id = &"e7_lise"
+personnage = &"lise"
 dialogue = ExtResource("3")
 libelle = "Écouter la vieille femme"
 une_seule_fois = true

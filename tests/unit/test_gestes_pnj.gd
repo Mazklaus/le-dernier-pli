@@ -191,3 +191,38 @@ func test_le_vert_de_gris_de_l_etape_6_est_exact() -> void:
 			if trouve:
 				break
 		assert_true(trouve, f)
+
+
+## Étape 7 (#145) : Lise, la vieille Enfouie, et la Mère-Cloche (« La Mère-Cloche » parle :
+## son geste va au personnage principal de la rencontre, mere-cloche).
+const GESTES_E7 := {
+	&"lise": [&"lire-doigts", &"montrer"],
+	&"mere-cloche": [&"lire-doigts", &"graver", &"toucher-sceau"],
+}
+
+
+func test_les_gestes_de_l_etape_7_ont_leur_planche() -> void:
+	for nom: StringName in GESTES_E7:
+		assert_true(ResourceLoader.exists("res://assets/graphics/chr/chr_%s_repos_01.png" % nom), String(nom))
+		for geste: StringName in GESTES_E7[nom]:
+			var chemin := Personnage.chemin_geste(nom, geste)
+			assert_ne(chemin, "", "%s : %s" % [nom, geste])
+			if chemin == "":
+				continue
+			var t := load(chemin) as Texture2D
+			assert_eq(t.get_height(), 320, chemin)
+			assert_between(t.get_width() / 200, 3, 6, chemin)
+
+
+func test_le_sceau_de_l_etape_7_est_de_cire_noire() -> void:
+	# Aucun rouge sur les planches de la Mère-Cloche : le pli est cacheté de cire noire.
+	for geste: StringName in GESTES_E7[&"mere-cloche"]:
+		var img := (load(Personnage.chemin_geste(&"mere-cloche", geste)) as Texture2D).get_image()
+		var rouge := false
+		for y in range(0, img.get_height(), 2):
+			for x in range(0, img.get_width(), 2):
+				var c := img.get_pixel(x, y)
+				if c.a > .5 and c.r - maxf(c.g, c.b) > .25:
+					rouge = true
+		assert_false(rouge, String(geste))
+
