@@ -68,3 +68,14 @@ func test_le_carton_du_porteur() -> void:
 
 func test_apres_la_derniere_etape_le_routeur_va_a_l_epilogue() -> void:
 	assert_true(ResourceLoader.exists(SceneRouter.ECRAN_EPILOGUE))
+	assert_true(SceneRouter.est_derniere_etape(7), "la Mère-Cloche (fin_etape) mène au carton")
+	assert_false(SceneRouter.etape_existe(8), "il n'y a pas d'étape 8 à charger")
+	for n in range(1, 7):
+		assert_false(SceneRouter.est_derniere_etape(n), "étape %d : on passe à la suivante" % n)
+
+
+func test_le_carton_ramene_au_titre_une_fois_fini() -> void:
+	var carton: Epilogue = add_child_autofree(SceneEpilogue.instantiate())
+	await wait_until(func() -> bool: return carton.colonne_lignes.get_child_count() > 0, 3.0)
+	carton.passer()
+	assert_eq(carton.etat, Epilogue.Etat.FINI, "la prochaine pression appelle SceneRouter.retour_titre()")

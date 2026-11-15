@@ -40,13 +40,18 @@ func aller_etape(numero: int) -> void:
 
 
 ## Quitte l'étape courante (coût de la marche dans GameState) et charge la suivante.
-## Après la dernière étape : pas de marche, le carton d'épilogue.
+## Après la dernière étape : pas de marche, le carton d'épilogue (puis retour au titre).
 func etape_suivante() -> void:
-	if etape_courante >= NB_ETAPES:
+	if est_derniere_etape(etape_courante):
 		aller_epilogue()
 		return
 	GameState.passer_etape()
 	aller_etape(etape_courante + 1)
+
+
+## La fin de cette étape mène-t-elle au carton d'épilogue plutôt qu'à une autre étape ?
+static func est_derniere_etape(numero: int) -> bool:
+	return numero >= NB_ETAPES
 
 
 func aller_epilogue() -> void:
