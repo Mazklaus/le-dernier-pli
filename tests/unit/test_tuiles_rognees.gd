@@ -15,7 +15,7 @@ func test_tuile_rognee_chargee_par_son_atlas() -> void:
 
 
 func test_tuile_non_rognee_chargee_en_png() -> void:
-	var t := DecorParallaxe.charger_tuile("res://assets/graphics/env/e1/env_e1_plan3_surface_01.png")
+	var t := DecorParallaxe.charger_tuile("res://assets/graphics/env/e1/env_e1_plan0_ciel_01.png")
 	assert_false(t is AtlasTexture)
 
 
