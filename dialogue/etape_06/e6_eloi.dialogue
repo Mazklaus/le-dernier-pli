@@ -5,11 +5,11 @@
 ~ debut
 
 Tobie: Une lumière verte, aux deux tiers de la nef. Elle ne bouge pas. Elle m'attend.
-Tobie: Un garçon de mon âge. Pâle comme une racine, des yeux très grands. Un bocal de vers luisants à la main.
-Éloi: ... petit ... tu es venu ... par ici.
+Tobie: Un garçon de mon âge, pâle comme une racine.
+Éloi: ... petit ... tu es venu ... par ici. [#geste=lever-bocal]
 Tobie: Il ne parle pas ma langue. Des consonnes douces, comme de l'eau sous la terre. Mais je comprends.
 if GameState.possede_marque(&"front_contre_terre")
-	Tobie: Il me regarde longtemps. Puis il touche son front, et il touche la terre.
+	Tobie: Il me regarde longtemps. [#geste=eloi:front-terre]
 	Tobie: Le geste des champs, la nuit, chez Ilde. Il sourit, comme si on se connaissait.
 - [Le suivre] [if GameState.possede_marque(&"front_contre_terre") /] [#cache]
 	=> suivre
@@ -18,7 +18,7 @@ if GameState.possede_marque(&"front_contre_terre")
 - [Fuir] [#cout_vivres=1]
 	Tobie: Je recule. Je cours dans le noir, je tombe, je me relève. Je ne sais plus où est le haut.
 	Tobie: Longtemps après, la lumière verte est là, devant moi. Il ne dit rien. Il ne m'en veut pas.
-	Éloi: ... par ici, petit.
+	Éloi: ... par ici, petit. [#geste=lever-bocal]
 	do GameState.sortir_zone_sombre()
 
 => END
@@ -26,7 +26,7 @@ if GameState.possede_marque(&"front_contre_terre")
 ~ suivre
 
 Tobie: Je marche derrière lui. Sa lumière éclaire juste assez pour un pas, puis le suivant.
-Tobie: Il se retourne parfois pour vérifier que je suis là. Comme Jacquot, dans les boyaux.
+Tobie: Il se retourne parfois. Comme Jacquot, dans les boyaux. [#geste=eloi:se-retourner]
 do GameState.sortir_zone_sombre()
 
 => END
