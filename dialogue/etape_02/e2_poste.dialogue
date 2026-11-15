@@ -6,7 +6,7 @@
 
 ~ debut
 
-Brisse: Halte. Qui va là ? ... Un coureur. Ça faisait longtemps. [#geste=lever_main]
+Brisse: Halte. Qui va là ? ... Un coureur. Ça faisait longtemps. [#geste=lever-main]
 Brisse: Caporal Brisse. Je tiens le poste. Tout seul, depuis la dernière relève.
 Brisse: Montre ton pli. C'est le règlement. [#geste=tendre]
 if GameState.condition_remplie({"sceau": &"intact"})
@@ -32,7 +32,7 @@ Brisse: Personne n'en saura rien. À part moi.
 	- [Confirmer] Allez-y.
 		do GameState.rechauffer_sceau(true)
 		do GameState.marquer_rencontre_vue(&"temoin_garde_sceau")
-		Brisse: Doucement... Voilà. Elle est rouge, maintenant. Comme du sang. [#geste=chauffer_cire]
+		Brisse: Doucement... Voilà. Elle est rouge, maintenant. Comme du sang. [#geste=chauffer-cire]
 		Brisse: Tu verras peut-être à travers le papier, avec une lampe. Moi, j'ai rien dit.
 	- [Renoncer] Non, finalement.
 		Brisse: T'as raison. Moi non plus, j'ai jamais osé.
