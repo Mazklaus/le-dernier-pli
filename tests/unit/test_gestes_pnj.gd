@@ -89,3 +89,15 @@ func test_les_gestes_de_l_etape_3_ont_leur_planche() -> void:
 				var t := load(chemin) as Texture2D
 				assert_eq(t.get_height(), 320, chemin)
 				assert_between(t.get_width() / 200, 3, 6, chemin)
+
+
+func test_la_procession_de_nuit_a_ses_calques_et_ilde_en_tete() -> void:
+	var rue := load("res://assets/graphics/cin/cin_procession-nuit_01.png") as Texture2D
+	var volet := load("res://assets/graphics/cin/cin_procession-nuit_02.png") as Texture2D
+	assert_eq(rue.get_size(), Vector2(1920, 1080))
+	assert_eq(volet.get_size(), Vector2(1920, 1080))
+	# les jours du volet sont transparents : on y voit passer les cierges
+	assert_lt(volet.get_image().get_pixel(960, 577).a, 0.1)
+	assert_gt(volet.get_image().get_pixel(960, 530).a, 0.9)
+	var ilde := load("res://assets/graphics/chr/chr_ilde-cierge_marche_01.png") as Texture2D
+	assert_eq(ilde.get_size(), Vector2(800, 320))
