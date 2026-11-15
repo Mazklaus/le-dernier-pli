@@ -131,3 +131,17 @@ func test_la_greffe_en_ombre_a_ses_planches() -> void:
 		assert_not_null(t, str(i))
 		if t != null:
 			assert_eq(t.get_size(), tailles[i], str(i))
+## Étape 5 : les gestes de Tobie, chacun avec ses trois calques (base, ruban, cendre).
+func test_les_gestes_de_tobie_de_l_etape_5_ont_leurs_trois_calques() -> void:
+	for geste: String in ["entailler", "graver", "accrocher"]:
+		var largeur := -1
+		for motif: String in ["chr_tobie_%s_01.png", "chr_tobie_%s_01_red.png", "chr_tobie-cendre_%s_01.png"]:
+			var t := load("res://assets/graphics/chr/" + motif % geste) as Texture2D
+			assert_not_null(t, motif % geste)
+			if t == null:
+				continue
+			assert_eq(t.get_height(), 320, motif % geste)
+			if largeur < 0:
+				largeur = t.get_width()
+			assert_eq(t.get_width(), largeur, "calques synchronisés : " + motif % geste)
+		assert_between(largeur / 200, 3, 6, geste)
