@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://cnis5nh5sknla"
+path="res://.godot/imported/e5_campement.dialogue-8d31a0016f208959654e7aa6555666e8.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_05/e5_campement.dialogue"
+dest_files=["res://.godot/imported/e5_campement.dialogue-8d31a0016f208959654e7aa6555666e8.tres"]
+
+[params]
+
+defaults=true

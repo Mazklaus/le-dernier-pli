@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=28 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_03/etape_03.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_03/lieux/maison_ilde.tscn" id="2"]
@@ -14,6 +14,14 @@
 [ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="12"]
 [ext_resource type="Script" path="res://scenes/decors/decor_e3.gd" id="decor_e3"]
 
+[ext_resource type="AudioStream" path="res://assets/audio/amb_village-cloches-muettes_chambre.ogg" id="son_amb_village_cloches_muettes_chambre"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_village-cloches-muettes_chemin-aube.ogg" id="son_amb_village_cloches_muettes_chemin_aube"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_village-cloches-muettes_chemin-nuit.ogg" id="son_amb_village_cloches_muettes_chemin_nuit"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_village-cloches-muettes_clocher.ogg" id="son_amb_village_cloches_muettes_clocher"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_village-cloches-muettes_maison-ilde.ogg" id="son_amb_village_cloches_muettes_maison_ilde"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_village-cloches-muettes_place.ogg" id="son_amb_village_cloches_muettes_place"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_village-cloches-muettes_verger.ogg" id="son_amb_village_cloches_muettes_verger"]
+[ext_resource type="AudioStream" path="res://assets/audio/mus_village-cloches-muettes_noce.ogg" id="son_mus_village_cloches_muettes_noce"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
 
@@ -36,6 +44,10 @@ size = Vector2(64, 1080)
 script = ExtResource("1")
 numero_etape = 3
 lieux_nuit = Array[StringName]([&"chambre", &"chemin_nuit"])
+lieux_musique = {
+&"chambre": "procession",
+&"chemin_nuit": "procession"
+}
 teintes_lieux = {
 &"chambre": Color(0.32, 0.35, 0.48, 1),
 &"chemin_nuit": Color(0.85, 0.88, 1, 1)
@@ -356,6 +368,67 @@ arrivee = NodePath("../../../../Surface/RuePlace/porte_clocher")
 
 [node name="Messager" parent="." instance=ExtResource("12")]
 position = Vector2(200, 900)
+
+[node name="MusiqueNoce" type="AudioStreamPlayer2D" parent="Surface/RuePlace/e3_noce"]
+position = Vector2(0, -150)
+stream = ExtResource("son_mus_village_cloches_muettes_noce")
+volume_db = -3.0
+autoplay = true
+max_distance = 2400.0
+bus = &"Musique"
+metadata/note_level_design = "Musique diégétique de la noce : entendue depuis la rue, à peine dans la lisière"
+
+[node name="Verger" type="AudioStreamPlayer2D" parent="Surface/Lisiere"]
+position = Vector2(1440, 700)
+stream = ExtResource("son_amb_village_cloches_muettes_verger")
+autoplay = true
+max_distance = 1800.0
+bus = &"Ambiance"
+metadata/note_level_design = "Verger de la lisière"
+
+[node name="Place" type="AudioStreamPlayer2D" parent="Surface/RuePlace"]
+position = Vector2(2400, 700)
+stream = ExtResource("son_amb_village_cloches_muettes_place")
+volume_db = -4.0
+autoplay = true
+max_distance = 2000.0
+bus = &"Ambiance"
+metadata/note_level_design = "Foule de la place (double la musique de la noce)"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/MaisonIlde"]
+position = Vector2(960, 700)
+stream = ExtResource("son_amb_village_cloches_muettes_maison_ilde")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/Clocher"]
+position = Vector2(960, 700)
+stream = ExtResource("son_amb_village_cloches_muettes_clocher")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/Chambre"]
+position = Vector2(720, 700)
+stream = ExtResource("son_amb_village_cloches_muettes_chambre")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/CheminNuit"]
+position = Vector2(1920, 700)
+stream = ExtResource("son_amb_village_cloches_muettes_chemin_nuit")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/CheminAube"]
+position = Vector2(1920, 700)
+stream = ExtResource("son_amb_village_cloches_muettes_chemin_aube")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
 
 [editable path="Lieux/MaisonIlde"]
 [editable path="Lieux/Clocher"]

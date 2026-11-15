@@ -19,6 +19,7 @@ const ENCOUNTERS: Array[StringName] = [
 	&"e2_poste", &"e2_barbeles", &"e2_mort", &"e2_sacoche", &"e2_cantique",
 	&"e3_lisiere", &"e3_noce", &"e3_ilde", &"e3_clocher", &"e3_procession",
 	&"e4_porche", &"e4_salle", &"e4_anselme", &"e4_crypte", &"e4_benediction",
+	&"e5_sentier", &"e5_autre", &"e5_campement", &"e5_croix", &"e5_clairiere",
 ]  # Level Designer : choisir une rencontre d'une autre étape y saute (SceneRouter.aller_rencontre)
 
 

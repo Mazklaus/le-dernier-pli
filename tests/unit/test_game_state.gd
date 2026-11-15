@@ -368,6 +368,24 @@ func test_marche_entre_etapes() -> void:
 	assert_eq([gs.vivres, gs.lucidite, gs.etape], [4, 7, 3])
 
 
+func test_marche_offerte_de_l_etape_5_vers_la_6() -> void:
+	for i in 4:
+		gs.passer_etape()  # 1 -> 5
+	gs.marquer_rencontre_vue(&"marche_offerte")
+	var vivres: int = gs.vivres
+	var lucidite: int = gs.lucidite
+	gs.passer_etape()  # 5 -> 6 : pas de Vivres, l'usure reste
+	assert_eq([gs.vivres, gs.lucidite, gs.etape], [vivres, lucidite - 1, 6])
+	gs.passer_etape()  # 6 -> 7 : le drapeau ne vaut que pour ce passage
+	assert_eq(gs.vivres, maxi(0, vivres - 1))
+
+
+func test_marche_offerte_sans_effet_ailleurs() -> void:
+	gs.marquer_rencontre_vue(&"marche_offerte")
+	gs.passer_etape()  # 1 -> 2
+	assert_eq(gs.vivres, 5)
+
+
 func test_parcours_etape_1_selon_spec() -> void:
 	# Partage sa ration, allume, prie : entre en étape 2 à 6 / 3 / 9.
 	gs.appliquer_effets({"vivres": 1})        # gamelle
@@ -397,3 +415,18 @@ func test_aller_retour_dictionnaire_json() -> void:
 	assert_eq_deep(autre.vers_dictionnaire(), gs.vers_dictionnaire())
 	assert_eq(autre.lucidite_max, 3)
 	assert_false(autre.ajouter_marque(&"autre", Marques.RELIQUE, &"camarade"))
+
+
+func test_nef_dans_le_noir_gratuite_avec_l_oeil_de_saint_ivo() -> void:
+	assert_false(gs.zone_noire_gratuite(&"e6_nef"))
+	gs.entrer_zone_sombre(false, &"e6_nef")
+	assert_eq(gs.lucidite, 7, "sans l'œil, le noir coûte")
+	gs.sortir_zone_sombre()
+	gs.marquer_rencontre_vue(&"oeil_saint_ivo")
+	assert_true(gs.zone_noire_gratuite(&"e6_nef"))
+	gs.entrer_zone_sombre(false, &"e6_nef")
+	assert_eq(gs.lucidite, 7, "avec l'œil, la nef ne coûte rien")
+	gs.entrer_zone_sombre(false, &"autre_zone")
+	assert_eq(gs.lucidite, 6, "seulement la nef")
+	assert_true(gs.entrer_zone_sombre(true, &"e6_nef"), "la lanterne coûte toujours son huile")
+	assert_eq(gs.huile, 3)

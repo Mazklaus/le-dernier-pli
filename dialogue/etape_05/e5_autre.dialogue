@@ -1,0 +1,19 @@
+# Étape 5, rencontre 2 : l'Autre, la silhouette qu'on ne rattrape jamais.
+# Suivre ses traces : −1 Lucidité, drapeau marche_offerte (pas de −1 Vivres au passage d'étape, branché côté code).
+# L'appeler : gratuit ; avec oeil_saint_ivo, une ligne de plus.
+
+~ debut
+
+Tobie: Là-bas, au bout du sentier. Quelqu'un marche, une sacoche sur la hanche.
+Tobie: Il boite un peu du pied gauche. Comme moi, depuis la sape.
+Tobie: J'accélère. Il ne s'approche pas. Il ne s'éloigne pas non plus.
+- [Suivre ses traces] [#cout_lucidite=1]
+	Tobie: Ses pas dans la boue. Je pose mon pied dedans. Pile ma pointure.
+	Tobie: Ils coupent entre les croix, au plus court. Je les suis sans réfléchir. Mes jambes savent.
+	do GameState.marquer_rencontre_vue(&"marche_offerte")
+- [L'appeler] Hé ! Attends !
+	Tobie: Il s'arrête. Sa tête tourne, presque. Puis il repart, du même pas.
+	if GameState.rencontre_vue(&"oeil_saint_ivo")
+		Tobie: Mon œil greffé l'a vu, une seconde, de profil. Il avait mon nez. Ou j'ai le sien.
+
+=> END

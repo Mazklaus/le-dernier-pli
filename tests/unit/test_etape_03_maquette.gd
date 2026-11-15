@@ -150,3 +150,22 @@ func test_teinte_par_lieu_de_nuit() -> void:
 	assert_eq(_etape.teinte_actuelle(), Color(0.85, 0.88, 1.0))
 	_etape.entrer_lieu(&"")
 	assert_eq(_etape.teinte_actuelle(), Color.WHITE)
+
+
+func test_la_procession_chante_dans_la_chambre_et_sur_le_chemin_de_nuit() -> void:
+	assert_eq(_etape.lieux_musique.get(&"chambre"), "procession")
+	assert_eq(_etape.lieux_musique.get(&"chemin_nuit"), "procession")
+	assert_false(_etape.lieux_musique.has(&"chemin_aube"), "la procession s'arrête à l'aube")
+
+
+func test_la_noce_s_entend_depuis_la_rue_et_chaque_lieu_a_son_ambiance() -> void:
+	var noce := _etape.find_child("MusiqueNoce", true, false) as AudioStreamPlayer2D
+	assert_eq(noce.bus, &"Musique")
+	assert_true(noce.autoplay)
+	assert_true(noce.stream.resource_path.ends_with("mus_village-cloches-muettes_noce.ogg"))
+	for lieu in _etape.get_node("Lieux").get_children():
+		var son := lieu.get_node_or_null("SonLieu") as AudioStreamPlayer2D
+		assert_not_null(son, "%s sans ambiance" % lieu.name)
+		if son != null:
+			assert_eq(son.bus, &"Ambiance", lieu.name)
+			assert_true(son.autoplay, lieu.name)

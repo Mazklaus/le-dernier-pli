@@ -422,17 +422,37 @@ func manger_objet_promis(objet: StringName, gain_vivres: int, promesse: StringNa
 
 ## La marche : −1 Vivres à chaque passage ; −1 Lucidité en quittant une étape ≥ 2
 ## (lecture de la courbe : on entre en étape 2 à 8, en étape 3 à 7).
+## Drapeau (posé par e5_autre) : la marche de l'étape 5 vers l'étape 6 ne coûte pas de Vivres.
+const MARCHE_OFFERTE: StringName = &"marche_offerte"
+const ETAPE_MARCHE_OFFERTE := 5
+
+
+## La marche d'une étape à la suivante : −1 Vivres (sauf marche offerte de 5 vers 6), et
+## l'usure de −1 Lucidité à partir de l'étape 2.
 func passer_etape() -> void:
-	modifier_jauge(VIVRES, -1)
+	if not (etape == ETAPE_MARCHE_OFFERTE and rencontre_vue(MARCHE_OFFERTE)):
+		modifier_jauge(VIVRES, -1)
 	if etape >= 2:
 		modifier_jauge(LUCIDITE, -1)
 	etape += 1
 	etape_changee.emit(etape)
 
 
+## Zones sombres dont la traversée dans le noir ne coûte pas de Lucidité quand le drapeau
+## de rencontre associé est posé (GD, étape 6 : l'œil de saint Ivo dans la nef).
+const ZONES_NOIRES_GRATUITES := {&"e6_nef": &"oeil_saint_ivo"}
+
+
+## Traverser la zone `zone` dans le noir est-il gratuit (voir ZONES_NOIRES_GRATUITES) ?
+## Le .dialogue peut s'en servir pour afficher le bon coût : [if GameState.zone_noire_gratuite("e6_nef")].
+func zone_noire_gratuite(zone: StringName) -> bool:
+	return ZONES_NOIRES_GRATUITES.has(zone) and rencontre_vue(ZONES_NOIRES_GRATUITES[zone])
+
+
 ## Entrée dans une zone sombre. Renvoie true si la lanterne est allumée.
-## Sans huile, la zone se joue forcément dans le noir.
-func entrer_zone_sombre(veut_allumer: bool) -> bool:
+## Sans huile, la zone se joue forcément dans le noir. `zone` (optionnel) : identifiant de la
+## zone, pour les traversées gratuites (zone_noire_gratuite).
+func entrer_zone_sombre(veut_allumer: bool, zone: StringName = &"") -> bool:
 	if veut_allumer and huile >= 1:
 		lanterne_allumee = false
 		modifier_jauge(HUILE, -1)
@@ -440,7 +460,8 @@ func entrer_zone_sombre(veut_allumer: bool) -> bool:
 		lanterne_allumee = true
 	else:
 		lanterne_allumee = false
-		modifier_jauge(LUCIDITE, -1)
+		if not zone_noire_gratuite(zone):
+			modifier_jauge(LUCIDITE, -1)
 	zone_sombre_changee.emit(true, lanterne_allumee)
 	return lanterne_allumee
 

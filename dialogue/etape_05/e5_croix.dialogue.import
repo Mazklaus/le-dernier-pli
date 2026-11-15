@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://nkyxegf12rj8"
+path="res://.godot/imported/e5_croix.dialogue-828a3ab9f2be5684ae230d782daaa553.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_05/e5_croix.dialogue"
+dest_files=["res://.godot/imported/e5_croix.dialogue-828a3ab9f2be5684ae230d782daaa553.tres"]
+
+[params]
+
+defaults=true
