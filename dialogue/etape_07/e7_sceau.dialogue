@@ -1,0 +1,62 @@
+# Étape 7, rencontre 3 : le sceau, devant la dernière porte, anneau 4. Obligatoire. LE choix du sceau.
+# Ouvrir le sceau (gratuit) : ouvrir_sceau(), on lit les six lignes d'un coup.
+# Lire une ligne en transparence (sceau fermé mais réchauffé) : −1 Huile, la prochaine ligne non lue.
+# Garder le pli fermé : rien.
+
+~ debut
+
+Tobie: La dernière porte. Derrière, quelqu'un respire, très lentement, comme une forge qui dort.
+Tobie: Je sors le pli. Cire noire, ruban rouge. Il est tiède. Il a toujours été tiède.
+Tobie: Personne ne me verra, ici. Personne ne saura.
+- [Briser le sceau] [if GameState.peut_ouvrir_sceau() /] [#cache]
+	=> ouvrir
+- [Lire en transparence] [if GameState.peut_lire_ligne() /] [#cout_huile=1, #sans_prelevement, #cache]
+	=> lecture
+- [Garder le pli fermé]
+	Tobie: Je le remets contre ma poitrine. Ce n'est pas à moi de savoir. Je suis un coureur. Je cours.
+
+=> END
+
+~ ouvrir
+
+do GameState.ouvrir_sceau()
+Tobie: La cire craque sous mon pouce. Le ruban glisse. Je déplie le papier. Je lis lentement, avec le doigt.
+Tobie: « À celle qui écoute sous les cloches tues, »
+Tobie: « au nom de la Cendre et selon le Pacte du Sceau Noir : »
+Tobie: « voici le quatorzième. »
+Tobie: « Il ne sait rien, comme les autres. »
+Tobie: « Qu'on le garde, et que la terre reste close »
+Tobie: « trois hivers encore. »
+Tobie: Je relis. Je relis encore. Les mots ne changent pas.
+Tobie: Le quatorzième. Les croix. La croix sans nom. La cire dans les cloches. Le ruban rouge.
+Tobie: Ce n'est pas un message que je porte. C'est un reçu. Et c'est moi qu'on livre.
+
+=> END
+
+~ lecture
+
+do GameState.lire_ligne_pli()
+Tobie: Je lève le papier vers la lueur sous la porte. La cire rouge laisse passer une ligne.
+if GameState.pli_lignes_lues == 1
+	Tobie: « À celle qui écoute sous les cloches tues, »
+	Tobie: Celle qui écoute. Elle est derrière cette porte.
+elif GameState.pli_lignes_lues == 2
+	Tobie: « au nom de la Cendre et selon le Pacte du Sceau Noir : »
+	Tobie: Un pacte. Signé ici, peut-être.
+elif GameState.pli_lignes_lues == 3
+	Tobie: « voici le quatorzième. »
+	Tobie: Le quatorzième quoi. Le mot reste là, comme un caillou dans une botte.
+elif GameState.pli_lignes_lues == 4
+	Tobie: « Il ne sait rien, comme les autres. »
+	Tobie: Il. C'est moi, il. Je le sais sans savoir comment.
+elif GameState.pli_lignes_lues == 5
+	Tobie: « Qu'on le garde, et que la terre reste close »
+	Tobie: Qu'on le garde. Ici. Sous la terre.
+elif GameState.pli_lignes_lues == 6
+	Tobie: « trois hivers encore. »
+	Tobie: Trois hivers. Puis un autre coureur, avec ma sacoche. Avec mon pas.
+else
+	Tobie: La lueur est trop faible. Je ne distingue rien.
+Tobie: Je replie le papier. La cire tient encore. Il est encore temps de ne pas savoir.
+
+=> END

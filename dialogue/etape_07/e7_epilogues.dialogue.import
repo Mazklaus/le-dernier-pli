@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://berr6cefca5ys"
+path="res://.godot/imported/e7_epilogues.dialogue-c5b0f5974bdf9f63866916715271cf2f.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_07/e7_epilogues.dialogue"
+dest_files=["res://.godot/imported/e7_epilogues.dialogue-c5b0f5974bdf9f63866916715271cf2f.tres"]
+
+[params]
+
+defaults=true

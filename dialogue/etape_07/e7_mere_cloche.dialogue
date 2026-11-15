@@ -1,0 +1,92 @@
+# Étape 7, rencontre finale : la Mère-Cloche. Obligatoire, fin_etape.
+# Début : resoudre_promesses_avant_fin (Jacquot tenue si le pain blanc est encore porté), puis aiguillage sur GameState.fin() :
+# porteur (sceau fermé, Visage), ordre (sceau fermé, Ombre), dernier_pli (sceau ouvert, Visage), recousu (sceau ouvert, Ombre).
+# dernier_pli : choix dans la scène, drapeau fin_dernier_pli_tribut ou fin_dernier_pli_cloches (pour l'épilogue).
+# Les épilogues sur carton sont dans e7_epilogues.dialogue.
+
+~ debut
+
+do GameState.resoudre_promesses_avant_fin({"promis_a_jacquot": GameState.possede_objet(&"pain_blanc")})
+Tobie: Une salle ronde, sous la plus grande des cloches. Elle est si grande qu'elle fait le ciel.
+Tobie: Dessous, une très vieille femme, assise. Ses yeux ne voient plus. Ses mains, si.
+La Mère-Cloche: Approche, petit. Je t'entends depuis la forêt. Tu as le pas des autres.
+if GameState.rencontre_vue(&"e7_cloche_regardee")
+	Tobie: Au-dessus de nous, dans la grande cloche, quelque chose se balance sans bruit.
+	La Mère-Cloche: Tu as regardé en montant. Ils regardent toujours, les derniers jours.
+La Mère-Cloche: Sais-tu ce que tu portes ?
+if GameState.fin() == &"porteur"
+	=> fin_porteur
+elif GameState.fin() == &"ordre"
+	=> fin_ordre
+elif GameState.fin() == &"dernier_pli"
+	=> fin_dernier_pli
+else
+	=> fin_recousu
+
+~ fin_porteur
+
+Tobie: Un pli. Pour vous. Je ne l'ai pas ouvert.
+Tobie: Je le lui tends. Elle brise la cire sans hésiter, et elle lit avec les doigts, sur le papier.
+La Mère-Cloche: Comme les autres. Comme toujours.
+La Mère-Cloche: Comment t'appelles-tu ?
+Tobie: Tobie. On m'appelait Pied-Léger.
+Tobie: Et puis je lui dis les autres noms. Ceux que j'ai portés avec le pli.
+if GameState.possede_marque(&"jacquot")
+	Tobie: Jacquot, qui sifflait l'air du dépôt.
+if GameState.possede_marque(&"il_s_appelait_gaspard")
+	Tobie: Gaspard, qui montrait le chemin dans le brouillard.
+if GameState.possede_marque(&"il_s_appelait_matthieu")
+	Tobie: Matthieu, qui écrivait à Lise.
+if GameState.possede_marque(&"elle_s_appelait_rose")
+	Tobie: Rose, qui m'a fait danser un tour.
+if GameState.possede_marque(&"il_s_appelait_fernand")
+	Tobie: Fernand, qui oubliait le sien.
+if GameState.possede_marque(&"il_s_appelait_aubin")
+	Tobie: Aubin, dont j'ai rendu la cloche.
+if GameState.possede_marque(&"ceux_d_avant")
+	Tobie: Et tous ceux du rang de croix, un par un.
+if GameState.possede_marque(&"il_s_appelait_mathurin")
+	Tobie: Mathurin, qui ne se bat plus.
+La Mère-Cloche: Personne ne m'avait apporté autant de noms. Je les garderai avec le tien.
+Tobie: Elle grave mon nom sur une plaque, sous les autres. Ses doigts connaissent les lettres.
+La Mère-Cloche: Viens, petit battant. Ça ne fait pas mal. Rien ne fait mal, ici.
+
+=> END
+
+~ fin_ordre
+
+Tobie: Je lui tends le pli comme on rend une gamelle au cuisinier. Sans un mot.
+Tobie: Elle le prend. Elle ne me demande pas mon nom. Je ne le lui donne pas.
+Tobie: Elle passe les doigts sur la cire, sur le ruban. Elle n'a même pas besoin de l'ouvrir.
+La Mère-Cloche: Quatorze.
+
+=> END
+
+~ fin_dernier_pli
+
+Tobie: Je sais. Je l'ai lu. C'est un reçu. Et c'est moi.
+La Mère-Cloche: Tu l'as lu. Aucun des autres ne l'avait lu.
+La Mère-Cloche: Alors tu sais aussi ce qui arrive si la terre s'ouvre. Ou tu crois le savoir. Moi non plus, je ne sais pas.
+La Mère-Cloche: Choisis, petit. Pour une fois, quelqu'un choisit.
+- [Être le dernier] Gardez-moi. Mais brisez le moule du sceau.
+	Tobie: Gardez-moi. Mais brisez le moule. Qu'il n'y ait plus de cire noire, plus de pli, plus de coureur.
+	La Mère-Cloche: Le dernier. Il y a quarante hivers que j'attends quelqu'un pour dire ça.
+	do GameState.marquer_rencontre_vue(&"fin_dernier_pli_tribut")
+- [Faire sonner les cloches] Plus personne ne descendra.
+	Tobie: Je prends la corde de la grande cloche. Elle pend là depuis toujours. Personne n'a jamais osé.
+	La Mère-Cloche: Si tu tires, petit, je ne sais pas ce qui remontera. Personne ne sait.
+	Tobie: Je tire.
+	do GameState.marquer_rencontre_vue(&"fin_dernier_pli_cloches")
+
+=> END
+
+~ fin_recousu
+
+Tobie: Je sais. Je l'ai lu. C'est un reçu. Et c'est...
+Tobie: C'est qui, déjà ? Le mot était là. Il glisse.
+La Mère-Cloche: Dis-moi ton nom, petit.
+Tobie: To... Je l'avais. Je l'avais gravé quelque part. Sur une croix ? Sur un lit ?
+Tobie: Mon œil voit, mais il ne sait plus ce qu'il voit. Mes mains sont froides et ne font pas mal.
+La Mère-Cloche: Ce n'est rien. Tu en auras un autre. En bas, tout le monde en a un autre.
+
+=> END
