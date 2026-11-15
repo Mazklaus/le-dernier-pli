@@ -121,3 +121,18 @@ func test_les_points_d_interaction_sont_espaces() -> void:
 				continue
 			assert_true(absf(a.global_position.x - b.global_position.x) >= 200.0,
 				"%s trop près de %s" % [a.name, b.name])
+
+
+func test_chaque_lieu_a_son_ambiance_et_la_tablee_sa_musique() -> void:
+	assert_true(_etape.get_node_or_null("Surface/Fissure/SonZone") is AudioStreamPlayer2D, "fissure")
+	for lieu in _etape.get_node("Lieux").get_children():
+		var son := lieu.get_node_or_null("SonLieu") as AudioStreamPlayer2D
+		assert_not_null(son, "%s sans ambiance" % lieu.name)
+		if son != null:
+			assert_eq(son.bus, &"Ambiance", lieu.name)
+			assert_true(son.stream.resource_path.contains("amb_cathedrale-enterree_"), lieu.name)
+	var tablee := _etape.get_node("Lieux/Village/MusiqueTablee") as AudioStreamPlayer2D
+	assert_eq(tablee.bus, &"Musique")
+	assert_true(tablee.autoplay)
+	var decl := _etape.trouver_declencheur(&"e6_tablee")
+	assert_almost_eq(tablee.global_position.x, decl.global_position.x, 1.0, "posée sur la tablée")

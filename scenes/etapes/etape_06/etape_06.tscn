@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_06/etape_06.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_06/lieux/nef.tscn" id="2"]
@@ -8,6 +8,12 @@
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="6"]
 [ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="7"]
 
+[ext_resource type="AudioStream" path="res://assets/audio/amb_cathedrale-enterree_fissure.ogg" id="son_amb_cathedrale_enterree_fissure"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_cathedrale-enterree_nef.ogg" id="son_amb_cathedrale_enterree_nef"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_cathedrale-enterree_niche-veilleur.ogg" id="son_amb_cathedrale_enterree_niche_veilleur"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_cathedrale-enterree_seuil.ogg" id="son_amb_cathedrale_enterree_seuil"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_cathedrale-enterree_village.ogg" id="son_amb_cathedrale_enterree_village"]
+[ext_resource type="AudioStream" path="res://assets/audio/mus_cathedrale-enterree_tablee.ogg" id="son_mus_cathedrale_enterree_tablee"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 180)
 
@@ -142,5 +148,49 @@ arrivee = NodePath("../../../../Lieux/Village/Points/porte_niche")
 
 [node name="Messager" parent="." instance=ExtResource("7")]
 position = Vector2(300, 900)
+
+[node name="SonZone" type="AudioStreamPlayer2D" parent="Surface/Fissure"]
+position = Vector2(960, 700)
+stream = ExtResource("son_amb_cathedrale_enterree_fissure")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/Nef"]
+position = Vector2(2880, 700)
+stream = ExtResource("son_amb_cathedrale_enterree_nef")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/Village"]
+position = Vector2(2400, 700)
+stream = ExtResource("son_amb_cathedrale_enterree_village")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/NicheVeilleur"]
+position = Vector2(960, 700)
+stream = ExtResource("son_amb_cathedrale_enterree_niche_veilleur")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/Seuil"]
+position = Vector2(960, 700)
+stream = ExtResource("son_amb_cathedrale_enterree_seuil")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="MusiqueTablee" type="AudioStreamPlayer2D" parent="Lieux/Village"]
+position = Vector2(2420, 750)
+stream = ExtResource("son_mus_cathedrale_enterree_tablee")
+volume_db = -3.0
+autoplay = true
+max_distance = 2000.0
+bus = &"Musique"
+metadata/note_level_design = "La noce entendue à l'envers : musique diégétique de la tablée"
 
 [editable path="Lieux/NicheVeilleur"]
