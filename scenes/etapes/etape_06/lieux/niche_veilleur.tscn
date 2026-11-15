@@ -166,6 +166,7 @@ text = "veilleur_uniforme"
 [node name="e6_veilleur" parent="Rencontres" instance=ExtResource("2")]
 position = Vector2(1300, 900)
 rencontre_id = &"e6_veilleur"
+personnage = &"mathurin"
 dialogue = ExtResource("4")
 libelle = "Parler au veilleur"
 une_seule_fois = true

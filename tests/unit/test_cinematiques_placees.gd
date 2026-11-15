@@ -67,7 +67,7 @@ func test_les_personnages_vises_par_les_gestes_portent_leur_nom() -> void:
 	# Les répliques [#geste=…] visent un personnage par ce nom (Narrative Designer).
 	var attendus := {
 		2: {&"e2_mort": &"mort"}, 3: {&"e3_lisiere": &"enfants", &"e3_ilde": &"ilde"},
-		4: {&"e4_porche": &"maude", &"e4_salle": &"fernand"}, 6: {&"e6_eloi": &"eloi"},
+		4: {&"e4_porche": &"maude", &"e4_salle": &"fernand"}, 6: {&"e6_eloi": &"eloi", &"e6_veilleur": &"mathurin", &"e6_seuil": &"eloi"},
 	}
 	for numero in attendus:
 		var etape := _etape(numero) as EtapeBase
