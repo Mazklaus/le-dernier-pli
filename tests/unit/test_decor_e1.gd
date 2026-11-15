@@ -53,14 +53,21 @@ func test_fonds_maquette_masques_et_chicane_habillee() -> void:
 	assert_false((chicane.get_node("Visuel") as CanvasItem).visible)
 
 
-func test_camera_bornee_a_la_surface_libre_sous_terre() -> void:
+func test_camera_bornee_a_la_surface_et_au_lieu() -> void:
 	var messager := _etape.trouver_messager()
 	var camera := messager.get_node("%Camera") as Camera2D
 	messager.teleporter(_etape.find_child("porte_cantine", true, false).global_position)
 	assert_eq(camera.limit_left, 0)
 	assert_eq(camera.limit_right, 10624)
 	messager.teleporter(_etape.find_child("entree_cantine", true, false).global_position)
-	assert_lt(camera.limit_left, -100000, "sous terre : pas de borne")
+	var cantine := _etape.get_node("Lieux/Cantine") as Node2D
+	assert_eq(camera.limit_left, int(cantine.global_position.x), "dans un lieu : bornée au lieu")
+	assert_eq(camera.limit_right, int(cantine.global_position.x) + 1920)
+	# En hauteur : 0..1080 du lieu, centré si l'écran (de test) est plus haut que le lieu.
+	assert_almost_eq((camera.limit_top + camera.limit_bottom) / 2.0,
+		cantine.global_position.y + 540.0, 1.0)
+	assert_true(camera.limit_top >= int(cantine.global_position.y) or
+		camera.limit_bottom - camera.limit_top <= ceili(messager.get_viewport_rect().size.y) + 1)
 
 
 func test_decalage_parallaxe_depuis_le_bord_gauche_de_l_ecran() -> void:

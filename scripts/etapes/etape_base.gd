@@ -54,7 +54,8 @@ func _ready() -> void:
 	SceneRouter.etape_prete.emit(self)
 
 
-## Borne la caméra à la surface (bornes_camera_surface), la libère sous terre, et choisit le
+## Borne la caméra au rectangle du lieu où se trouve le messager, sinon à la surface
+## (bornes_camera_surface) ; la libère ailleurs sous terre ; et choisit le
 ## son des pas, à chaque téléportation du messager.
 func brancher_bornes_camera() -> void:
 	var messager := trouver_messager()
@@ -71,12 +72,42 @@ func maj_bornes_camera() -> void:
 		return
 	# Le sol sous les pas suit aussi le niveau (surface ou sous terre).
 	messager.son_pas = pas_surface if est_en_surface(messager.global_position) else pas_sous_terre
+	var lieu := lieu_a(messager.global_position)
+	if lieu != null:
+		messager.borner_camera_rect(rect_lieu(lieu))
+		return
 	if bornes_camera_surface.x > bornes_camera_surface.y:
 		return
 	if est_en_surface(messager.global_position):
 		messager.borner_camera(int(bornes_camera_surface.x), int(bornes_camera_surface.y))
 	else:
 		messager.liberer_camera()
+
+
+## Hauteur peinte d'un lieu (fonds de la DA, plafond compris) : la vue reste dans 0..HAUTEUR_LIEU.
+const HAUTEUR_LIEU := 1080.0
+const LARGEUR_LIEU_DEFAUT := 1920.0
+
+
+## Rectangle global d'un lieu : de son origine à sa largeur (celle de son « Fond » de maquette,
+## 1920 par défaut) sur HAUTEUR_LIEU.
+func rect_lieu(lieu: Node2D) -> Rect2:
+	var largeur := LARGEUR_LIEU_DEFAUT
+	var fond := lieu.get_node_or_null("Fond") as Control
+	if fond != null and fond.offset_right > fond.offset_left:
+		largeur = fond.offset_right
+	return Rect2(lieu.global_position, Vector2(largeur, HAUTEUR_LIEU))
+
+
+## Lieu (enfant de « Lieux ») dont le rectangle contient cette position globale, ou null.
+func lieu_a(position_globale: Vector2) -> Node2D:
+	var lieux := get_node_or_null("Lieux")
+	if lieux == null:
+		return null
+	for lieu in lieux.get_children():
+		if lieu is Node2D and rect_lieu(lieu as Node2D).has_point(position_globale):
+			return lieu as Node2D
+	return null
 
 
 func _sur_teleporte_bornes(_position_globale: Vector2) -> void:
