@@ -136,8 +136,9 @@ def buste() -> str:
         f'<path d="M150 108 L104 198" stroke="{PAPIER}" stroke-width="1.8" fill="none"/>'
         f'<path d="M104 200 Q132 206 162 198" stroke="{ENCRE}" stroke-width="5.4" fill="none" stroke-linecap="round"/>'
         # plaque de coureur
-        f'<rect x="124" y="160" width="16" height="12" fill="{PAPIER}" {ST} stroke-width="1.7" transform="rotate(-6 132 166)"/>'
-        f'<path d="M128 166 L136 165" stroke="{ENCRE}" stroke-width="1.4"/>'
+        # plaque de coureur, simplifiée pour se lire à 300 px : grand rectangle clair, un seul trait épais
+        f'<rect x="120" y="158" width="22" height="16" fill="{PAPIER}" {ST} stroke-width="2.2" transform="rotate(-6 131 166)"/>'
+        f'<path d="M125 167 L137 165.6" stroke="{ENCRE}" stroke-width="3" stroke-linecap="round"/>'
     )
 
 
@@ -157,9 +158,10 @@ def tete() -> str:
         f'<path d="M162 78 L166 86 L161 87" fill="none" {ST} stroke-width="1.6"/>'
         f'<path d="M156 93 L161 92" stroke="{ENCRE}" stroke-width="1.6" stroke-linecap="round"/>'
         # cloche sans battant au col
-        f'<path d="M140 106 L140 112" stroke="{ENCRE}" stroke-width="1.6"/>'
-        f'<path d="M134 122 Q134 112 140 112 Q146 112 146 122 Z" fill="{PAPIER}" {ST} stroke-width="2"/>'
-        f'<path d="M132 122 L148 122" stroke="{ENCRE}" stroke-width="2.2"/>'
+        # cloche sans battant, simplifiée : forme d'encre pleine, bouche vide en papier (aucun battant)
+        f'<path d="M140 104 L140 110" stroke="{ENCRE}" stroke-width="2"/>'
+        f'<path d="M131 126 Q132 110 140 110 Q148 110 149 126 Z" fill="{ENCRE}" {ST} stroke-width="2"/>'
+        f'<ellipse cx="140" cy="126" rx="9" ry="2.6" fill="{PAPIER}" {ST} stroke-width="1.6"/>'
     )
 
 
@@ -174,7 +176,8 @@ CENDRE = f'<path d="M152 66 Q157 63 160 68" stroke="#4A463D" stroke-width="3.4" 
 
 
 # --- une pose -------------------------------------------------------------------------------
-def pose(bob: float, pied_arr, pied_av, bras_arr: float, bras_av, lant: float, sac: float) -> dict[str, str]:
+def pose(bob: float, pied_arr, pied_av, bras_arr: float, bras_av, lant: float, sac: float,
+         penche: float = 0.0, voute: float = 0.0) -> dict[str, str]:
     """Renvoie les trois calques d'une image, dans le repère de la planche de style.
 
     pied_* = (dx, dy, talon) : cheville relative à la hanche au repos, en px planche.
@@ -183,7 +186,8 @@ def pose(bob: float, pied_arr, pied_av, bras_arr: float, bras_av, lant: float, s
     hx, hy = HANCHE[0], HANCHE[1] + bob
     def cheville(p):
         return (hx + p[0], CHEVILLE_Y + p[1])
-    haut = f'<g transform="translate(0 {bob:.1f})">'
+    # penche : le buste bascule vers l'avant autour des hanches ; voute : la tête rentre dans les épaules
+    haut = f'<g transform="translate(0 {bob:.1f}) rotate({penche:.1f} {hx:.1f} {HANCHE[1]:.1f})">'
     base = [jambe((hx - 6, hy), cheville(pied_arr), pied_arr[2], sombre=True),
             haut, bras((118, 122), bras_arr, avant=False), sacoche(sac), buste(), '</g>',
             jambe((hx + 6, hy), cheville(pied_av), pied_av[2]),
@@ -197,7 +201,7 @@ def pose(bob: float, pied_arr, pied_av, bras_arr: float, bras_av, lant: float, s
     else:
         base.append(bras((146, 118), bras_av, avant=True))
         base.append(PLI)
-    base += [tete(), '</g>']
+    base += [f'<g transform="translate({voute * 0.6:.1f} {voute:.1f})">', tete(), '</g>', '</g>']
     ruban = RUBAN
     if isinstance(bras_av, tuple):
         # interagir : la main se pose sur le pli, devant lui et devant le ruban
@@ -210,8 +214,8 @@ def pose(bob: float, pied_arr, pied_av, bras_arr: float, bras_av, lant: float, s
                  f'<circle cx="{mx:.1f}" cy="{my:.1f}" r="8.2" fill="#000"/></mask>'
                  f'<g mask="url(#{mid})">{RUBAN}</g>')
     return {"base": "".join(base),
-            "red": f'<g transform="translate(0 {bob:.1f})">{ruban}</g>',
-            "cendre": f'<g transform="translate(0 {bob:.1f})">{CENDRE}</g>'}
+            "red": f'{haut}{ruban}</g>',
+            "cendre": f'{haut}<g transform="translate({voute * 0.6:.1f} {voute:.1f})">{CENDRE}</g></g>'}
 
 
 def marche(i: int, n: int = 8) -> dict[str, str]:
@@ -230,12 +234,14 @@ def marche(i: int, n: int = 8) -> dict[str, str]:
     pa, pv = pied(ph + 0.5), pied(ph)
     bob = -3.5 * abs(math.cos(2 * math.pi * ph))         # plus haut au passage des jambes
     swing = 16 * math.sin(2 * math.pi * ph)
-    return pose(bob + 2, pa, pv, swing, -swing * 0.8, -6 * math.sin(2 * math.pi * ph + 0.6), 1.5 * math.sin(2 * math.pi * ph))
+    # coureur pressé et transi : buste penché de 7°, tête rentrée, bras libre qui balance franchement
+    return pose(bob + 2, pa, pv, swing * 1.3, -swing * 1.5, -6 * math.sin(2 * math.pi * ph + 0.6), 1.5 * math.sin(2 * math.pi * ph),
+                penche=7, voute=4)
 
 
 def repos(i: int) -> dict[str, str]:
     souffle = (0, -1, -2, -1)[i]
-    return pose(souffle, (-12, 0, 0), (14, 0, 0), 2, -3 + souffle * 0.5, 0, 0)
+    return pose(souffle, (-12, 0, 0), (14, 0, 0), 2, -3 + souffle * 0.5, 0, 0, penche=2, voute=2)
 
 
 def interagir(i: int) -> dict[str, str]:
