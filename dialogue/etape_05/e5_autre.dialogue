@@ -4,15 +4,16 @@
 
 ~ debut
 
-Tobie: Là-bas, au bout du sentier. Quelqu'un marche, une sacoche sur la hanche.
-Tobie: Il boite un peu du pied gauche. Comme moi, depuis la sape.
+Tobie: Là-bas, au bout du sentier. Quelqu'un marche.
+Tobie: Il boite du pied gauche. Comme moi, depuis la sape.
 Tobie: J'accélère. Il ne s'approche pas. Il ne s'éloigne pas non plus.
 - [Suivre ses traces] [#cout_lucidite=1]
 	Tobie: Ses pas dans la boue. Je pose mon pied dedans. Pile ma pointure.
 	Tobie: Ils coupent entre les croix, au plus court. Je les suis sans réfléchir. Mes jambes savent.
 	do GameState.marquer_rencontre_vue(&"marche_offerte")
 - [L'appeler] Hé ! Attends !
-	Tobie: Il s'arrête. Sa tête tourne, presque. Puis il repart, du même pas.
+	# [ciné e5_autre_se_retourne] il s'arrête, sa tête tourne à moitié, jamais jusqu'au visage.
+	Tobie: Il repart, du même pas.
 	if GameState.rencontre_vue(&"oeil_saint_ivo")
 		Tobie: Mon œil greffé l'a vu, une seconde, de profil. Il avait mon nez. Ou j'ai le sien.
 
