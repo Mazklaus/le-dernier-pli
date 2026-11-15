@@ -27,11 +27,11 @@ const LETTRES := {
 ## Drapeau posé par le choix de Tobie dans e7_mere_cloche (fin dernier_pli).
 const DRAPEAU_CLOCHES: StringName = &"fin_dernier_pli_cloches"
 
-## Libellés des Noms retenus et des Promesses sur le carton (à relire par le Narrative).
+## Libellés des Noms retenus et des Promesses sur le carton (Narrative Designer).
 ## Une marque absente de la table est affichée d'après son identifiant.
 const LIBELLES := {
 	&"jacquot": "Jacquot",
-	&"hugues_lamarre": "Hugues Lamarre",
+	&"hugues_lamarre": "Hugues",
 	&"il_s_appelait_aurele": "Aurèle",
 	&"il_s_appelait_gaspard": "Gaspard",
 	&"il_s_appelait_matthieu": "Matthieu",
@@ -41,9 +41,9 @@ const LIBELLES := {
 	&"il_s_appelait_mathurin": "Mathurin",
 	&"ceux_d_avant": "Ceux d'avant",
 	&"la_langue_d_en_dessous": "La langue d'en dessous",
-	&"promis_a_jacquot": "Le pain blanc de Jacquot",
-	&"promis_a_ilde": "La promesse faite à Ilde",
-	&"la_lettre_de_matthieu": "La lettre de Matthieu à Lise",
+	&"promis_a_jacquot": "Du pain blanc pour Jacquot",
+	&"promis_a_ilde": "Rester chez Ilde, volets clos",
+	&"la_lettre_de_matthieu": "La lettre de Matthieu",
 }
 
 

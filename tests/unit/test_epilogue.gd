@@ -42,7 +42,7 @@ func test_noms_retenus_et_promesses_ouvertes() -> void:
 		Marques.creer(&"un_nom_inconnu", Marques.NOM_RETENU),
 	]
 	assert_eq(EpilogueFin.noms_retenus(marques), PackedStringArray(["Jacquot", "Gaspard", "Un nom inconnu"]))
-	assert_eq(EpilogueFin.promesses_ouvertes(marques), PackedStringArray(["Le pain blanc de Jacquot"]))
+	assert_eq(EpilogueFin.promesses_ouvertes(marques), PackedStringArray(["Du pain blanc pour Jacquot"]))
 
 
 func test_le_carton_du_porteur() -> void:
@@ -62,7 +62,7 @@ func test_le_carton_du_porteur() -> void:
 	for label in carton.colonne_memoire.get_children():
 		memoire += (label as Label).text + "\n"
 	assert_string_contains(memoire, "Jacquot")
-	assert_string_contains(memoire, "La promesse faite à Ilde")
+	assert_string_contains(memoire, "Rester chez Ilde, volets clos")
 	assert_eq(carton.invite.modulate.a, 1.0)
 
 
