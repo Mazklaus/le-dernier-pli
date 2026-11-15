@@ -177,3 +177,67 @@ func test_le_shader_teinte_avant_le_rouge_exact() -> void:
 	var rouge := code.find("float rougeur")
 	assert_gt(teinte, -1, "le shader n'applique plus « c *= teinte.rgb » : adapter _sortie_gravure()")
 	assert_gt(rouge, teinte, "la teinte doit précéder la détection du rouge exact")
+
+
+## Un ColorRect de maquette visible devant le messager le ternit avant la détection du rouge
+## (cas du voile de ZoneSombre du chemin de nuit, étape 3). Dans un lieu habillé, aucun
+## ColorRect visible ne doit être dessiné devant lui : z_index effectif supérieur, ou égal et
+## plus loin dans l'ordre de l'arbre. Les CanvasLayer (écran gravure, interface) sont exclus.
+func test_aucun_rect_de_maquette_devant_le_messager_dans_un_lieu_habille() -> void:
+	var echecs: Array[String] = []
+	for numero in _etapes_existantes():
+		var etape := _instancier(numero)
+		await wait_process_frames(2)
+		var messager := etape.trouver_messager()
+		if messager == null:
+			continue
+		var z_messager := _z_effectif(messager)
+		for n in etape.find_children("*", "ColorRect", true, false):
+			var rect := n as ColorRect
+			if rect.get_canvas_layer_node() != null or not rect.is_visible_in_tree():
+				continue
+			if rect.color.a <= 0.0 or rect.self_modulate.a <= 0.0:
+				continue
+			var z := _z_effectif(rect)
+			var devant := z > z_messager or (z == z_messager and rect.is_greater_than(messager))
+			if not devant:
+				continue
+			var lieu := etape.lieu_de(rect)
+			if _lieu_habille(etape, lieu):
+				echecs.append("étape %d, lieu « %s » : %s (z %d, alpha %.2f)" % [numero,
+						lieu if lieu != &"" else "surface", etape.get_path_to(rect), z, rect.color.a])
+	assert_eq(echecs.size(), 0, "ColorRect de maquette devant le messager :\n%s" % "\n".join(echecs))
+
+
+static func _z_effectif(item: CanvasItem) -> int:
+	var z := 0
+	var n: Node = item
+	while n is CanvasItem:
+		z += (n as CanvasItem).z_index
+		if not (n as CanvasItem).z_as_relative:
+			break
+		n = n.get_parent()
+	return z
+
+
+## Un lieu est habillé quand le décor y a posé son dessin (nœud « Dessin ») ou masqué son
+## fond gris de maquette (« Fond »). La surface l'est dès que l'étape a un nœud de décor
+## (script sous scenes/decors/).
+static func _lieu_habille(etape: EtapeBase, lieu: StringName) -> bool:
+	if lieu == &"":
+		for enfant in etape.get_children():
+			var script := enfant.get_script() as Script
+			if script != null and script.resource_path.begins_with("res://scenes/decors/"):
+				return true
+		return false
+	var lieux := etape.get_node_or_null("Lieux")
+	if lieux == null:
+		return false
+	for noeud in lieux.get_children():
+		if etape.lieu_de(noeud) != lieu:
+			continue
+		if noeud.find_child("Dessin", true, false) != null:
+			return true
+		var fond := noeud.get_node_or_null("Fond") as CanvasItem
+		return fond != null and not fond.visible
+	return false
