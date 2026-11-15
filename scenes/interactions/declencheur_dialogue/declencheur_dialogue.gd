@@ -52,6 +52,9 @@ signal geste_demande(cible: StringName, geste: StringName)
 ## Tant que la rencontre n'est pas vue, le personnage montre la première image de ce geste au
 ## lieu de respirer (ex. le mort, bras pendant, avant « Son bras se lève »). Vide : repos.
 @export var pose_initiale: StringName
+## Distance (une main) à laquelle Tobie se place pour ses gestes ([#geste=tobie:…]), tourné
+## vers le déclencheur : le couteau ou la cloche touchent la croix.
+@export var ecart_geste_tobie: float = 60.0
 
 var en_cours: bool = false
 var repere: RepereExamen = null
@@ -129,8 +132,9 @@ func _sur_replique(ligne: DialogueLine) -> void:
 
 
 ## Joue le geste demandé par une réplique : sur le personnage visé, sinon (locuteur sans
-## dessin propre, comme « Le sonneur ») sur le personnage principal. Une réplique de Tobie
-## ne fait bouger personne d'autre. Vrai si un personnage a joué le geste.
+## dessin propre, comme « Le sonneur ») sur le personnage principal. Un geste de Tobie est
+## joué par le messager, tourné vers le déclencheur à `ecart_geste_tobie` ; il ne fait bouger
+## personne d'autre. Vrai si un personnage a joué le geste.
 func jouer_geste_replique(locuteur: String, tags: PackedStringArray) -> bool:
 	var demande := OptionsDialogue.geste(locuteur, tags)
 	if demande.is_empty():
@@ -138,6 +142,9 @@ func jouer_geste_replique(locuteur: String, tags: PackedStringArray) -> bool:
 	var cible: StringName = demande["cible"]
 	var geste: StringName = demande["geste"]
 	geste_demande.emit(cible, geste)
+	if cible == &"tobie":
+		var messager := get_tree().get_first_node_in_group(Messager.GROUPE) as Messager if is_inside_tree() else null
+		return messager != null and messager.jouer_geste(geste, self, ecart_geste_tobie)
 	var p := personnage_nomme(cible)
 	if p == null and not demande["explicite"] and cible != &"tobie":
 		p = dessin

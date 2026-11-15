@@ -28,6 +28,8 @@ var son_pas: String = "sfx_pas_boue"
 var regard: int = 1
 var cible: Interactif = null
 
+## Geste de Tobie en cours (entailler, graver…), joué une fois pendant un dialogue.
+var geste: StringName = &""
 var _a_portee: Array[Interactif] = []
 var _en_dialogue: bool = false
 
@@ -45,6 +47,7 @@ func _ready() -> void:
 	floor_snap_length = ACCROCHE_SOL
 	floor_stop_on_slope = true
 	_silhouette.pas_pose.connect(func() -> void: AudioDirector.jouer_variante(son_pas))
+	_silhouette.geste_fini.connect(_sur_geste_fini)
 	_detecteur.area_entered.connect(_sur_zone_entree)
 	_detecteur.area_exited.connect(_sur_zone_sortie)
 	DialogueManager.dialogue_started.connect(_sur_dialogue_commence)
@@ -69,6 +72,8 @@ func _physics_process(delta: float) -> void:
 ## Interagir pendant un dialogue (main au pli), marche quand il avance vraiment, repos sinon
 ## (bloqué par un mur, en fondu de passage, à l'arrêt).
 func animation_voulue(direction: float) -> StringName:
+	if geste != &"":
+		return geste
 	if _en_dialogue:
 		return SilhouetteTobie.INTERAGIR
 	if direction != 0.0 and absf(get_real_velocity().x) > 1.0:
@@ -82,6 +87,27 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"interagir"):
 		get_viewport().set_input_as_handled()
 		cible.interagir(self)
+
+
+## Joue un geste de Tobie une fois (réplique [#geste=tobie:…]), puis reprend l'animation du
+## moment. `vers` : ce qu'il touche (la croix) ; Tobie se tourne vers lui et se place à `ecart`
+## px (une main de distance) si ecart > 0. Faux sans planche.
+func jouer_geste(nom: StringName, vers: Node2D = null, ecart: float = 0.0) -> bool:
+	if not _silhouette.charger_geste(nom):
+		return false
+	if vers != null:
+		regard = 1 if vers.global_position.x >= global_position.x else -1
+		_silhouette.scale.x = regard
+		if ecart > 0.0:
+			global_position.x = vers.global_position.x - regard * ecart
+	geste = nom
+	_silhouette.jouer(nom)
+	return true
+
+
+func _sur_geste_fini(nom: StringName) -> void:
+	if nom == geste:
+		geste = &""
 
 
 ## Pose le messager devant un déclencheur, tourné vers lui (saut de débogage).
