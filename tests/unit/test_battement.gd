@@ -49,7 +49,8 @@ func test_egare_disparait_2_images_toutes_les_4_a_7_s() -> void:
 		var ecart := debuts[k] - debuts[k - 1]
 		assert_between(ecart, 3.95, 7.05, "écart %d" % k)
 	var duree := 0
-	for i in 70:
+	# Fenêtre de 3 s : plus courte que l'écart minimal (4 s), une seule disparition dedans.
+	for i in 30:
 		if Battement.disparu(debuts[0] - 0.1 + i / 10.0, &"egare", false):
 			duree += 1
 	assert_eq(duree, 2, "2 images")
