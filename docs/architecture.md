@@ -10,6 +10,7 @@ Moteur : Godot 4.7.2-stable, GDScript typé, renderer **Compatibility** (WebGL2)
 | `AudioDirector` | `autoload/audio_director.gd` | Seul point de lecture du son. S'abonne à GameState. | Sound Designer + Gameplay Prog |
 | `Reglages` | `autoload/reglages.gd` | Options du joueur (user://reglages.cfg), volumes appliqués aux bus. | Lead Prog |
 | `SceneRouter` | `autoload/scene_router.gd` | Titre → étapes 1 à 7, `aller_etape`, `etape_suivante`, `aller_rencontre`. | Lead Prog |
+| `Cinematiques` | `autoload/cinematiques.gd` | Lance une cinématique (nœud `Cinematique`) par son id, masque l'interface (groupe `masque_en_cinematique`). | Lead Prog |
 | `DialogueManager` | `addons/dialogue_manager/` | Runtime des fichiers `.dialogue`. | addon |
 | `BuildInfo` | `autoload/build_info.gd` | SHA du build en coin d'écran (debug seulement). | Lead Prog |
 | `DebugLoader` | `debug/debug_loader.gd` | Menu F1 du QA (debug seulement). | Tools Prog |
@@ -50,6 +51,10 @@ La racine de `etape_NN.tscn` est un `Node2D` dont le script peut exposer `aller_
 ## Dialogues
 
 Fichiers `.dialogue` (Dialogue Manager 4). Conditions et effets appellent l'API publique de GameState, par exemple `[if GameState.valeur(&"vivres") >= 2 /]` (condition d'une option : le ` /]` final est obligatoire, sinon la condition est ignorée) et `do GameState.ajouter_marque(...)`. Les coûts d'une option se déclarent en tags (`[#cout_vivres=1]`, voir `scripts/regles/options_dialogue.gd`) : la bulle les affiche avant le choix et les prélève. Voir `dialogue/etape_01/exemple.dialogue`. Tout fichier qui ne compile pas fait échouer la CI (import et test `test_dialogues.gd`).
+
+## Cinématiques
+
+Nœud `Cinematique` (`scripts/cinematique/cinematique.gd`), posé par le Level Designer dans l'étape. Id préfixé par l'étape (`e1_remise_pli`). Enfants : `Camera` (Camera2D), puis soit des Marker2D `Depart` et `Arrivee` (cadrage en ligne droite en `duree` s, zoom = échelle du marqueur), soit un AnimationPlayer `Animation` avec l'animation `jouer`. Lancement : `do Cinematiques.jouer(&"e1_remise_pli")` dans un `.dialogue` (le dialogue attend la fin), un enfant `Zone` (Area2D) où entre le messager, ou `au_debut_etape`. Lecture à 10 images par seconde, messager bloqué, interface masquée, `annuler` saute (l'état final vient des pistes de propriétés ; les clés de méthode, comme les sons `AudioDirector.jouer_variante`, ne sont pas jouées au saut). En effets atténués, les pistes `Camera:*` tiennent chaque cadrage puis coupent. Une seule fois par partie par défaut (drapeau `cine_<id>`). Gestes de personnage : tag `[#geste=nom]` sur une réplique (voir #134).
 
 ## Rendu et assets
 

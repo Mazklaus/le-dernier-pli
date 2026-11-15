@@ -46,6 +46,7 @@ var _options_posees: bool = false
 
 
 func _ready() -> void:
+	add_to_group(&"masque_en_cinematique")  # Cinematiques
 	layer = 16
 	_rng.randomize()
 	if police_locuteur == null:
