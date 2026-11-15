@@ -197,6 +197,12 @@ jobs:
         with:
           name: build-web-release
           path: web
+      # Build debug (menu F1) servi sous /debug/, pour tester dans le navigateur
+      # sans télécharger d'artefact.
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-web-debug
+          path: web/debug
       # Nom suffixé par la tentative : une relance du job ne trouve pas
       # l'artefact de la tentative précédente ("Multiple artifacts named
       # github-pages").
