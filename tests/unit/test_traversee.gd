@@ -13,6 +13,23 @@ const VITESSE_TEST := 800.0
 const NIVEAU_Y := 300.0
 const PAS_MAX := 1200
 const IMMOBILE := 8
+## Simulation accélérée (même physique, plus de pas par image) pour rester sous la minute en CI.
+const ACCELERATION := 20.0
+
+var _echelle_avant: float
+var _pas_max_avant: int
+
+
+func before_all() -> void:
+	_echelle_avant = Engine.time_scale
+	_pas_max_avant = Engine.max_physics_steps_per_frame
+	Engine.time_scale = ACCELERATION
+	Engine.max_physics_steps_per_frame = int(_pas_max_avant * ACCELERATION)
+
+
+func after_all() -> void:
+	Engine.time_scale = _echelle_avant
+	Engine.max_physics_steps_per_frame = _pas_max_avant
 
 
 func before_each() -> void:
