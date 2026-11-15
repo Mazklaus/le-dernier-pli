@@ -10,7 +10,7 @@ extends CinematiquePlans
 
 const DOSSIER := "res://assets/graphics/cin/cin_greffe_%02d.png"
 ## Son calé sur le noir, s'il existe (bruitage du Sound Designer).
-const SON_NOIR := "sfx_greffe_fausse_note"
+const SON_NOIR := "sfx_greffe_fausse-note"
 const DEBUT_GESTE_A := 0.8
 const TENUE_A := 0.4
 const DUREE_NOIR := 0.6
