@@ -3,7 +3,7 @@
 `ecran_gravure.gdshader` : une seule passe plein écran (une seule copie d'écran par image) qui applique le trait tremblé, le papier de l'étape avec son grain, et préserve exactement le rouge `#9B1C1C` et la couleur d'accent des étapes 5 et 6. Testé sous Godot 4.7.2, renderer Compatibility (OpenGL 3, même GLSL que WebGL2).
 
 ## Mise en place dans une scène d'étape
-Un `CanvasLayer` (calque 10) au-dessus du monde et sous l'UI, avec un `ColorRect` plein écran (`mouse_filter = Ignore`) portant un `ShaderMaterial` avec ce shader. L'UI va sur un calque supérieur (20 et plus), elle n'est ni déformée ni remappée.
+Posé automatiquement par `EtapeBase.ajouter_gravure()` : `CanvasLayer` « EcranGravure » (calque 10), `ColorRect` plein écran (`mouse_filter = Ignore`). Calques au-dessus, non déformés : InterfaceJeu 15, BulleDialogue 16, fondu des Passages 20, BuildInfo et menu debug 128. Pour piloter la Lucidité : `etape.materiau_gravure()` (`amplitude_px`, `rouge_efface`). Le réglage `effets_attenues` met `amplitude_px` à 0.
 Au changement d'étape : `PapierEtapes.appliquer(materiau, etape)` (`scripts/rendu/papier_etapes.gd`).
 
 ## Paramètres
