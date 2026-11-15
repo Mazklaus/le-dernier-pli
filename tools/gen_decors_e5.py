@@ -297,6 +297,18 @@ def cimetiere() -> str:
     out.append(sur(c, f'<path d="M{c["x"] + 4:.0f} {c["ty"]:.0f} q14 30 0 60 M{c["x"] + 10:.0f} {c["ty"]:.0f} q-8 26 6 52" fill="none" {ST} stroke-width="3"/>'))
     c = proche(0, 800)
     out.append(sur(c, f'<path d="M{c["x"] + 2:.0f} {c["ty"]:.0f} q20 40 4 90" fill="none" stroke="{LAVIS}" stroke-width="5"/>'))
+    # des rubans délavés, noués sur quelques croix seulement, à des âges différents : le même
+    # ruban que celui du pli de Tobie, mais lavé par les hivers (lavis : pâle à l'écran inversé,
+    # jamais le rouge) ; du plus récent au plus vieux, il pâlit et raccourcit
+    def ruban(c: dict, couleur: str, l1: float, l2: float, ep: float) -> str:
+        x, y = c["x"], c["ty"]
+        return sur(c, f'<path d="M{x - 7:.0f} {y - 3:.0f} l14 6 M{x + 7:.0f} {y - 3:.0f} l-14 6" stroke="{couleur}" stroke-width="{ep:.1f}"/>'
+                      f'<path d="M{x + 2:.0f} {y + 3:.0f} q8 {l1 * .5:.0f} 2 {l1:.0f} M{x - 1:.0f} {y + 3:.0f} q-9 {l2 * .5:.0f} -4 {l2:.0f}" '
+                      f'fill="none" stroke="{couleur}" stroke-width="{ep * .8:.1f}" stroke-linecap="round"/>')
+    out.append(ruban(proche(1, 420), LAVIS, 52, 38, 6.5))
+    out.append(ruban(proche(0, 1360), LAVIS, 32, 20, 5.5))
+    out.append(ruban(proche(1, 2140), LAVIS, 18, 0, 5))
+    out.append(ruban(proche(0, 2480), MINE, 8, 0, 4.5))
     # la croix d'Aubin (x 1750) : pas de cloche, le clou et une trace plus claire sur le bois
     out.append(croix_bois(AUBIN_X, SOL, 300, 16, 5303, .2))
     cx, cy = CLOU
