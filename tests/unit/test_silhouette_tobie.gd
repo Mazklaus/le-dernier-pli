@@ -6,10 +6,16 @@ const SceneMessager := preload("res://scenes/messager/messager.tscn")
 
 var m: Messager
 var s: SilhouetteTobie
+var _attenues: Variant
+
+
+func before_all() -> void:
+	_attenues = Reglages.valeur(&"effets_attenues")
 
 
 func before_each() -> void:
 	GameState.reinitialiser()
+	Reglages.changer(&"effets_attenues", false)
 	m = add_child_autofree(SceneMessager.instantiate())
 	m.gravite = 0.0
 	m.global_position = Vector2(500, 500)
@@ -22,6 +28,7 @@ func after_each() -> void:
 
 func after_all() -> void:
 	GameState.reinitialiser()
+	Reglages.changer(&"effets_attenues", _attenues)
 
 
 func test_planches_decoupees_au_format_convenu() -> void:

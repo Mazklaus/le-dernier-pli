@@ -8,21 +8,25 @@ const SceneInterface := preload("res://scenes/ui/interface_jeu/interface_jeu.tsc
 
 var _contextuel: Variant
 var _chiffres: Variant
+var _attenues: Variant
 
 
 func before_all() -> void:
 	_contextuel = Reglages.valeur(&"hud_contextuel")
 	_chiffres = Reglages.valeur(&"valeurs_chiffrees")
+	_attenues = Reglages.valeur(&"effets_attenues")
 
 
 func before_each() -> void:
 	GameState.reinitialiser()
+	Reglages.changer(&"effets_attenues", false)
 
 
 func after_all() -> void:
 	GameState.reinitialiser()
 	Reglages.changer(&"hud_contextuel", _contextuel)
 	Reglages.changer(&"valeurs_chiffrees", _chiffres)
+	Reglages.changer(&"effets_attenues", _attenues)
 
 
 func _hud() -> HudJauges:
