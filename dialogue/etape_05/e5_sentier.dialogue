@@ -13,11 +13,11 @@ if GameState.rencontre_vue(&"e5_entaille_faite")
 if GameState.rencontre_vue(&"e5_entaille")
 	Tobie: Une croix comme les autres. Je dois avancer.
 	=> END
-Tobie: Des croix plantées comme des arbres. Toutes pareilles, toutes de travers, à perte de vue.
+Tobie: Des croix plantées comme des arbres, à perte de vue. Toutes pareilles.
 Tobie: Pas un oiseau. Le sentier tourne doucement entre elles.
 Tobie: Il me faudrait un repère.
 - [Entailler la croix] [#cout_lucidite=1]
-	Tobie: Je taille une encoche au couteau, à hauteur d'œil. Le bois est dur. Ça prend du temps.
+	Tobie: Une encoche, à hauteur d'œil. Le bois est dur. Ça prend du temps. [#geste=tobie:entailler]
 	do GameState.marquer_rencontre_vue(&"e5_entaille_faite")
 - [Continuer]
 	Tobie: Une croix, c'est une croix. Je continue.

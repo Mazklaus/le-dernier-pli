@@ -4,7 +4,7 @@
 
 ~ debut
 
-Tobie: Un violon, des rubans, des tables dans la rue. Une mariée en blanc.
+Tobie: Une noce, en pleine rue.
 Tobie: Le marié a mon âge. Il n'a jamais porté d'uniforme, ça se voit à ses épaules.
 Tobie: Personne ne me demande d'où je viens.
 - [Manger au banquet]
@@ -14,7 +14,7 @@ Tobie: Personne ne me demande d'où je viens.
 - [Demander son nom à la mariée]
 	Rose: Rose. Et toi ?
 	Tobie: Tobie.
-	Rose: Alors danse, Tobie. Un seul tour. C'est la règle, le jour d'une noce.
+	Rose: Alors danse, Tobie. Un seul tour. C'est la règle, le jour d'une noce. [#geste=danser]
 	Tobie: Je danse mal. Elle rit quand même. Elle sent la lavande et la poussière du chemin.
 	do GameState.ajouter_marque(&"elle_s_appelait_rose", &"nom_retenu", &"e3_noce")
 - [Parler du front] [#cout_lucidite=1]

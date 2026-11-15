@@ -4,12 +4,13 @@
 ~ debut
 
 Lamarre: Assieds-toi, Pied-Léger. Non, reste debout. C'est pas long.
-Lamarre: Un pli pour l'arrière. Cire noire. Tu sais ce que ça veut dire ?
+Lamarre: Un pli pour l'arrière. Cire noire. Tu sais ce que ça veut dire ? [#geste=montrer-pli]
 - Que c'est important.
 	Lamarre: Que c'est pas pour toi. Ni pour moi.
 - Que je pars longtemps.
 	Lamarre: Tu pars. Le reste, on verra.
-Lamarre: Tu le portes contre toi. Tu l'ouvres pas. Tu le perds pas.
+# [ciné e1_remise_pli] la main de Lamarre, le sceau, le ruban ; Tobie glisse le pli contre sa poitrine.
+Lamarre: Tu le portes contre toi. Tu l'ouvres pas. Tu le perds pas. [#geste=tendre]
 - [Le prendre sans un mot]
 	Lamarre: Bien. T'apprends vite.
 	do GameState.ajouter_marque(&"obei_sans_question", &"relique", &"e1_ordre")
@@ -18,7 +19,7 @@ Lamarre: Tu le portes contre toi. Tu l'ouvres pas. Tu le perds pas.
 	Lamarre: ... Encore un.
 	Lamarre: Oublie ça. Je m'appelle Hugues, au fait. Personne s'en sert.
 	do GameState.ajouter_marque(&"hugues_lamarre", &"nom_retenu", &"e1_ordre")
-Lamarre: Va te faire cendrer chez Cassien.
+Lamarre: Va te faire cendrer chez Cassien. [#geste=congedier]
 Lamarre: Et passe chez la Ravaude, t'auras faim.
 
 => END

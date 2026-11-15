@@ -11,7 +11,7 @@ Tobie: « Porte, porte, petit pli, la cendre au front, la cire au cœur... »
 Tobie: Je m'assois contre la souche et je sors le pli.
 - [Lire en transparence] [if GameState.peut_lire_ligne() /] [#cout_huile=1, #sans_prelevement]
 	do GameState.lire_ligne_pli()
-	Tobie: Je tiens le papier devant la lampe. La cire rouge laisse passer une ligne.
+	Tobie: La cire rouge laisse passer une ligne.
 	Tobie: « À celle qui écoute sous les cloches tues, »
 	Tobie: Une prière. À une sainte, sûrement. Je ne connais pas de sainte qui écoute.
 - [Le garder fermé]

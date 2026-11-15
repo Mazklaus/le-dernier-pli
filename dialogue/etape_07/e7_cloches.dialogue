@@ -5,8 +5,8 @@
 
 ~ debut
 
-Tobie: Des cloches. Partout, suspendues dans le noir, à toutes les hauteurs. Couvertes de cire.
-Tobie: Des grandes, des petites. Aucune ne sonne. L'escalier tourne autour de la plus grande, et descend.
+# [ciné e7_descente] des cloches cirées à toutes les hauteurs ; l'escalier tourne autour de la plus grande et descend. Aucune ne sonne.
+Tobie: Des cloches, partout. Aucune ne sonne.
 Tobie: Il descend longtemps. Mes jambes tremblent. Mon ventre crie.
 do GameState.appliquer_effets({&"vivres": -1})
 => halte

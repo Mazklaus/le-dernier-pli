@@ -3,13 +3,14 @@
 
 ~ debut
 
-Lamarre: L'aube est grise. C'est la bonne heure.
+Lamarre: C'est la bonne heure.
 Lamarre: T'as tout ? Le pli, la lampe, ta tête ?
 - Oui, sergent.
 	Lamarre: Bien.
 - [Toucher le sceau]
 	Tobie: La cire est tiède. Comme si quelqu'un venait de la toucher.
 	Lamarre: Touche pas trop. Ça porte malheur.
-Lamarre: Cours, Pied-Léger. Cours et compte pas.
+Lamarre: Cours, Pied-Léger. Cours et compte pas. [#geste=lever-main]
+# [ciné e1_sortie_tranchee] l'échelle, Tobie franchit le parapet dans l'aube grise.
 
 => END

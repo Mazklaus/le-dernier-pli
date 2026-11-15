@@ -6,8 +6,8 @@
 ~ debut
 
 Tobie: Le clocher est vide. Par le haut, on voit le ciel.
-Tobie: Un vieil homme tire une corde. Elle ne tient à rien. Il la tire quand même, lentement.
-Le sonneur: On nous les a prises. Il y a longtemps. On ne demande pas.
+Tobie: Un vieil homme, une corde. Elle ne tient à rien.
+Le sonneur: On nous les a prises. Il y a longtemps. On ne demande pas. [#geste=tirer-corde]
 Le sonneur: Je monte tous les soirs. Il faut bien que quelqu'un le fasse.
 if GameState.possede_objet(&"petit_battant")
 	Tobie: Il voit ce qui pend à ma ceinture. Le petit battant de la sape.
@@ -20,8 +20,8 @@ Le sonneur: J'ai de l'huile, si tu en veux. La lampe d'ici ne sert plus.
 	Le sonneur: Marché conclu. Tu me laisses de quoi tenir jusqu'à dimanche.
 	do GameState.appliquer_effets({&"huile": 1})
 - [Donner le pain blanc] Contre deux mesures. [if GameState.possede_objet(&"pain_blanc") /]
-	Le sonneur: Du pain d'Ilde... Elle ne m'en donne plus depuis que je pose des questions.
-	Tobie: Il le serre contre lui comme un enfant. Jacquot attendra.
+	Le sonneur: Du pain d'Ilde... Elle ne m'en donne plus depuis que je pose des questions. [#geste=serrer]
+	Tobie: Jacquot attendra.
 	do GameState.retirer_objet(&"pain_blanc")
 	do GameState.appliquer_effets({&"huile": 2})
 	do GameState.resoudre_promesse(&"promis_a_jacquot", false)

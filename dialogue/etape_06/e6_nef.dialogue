@@ -3,8 +3,8 @@
 
 ~ debut
 
-Tobie: La fente s'ouvre sous mes pieds. Je glisse, je roule, je m'arrête sur de la pierre taillée.
-Tobie: Une église. Couchée dans la terre, de travers, comme un navire au fond de l'eau.
+# [ciné e6_chute_fissure] la fente s'ouvre, Tobie glisse et roule jusqu'à la pierre taillée.
+Tobie: Une église, couchée dans la terre comme un navire au fond de l'eau.
 Tobie: Le noir est entier. Il sent la racine et la cire très ancienne.
 - [Allumer la lanterne] [if GameState.valeur(&"huile") >= 1 /] [#cout_huile=1, #sans_prelevement]
 	do GameState.entrer_zone_sombre(true, &"e6_nef")
