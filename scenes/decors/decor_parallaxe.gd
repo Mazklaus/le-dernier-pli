@@ -82,7 +82,7 @@ static func dessin_lieu(chemin_base: String, nom_noeud: String, z: int) -> Node2
 		if not ResourceLoader.exists(chemin):
 			break
 		var tuile := Sprite2D.new()
-		tuile.texture = load(chemin) as Texture2D
+		tuile.texture = charger_tuile(chemin)
 		tuile.centered = false
 		tuile.position = Vector2(x, 0.0)
 		tuile.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
