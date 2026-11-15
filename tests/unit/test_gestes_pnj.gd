@@ -153,3 +153,14 @@ func test_l_autre_se_retourne_a_ses_planches() -> void:
 	var images := load("res://assets/graphics/cin/cin_autre_02.png") as Texture2D
 	assert_eq(fond.get_size(), Vector2(1920, 1080))
 	assert_eq(images.get_size(), Vector2(600, 340))
+
+
+func test_la_chute_dans_la_fissure_a_ses_planches() -> void:
+	# e6_chute_fissure (tools/gen_cin_e6.py) : plan A (fond, 6 images de 600×560 en grille 3 × 2),
+	# plan B (fond, Tobie qui dévale : 6 images de 240×240 transparentes, en ligne).
+	var tailles := {"01": Vector2(1920, 1080), "02": Vector2(1800, 1120), "03": Vector2(1920, 1080), "04": Vector2(1440, 240)}
+	for k: String in tailles:
+		var t := load("res://assets/graphics/cin/cin_chute_%s.png" % k) as Texture2D
+		assert_not_null(t, k)
+		if t != null:
+			assert_eq(t.get_size(), tailles[k], k)
