@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://d2kor0p7l0k0y"
+path="res://.godot/imported/e7_cloches.dialogue-54353fafbb7a8317ca12ee1fa84b7802.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_07/e7_cloches.dialogue"
+dest_files=["res://.godot/imported/e7_cloches.dialogue-54353fafbb7a8317ca12ee1fa84b7802.tres"]
+
+[params]
+
+defaults=true
