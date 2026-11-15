@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_04/e4_details.dialogue" id="2"]
 [ext_resource type="Resource" path="res://dialogue/etape_04/e4_anselme.dialogue" id="3"]
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="4"]
 
+[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 180)
 
@@ -214,3 +215,20 @@ offset_bottom = 198.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> escalier"
+
+[node name="e4_greffe" type="Node2D" parent="."]
+script = ExtResource("cine_script")
+id = &"e4_greffe"
+duree = 8.0
+metadata/note_level_design = "Ombre portée sur le mur, les mains d'Anselme ; lancée par une réplique de e4_anselme"
+
+[node name="Camera" type="Camera2D" parent="e4_greffe"]
+position = Vector2(1250, 760)
+
+[node name="Depart" type="Marker2D" parent="e4_greffe"]
+position = Vector2(1250, 760)
+scale = Vector2(1.5, 1.5)
+
+[node name="Arrivee" type="Marker2D" parent="e4_greffe"]
+position = Vector2(1250, 790)
+scale = Vector2(2.0, 2.0)

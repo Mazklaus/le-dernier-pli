@@ -131,6 +131,7 @@ text = "seuil_porte"
 [node name="e6_seuil" parent="Rencontres" instance=ExtResource("1")]
 position = Vector2(1400, 900)
 rencontre_id = &"e6_seuil"
+personnage = &"eloi"
 dialogue = ExtResource("3")
 libelle = "Approcher de la porte"
 fin_etape = true

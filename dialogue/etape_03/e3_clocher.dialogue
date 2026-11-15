@@ -20,7 +20,7 @@ Le sonneur: J'ai de l'huile, si tu en veux. La lampe d'ici ne sert plus.
 	Le sonneur: Marché conclu. Tu me laisses de quoi tenir jusqu'à dimanche.
 	do GameState.appliquer_effets({&"huile": 1})
 - [Donner le pain blanc] Contre deux mesures. [if GameState.possede_objet(&"pain_blanc") /]
-	Le sonneur: Du pain d'Ilde... Elle ne m'en donne plus depuis que je pose des questions. [#geste=serrer]
+	Le sonneur: Du pain d'Ilde... Elle ne m'en donne plus depuis que je pose des questions. [#geste=serrer, #tenir]
 	Tobie: Jacquot attendra.
 	do GameState.retirer_objet(&"pain_blanc")
 	do GameState.appliquer_effets({&"huile": 2})

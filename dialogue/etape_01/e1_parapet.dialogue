@@ -12,5 +12,6 @@ Lamarre: T'as tout ? Le pli, la lampe, ta tête ?
 	Lamarre: Touche pas trop. Ça porte malheur.
 Lamarre: Cours, Pied-Léger. Cours et compte pas. [#geste=lever-main]
 # [ciné e1_sortie_tranchee] l'échelle, Tobie franchit le parapet dans l'aube grise.
+do Cinematiques.jouer(&"e1_sortie_tranchee")
 
 => END
