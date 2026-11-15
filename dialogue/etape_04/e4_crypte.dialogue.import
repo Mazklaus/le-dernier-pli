@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://c3wqv54cdmde2"
+path="res://.godot/imported/e4_crypte.dialogue-5fe83acdf0f3fdd000f3d5ff5b8c0946.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_04/e4_crypte.dialogue"
+dest_files=["res://.godot/imported/e4_crypte.dialogue-5fe83acdf0f3fdd000f3d5ff5b8c0946.tres"]
+
+[params]
+
+defaults=true

@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://c8po02qmrvc47"
+path="res://.godot/imported/e4_anselme.dialogue-a69a8a54f60ad336558176ca28243bea.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_04/e4_anselme.dialogue"
+dest_files=["res://.godot/imported/e4_anselme.dialogue-a69a8a54f60ad336558176ca28243bea.tres"]
+
+[params]
+
+defaults=true
