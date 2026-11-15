@@ -4,7 +4,7 @@
 
 ~ debut
 
-Tobie: Les croix s'arrêtent d'un coup, comme au bord d'un champ. Le ciel s'ouvre. Il est immense.
+Tobie: Les croix s'arrêtent d'un coup. Le ciel s'ouvre.
 Tobie: En bas, la terre descend vers une ombre de pierre. Un toit d'église, à moitié enterré.
 Tobie: Je m'assois dans l'herbe. Je sors le pli.
 - [Lire en transparence] [if GameState.peut_lire_ligne() /] [#cout_huile=1, #sans_prelevement]
@@ -18,7 +18,7 @@ Tobie: Je descends vers l'église. Derrière moi, je n'entends pas mes pas. J'en
 ~ lecture
 
 do GameState.lire_ligne_pli()
-Tobie: Je lève le papier vers le ciel. La cire rouge laisse passer une ligne.
+Tobie: La cire rouge laisse passer une ligne.
 if GameState.pli_lignes_lues == 1
 	Tobie: « À celle qui écoute sous les cloches tues, »
 	Tobie: Une prière. Une sainte qui écoute. Ici, il n'y a personne pour écouter.

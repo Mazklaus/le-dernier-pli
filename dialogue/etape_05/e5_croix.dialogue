@@ -19,12 +19,12 @@ Tobie: Quelqu'un l'a préparée. Il n'y a personne d'autre sur ce chemin.
 	Tobie: Ils ont été coureurs. Quelqu'un doit savoir qu'ils sont passés.
 	do GameState.ajouter_marque(&"ceux_d_avant", &"nom_retenu", &"e5_croix")
 - [Graver mon nom sur la croix vide]
-	Tobie: T. O. B. Le couteau glisse sur le nœud du bois. Je me coupe le pouce. Je finis quand même.
+	Tobie: T. O. B. Je me coupe le pouce. Je finis quand même. [#geste=tobie:graver]
 	Tobie: Au moins, elle sera à quelqu'un.
 	do GameState.ajouter_marque(&"son_propre_nom", &"cicatrice", &"e5_croix")
 	do GameState.marquer_rencontre_vue(&"nom_grave")
 - [Rendre l'insigne] [if GameState.possede_marque(&"l_insigne_du_saint") /]
-	Tobie: Je sors la petite cloche de la crypte. Je l'accroche au clou vide.
+	Tobie: La petite cloche de la crypte, au clou vide. [#geste=tobie:accrocher]
 	Tobie: Elle couvre exactement la trace claire sur le bois. Même usure. Même place.
 	Tobie: Aubin. Je retiendrai ton nom.
 	do GameState.ajouter_marque(&"il_s_appelait_aubin", &"nom_retenu", &"e5_croix")
