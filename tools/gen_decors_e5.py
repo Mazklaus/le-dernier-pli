@@ -12,7 +12,8 @@ scenes/decors/decor_e5.gd. Sol à y 900, ciel de brouillard.
                    (x 3410) ; le sentier qui repart dans la brume (x 3640)
   campement  1920  un abri de capote tendu entre deux croix, la gamelle (x 700), le feu tiède
                    qui fume encore (x 1250)
-  cimetiere  2880  les petites croix rangées, chacune sa cloche sans battant clouée ; les objets
+  cimetiere  2880  de petites croix d'âges divers, cloches sans battant (pendues,
+                   tombées ou disparues) ; les objets
                    laissés (x 900) ; la croix d'Aubin (x 1750 : le clou vide et la trace claire) ;
                    la croix sans nom au bout du rang (x 1890), la terre fraîche à son pied
   clairiere  1920  les croix s'espacent, le ciel s'ouvre (fin d'étape)
@@ -25,7 +26,8 @@ Chacun est dessiné dans un carré de 64 x 96 ; DecorE5 le pose avec son coin ha
 en ANCRES, dans le repère du déclencheur (son pied).
 
 Garde-fous : aucun nombre (ni total, ni date, ni ordre), aucun rouge, les cloches n'ont pas de
-battant. Les noms des croix sont des rayures, sauf celui que Tobie grave.
+battant. Les noms des croix sont griffés, illisibles, sauf celui que Tobie grave ; aucune série
+de signes ne peut se compter.
 
 Usage : python3 tools/gen_decors_e5.py
 """
@@ -124,11 +126,62 @@ def cloche(x: float, y: float, s: float = 1.0) -> str:
             f'<path d="M-5 15 H5" stroke="{PAPIER}" stroke-width="1"/></g>')
 
 
-def rayures(x: float, y: float, n: int, seed: int) -> str:
-    """Un nom gravé, vu d'ici : des rayures de couteau, illisibles."""
+def griffures(x: float, y: float, larg: float, seed: int, op: float = 1.0) -> str:
+    """Un nom griffé au couteau, vu d'ici : un trait qui court en travers, boucles et
+    accrocs irréguliers, illisible et impossible à compter."""
     r = rnd(seed)
-    return "".join(f'<path d="M{x + i * 5:.0f} {y + r.uniform(-1, 1):.0f} l{r.uniform(-1, 2):.0f} 8" stroke="{ENCRE}" stroke-width="1.2"/>'
-                   for i in range(n))
+    d = [f"M{x:.1f} {y + r.uniform(-1, 1):.1f}"]
+    cx = x
+    while cx < x + larg:
+        pas = r.uniform(2.5, 6)
+        d.append(f"q{pas / 2:.1f} {r.uniform(-4, 4):.1f} {pas:.1f} {r.uniform(-1.5, 1.5):.1f}")
+        cx += pas
+    return f'<path d="{" ".join(d)}" fill="none" stroke="{ENCRE}" stroke-width="1" opacity="{op:.2f}"/>'
+
+
+def mousse(x: float, y: float, seed: int) -> str:
+    """Une touffe de mousse sur le bois pourri : de petites bosses, sans compte possible."""
+    r = rnd(seed)
+    return "".join(f'<ellipse cx="{x + r.uniform(-7, 7):.1f}" cy="{y + r.uniform(-2, 2):.1f}" rx="{r.uniform(2, 5):.1f}" '
+                   f'ry="{r.uniform(1.5, 3):.1f}" fill="{MINE}" opacity=".8"/>' for _ in range(r.randint(3, 6)))
+
+
+def petite_croix(r, x: float, pied: float, h: float, larg: float) -> tuple[str, dict]:
+    """Une croix du cimetière : son âge (pourrie, ordinaire ou récente), son inclinaison, sa
+    cloche (pendue, tombée dans l'herbe ou disparue) et un nom griffé, ou rien.
+    Rend le dessin et ce qu'il faut pour y accrocher un objet (angle, sommet, traverse)."""
+    age = r.random()
+    a = r.uniform(-4, 4) if age > .25 else r.choice((-1, 1)) * r.uniform(6, 13)
+    b = h * r.uniform(.2, .3)
+    ty = pied - h * r.uniform(.7, .78)
+    fond = "url(#h1)" if age > .8 else ("url(#h2)" if age < .25 else "url(#h1)")
+    bois = PAPIER if age > .8 else None
+    g = [f'<g transform="rotate({a:.1f} {x:.0f} {pied:.0f})">']
+    haut = pied - h
+    if age < .25:     # bois pourri : sommet rongé, un bras cassé court
+        g.append(f'<path d="M{x - larg / 2:.1f} {pied:.0f} V{haut + 6:.0f} L{x - 1:.0f} {haut:.0f} L{x + 2:.0f} {haut + 8:.0f} '
+                 f'L{x + larg / 2:.1f} {haut + 3:.0f} V{pied:.0f} Z" fill="{fond}" {ST} stroke-width="2.2"/>')
+        bg, bd = b, b * r.uniform(.35, .6)
+        if r.random() < .5:
+            bg, bd = bd, bg
+        g.append(f'<path d="M{x - bg:.1f} {ty - larg / 2:.1f} H{x + bd:.1f} l-3 {larg * .45:.1f} l3 {larg * .55:.1f} H{x - bg:.1f} Z" '
+                 f'fill="{fond}" {ST} stroke-width="2.2"/>')
+        g.append(mousse(x - bg * .4, ty - larg / 2, int(x) + 1))
+    else:
+        f = bois or fond
+        g.append(f'<rect x="{x - larg / 2:.1f}" y="{haut:.0f}" width="{larg:.1f}" height="{h:.0f}" fill="{f}" {ST} stroke-width="2.2"/>')
+        g.append(f'<rect x="{x - b:.1f}" y="{ty - larg / 2:.1f}" width="{2 * b:.1f}" height="{larg:.1f}" fill="{f}" {ST} stroke-width="2.2"/>')
+    if r.random() < .65:
+        g.append(griffures(x - b * .7, ty, b * 1.4, int(x) + 2, .9 if age > .25 else .55))
+    cl = r.random()
+    if cl < .55:
+        g.append(cloche(x + r.uniform(-4, 2), ty + larg / 2 + 1, larg / 13))
+    g.append('</g>')
+    if .55 <= cl < .72:   # tombée dans l'herbe, couchée au pied
+        cx = x + r.choice((-1, 1)) * r.uniform(14, 30)
+        g.append(f'<g transform="rotate({r.choice((-1, 1)) * r.uniform(70, 110):.0f} {cx:.0f} {SOL - 6:.0f})">'
+                 f'{cloche(cx, SOL - 14, larg / 13)}</g>')
+    return "".join(g), {"x": x, "a": a, "pied": pied, "haut": haut, "ty": ty, "larg": larg}
 
 
 # --------------------------------------------------------------------------- sections
@@ -207,7 +260,8 @@ def campement() -> str:
 
 
 def cimetiere() -> str:
-    """Les petites croix bien rangées, chacune sa cloche clouée et un nom en rayures ; les objets
+    """Un cimetière qui a grandi lentement : petites croix d'âges divers, cloches pendues, tombées
+    ou disparues, noms griffés ; les objets
     laissés ; la croix d'Aubin (clou vide, trace claire) ; la croix sans nom au bout du rang."""
     w = 2880
     out = [ciel(w), rangs(w, 5301, densite=.7)]
@@ -218,27 +272,37 @@ def cimetiere() -> str:
                '</linearGradient></defs>'
                f'<rect y="{SOL - 56}" width="{w}" height="56" fill="url(#talus)"/>'
                f'<path d="M0 {SOL - 56} H{w - 400} Q{w - 200} {SOL - 56} {w - 120} {SOL}" fill="none" stroke="{MINE}" stroke-width="1.6"/>')
-    # les rangs du cimetière : petites croix alignées, en deux lignes (celle de derrière en quinconce)
-    for ligne, (pied, h, pas, dx) in enumerate(((SOL - 56, 150, 150, 75), (SOL, 210, 150, 0))):
-        for x in range(120 + dx, w - 300, pas):
-            if abs(x - AUBIN_X) < 130 or abs(x - SANS_NOM_X) < 130:
-                continue
-            out.append(f'<g opacity="{.8 if ligne == 0 else 1}">')
-            out.append(croix_bois(x, pied, h, 11 if ligne == 0 else 13, 11 + ligne, .24))
-            ty = pied - h * .74
-            out.append(cloche(x - 3, ty + 12, .8 if ligne == 0 else 1))
-            out.append(rayures(x - 10, ty - 30 if ligne else ty - 24, 4, int(x)))
-            out.append('</g>')
-    # objets laissés sur les croix (x 800 à 1030) : un calot, une écharpe nouée, une sangle
-    out.append(f'<path d="M856 {SOL - 208} Q870 {SOL - 226} 886 {SOL - 208} Z" fill="url(#h2)" {ST} stroke-width="1.8"/>')
-    out.append(f'<path d="M1028 {SOL - 150} q14 30 0 60 M1034 {SOL - 150} q-8 26 6 52" fill="none" {ST} stroke-width="3"/>')
-    out.append(f'<path d="M806 {SOL - 164} q20 40 4 90" fill="none" stroke="{LAVIS}" stroke-width="5"/>')
+    # le cimetière a grandi lentement : deux lignes lâches, espacement, hauteur, âge et
+    # inclinaison inégaux ; rien ne s'aligne ni ne se compte
+    lignes: list[list[dict]] = [[], []]
+    for ligne, (pied, hmin, hmax, pmin, pmax) in enumerate(((SOL - 56, 110, 180, 80, 210), (SOL, 150, 250, 100, 240))):
+        x = 100 + r.uniform(0, 80)
+        while x < w - 320:
+            if abs(x - AUBIN_X) > 130 and abs(x - SANS_NOM_X) > 130:
+                dessin, info = petite_croix(r, x, pied + r.uniform(-6, 4), r.uniform(hmin, hmax), r.uniform(10, 14))
+                out.append(f'<g opacity="{.8 if ligne == 0 else 1}">{dessin}</g>')
+                lignes[ligne].append(info)
+            x += r.uniform(pmin, pmax)
+
+    def proche(ligne: int, cible: float) -> dict:
+        return min(lignes[ligne], key=lambda c: abs(c["x"] - cible))
+
+    def sur(c: dict, svg: str) -> str:
+        return f'<g transform="rotate({c["a"]:.1f} {c["x"]:.0f} {c["pied"]:.0f})">{svg}</g>'
+
+    # objets laissés sur les croix (autour de x 900) : un calot, une écharpe nouée, une sangle
+    c = proche(1, 880)
+    out.append(sur(c, f'<path d="M{c["x"] - 14:.0f} {c["haut"] + 4:.0f} Q{c["x"]:.0f} {c["haut"] - 14:.0f} {c["x"] + 16:.0f} {c["haut"] + 4:.0f} Z" fill="url(#h2)" {ST} stroke-width="1.8"/>'))
+    c = proche(1, 1020)
+    out.append(sur(c, f'<path d="M{c["x"] + 4:.0f} {c["ty"]:.0f} q14 30 0 60 M{c["x"] + 10:.0f} {c["ty"]:.0f} q-8 26 6 52" fill="none" {ST} stroke-width="3"/>'))
+    c = proche(0, 800)
+    out.append(sur(c, f'<path d="M{c["x"] + 2:.0f} {c["ty"]:.0f} q20 40 4 90" fill="none" stroke="{LAVIS}" stroke-width="5"/>'))
     # la croix d'Aubin (x 1750) : pas de cloche, le clou et une trace plus claire sur le bois
     out.append(croix_bois(AUBIN_X, SOL, 300, 16, 5303, .2))
     cx, cy = CLOU
     out.append(f'<path d="M{cx - 7} {cy + 2} Q{cx - 8} {cy + 14} {cx} {cy + 20} Q{cx + 8} {cy + 14} {cx + 7} {cy + 2} Z" fill="{PAPIER}" opacity=".9"/>')
     out.append(f'<circle cx="{cx}" cy="{cy}" r="2.6" fill="{ENCRE}"/><path d="M{cx} {cy} l-4 -2" {ST} stroke-width="1.4"/>')
-    out.append(rayures(AUBIN_X - 12, cy + 40, 5, 5304))
+    out.append(griffures(AUBIN_X - 24, cy + 62, 48, 5304))
     # la croix sans nom, au bout du rang (x 1890) : bois neuf, pas de cloche, terre fraîche au pied
     out.append(croix_bois(SANS_NOM_X, SOL, 280, 16, 5305, .2))
     out.append(f'<path d="M{SANS_NOM_X - 90} {SOL} Q{SANS_NOM_X} {SOL - 34} {SANS_NOM_X + 90} {SOL} Z" fill="{LAVIS}" {ST} stroke-width="2"/>')
@@ -282,14 +346,19 @@ def fx_cloche() -> str:
 
 
 def fx_nom_grave() -> str:
-    """TOBIE, gravé au couteau en lettres maladroites, sur la traverse."""
-    l = [f'<path d="M7 17 L57 16 L57 32 L7 32 Z" fill="{PAPIER}" opacity=".85"/>',  # bois frais, raclé
-         f'<path d="M9 18 H19 M14 18 V30" {ST} stroke-width="1.8" fill="none"/>',          # T
-         f'<ellipse cx="25" cy="24" rx="4" ry="6" {ST} stroke-width="1.8" fill="none"/>',   # O
-         f'<path d="M32 18 V30 M32 18 Q39 19 36 24 Q40 28 32 30 M32 24 H36" {ST} stroke-width="1.8" fill="none"/>',  # B
-         f'<path d="M43 18 V30" {ST} stroke-width="1.8"/>',                                 # I
-         f'<path d="M54 18 H48 V30 H54 M48 24 H52" {ST} stroke-width="1.8" fill="none"/>']  # E
-    return "".join(l)
+    """TOBIE, gravé au couteau par un homme qui vient de se couper le pouce, sur la traverse :
+    lettres inégales et peu profondes, ligne qui monte et descend, le trait du I qui dérape, et
+    le E plus faible, à peine marqué."""
+    trait = f'fill="none" stroke="{ENCRE}" stroke-linecap="round" stroke-linejoin="round"'
+    return (f'<path d="M7 17.5 L57 16.5 L56.5 32 L7.5 31.5 Z" fill="{PAPIER}" opacity=".8"/>'   # bois frais, raclé
+            f'<g {trait} stroke-width="1.4" opacity=".85">'
+            '<path d="M9 19.6 L18.6 18.1 M13.5 18.9 L14.3 30.6"/>'                             # T
+            '<path d="M24 19.2 Q20.2 20.4 20.6 25.2 Q21.2 31 25.1 30.4 Q28.6 29.4 28 24 Q27.2 18.8 23.4 19.8"/>'  # O
+            '<path d="M31.6 18.6 L32.4 30.9 M31.9 18.5 Q38.4 17.9 35.4 23.7 L32.3 24.3 '
+            'M33.1 24.1 Q39.8 25.8 35.8 29.9 Q34 31.1 32.4 30.7"/>'                            # B
+            '<path d="M42.4 19.4 L43.3 29.2 L47.4 33"/>'                                        # I, et le dérapage
+            '</g>'
+            f'<path d="M53.2 20.2 L47.9 19.6 L48.5 29.6 L52.1 30.3 M48.2 24.9 L50.8 24.5" {trait} stroke-width="1" opacity=".45"/>')  # E
 
 
 def ecrire(nom: str, contenu: str, largeur: int) -> int:
