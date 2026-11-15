@@ -137,3 +137,33 @@ func test_les_points_d_interaction_sont_espaces() -> void:
 func test_les_rencontres_ne_se_rejouent_pas() -> void:
 	for id in RENCONTRES:
 		assert_true(_etape.trouver_declencheur(id).une_seule_fois, "%s se rejoue" % id)
+
+
+func test_les_fils_ne_s_entendent_que_dans_le_noir_sur_chaque_ceinture() -> void:
+	for nom in ["FilsCeintureUne", "FilsCeintureDeux"]:
+		var fils := _etape.get_node("Sons/" + nom) as AudioStreamPlayer2D
+		assert_true(fils.is_in_group(AudioDirector.GROUPE_SON_DU_NOIR), nom)
+		assert_true(fils.autoplay, nom)
+		assert_true(fils.stream.resource_path.ends_with("amb_no-mans-land_fils.ogg"), nom)
+	# Chaque émetteur est dans la zone sombre (sinon on ne l'entendrait jamais).
+	var forme := _etape.get_node("Surface/Brouillard/ZoneSombre/Forme") as CollisionShape2D
+	var demi := (forme.shape as RectangleShape2D).size.x / 2.0
+	for nom in ["FilsCeintureUne", "FilsCeintureDeux"]:
+		var x := (_etape.get_node("Sons/" + nom) as Node2D).global_position.x
+		assert_between(x, forme.global_position.x - demi, forme.global_position.x + demi, nom)
+
+
+func test_les_ambiances_de_lieux_jouent_sur_le_bus_ambiance() -> void:
+	var emetteurs := _etape.find_children("*", "AudioStreamPlayer2D", true, false)
+	assert_eq(emetteurs.size(), 7)
+	for e: AudioStreamPlayer2D in emetteurs:
+		assert_eq(e.bus, &"Ambiance", e.name)
+		assert_not_null(e.stream, e.name)
+		assert_true(e.autoplay, e.name)
+	var boyau := _etape.get_node("Lieux/BoyauDetour/SonBoyau") as AudioStreamPlayer2D
+	assert_true(boyau.stream.resource_path.ends_with("amb_no-mans-land_boyau-detour.ogg"))
+
+
+func test_le_cantique_lance_la_musique_lointaine() -> void:
+	var texte := FileAccess.get_file_as_string("res://dialogue/etape_02/e2_cantique.dialogue")
+	assert_string_contains(texte, 'AudioDirector.jouer_musique(2, "cantique-lointain")')

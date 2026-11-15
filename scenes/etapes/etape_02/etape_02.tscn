@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3]
+[gd_scene load_steps=27 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_02/etape_02.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_02/lieux/boyau_detour.tscn" id="2"]
@@ -15,6 +15,11 @@
 [ext_resource type="Script" path="res://scenes/decors/decor_e2.gd" id="decor_e2"]
 [ext_resource type="Script" path="res://scenes/interactions/verrou/verrou_retour.gd" id="verrou_retour"]
 
+[ext_resource type="AudioStream" path="res://assets/audio/amb_no-mans-land_poste.ogg" id="son_poste"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_no-mans-land_brouillard.ogg" id="son_brouillard"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_no-mans-land_fils.ogg" id="son_fils"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_no-mans-land_trou-obus.ogg" id="son_trous"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_no-mans-land_boyau-detour.ogg" id="son_boyau"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(64, 1300)
 
@@ -709,6 +714,56 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "souche_village"
 
+[node name="Sons" type="Node2D" parent="."]
+
+[node name="Poste" type="AudioStreamPlayer2D" parent="Sons"]
+position = Vector2(2900, 700)
+stream = ExtResource("son_poste")
+autoplay = true
+max_distance = 2200.0
+bus = &"Ambiance"
+metadata/note_level_design = "Ambiance du poste de Brisse, sur la crête"
+
+[node name="BrouillardOuest" type="AudioStreamPlayer2D" parent="Sons"]
+position = Vector2(6200, 800)
+stream = ExtResource("son_brouillard")
+autoplay = true
+max_distance = 2600.0
+bus = &"Ambiance"
+metadata/note_level_design = "Vent du brouillard, première moitié"
+
+[node name="BrouillardEst" type="AudioStreamPlayer2D" parent="Sons"]
+position = Vector2(8900, 800)
+stream = ExtResource("son_brouillard")
+autoplay = true
+max_distance = 2600.0
+bus = &"Ambiance"
+metadata/note_level_design = "Vent du brouillard, seconde moitié"
+
+[node name="FilsCeintureUne" type="AudioStreamPlayer2D" parent="Sons" groups=["son_du_noir"]]
+position = Vector2(5230, 800)
+stream = ExtResource("son_fils")
+autoplay = true
+max_distance = 2400.0
+bus = &"Ambiance"
+metadata/note_level_design = "Fils de la 1re ceinture : seulement dans le noir (AudioDirector)"
+
+[node name="FilsCeintureDeux" type="AudioStreamPlayer2D" parent="Sons" groups=["son_du_noir"]]
+position = Vector2(10030, 800)
+stream = ExtResource("son_fils")
+autoplay = true
+max_distance = 2400.0
+bus = &"Ambiance"
+metadata/note_level_design = "Fils de la 2e ceinture : seulement dans le noir (AudioDirector)"
+
+[node name="TrousObus" type="AudioStreamPlayer2D" parent="Sons"]
+position = Vector2(12800, 1000)
+stream = ExtResource("son_trous")
+autoplay = true
+max_distance = 1800.0
+bus = &"Ambiance"
+metadata/note_level_design = "Trous d'obus, avant la souche"
+
 [node name="Lieux" type="Node2D" parent="."]
 
 [node name="BoyauDetour" parent="Lieux" instance=ExtResource("2")]
@@ -716,3 +771,11 @@ position = Vector2(0, 1600)
 
 [node name="Messager" parent="." instance=ExtResource("12")]
 position = Vector2(200, 900)
+
+[node name="SonBoyau" type="AudioStreamPlayer2D" parent="Lieux/BoyauDetour"]
+position = Vector2(960, 700)
+stream = ExtResource("son_boyau")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+metadata/note_level_design = "Boucle du boyau ; portée courte pour ne pas fuir vers le parapet au-dessus"
