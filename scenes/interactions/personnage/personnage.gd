@@ -12,6 +12,8 @@ const IMAGES_PAR_SECONDE := SilhouetteTobie.IMAGES_PAR_SECONDE / 3.0
 var nom: StringName
 ## Image de départ de la boucle (déphase les silhouettes d'un même cortège).
 var dephasage: int = 0
+## Le geste en cours garde sa dernière image au lieu de revenir à la respiration.
+var _tenu: bool = false
 
 
 ## Planches essayées, dans l'ordre : respiration, image figée, marche sur place.
@@ -54,9 +56,30 @@ static func chemin_geste(nom_personnage: StringName, geste: StringName) -> Strin
 	return chemin if ResourceLoader.exists(chemin) else ""
 
 
-## Joue un geste une fois à 10 i/s, puis revient à la respiration. Faux (et rien ne bouge)
-## tant que la planche du geste n'existe pas : les dialogues se balisent avant les dessins.
-func jouer_geste(geste: StringName) -> bool:
+## Joue un geste une fois à 10 i/s, puis revient à la respiration, ou garde sa dernière image
+## avec `tenir` (jusqu'au geste suivant). Faux (et rien ne bouge) tant que la planche du geste
+## n'existe pas : les dialogues se balisent avant les dessins.
+func jouer_geste(geste: StringName, tenir: bool = false) -> bool:
+	if not _charger_geste(geste):
+		return false
+	_tenu = tenir
+	play(geste)
+	return true
+
+
+## Montre la première image d'un geste, immobile (ex. le mort bras pendant, avant qu'il ne
+## le lève). Faux sans planche.
+func poser_debut_geste(geste: StringName) -> bool:
+	if not _charger_geste(geste):
+		return false
+	_tenu = true
+	animation = geste
+	frame = 0
+	stop()
+	return true
+
+
+func _charger_geste(geste: StringName) -> bool:
 	if sprite_frames == null:
 		return false
 	if not sprite_frames.has_animation(geste):
@@ -64,7 +87,6 @@ func jouer_geste(geste: StringName) -> bool:
 		if chemin == "":
 			return false
 		SilhouetteTobie.ajouter_planche(sprite_frames, geste, load(chemin) as Texture2D, false)
-	play(geste)
 	return true
 
 
@@ -75,5 +97,5 @@ func _ready() -> void:
 
 
 func _sur_animation_finie() -> void:
-	if animation != SilhouetteTobie.REPOS:
+	if animation != SilhouetteTobie.REPOS and not _tenu:
 		play(SilhouetteTobie.REPOS)

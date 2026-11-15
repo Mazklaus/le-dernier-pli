@@ -25,10 +25,10 @@ python3 <repo>/tools/son/generer_musique_tranchee_mere.py .
 python3 <repo>/tools/son/generer_ambiance_village_cloches_muettes.py .
 python3 <repo>/tools/son/generer_bruitages_etape_01.py <repo>/assets/audio
 python3 <repo>/tools/son/generer_timbres.py <repo>/assets/audio
-for f in amb_*.wav mus_*.wav; do ffmpeg -y -i "$f" -c:a libvorbis -q:a 6 "<repo>/assets/audio/${f%.wav}.ogg"; done
+python3 <repo>/tools/son/encoder_ogg.py . <repo>/assets/audio   # amb_ q2 (mono si fausse stéréo), mus_ q3
 ```
 
-Chaque `amb_*.ogg` et `mus_*.ogg` doit garder `loop=true` dans son `.import` (vérifié par `tools/check_assets.py`).
+Budget du build web : 60 Mo. `encoder_ogg.py` fixe la qualité : `amb_` en Vorbis q2 (~80-96 kbit/s), mono quand la stéréo n'est qu'une copie retardée ; `mus_` en q3 (~112 kbit/s). Chaque `amb_*.ogg` et `mus_*.ogg` doit garder `loop=true` dans son `.import` (vérifié par `tools/check_assets.py`).
 
 Intention sonore, paliers de Lucidité et carte des lieux : https://claude.ai/artifact/KkoyTNTrb3wocb54uZ8ftS
 

@@ -12,7 +12,8 @@ Anselme: J'ai ici l'œil de saint Ivo. Il voyait dans le noir des mines. Il verr
 Anselme: Ça ne fait pas mal. Rien ne fait mal, ici. Et tu serais plus beau.
 - [Accepter la greffe]
 	Tobie: Il me fait boire quelque chose d'amer. Je ne sens rien.
-	# [ciné e4_greffe] en ombre, hors champ : les mains d'Anselme, la lampe ; jamais l'œil ni la plaie.
+	# Cinématique : en ombre, hors champ : les mains d'Anselme, la lampe ; jamais l'œil ni la plaie.
+	do Cinematiques.jouer(&"e4_greffe")
 	Tobie: Quand je rouvre les yeux, la lampe a deux lumières. L'une d'elles est plus vieille que l'autre.
 	Anselme: Voilà. Tu es mieux, maintenant. Beaucoup mieux.
 	do GameState.appliquer_effets({&"lucidite": 2})

@@ -8,7 +8,7 @@ if not GameState.lanterne_allumee
 	Tobie: Je heurte quelqu'un dans le noir. Une épaule. Un uniforme mouillé.
 	Tobie: Pardon... Il ne répond pas. Il ne s'écarte pas. Il est froid.
 Tobie: Un soldat mort, debout dans les fils. Ils le tiennent mieux que ses jambes.
-Tobie: Son bras se lève, comme un panneau. [#geste=mort:lever-bras]
+Tobie: Son bras se lève, comme un panneau. [#geste=mort:lever-bras, #tenir]
 - [Suivre son doigt]
 	Tobie: Un trou d'obus, en contrebas. Quelque chose brille au fond.
 	do GameState.marquer_rencontre_vue(&"e2_mort_doigt")
@@ -20,9 +20,9 @@ Tobie: Son bras se lève, comme un panneau. [#geste=mort:lever-bras]
 	Tobie: Pardon. Tu n'en as plus besoin.
 - [Lui demander son nom] [#cout_lucidite=1]
 	Tobie: Comment tu t'appelles ?
-	Tobie: ... [#geste=mort:tourner-tete]
+	Tobie: ... La tête du mort tourne vers moi. Lentement.
 	Gaspard: Gaspard.
-	Tobie: Il regarde de nouveau le chemin. Il n'a jamais bougé. [#geste=mort:detourner-tete]
+	Tobie: Il regarde de nouveau le chemin. Il n'a jamais bougé.
 	do GameState.ajouter_marque(&"il_s_appelait_gaspard", &"nom_retenu", &"e2_mort")
 
 => END

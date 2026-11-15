@@ -49,6 +49,9 @@ signal geste_demande(cible: StringName, geste: StringName)
 ## `ecart_cortege` px, déphasées d'une image (la procession de l'étape 3). 0 ou 1 : seul.
 @export var cortege: int = 0
 @export var ecart_cortege: float = 140.0
+## Tant que la rencontre n'est pas vue, le personnage montre la première image de ce geste au
+## lieu de respirer (ex. le mort, bras pendant, avant « Son bras se lève »). Vide : repos.
+@export var pose_initiale: StringName
 
 var en_cours: bool = false
 var repere: RepereExamen = null
@@ -75,6 +78,8 @@ func _poser_personnages() -> void:
 			suivant.position = Vector2(-ecart_cortege * i, 0.0)
 			suivant.dephasage = i
 			add_child(suivant)
+	if dessin != null and pose_initiale != &"" and not GameState.rencontre_vue(rencontre_id):
+		dessin.poser_debut_geste(pose_initiale)
 	for nom: StringName in compagnons:
 		var compagnon := Personnage.creer(nom)
 		if compagnon != null:
@@ -136,7 +141,7 @@ func jouer_geste_replique(locuteur: String, tags: PackedStringArray) -> bool:
 	var p := personnage_nomme(cible)
 	if p == null and not demande["explicite"] and cible != &"tobie":
 		p = dessin
-	return p != null and p.jouer_geste(geste)
+	return p != null and p.jouer_geste(geste, demande["tenir"])
 
 
 ## Le personnage dessiné de la rencontre qui porte ce nom (principal, cortège exclu, ou

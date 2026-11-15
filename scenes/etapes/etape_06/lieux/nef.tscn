@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_06/e6_nef.dialogue" id="2"]
@@ -7,6 +7,7 @@
 [ext_resource type="Resource" path="res://dialogue/etape_06/e6_eloi.dialogue" id="5"]
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="6"]
 
+[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(5760, 180)
 
@@ -212,6 +213,7 @@ text = "nef_racines"
 [node name="e6_eloi" parent="Rencontres" instance=ExtResource("1")]
 position = Vector2(3800, 900)
 rencontre_id = &"e6_eloi"
+personnage = &"eloi"
 dialogue = ExtResource("5")
 libelle = "Écouter la voix"
 une_seule_fois = true
@@ -298,3 +300,20 @@ offset_bottom = 225.0
 color = Color(0, 0, 0, 0.45)
 mouse_filter = 2
 z_index = -1
+
+[node name="e6_chute_fissure" type="Node2D" parent="."]
+script = ExtResource("cine_script")
+id = &"e6_chute_fissure"
+duree = 6.0
+metadata/note_level_design = "Le sol cède : la caméra suit la glissade jusqu'au fond ; lancée par la première réplique de e6_nef"
+
+[node name="Camera" type="Camera2D" parent="e6_chute_fissure"]
+position = Vector2(320, 520)
+
+[node name="Depart" type="Marker2D" parent="e6_chute_fissure"]
+position = Vector2(320, 520)
+scale = Vector2(1.2, 1.2)
+
+[node name="Arrivee" type="Marker2D" parent="e6_chute_fissure"]
+position = Vector2(320, 800)
+scale = Vector2(1.5, 1.5)
