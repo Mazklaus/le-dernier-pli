@@ -29,6 +29,7 @@ const COUCHES_AMBIANCE := {
 	1: ["surface-lit", "surface-voix", "autre"],
 	2: ["surface", "autre"],
 	3: ["jour", "nuit", "autre"],
+	4: ["hopital", "autre"],
 }
 ## Groupe des émetteurs qu'on n'entend que dans le noir sans lanterne (ex. les fils de
 ## l'étape 2). Le Level Designer met l'AudioStreamPlayer2D dans ce groupe, en autoplay :

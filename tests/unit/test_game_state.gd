@@ -368,6 +368,24 @@ func test_marche_entre_etapes() -> void:
 	assert_eq([gs.vivres, gs.lucidite, gs.etape], [4, 7, 3])
 
 
+func test_marche_offerte_de_l_etape_5_vers_la_6() -> void:
+	for i in 4:
+		gs.passer_etape()  # 1 -> 5
+	gs.marquer_rencontre_vue(&"marche_offerte")
+	var vivres: int = gs.vivres
+	var lucidite: int = gs.lucidite
+	gs.passer_etape()  # 5 -> 6 : pas de Vivres, l'usure reste
+	assert_eq([gs.vivres, gs.lucidite, gs.etape], [vivres, lucidite - 1, 6])
+	gs.passer_etape()  # 6 -> 7 : le drapeau ne vaut que pour ce passage
+	assert_eq(gs.vivres, maxi(0, vivres - 1))
+
+
+func test_marche_offerte_sans_effet_ailleurs() -> void:
+	gs.marquer_rencontre_vue(&"marche_offerte")
+	gs.passer_etape()  # 1 -> 2
+	assert_eq(gs.vivres, 5)
+
+
 func test_parcours_etape_1_selon_spec() -> void:
 	# Partage sa ration, allume, prie : entre en étape 2 à 6 / 3 / 9.
 	gs.appliquer_effets({"vivres": 1})        # gamelle

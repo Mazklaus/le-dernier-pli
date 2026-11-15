@@ -184,3 +184,10 @@ func test_nouvelle_etape_repart_de_jour() -> void:
 	ad.definir_nuit(true, 0.0)
 	ad.jouer_etape(3)
 	assert_eq(ad._mix_nuit, 0.0)
+
+
+func test_etape_4_joue_hopital_et_autre() -> void:
+	var ad: Node = AudioDirectorScript.new()
+	add_child_autofree(ad)
+	ad.jouer_etape(4)
+	assert_eq(ad._couches.keys(), ["hopital", "autre"])

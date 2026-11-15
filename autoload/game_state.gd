@@ -422,8 +422,16 @@ func manger_objet_promis(objet: StringName, gain_vivres: int, promesse: StringNa
 
 ## La marche : −1 Vivres à chaque passage ; −1 Lucidité en quittant une étape ≥ 2
 ## (lecture de la courbe : on entre en étape 2 à 8, en étape 3 à 7).
+## Drapeau (posé par e5_autre) : la marche de l'étape 5 vers l'étape 6 ne coûte pas de Vivres.
+const MARCHE_OFFERTE: StringName = &"marche_offerte"
+const ETAPE_MARCHE_OFFERTE := 5
+
+
+## La marche d'une étape à la suivante : −1 Vivres (sauf marche offerte de 5 vers 6), et
+## l'usure de −1 Lucidité à partir de l'étape 2.
 func passer_etape() -> void:
-	modifier_jauge(VIVRES, -1)
+	if not (etape == ETAPE_MARCHE_OFFERTE and rencontre_vue(MARCHE_OFFERTE)):
+		modifier_jauge(VIVRES, -1)
 	if etape >= 2:
 		modifier_jauge(LUCIDITE, -1)
 	etape += 1
