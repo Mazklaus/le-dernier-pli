@@ -8,7 +8,7 @@
 ~ debut
 
 Tobie: Des voix, sous la fenêtre. Elles chantent très bas, sans paroles.
-Tobie: Entre les lames du volet : des cierges. Tout le village marche dans la rue noire, Ilde en tête.
+# [ciné e3_procession_nuit] entre les lames du volet, les cierges ; tout le village dans la rue noire, Ilde en tête.
 Tobie: Ils vont vers les champs. Personne ne parle. Même les enfants.
 if GameState.possede_marque(&"promis_a_ilde")
 	Tobie: J'ai promis. Quoi que j'entende.
@@ -34,7 +34,7 @@ if GameState.possede_marque(&"promis_a_ilde")
 
 ~ champs
 
-Tobie: Un champ labouré. Tout le village est à genoux, en cercle, le front contre la terre.
+Tobie: Tout le village est à genoux, en cercle, le front contre la terre.
 Tobie: Ils murmurent vers le sol. Le même chant, mais plus bas encore, comme pour quelqu'un qui dort.
 Tobie: Personne ne me regarde. Il y a une place vide dans le cercle.
 - [S'agenouiller avec eux] [#cout_lucidite=2]
