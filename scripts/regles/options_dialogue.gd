@@ -14,7 +14,9 @@ extends RefCounted
 ##                      réduit est affiché, puis la règle des coûts douteux s'applique.
 ##   [#geste=tendre]    sur une réplique : son personnage joue le geste (planche
 ##                      chr_<nom>_tendre_01) quand elle s'affiche ; [#geste=rose:danser]
-##                      vise un autre personnage de la rencontre (directive animation du GD).
+##                      vise un autre personnage de la rencontre (directive animation du GD) ;
+##   [#tenir]           avec un geste : le personnage garde la dernière image du geste au lieu
+##                      de revenir à la respiration, jusqu'au geste suivant (le mort, étape 2).
 ## Fonctions pures sur des PackedStringArray de tags : testables sans Dialogue Manager.
 
 const PREFIXE_COUT := "cout_"
@@ -24,6 +26,7 @@ const TAG_HALLUCINATION := "hallucination"
 const TAG_TIMBRE := "timbre"
 const TAG_ENFOUI := "enfoui"
 const TAG_GESTE := "geste"
+const TAG_TENIR := "tenir"
 const ACCENTS := {"à": "a", "â": "a", "ä": "a", "ç": "c", "é": "e", "è": "e", "ê": "e", "ë": "e",
 	"î": "i", "ï": "i", "ô": "o", "ö": "o", "ù": "u", "û": "u", "ü": "u", "ÿ": "y", "œ": "oe", "æ": "ae"}
 
@@ -115,8 +118,8 @@ static func slug_timbre(personnage: String, tags: PackedStringArray) -> String:
 	return slug.replace(" ", "-")
 
 
-## Geste demandé par les tags d'une réplique : {"cible": slug du personnage, "geste": nom},
-## ou {} sans tag geste. Sans cible explicite (« nom:geste »), la cible est le locuteur.
+## Geste demandé par les tags d'une réplique : {"cible": slug du personnage, "geste": nom,
+## "explicite": cible nommée, "tenir": garder la dernière image}, ou {} sans tag geste. Sans cible explicite (« nom:geste »), la cible est le locuteur.
 static func geste(locuteur: String, tags: PackedStringArray) -> Dictionary:
 	var valeur := valeur_tag(tags, TAG_GESTE).strip_edges()
 	if valeur == "":
@@ -128,4 +131,5 @@ static func geste(locuteur: String, tags: PackedStringArray) -> Dictionary:
 		nom = valeur.get_slice(":", 1).strip_edges()
 	if nom == "":
 		return {}
-	return {"cible": StringName(cible), "geste": StringName(nom), "explicite": valeur.contains(":")}
+	return {"cible": StringName(cible), "geste": StringName(nom), "explicite": valeur.contains(":"),
+		"tenir": a_tag(tags, TAG_TENIR)}
