@@ -210,12 +210,33 @@ def eloi_a_genoux(i: int, incline: float, sourire: int = 1, bocal_pose: bool = T
     return "".join(out)
 
 
+def eloi_prosterne(i: int) -> str:
+    """La prosternation : toujours à genoux, assis sur les talons, le dos rond, le front posé
+    contre la terre et les mains à plat de chaque côté de la tête. Pas une chute."""
+    s = SOUFFLE[i] * .3
+    return (bocal(176, 404, .95)
+            # la main de derrière, à plat au-delà de la tête
+            + g(manche((100, 360 + s), (70, 386), (46, 400)) + f'<ellipse cx="44" cy="401" rx="9" ry="4.5" fill="{PEAU}"/>')
+            # tibias et pieds sous lui, cuisses repliées : assis sur les talons
+            + f'<path d="M106 384 L166 392 Q174 394 172 404 L104 405 Q96 398 106 384 Z" fill="url(#h1)" {ST} stroke-width="2.2"/>'
+            + f'<path d="M164 392 L186 396 Q192 404 182 405 L166 405 Z" fill="{PEAU}" {ST} stroke-width="1.6"/>'
+            + f'<path d="M160 360 Q166 384 152 394 L104 398 Q98 386 110 378 Z" fill="url(#h1)" {ST} stroke-width="2.2"/>'
+            # le dos rond de la blouse, de la hanche aux épaules penchées vers le sol
+            + f'<path d="M164 376 Q166 330 132 {322 + s:.1f} Q102 {322 + s:.1f} 86 {362 + s:.1f} L94 {378 + s:.1f} Q120 {372 + s:.1f} 150 394 Z" fill="{PAPIER}" {ST} stroke-width="2.4"/>'
+            + f'<path d="M156 360 Q150 334 124 {330 + s:.1f} M140 384 Q130 360 110 {356 + s:.1f}" fill="none" stroke="{MINE}" stroke-width="1.3"/>'
+            + f'<path d="M150 344 Q158 366 160 384" fill="none" {ST} stroke-width="2.4"/>'
+            # la tête, le front contre la terre, le visage vers le sol, les yeux fermés
+            + f'<g transform="translate(-52 {256 + s:.1f}) rotate(-100 122 130)">{tete_eloi(0, 0, True)}</g>'
+            # la main de devant, à plat de ce côté-ci de la tête
+            + g(manche((96, 366 + s), (98, 388), (86, 400)) + f'<ellipse cx="84" cy="401" rx="9" ry="4.5" fill="{PEAU}"/>'))
+
+
 def eloi_front_terre() -> list[str]:
     """Il pose le bocal, s'agenouille, met le front contre la terre, se redresse et sourit."""
     return [eloi(0),
             eloi_a_genoux(1, 0, 1),
             eloi_a_genoux(2, 44, 0),
-            eloi_a_genoux(0, 88, 0),
+            eloi_prosterne(0),
             eloi_a_genoux(1, 0, 2),
             eloi(0, sourire=2)]
 
