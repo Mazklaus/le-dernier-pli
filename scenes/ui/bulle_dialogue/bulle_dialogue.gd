@@ -59,8 +59,17 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if Reglages.valeur(&"effets_attenues"):
 		return
-	# La bavure tremble : petit décalage aléatoire, quelques fois par seconde.
-	if Engine.get_process_frames() % 6 != 0:
+	# La bavure tremble : petit décalage aléatoire. Sous Lucidité basse, sur les coups du
+	# battement partagé (en phase avec le ruban de Tobie et le HUD), sinon quelques fois par
+	# seconde.
+	var maintenant := Battement.maintenant()
+	if Battement.bat(GameState.palier, false):
+		if not Battement.coup(maintenant, GameState.palier, false):
+			for etiquette in _baves:
+				if is_instance_valid(etiquette):
+					etiquette.position.y = 0.0
+			return
+	elif Engine.get_process_frames() % 6 != 0:
 		return
 	for etiquette in _baves:
 		if is_instance_valid(etiquette):

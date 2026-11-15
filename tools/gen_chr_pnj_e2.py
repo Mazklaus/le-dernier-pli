@@ -6,8 +6,8 @@ images de 200 x 320, sol à y 316, centre à x 100.
 
   chr_brisse_repos_01 : 4 images ; la flamme de sa bougie vacille, son souffle est lent.
                         Forme : l'arc, un dos rond penché sur une flamme qu'il protège.
-  chr_mort_fige_01    : 1 image ; figé dans un reste de fil, le bras tendu vers la droite
-                        et un peu vers le bas. Forme : la flèche. Plaque d'identité au cou.
+  chr_mort_fige_01    : 1 image ; un cadavre affaissé sur un reste de fil, jambes molles, tête
+                        tombée ; seul le bras tendu vers la droite et le bas est raide.
 
 Aucun rouge : l'ennemi et la mort restent sans sang visible à l'étape 2.
 
@@ -84,34 +84,40 @@ def brisse(i: int) -> str:
 
 
 def mort() -> str:
-    """Le mort, de profil, figé dans un reste de fil, le bras tendu vers la droite et vers le bas."""
+    """Le mort, affaissé sur un reste de fil : un cadavre mou dont seul le bras tendu est raide."""
     return (
-        # piquets et fil où il est pris (le fil passe devant le corps)
-        f'<path d="M40 405 L52 230" stroke="{ENCRE}" stroke-width="8" stroke-linecap="round"/>'
-        # jambes fléchies, un genou au sol
-        f'<path d="M96 300 L74 352 L92 404 L112 404 L96 356 L116 306 Z" fill="url(#mol)" {ST} stroke-width="2.4"/>'
-        f'<path d="M124 300 L150 350 L132 392 L150 398 L172 352 L144 296 Z" fill="url(#mol)" {ST} stroke-width="2.4"/>'
-        f'<path d="M88 396 L84 405 L118 405 L114 396 Z M128 388 L124 404 L156 404 L154 394 Z" fill="{ENCRE}" {ST} stroke-width="1.6"/>'
-        # buste penché en avant (la flèche), capote raidie
-        f'<path d="M86 300 Q84 236 112 180 Q140 150 176 160 L184 176 Q158 196 150 240 L148 306 L120 314 Z" fill="url(#h2)" {ST} stroke-width="2.8"/>'
-        # bras arrière qui pend, accroché au fil
-        f'<path d="M118 200 Q96 240 94 272 L108 276 Q114 244 132 214 Z" fill="url(#h2)" {ST} stroke-width="2.4"/>'
-        # le bras tendu : la flèche, vers la droite et un peu vers le bas
-        f'<path d="M160 176 L204 202 L200 214 L154 196 Z" fill="url(#h1)" {ST} stroke-width="2.4"/>'
-        f'<path d="M200 198 L212 206 L210 212 L202 216 Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>'
-        f'<path d="M210 208 L216 212" {ST} stroke-width="2"/>'
-        # tête penchée, casque glissé ; aucun visage lisible : une ombre en contre-hachure
-        f'<path d="M168 128 Q190 122 200 140 Q204 160 190 172 Q172 176 164 160 Q160 142 168 128 Z" fill="url(#h2)" {ST} stroke-width="2.2"/>'
-        f'<path d="M156 136 Q164 104 192 106 Q214 112 214 138 Z" fill="{LAVIS}" {ST} stroke-width="2.4"/>'
-        f'<path d="M150 140 L218 132 L216 140 L152 148 Z" fill="{ENCRE}" {ST} stroke-width="1.4"/>'
-        # plaque d'identité au cou, rongée (détail mort_plaque) : petit ovale clair, sans inscription
-        f'<path d="M176 170 L180 182" {ST} stroke-width="1.2"/>'
-        f'<ellipse cx="181" cy="188" rx="6" ry="4.4" fill="{PAPIER}" {ST} stroke-width="1.6"/>'
-        f'<path d="M178 187 L183 189" stroke="{MINE}" stroke-width="1.2"/>'
-        # le fil, par-dessus : trois brins, nœuds en X
-        f'<path d="M52 250 Q120 236 180 268 M50 300 Q110 286 200 330 M48 350 Q120 342 210 380" fill="none" {ST} stroke-width="2.2"/>'
+        # piquets du reste de fil
+        f'<path d="M40 405 L50 236" stroke="{ENCRE}" stroke-width="8" stroke-linecap="round"/>'
+        f'<path d="M214 405 L206 300" stroke="{ENCRE}" stroke-width="6" stroke-linecap="round"/>'
+        # jambes molles : genoux au sol, tibias qui traînent derrière, pieds tournés sur le côté
+        f'<path d="M92 300 L104 372 L118 370 L110 302 Z" fill="url(#mol)" {ST} stroke-width="2.4"/>'
+        f'<path d="M104 362 L62 392 L68 402 L114 378 Z" fill="url(#mol)" {ST} stroke-width="2.4"/>'
+        f'<path d="M110 304 L130 380 L144 376 L126 300 Z" fill="url(#mol)" {ST} stroke-width="2.4"/>'
+        f'<path d="M132 368 L92 398 L98 405 L142 384 Z" fill="url(#mol)" {ST} stroke-width="2.4"/>'
+        f'<path d="M56 392 L48 404 L70 405 L72 396 Z M86 396 L80 405 L104 405 L102 398 Z" fill="{ENCRE}" {ST} stroke-width="1.6"/>'
+        # buste qui pend en avant, plié sur le fil, la capote retombée
+        f'<path d="M84 306 Q86 272 112 248 Q138 230 166 240 L172 262 Q150 268 138 290 L132 318 L104 322 Z" fill="url(#h2)" {ST} stroke-width="2.8"/>'
+        # bras arrière qui pend tout droit, sans force
+        f'<path d="M134 250 Q146 290 150 334 L138 336 Q132 296 122 260 Z" fill="url(#h2)" {ST} stroke-width="2.4"/>'
+        f'<path d="M138 334 Q138 348 146 350 Q152 344 150 334 Z" fill="{PAPIER}" {ST} stroke-width="1.6"/>'
+        # tête tombée sur la poitrine, plus bas que les épaules ; aucun visage lisible
+        f'<path d="M160 258 Q180 252 188 270 Q190 290 176 298 Q160 300 154 286 Q150 268 160 258 Z" fill="url(#h2)" {ST} stroke-width="2.2"/>'
+        # casque glissé vers l'avant, de travers
+        f'<path d="M158 300 Q150 272 170 256 Q192 248 200 272 Z" fill="{LAVIS}" {ST} stroke-width="2.4"/>'
+        f'<path d="M150 306 L206 270 L208 278 L156 312 Z" fill="{ENCRE}" {ST} stroke-width="1.4"/>'
+        # plaque d'identité qui pend du cou (détail mort_plaque), sans inscription
+        f'<path d="M156 270 L152 306" {ST} stroke-width="1.2"/>'
+        f'<ellipse cx="151" cy="311" rx="4.4" ry="6" fill="{PAPIER}" {ST} stroke-width="1.6"/>'
+        f'<path d="M150 308 L152 313" stroke="{MINE}" stroke-width="1.2"/>'
+        # la fausse note : le bras tendu, droit et raide, vers la droite et vers le bas
+        f'<path d="M146 228 L206 256 L200 270 L142 244 Z" fill="{PAPIER}" {ST} stroke-width="3"/>'
+        f'<path d="M150 238 L200 262" stroke="{MINE}" stroke-width="1.4"/>'
+        f'<path d="M202 252 L212 258 L210 268 L198 268 Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>'
+        f'<path d="M210 262 L218 268" {ST} stroke-width="2.2"/>'
+        # le fil, par-dessus : un brin tendu sous la poitrine, deux brins retombés
+        f'<path d="M50 252 Q110 250 170 262 Q192 270 206 304 M48 300 Q100 300 140 320 Q170 336 206 340 M46 356 Q110 360 210 384" fill="none" {ST} stroke-width="2.2"/>'
         + "".join(f'<path d="M{x - 4} {y - 4} L{x + 4} {y + 4} M{x + 4} {y - 4} L{x - 4} {y + 4}" {ST} stroke-width="1.4"/>'
-                  for x, y in ((80, 244), (118, 246), (152, 256), (84, 293), (126, 298), (166, 314), (90, 346), (140, 352), (186, 368)))
+                  for x, y in ((74, 251), (112, 252), (150, 258), (196, 284), (72, 300), (118, 309), (176, 337), (80, 357), (150, 370), (196, 380)))
     )
 
 
