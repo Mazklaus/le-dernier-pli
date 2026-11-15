@@ -242,3 +242,31 @@ static func _lieu_habille(etape: EtapeBase, lieu: StringName) -> bool:
 		var fond := noeud.get_node_or_null("Fond") as CanvasItem
 		return fond != null and not fond.visible
 	return false
+
+
+## Règle du Game Director : le rouge est réservé au sceau, au ruban et au sang. Un aplat de
+## maquette (ColorRect, Polygon2D) assez rouge pour être reconnu par l'écran gravure sortirait
+## en #9B1C1C exact (cas des ceintures de l'étape 2 et des ronces de l'étape 5, #96).
+func test_aucun_aplat_de_maquette_rouge() -> void:
+	var echecs: Array[String] = []
+	for numero in _etapes_existantes():
+		var etape := _instancier(numero)
+		await wait_process_frames(2)
+		var m := etape.materiau_gravure()
+		var seuil := _f(m, &"seuil_rouge") if m != null else 0.18
+		for n in etape.find_children("*", "CanvasItem", true, false):
+			var item := n as CanvasItem
+			if item.get_canvas_layer_node() != null:
+				continue
+			var couleur: Color
+			if item is ColorRect:
+				couleur = (item as ColorRect).color
+			elif item is Polygon2D:
+				couleur = (item as Polygon2D).color
+			else:
+				continue
+			couleur *= item.modulate * item.self_modulate
+			# Sur un fond neutre (gris), un aplat translucide ne garde que alpha × sa rougeur.
+			if couleur.a > 0.0 and _rougeur(couleur) * couleur.a > seuil:
+				echecs.append("étape %d : %s (%s)" % [numero, etape.get_path_to(item), couleur.to_html(false)])
+	assert_eq(echecs.size(), 0, "aplat de maquette rouge (sortirait en #9B1C1C) :\n%s" % "\n".join(echecs))
