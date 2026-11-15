@@ -32,6 +32,13 @@ signal dialogue_termine(declencheur: DeclencheurDialogue)
 ## Personnage dessiné de la rencontre (planche chr_<nom>_repos_01 de la DA), posé aux pieds du
 ## déclencheur ; masque le rectangle « Visuel » de la maquette. Vide : pas de personnage.
 @export var personnage: StringName
+## Autres personnages de la rencontre, avec leur décalage depuis le déclencheur
+## (ex. la noce : {&"rose": Vector2(-200, 0), &"violoneux": Vector2(200, 0)}).
+@export var compagnons: Dictionary = {}
+## Cortège : nombre de silhouettes de `personnage` alignées vers la gauche tous les
+## `ecart_cortege` px, déphasées d'une image (la procession de l'étape 3). 0 ou 1 : seul.
+@export var cortege: int = 0
+@export var ecart_cortege: float = 140.0
 
 var en_cours: bool = false
 var repere: RepereExamen = null
@@ -44,12 +51,30 @@ func _ready() -> void:
 		repere = RepereExamen.new()
 		repere.rencontre_id = rencontre_id
 		add_child(repere)
+	_poser_personnages()
+
+
+## Pose le personnage, son cortège et ses compagnons ; masque le rectangle de la maquette.
+func _poser_personnages() -> void:
 	dessin = Personnage.creer(personnage)
 	if dessin != null:
+		add_child(dessin)
+		for i in range(1, cortege):
+			var suivant := Personnage.creer(personnage)
+			suivant.name = "Cortege%d" % i
+			suivant.position = Vector2(-ecart_cortege * i, 0.0)
+			suivant.dephasage = i
+			add_child(suivant)
+	for nom: StringName in compagnons:
+		var compagnon := Personnage.creer(nom)
+		if compagnon != null:
+			compagnon.name = "Compagnon_%s" % nom
+			compagnon.position = compagnons[nom]
+			add_child(compagnon)
+	if dessin != null or not compagnons.is_empty():
 		var visuel := get_node_or_null("Visuel") as CanvasItem
 		if visuel != null:
 			visuel.visible = false
-		add_child(dessin)
 
 
 func est_verrouille() -> bool:

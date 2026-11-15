@@ -68,3 +68,77 @@ func test_les_personnages_de_l_etape_1_sont_poses() -> void:
 				if d.dessin != null:
 					assert_eq(d.dessin.nom, e[2], String(e[1]))
 		assert_true(trouve, String(e[1]))
+
+
+## [scène, rencontre, personnage] de l'étape 3 (#84).
+const ETAPE_3 := [
+	["res://scenes/etapes/etape_03/lieux/maison_ilde.tscn", &"e3_ilde", &"ilde"],
+	["res://scenes/etapes/etape_03/lieux/clocher.tscn", &"e3_clocher", &"sonneur"],
+	["res://scenes/etapes/etape_03/lieux/chemin_nuit.tscn", &"e3_procession_champs", &"procession"],
+]
+
+
+func _declencheur(lieu: Node, rencontre: StringName) -> DeclencheurDialogue:
+	for n in lieu.find_children("*", "", true, false):
+		var d := n as DeclencheurDialogue
+		if d != null and d.rencontre_id == rencontre:
+			return d
+	return null
+
+
+func test_la_procession_marche_sur_place_en_4_images() -> void:
+	var p := Personnage.creer(&"procession")
+	assert_not_null(p)
+	assert_eq(p.sprite_frames.get_frame_count(SilhouetteTobie.REPOS), 4)
+	p.free()
+
+
+func test_un_cortege_aligne_et_dephase() -> void:
+	var d: DeclencheurDialogue = SceneDeclencheur.instantiate()
+	d.rencontre_id = &"e9_cortege"
+	d.personnage = &"procession"
+	d.cortege = 4
+	add_child_autofree(d)
+	assert_not_null(d.dessin)
+	assert_eq(d.dessin.frame, 0)
+	for i in range(1, 4):
+		var suivant := d.get_node_or_null("Cortege%d" % i) as Personnage
+		assert_not_null(suivant, "Cortege%d" % i)
+		if suivant != null:
+			assert_eq(suivant.position, Vector2(-140.0 * i, 0.0))
+			assert_eq(suivant.frame, i % 4, "déphasé d'une image")
+	assert_null(d.get_node_or_null("Cortege4"))
+
+
+func test_les_compagnons_sont_poses_a_leur_decalage() -> void:
+	var d: DeclencheurDialogue = SceneDeclencheur.instantiate()
+	d.rencontre_id = &"e9_noce"
+	d.compagnons = {&"rose": Vector2(-200, 0), &"violoneux": Vector2(200, 0), &"personne": Vector2.ZERO}
+	var visuel := ColorRect.new()
+	visuel.name = "Visuel"
+	d.add_child(visuel)
+	add_child_autofree(d)
+	assert_null(d.dessin)
+	assert_eq((d.get_node("Compagnon_rose") as Node2D).position, Vector2(-200, 0))
+	assert_eq((d.get_node("Compagnon_violoneux") as Node2D).position, Vector2(200, 0))
+	assert_null(d.get_node_or_null("Compagnon_personne"), "planche absente : rien")
+	assert_false(visuel.visible)
+
+
+func test_les_personnages_de_l_etape_3_sont_poses() -> void:
+	for e: Array in ETAPE_3:
+		var lieu: Node = add_child_autofree((load(String(e[0])) as PackedScene).instantiate())
+		var d := _declencheur(lieu, e[1])
+		assert_not_null(d, String(e[1]))
+		if d != null:
+			assert_not_null(d.dessin, String(e[1]))
+			if d.dessin != null:
+				assert_eq(d.dessin.nom, e[2], String(e[1]))
+	var etape: EtapeBase = add_child_autofree(load("res://scenes/etapes/etape_03/etape_03.tscn").instantiate())
+	assert_eq(etape.trouver_declencheur(&"e3_lisiere").dessin.nom, &"enfants")
+	var noce := etape.trouver_declencheur(&"e3_noce")
+	assert_not_null(noce.get_node_or_null("Compagnon_rose"))
+	assert_not_null(noce.get_node_or_null("Compagnon_violoneux"))
+	var champs := _declencheur(etape, &"e3_procession_champs")
+	if champs != null:
+		assert_not_null(champs.get_node_or_null("Cortege3"), "quatre silhouettes dans les champs")
