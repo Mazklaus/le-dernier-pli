@@ -4,9 +4,9 @@ extends GutTest
 ## gravure : r − max(g, b) > 0,18. L'Égaré est exclu : rouge_efface y pâlit le rouge exprès.
 ##
 ## Les tests tournent sans rendu (--headless) : on rejoue donc ici, en GDScript, la chaîne
-## de couleur d'un pixel rouge. D'abord la teinte de la scène (CanvasModulate « Eclairage »),
-## puis les étapes 3 et 4 de shaders/ecran_gravure.gdshader (remappage papier/encre,
-## détection du rouge, rouge exact). Le grain (±grain/2, sans effet sur le rouge exact) et le
+## de couleur d'un pixel rouge : une éventuelle teinte de scène (CanvasModulate « Eclairage »,
+## l'ancien chemin de la nuit), puis les étapes 3 et 4 de shaders/ecran_gravure.gdshader
+## (remappage papier/encre, uniforme teinte, détection du rouge, rouge exact). Le grain (±grain/2, sans effet sur le rouge exact) et le
 ## tremblé (déplacement des UV) sont laissés de côté.
 ## Si le shader change sa façon de traiter la couleur (teinte de nuit déplacée dans le shader,
 ## par exemple), _sortie_gravure() doit suivre.
@@ -106,7 +106,7 @@ static func _luma(c: Color) -> float:
 
 
 ## Couleur en sortie de l'écran gravure pour un pixel du monde de couleur « source »
-## (avant la teinte de la scène).
+## (avant la teinte de la scène « teinte », Eclairage, s'il en reste un).
 func _sortie_gravure(source: Color, teinte: Color, m: ShaderMaterial) -> Color:
 	var src := Color(source.r * teinte.r, source.g * teinte.g, source.b * teinte.b)
 	var encre := _c(m, &"couleur_encre")
@@ -115,6 +115,8 @@ func _sortie_gravure(source: Color, teinte: Color, m: ShaderMaterial) -> Color:
 	var seuil := _f(m, &"seuil_rouge")
 	var t := clampf((_luma(src) - _luma(ENCRE_REF)) / (_luma(PAPIER_REF) - _luma(ENCRE_REF)), 0.0, 1.0)
 	var c := encre.lerp(papier, t)
+	var teinte_gravure := _c(m, &"teinte")
+	c = Color(c.r * teinte_gravure.r, c.g * teinte_gravure.g, c.b * teinte_gravure.b)
 	var r := smoothstep(seuil, seuil + 0.12, _rougeur(src))
 	return c.lerp(rouge.lerp(encre, _f(m, &"rouge_efface")), r)
 
@@ -138,14 +140,15 @@ func test_le_rouge_reste_reconnu_partout_en_clair_et_en_trouble() -> void:
 				etape.entrer_lieu(lieu)
 				etape.definir_nuit(nuit)
 				var teinte := _teinte_scene(etape)
+				var teinte_gravure := _c(m, &"teinte")
 				for palier in PALIERS_TESTES:
 					m.set_shader_parameter(&"rouge_efface", LuciditeEcran.valeurs_pour(palier).y)
 					var sortie := _sortie_gravure(rouge_asset, teinte, m)
 					cas += 1
 					if _rougeur(sortie) <= SEUIL_SORTIE:
-						echecs.append("étape %d, lieu « %s », %s, %s : r − max(g, b) = %.3f en sortie (teinte %s)"
+						echecs.append("étape %d, lieu « %s », %s, %s : r − max(g, b) = %.3f en sortie (scène %s, gravure %s)"
 								% [numero, lieu if lieu != &"" else "surface", "nuit" if nuit else "jour",
-								palier, _rougeur(sortie), teinte.to_html(false)])
+								palier, _rougeur(sortie), teinte.to_html(false), teinte_gravure.to_html(false)])
 	assert_gt(cas, 0, "aucun cas testé")
 	assert_eq(echecs.size(), 0, "rouge non reconnu (%d cas sur %d) :\n%s"
 			% [echecs.size(), cas, "\n".join(echecs)])
@@ -164,3 +167,13 @@ func test_modele_sans_teinte() -> void:
 	assert_almost_eq(sortie.g, rouge.g, 0.001)
 	m.set_shader_parameter(&"rouge_efface", LuciditeEcran.valeurs_pour(&"egare").y)
 	assert_lt(_rougeur(_sortie_gravure(rouge, Color.WHITE, m)), _rougeur(rouge))
+
+
+## Garde-fou du modèle côté shader : la teinte s'applique avant le rouge exact (étape 4),
+## sinon le modèle ci-dessus ne décrit plus le shader.
+func test_le_shader_teinte_avant_le_rouge_exact() -> void:
+	var code := (load("res://shaders/ecran_gravure.gdshader") as Shader).code
+	var teinte := code.find("c *= teinte.rgb")
+	var rouge := code.find("float rougeur")
+	assert_gt(teinte, -1, "le shader n'applique plus « c *= teinte.rgb » : adapter _sortie_gravure()")
+	assert_gt(rouge, teinte, "la teinte doit précéder la détection du rouge exact")
