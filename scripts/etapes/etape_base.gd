@@ -104,13 +104,32 @@ func _sur_passage_franchi(passage: Passage, vers: StringName) -> void:
 	var messager := trouver_messager()
 	if messager != null and passage != null:
 		AudioDirector.jouer_variante(son_passage(passage.global_position, messager.global_position))
+	entrer_lieu(vers)
+
+
+## Applique la musique et la nuit d'un lieu (&"" : la surface), qu'on y entre par un Passage,
+## un saut de débogage ou, plus tard, un chargement.
+func entrer_lieu(lieu: StringName) -> void:
 	if not lieux_musique.is_empty():
-		if lieux_musique.has(vers):
-			AudioDirector.jouer_musique(numero_etape, String(lieux_musique[vers]))
+		if lieux_musique.has(lieu):
+			AudioDirector.jouer_musique(numero_etape, String(lieux_musique[lieu]))
 		else:
 			AudioDirector.arreter_musique()
 	if not lieux_nuit.is_empty():
-		definir_nuit(vers in lieux_nuit)
+		definir_nuit(lieu in lieux_nuit)
+
+
+## Lieu (sous-scène de « Lieux ») qui contient ce nœud, nommé comme son marqueur d'entrée
+## (entree_<lieu>) ; &"" pour la surface.
+func lieu_de(noeud: Node) -> StringName:
+	var lieux := get_node_or_null("Lieux")
+	if lieux == null or noeud == null or not lieux.is_ancestor_of(noeud):
+		return &""
+	for lieu in lieux.get_children():
+		if lieu == noeud or lieu.is_ancestor_of(noeud):
+			for marqueur in lieu.find_children("entree_*", "Marker2D", true, false):
+				return StringName(String(marqueur.name).trim_prefix("entree_"))
+	return &""
 
 
 ## Bascule jour / nuit : teinte de la scène (pas de l'interface) et signal pour les ambiances.
@@ -235,6 +254,8 @@ func aller_rencontre(id: StringName) -> void:
 		push_warning("%s : rencontre %s introuvable (messager ou déclencheur absent)" % [name, id])
 		return
 	messager.placer_devant(declencheur)
+	# Même teinte et même musique qu'en arrivant par le Passage (nuit de la chambre…).
+	entrer_lieu(lieu_de(declencheur))
 
 
 func trouver_messager() -> Messager:

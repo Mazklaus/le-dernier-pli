@@ -155,3 +155,22 @@ func test_l_etape_s_annonce_quand_elle_est_prete() -> void:
 	watch_signals(SceneRouter)
 	var autre: EtapeBase = add_child_autofree(EtapeBase.new())
 	assert_signal_emitted_with_parameters(SceneRouter, "etape_prete", [autre])
+
+
+func test_saut_de_debogage_applique_la_nuit_du_lieu() -> void:
+	etape.lieux_nuit = [&"chambre"]
+	var lieux := Node2D.new()
+	lieux.name = "Lieux"
+	etape.add_child(lieux)
+	var chambre := Node2D.new()
+	chambre.name = "Chambre"
+	lieux.add_child(chambre)
+	_marqueur("entree_chambre", Vector2(-3000, 400), chambre)
+	var d: DeclencheurDialogue = preload("res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn").instantiate()
+	d.rencontre_id = &"e9_lit"
+	chambre.add_child(d)
+	d.global_position = Vector2(-2800, 400)
+	assert_eq(etape.lieu_de(d), &"chambre")
+	assert_eq(etape.lieu_de(m), &"", "la surface")
+	etape.aller_rencontre(&"e9_lit")
+	assert_true(etape.nuit, "la chambre est de nuit, même par le saut")
