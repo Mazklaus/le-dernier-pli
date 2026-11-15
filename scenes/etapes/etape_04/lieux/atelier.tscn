@@ -5,7 +5,7 @@
 [ext_resource type="Resource" path="res://dialogue/etape_04/e4_anselme.dialogue" id="3"]
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="4"]
 
-[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e4_greffe.gd" id="cine_greffe"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 180)
 
@@ -217,7 +217,7 @@ theme_override_font_sizes/font_size = 24
 text = "-> escalier"
 
 [node name="e4_greffe" type="Node2D" parent="."]
-script = ExtResource("cine_script")
+script = ExtResource("cine_greffe")
 id = &"e4_greffe"
 duree = 8.0
 metadata/note_level_design = "Ombre portée sur le mur, les mains d'Anselme ; lancée par une réplique de e4_anselme"
