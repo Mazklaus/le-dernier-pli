@@ -5,13 +5,13 @@
 
 ~ debut
 
-Tobie: Dans une niche creusée à part, un très vieil homme. Un uniforme plié sur les genoux.
+Tobie: Un très vieil homme, un uniforme plié sur les genoux.
 Tobie: Une couleur que je n'ai jamais vue sur un soldat. Pas la nôtre. L'autre.
 Mathurin: J'étais de l'autre côté du fil, autrefois. Comme toi, de ton côté. Avec un fusil.
 Mathurin: On ne se bat plus, ici. Depuis longtemps. Avant que tu naisses.
 Tobie: Là-haut, on se bat tous les jours. J'ai vu les morts. J'en ai porté.
-Mathurin: Je sais, petit. Je sais.
-Tobie: Il ne dit rien de plus. Il caresse l'uniforme, comme on caresse un chien qui dort.
+Mathurin: Je sais, petit. Je sais. [#geste=caresser-uniforme]
+Tobie: Il ne dit rien de plus.
 - [Le croire] [#cout_lucidite=2, #enfoui]
 	=> croire
 - [Le traiter d'ennemi] Tu mens.

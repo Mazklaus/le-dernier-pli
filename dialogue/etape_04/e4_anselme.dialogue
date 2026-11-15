@@ -5,21 +5,21 @@
 ~ debut
 
 Tobie: Un atelier propre comme une chapelle. Des bocaux, des scies fines, une planche avec un homme dessiné.
-Anselme: Te voilà. Assieds-toi, que je te regarde.
-Tobie: Il me tourne la tête vers la lampe, du bout des doigts. Il regarde mes yeux comme on regarde un outil.
+Anselme: Te voilà. Assieds-toi, que je te regarde. [#geste=examiner]
+Tobie: Il regarde mes yeux comme on regarde un outil.
 Anselme: Tes yeux sont fatigués. Il te reste du chemin, et le chemin va devenir noir.
 Anselme: J'ai ici l'œil de saint Ivo. Il voyait dans le noir des mines. Il verra pour toi.
 Anselme: Ça ne fait pas mal. Rien ne fait mal, ici. Et tu serais plus beau.
 - [Accepter la greffe]
-	Tobie: Il me fait boire quelque chose d'amer. Ses mains sont chaudes. Je ne sens rien.
+	Tobie: Il me fait boire quelque chose d'amer. Je ne sens rien.
+	# [ciné e4_greffe] en ombre, hors champ : les mains d'Anselme, la lampe ; jamais l'œil ni la plaie.
 	Tobie: Quand je rouvre les yeux, la lampe a deux lumières. L'une d'elles est plus vieille que l'autre.
 	Anselme: Voilà. Tu es mieux, maintenant. Beaucoup mieux.
 	do GameState.appliquer_effets({&"lucidite": 2})
 	do GameState.ajouter_marque(&"recousu", &"cicatrice", &"e4_anselme")
 	do GameState.marquer_rencontre_vue(&"oeil_saint_ivo")
 - [Refuser] Je garde mes yeux.
-	Anselme: Dommage. Tu aurais été plus beau.
-	Tobie: Il range l'œil dans son bocal, sans colère. Il revisse le couvercle, très soigneusement.
-Anselme: L'escalier, derrière moi. Descends voir les saints. Ils aiment qu'on leur rende visite.
+	Anselme: Dommage. Tu aurais été plus beau. [#geste=ranger-bocal]
+Anselme: L'escalier, derrière moi. Descends voir les saints. Ils aiment qu'on leur rende visite. [#geste=montrer]
 
 => END

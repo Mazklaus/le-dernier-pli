@@ -236,9 +236,6 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> niche_veilleur"
 
-[node name="reserve_detail_village" type="Marker2D" parent="Points"]
-position = Vector2(4150, 900)
-
 [node name="VersSeuil" type="Area2D" parent="Passages" groups=["passages"]]
 position = Vector2(4600, 750.0)
 collision_layer = 4

@@ -5,9 +5,8 @@
 ~ debut
 
 do GameState.sortir_zone_sombre()
-Tobie: En haut de l'escalier, la porte. Anselme y attend, un pot de cendre à la main.
-Tobie: Il trace la croix sur mon front, par-dessus celle de Cassien. Son pouce appuie fort.
-Anselme: Tu es prêt, maintenant.
+Anselme: Tu es prêt, maintenant. [#geste=cendrer]
+Tobie: Sa croix, par-dessus celle de Cassien. Son pouce appuie fort.
 if GameState.possede_marque(&"recousu")
 	Anselme: Il te va bien. Saint Ivo est content, je le sais.
 Anselme: Va. Et ne te salis pas trop en route.
@@ -23,7 +22,7 @@ Tobie: Au loin, une forêt. Des arbres trop droits, qui n'ont pas de branches.
 ~ lecture
 
 do GameState.lire_ligne_pli()
-Tobie: Je tiens le papier contre le ciel blanc. La cire rouge laisse passer une ligne.
+Tobie: La cire rouge laisse passer une ligne.
 if GameState.pli_lignes_lues == 1
 	Tobie: « À celle qui écoute sous les cloches tues, »
 	Tobie: Une prière. À une sainte, sûrement. Ici, ils en ont plein les caves.

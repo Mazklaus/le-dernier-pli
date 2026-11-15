@@ -4,10 +4,10 @@
 
 ~ debut
 
-Tobie: Au fond du village, une porte très haute. Couverte de cire noire, couche sur couche.
+Tobie: Une porte très haute, couverte de cire noire.
 Tobie: Comme si on l'avait scellée, puis rescellée, puis rescellée encore. Pendant des années.
-Éloi: Elle t'attend, petit.
-Tobie: Éloi ne va pas plus loin. Il pose son bocal de vers luisants à mes pieds, et il recule.
+Éloi: Elle t'attend, petit. [#geste=poser-bocal]
+Tobie: Éloi ne va pas plus loin.
 Tobie: Je m'assois devant la porte. Je sors le pli.
 - [Lire en transparence] [if GameState.peut_lire_ligne() /] [#cout_huile=1, #sans_prelevement]
 	=> lecture
@@ -20,7 +20,7 @@ Tobie: Derrière la porte, très loin, quelque chose respire. Ou c'est la terre.
 ~ lecture
 
 do GameState.lire_ligne_pli()
-Tobie: Je tiens le papier devant les vers luisants. La cire rouge laisse passer une ligne verte.
+Tobie: La cire rouge laisse passer une ligne verte.
 if GameState.pli_lignes_lues == 1
 	Tobie: « À celle qui écoute sous les cloches tues, »
 	Tobie: Une sainte qui écoute. Sous les cloches. Je regarde la porte.

@@ -14,14 +14,14 @@ Jacquot: Et toi aussi, après.
 Jacquot: Alors c'est toi qui vas voir l'arrière.
 Jacquot: Moi j'ai raté la gamelle. La Ravaude dit que j'ai l'air trop gras.
 - [Partager ta ration] Prends la moitié. [#cout_vivres=1]
-	Jacquot: T'es bête. ... Bon. Merci.
+	Jacquot: T'es bête. ... Bon. Merci. [#geste=prendre]
 	do GameState.ajouter_marque(&"jacquot", &"nom_retenu", &"e1_adieu")
 - Je te rapporte du pain blanc. Promis.
 	Jacquot: T'as intérêt. Je compte.
 	do GameState.ajouter_marque(&"promis_a_jacquot", &"promesse", &"e1_adieu")
 - [Passer] Faut que j'y aille.
 	Jacquot: Ouais. Faut toujours.
-Jacquot: Tiens, écoute. C'est l'air du dépôt.
-Jacquot: Tu le siffleras là-bas.
+Jacquot: Écoute. L'air du dépôt. [#geste=siffler]
+Jacquot: Tu le siffleras là-bas. [#geste=lever-main]
 
 => END
