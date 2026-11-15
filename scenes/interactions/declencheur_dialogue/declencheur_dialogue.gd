@@ -133,8 +133,8 @@ func _sur_replique(ligne: DialogueLine) -> void:
 
 ## Joue le geste demandé par une réplique : sur le personnage visé, sinon (locuteur sans
 ## dessin propre, comme « Le sonneur ») sur le personnage principal. Un geste de Tobie est
-## joué par le messager, tourné vers le déclencheur à `ecart_geste_tobie` ; il ne fait bouger
-## personne d'autre. Vrai si un personnage a joué le geste.
+## joué par le messager, tourné vers le déclencheur (ou vers son repère « geste_<nom> ») à
+## `ecart_geste_tobie` ; il ne fait bouger personne d'autre. Vrai si un personnage a joué le geste.
 func jouer_geste_replique(locuteur: String, tags: PackedStringArray) -> bool:
 	var demande := OptionsDialogue.geste(locuteur, tags)
 	if demande.is_empty():
@@ -144,11 +144,18 @@ func jouer_geste_replique(locuteur: String, tags: PackedStringArray) -> bool:
 	geste_demande.emit(cible, geste)
 	if cible == &"tobie":
 		var messager := get_tree().get_first_node_in_group(Messager.GROUPE) as Messager if is_inside_tree() else null
-		return messager != null and messager.jouer_geste(geste, self, ecart_geste_tobie)
+		return messager != null and messager.jouer_geste(geste, repere_geste(geste), ecart_geste_tobie)
 	var p := personnage_nomme(cible)
 	if p == null and not demande["explicite"] and cible != &"tobie":
 		p = dessin
 	return p != null and p.jouer_geste(geste, demande["tenir"])
+
+
+## Le point que vise Tobie pour un geste : un Marker2D enfant nommé « geste_<nom> » (ex.
+## geste_graver, devant une autre croix que celle du déclencheur), sinon le déclencheur.
+func repere_geste(geste: StringName) -> Node2D:
+	var repere := get_node_or_null(NodePath("geste_" + String(geste))) as Node2D
+	return repere if repere != null else self
 
 
 ## Le personnage dessiné de la rencontre qui porte ce nom (principal, cortège exclu, ou

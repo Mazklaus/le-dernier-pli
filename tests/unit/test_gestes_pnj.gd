@@ -121,3 +121,35 @@ func test_les_gestes_de_l_etape_4_ont_leur_planche() -> void:
 				var t := load(chemin) as Texture2D
 				assert_eq(t.get_height(), 320, chemin)
 				assert_between(t.get_width() / 200, 3, 6, chemin)
+
+
+func test_la_greffe_en_ombre_a_ses_planches() -> void:
+	# plan A : le drap et ses 6 images (2 x 3) ; plan B : la lampe et ses 4 images (2 x 2)
+	var tailles := {1: Vector2(1920, 1080), 2: Vector2(2560, 2520), 3: Vector2(1920, 1080), 4: Vector2(1600, 1600)}
+	for i: int in tailles:
+		var t := load("res://assets/graphics/cin/cin_greffe_%02d.png" % i) as Texture2D
+		assert_not_null(t, str(i))
+		if t != null:
+			assert_eq(t.get_size(), tailles[i], str(i))
+## Étape 5 : les gestes de Tobie, chacun avec ses trois calques (base, ruban, cendre).
+func test_les_gestes_de_tobie_de_l_etape_5_ont_leurs_trois_calques() -> void:
+	for geste: String in ["entailler", "graver", "accrocher"]:
+		var largeur := -1
+		for motif: String in ["chr_tobie_%s_01.png", "chr_tobie_%s_01_red.png", "chr_tobie-cendre_%s_01.png"]:
+			var t := load("res://assets/graphics/chr/" + motif % geste) as Texture2D
+			assert_not_null(t, motif % geste)
+			if t == null:
+				continue
+			assert_eq(t.get_height(), 320, motif % geste)
+			if largeur < 0:
+				largeur = t.get_width()
+			assert_eq(t.get_width(), largeur, "calques synchronisés : " + motif % geste)
+		assert_between(largeur / 200, 3, 6, geste)
+
+
+func test_l_autre_se_retourne_a_ses_planches() -> void:
+	# le fond, et 6 images de 200 x 170 (3 x 2) autour de l'Autre, au bout du sentier
+	var fond := load("res://assets/graphics/cin/cin_autre_01.png") as Texture2D
+	var images := load("res://assets/graphics/cin/cin_autre_02.png") as Texture2D
+	assert_eq(fond.get_size(), Vector2(1920, 1080))
+	assert_eq(images.get_size(), Vector2(600, 340))
