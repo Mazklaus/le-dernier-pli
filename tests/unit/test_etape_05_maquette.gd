@@ -52,15 +52,54 @@ func test_chaque_rencontre_et_chaque_detail_est_place() -> void:
 	assert_true(_etape.trouver_declencheur(&"e5_clairiere").fin_etape)
 
 
-func test_la_croix_joue_premier_passage_puis_debut() -> void:
+func test_la_croix_joue_premier_passage_jusqu_au_bout_du_premier_tour() -> void:
 	var croix := _etape.trouver_declencheur(&"e5_sentier")
 	assert_eq(croix.titre_a_jouer(), "premier_passage")
-	assert_true(croix.est_disponible())
 	GameState.marquer_rencontre_vue(&"e5_entaille")
+	assert_eq(croix.titre_a_jouer(), "premier_passage", "pas de second passage sur place (QA #108)")
+	GameState.marquer_rencontre_vue(&"e5_autre")
 	assert_eq(croix.titre_a_jouer(), "debut")
 	assert_true(croix.est_disponible(), "le second passage doit se jouer")
 	GameState.marquer_rencontre_vue(&"e5_sentier")
 	assert_false(croix.est_disponible(), "puis la croix ne se rejoue plus")
+
+
+func test_on_ne_finit_pas_le_tour_sans_croiser_l_autre() -> void:
+	var fourre := _etape.find_child("Fourre", true, false) as Verrou
+	assert_eq(fourre.rencontre, &"e5_autre")
+	var autre := _etape.trouver_declencheur(&"e5_autre")
+	var continuer := _passage("Continuer")
+	assert_lt(autre.global_position.x, fourre.global_position.x)
+	assert_lt(fourre.global_position.x, continuer.global_position.x)
+
+
+func test_l_entaille_se_voit_des_que_tobie_l_a_faite() -> void:
+	var entaille := _etape.trouver_declencheur(&"e5_sentier").get_node("Entaille") as CanvasItem
+	assert_false(entaille.visible)
+	GameState.marquer_rencontre_vue(&"e5_entaille_faite")
+	assert_true(entaille.visible)
+
+
+func test_le_retour_de_boucle_lance_la_croix_tout_seul() -> void:
+	GameState.marquer_rencontre_vue(&"e5_entaille")
+	GameState.marquer_rencontre_vue(&"e5_autre")
+	var croix := _etape.trouver_declencheur(&"e5_sentier")
+	watch_signals(croix)
+	_etape._sur_retour_de_boucle(_passage("Continuer"), &"boucle")
+	await wait_process_frames(2)
+	assert_signal_emitted(croix, "dialogue_commence")
+	DialogueManager.dialogue_ended.emit(croix.dialogue)
+
+
+func test_les_emplacements_reserves_sont_au_campement_et_a_la_clairiere() -> void:
+	assert_true(_etape.get_node("Surface/Campement").has_node("reserve_detail_campement"))
+	assert_true(_etape.get_node("Surface/Clairiere").has_node("reserve_detail_clairiere"))
+
+
+func test_aucun_placeholder_rouge() -> void:
+	for n in _etape.find_children("*", "ColorRect", true, false):
+		var c := (n as ColorRect).color
+		assert_false(c.r - maxf(c.g, c.b) > 0.15, "placeholder rouge : %s" % _etape.get_path_to(n))
 
 
 func test_le_bout_du_sentier_ramene_devant_la_croix() -> void:

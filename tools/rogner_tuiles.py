@@ -9,9 +9,9 @@ le décor se pose exactement comme avant.
 Idempotent : relancé sur une tuile déjà rognée, il ne change rien ; sur un PNG
 réexporté en taille pleine (export_svg.py), il recalcule le rognage.
 
-Usage : python3 tools/rogner_tuiles.py [--plans 4] [--seuil 0.25] [--verifier]
-  --plans    plans concernés (défaut : 4, le premier plan presque vide)
-  --seuil    rogne si la partie utile fait moins de cette fraction de la tuile
+Usage : python3 tools/rogner_tuiles.py [--plans 0,1,2,3,4] [--seuil 0.8] [--verifier]
+  --plans    plans concernés (défaut : tous, 0 à 4)
+  --seuil    rogne si la partie utile fait moins de cette fraction de la tuile (défaut : 0.8)
   --verifier n'écrit rien ; code 1 si une tuile devrait être rognée (CI)
 Dépendance : Pillow.
 """
@@ -59,8 +59,8 @@ def ecrire_tres(tres: Path, png: Path, x: int, y: int, w: int, h: int, sw: int, 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--plans", default="4")
-    ap.add_argument("--seuil", type=float, default=0.25)
+    ap.add_argument("--plans", default="0,1,2,3,4")
+    ap.add_argument("--seuil", type=float, default=0.8)
     ap.add_argument("--verifier", action="store_true")
     args = ap.parse_args()
     plans = set(args.plans.split(","))

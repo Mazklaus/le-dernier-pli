@@ -201,7 +201,7 @@ offset_left = -40.0
 offset_top = -130.0
 offset_right = 40.0
 offset_bottom = 130.0
-color = Color(0.6, 0.15, 0.15, 1)
+color = Color(0.3, 0.32, 0.4, 1)
 mouse_filter = 2
 
 [node name="NoteChicane" type="Label" parent="Surface/BoyauArriere"]
@@ -229,7 +229,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/BoyauArriere/e1_detail_boyau_chuchoteurs"]
@@ -254,7 +254,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/BoyauArriere/e1_detail_boyau_ecriteau"]
@@ -379,7 +379,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Carrefour/e1_detail_carrefour_croix"]
@@ -404,7 +404,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Carrefour/e1_detail_carrefour_cloches"]
@@ -444,7 +444,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.75, 0.1, 0.1, 0.25)
+color = Color(0.35, 0.4, 0.6, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Carrefour/e1_guetteur"]
@@ -598,7 +598,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.75, 0.1, 0.1, 0.25)
+color = Color(0.35, 0.4, 0.6, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/PiedEchelle/e1_parapet"]
@@ -623,7 +623,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/PiedEchelle/e1_detail_echelle_barreaux"]

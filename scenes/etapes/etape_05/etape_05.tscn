@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3]
+[gd_scene load_steps=28 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_05/etape_05.gd" id="1"]
 [ext_resource type="Script" path="res://scenes/interactions/verrou/verrou_retour.gd" id="2"]
@@ -32,27 +32,30 @@ size = Vector2(60, 900)
 size = Vector2(160, 300)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7"]
-size = Vector2(160, 300)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_8"]
-size = Vector2(64, 1080)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_9"]
-size = Vector2(1920, 180)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_10"]
-size = Vector2(64, 1080)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_11"]
-size = Vector2(2880, 180)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_12"]
 size = Vector2(60, 900)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_13"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8"]
+size = Vector2(160, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_9"]
+size = Vector2(64, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_10"]
 size = Vector2(1920, 180)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_11"]
+size = Vector2(64, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_12"]
+size = Vector2(2880, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_13"]
+size = Vector2(60, 900)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_14"]
+size = Vector2(1920, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_15"]
 size = Vector2(64, 1080)
 
 [node name="Etape05" type="Node2D"]
@@ -126,7 +129,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Oree/e5_detail_sentier_bornes"]
@@ -198,7 +201,7 @@ position = Vector2(600, 900)
 rencontre_id = &"e5_sentier"
 dialogue = ExtResource("5")
 libelle = "Regarder la croix"
-rencontre_requise = &"e5_entaille"
+rencontre_requise = &"e5_autre"
 titre_si_verrouille = "premier_passage"
 une_seule_fois = true
 metadata/note_level_design = "La croix-repère : premier_passage (entaille) puis debut au second passage"
@@ -208,7 +211,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.75, 0.1, 0.1, 0.25)
+color = Color(0.35, 0.4, 0.6, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Boucle/e5_sentier"]
@@ -219,6 +222,15 @@ offset_bottom = -312.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 28
 text = "e5_sentier"
+
+[node name="Entaille" type="ColorRect" parent="Surface/Boucle/e5_sentier"]
+offset_left = -12.0
+offset_top = -260.0
+offset_right = 12.0
+offset_bottom = -190.0
+color = Color(0.2, 0.2, 0.22, 1)
+mouse_filter = 2
+z_index = 1
 
 [node name="Ronces" type="StaticBody2D" parent="Surface/Boucle"]
 position = Vector2(850.0, 450.0)
@@ -233,7 +245,7 @@ offset_left = -30.0
 offset_top = -450.0
 offset_right = 30.0
 offset_bottom = 450.0
-color = Color(0.6, 0.15, 0.15, 1)
+color = Color(0.3, 0.32, 0.4, 1)
 mouse_filter = 2
 
 [node name="QuitterSentier" type="Area2D" parent="Surface/Boucle" groups=["passages"]]
@@ -282,7 +294,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Boucle/e5_detail_sentier_traces"]
@@ -307,7 +319,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Boucle/e5_detail_autre_branche"]
@@ -332,7 +344,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.75, 0.1, 0.1, 0.25)
+color = Color(0.35, 0.4, 0.6, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Boucle/e5_autre"]
@@ -343,6 +355,22 @@ offset_bottom = -312.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 28
 text = "e5_autre"
+
+[node name="Fourre" type="StaticBody2D" parent="Surface/Boucle"]
+position = Vector2(3410.0, 450.0)
+script = ExtResource("6")
+rencontre = &"e5_autre"
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Boucle/Fourre"]
+shape = SubResource("RectangleShape2D_7")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Boucle/Fourre"]
+offset_left = -30.0
+offset_top = -450.0
+offset_right = 30.0
+offset_bottom = 450.0
+color = Color(0.3, 0.32, 0.4, 1)
+mouse_filter = 2
 
 [node name="Continuer" type="Area2D" parent="Surface/Boucle" groups=["passages"]]
 position = Vector2(3640, 750.0)
@@ -357,7 +385,7 @@ metadata/vers = "boucle"
 metadata/note_level_design = "Le bout du sentier ramène, sans fondu, devant la même croix"
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/Boucle/Continuer"]
-shape = SubResource("RectangleShape2D_7")
+shape = SubResource("RectangleShape2D_8")
 
 [node name="Visuel" type="ColorRect" parent="Surface/Boucle/Continuer"]
 offset_left = -80.0
@@ -380,7 +408,7 @@ text = "-> boucle"
 position = Vector2(3872.0, 540.0)
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/Boucle/MurDroit"]
-shape = SubResource("RectangleShape2D_8")
+shape = SubResource("RectangleShape2D_9")
 
 [node name="Visuel" type="ColorRect" parent="Surface/Boucle/MurDroit"]
 offset_left = -32.0
@@ -406,7 +434,7 @@ z_index = -10
 position = Vector2(960.0, 990.0)
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/Campement/Sol"]
-shape = SubResource("RectangleShape2D_9")
+shape = SubResource("RectangleShape2D_10")
 
 [node name="Visuel" type="ColorRect" parent="Surface/Campement/Sol"]
 offset_left = -960.0
@@ -420,7 +448,7 @@ mouse_filter = 2
 position = Vector2(-32.0, 540.0)
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/Campement/MurGauche"]
-shape = SubResource("RectangleShape2D_10")
+shape = SubResource("RectangleShape2D_11")
 
 [node name="Visuel" type="ColorRect" parent="Surface/Campement/MurGauche"]
 offset_left = -32.0
@@ -455,7 +483,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Campement/e5_detail_campement_gamelle"]
@@ -480,7 +508,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.75, 0.1, 0.1, 0.25)
+color = Color(0.35, 0.4, 0.6, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Campement/e5_campement"]
@@ -491,6 +519,9 @@ offset_bottom = -312.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 28
 text = "e5_campement"
+
+[node name="reserve_detail_campement" type="Marker2D" parent="Surface/Campement"]
+position = Vector2(1650, 900)
 
 [node name="Cimetiere" type="Node2D" parent="Surface"]
 position = Vector2(8640, 0)
@@ -508,7 +539,7 @@ z_index = -10
 position = Vector2(1440.0, 990.0)
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/Cimetiere/Sol"]
-shape = SubResource("RectangleShape2D_11")
+shape = SubResource("RectangleShape2D_12")
 
 [node name="Visuel" type="ColorRect" parent="Surface/Cimetiere/Sol"]
 offset_left = -1440.0
@@ -540,7 +571,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Cimetiere/e5_detail_croix_objets"]
@@ -565,7 +596,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.75, 0.1, 0.1, 0.25)
+color = Color(0.35, 0.4, 0.6, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Cimetiere/e5_croix"]
@@ -583,14 +614,14 @@ script = ExtResource("6")
 rencontre = &"e5_croix"
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/Cimetiere/MurClairiere"]
-shape = SubResource("RectangleShape2D_12")
+shape = SubResource("RectangleShape2D_13")
 
 [node name="Visuel" type="ColorRect" parent="Surface/Cimetiere/MurClairiere"]
 offset_left = -30.0
 offset_top = -450.0
 offset_right = 30.0
 offset_bottom = 450.0
-color = Color(0.6, 0.15, 0.15, 1)
+color = Color(0.3, 0.32, 0.4, 1)
 mouse_filter = 2
 
 [node name="Clairiere" type="Node2D" parent="Surface"]
@@ -609,7 +640,7 @@ z_index = -10
 position = Vector2(960.0, 990.0)
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/Clairiere/Sol"]
-shape = SubResource("RectangleShape2D_13")
+shape = SubResource("RectangleShape2D_14")
 
 [node name="Visuel" type="ColorRect" parent="Surface/Clairiere/Sol"]
 offset_left = -960.0
@@ -628,6 +659,9 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 32
 text = "5 Clairière · 1 écran · fin d'étape"
 
+[node name="reserve_detail_clairiere" type="Marker2D" parent="Surface/Clairiere"]
+position = Vector2(350, 900)
+
 [node name="e5_detail_clairiere_ciel" parent="Surface/Clairiere" instance=ExtResource("3")]
 position = Vector2(700, 900)
 rencontre_id = &"e5_detail_clairiere_ciel"
@@ -641,7 +675,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Clairiere/e5_detail_clairiere_ciel"]
@@ -666,7 +700,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.75, 0.1, 0.1, 0.25)
+color = Color(0.35, 0.4, 0.6, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Clairiere/e5_clairiere"]
@@ -682,7 +716,7 @@ text = "e5_clairiere"
 position = Vector2(1952.0, 540.0)
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/Clairiere/MurDroit"]
-shape = SubResource("RectangleShape2D_14")
+shape = SubResource("RectangleShape2D_15")
 
 [node name="Visuel" type="ColorRect" parent="Surface/Clairiere/MurDroit"]
 offset_left = -32.0
