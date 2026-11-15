@@ -1,0 +1,190 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
+[ext_resource type="Resource" path="res://dialogue/etape_07/e7_details.dialogue" id="2"]
+[ext_resource type="Resource" path="res://dialogue/etape_07/e7_cloches.dialogue" id="3"]
+[ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(2880, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(2880, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
+size = Vector2(64, 750)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
+size = Vector2(64, 750)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5"]
+size = Vector2(160, 300)
+
+[node name="AnneauCloches" type="Node2D"]
+
+[node name="Fond" type="ColorRect" parent="."]
+offset_left = 0.0
+offset_top = 450.0
+offset_right = 2880.0
+offset_bottom = 900.0
+color = Color(0.55, 0.53, 0.5, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Sol" type="StaticBody2D" parent="."]
+position = Vector2(1440.0, 990.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Sol"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Visuel" type="ColorRect" parent="Sol"]
+offset_left = -1440.0
+offset_top = -90.0
+offset_right = 1440.0
+offset_bottom = 90.0
+color = Color(0.35, 0.35, 0.35, 1)
+mouse_filter = 2
+
+[node name="Plafond" type="StaticBody2D" parent="."]
+position = Vector2(1440.0, 390.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Plafond"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="Visuel" type="ColorRect" parent="Plafond"]
+offset_left = -1440.0
+offset_top = -60.0
+offset_right = 1440.0
+offset_bottom = 60.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="MurGauche" type="StaticBody2D" parent="."]
+position = Vector2(-32.0, 705.0)
+
+[node name="Forme" type="CollisionShape2D" parent="MurGauche"]
+shape = SubResource("RectangleShape2D_3")
+
+[node name="Visuel" type="ColorRect" parent="MurGauche"]
+offset_left = -32.0
+offset_top = -375.0
+offset_right = 32.0
+offset_bottom = 375.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="MurDroit" type="StaticBody2D" parent="."]
+position = Vector2(2912.0, 705.0)
+
+[node name="Forme" type="CollisionShape2D" parent="MurDroit"]
+shape = SubResource("RectangleShape2D_4")
+
+[node name="Visuel" type="ColorRect" parent="MurDroit"]
+offset_left = -32.0
+offset_top = -375.0
+offset_right = 32.0
+offset_bottom = 375.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="Titre" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 466.0
+offset_right = 1240.0
+offset_bottom = 514.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "2 Anneau des cloches tues · on marche vers la droite · la grande cloche au centre du fond · 1.5 écran(s)"
+
+[node name="Rencontres" type="Node2D" parent="."]
+
+[node name="Details" type="Node2D" parent="."]
+
+[node name="Passages" type="Node2D" parent="."]
+
+[node name="Points" type="Node2D" parent="."]
+
+[node name="entree_anneau_cloches" type="Marker2D" parent="Points"]
+position = Vector2(200, 900)
+
+[node name="e7_detail_cloches_battants" parent="Details" instance=ExtResource("1")]
+position = Vector2(900, 900)
+rencontre_id = &"e7_detail_cloches_battants"
+dialogue = ExtResource("2")
+titre = "cloches_battants"
+libelle = "Regarder les battants"
+metadata/note_level_design = "Battants de bronze décrochés"
+
+[node name="Visuel" type="ColorRect" parent="Details/e7_detail_cloches_battants"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.55, 0.6, 0.7, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Details/e7_detail_cloches_battants"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "cloches_battants"
+
+[node name="e7_cloches" parent="Rencontres" instance=ExtResource("1")]
+position = Vector2(1440, 900)
+rencontre_id = &"e7_cloches"
+dialogue = ExtResource("3")
+libelle = "Regarder les cloches"
+une_seule_fois = true
+metadata/note_level_design = "La salle des cloches tues"
+
+[node name="Visuel" type="ColorRect" parent="Rencontres/e7_cloches"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.35, 0.4, 0.6, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Rencontres/e7_cloches"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e7_cloches"
+
+[node name="VersAnneauLise" type="Area2D" parent="Passages" groups=["passages"]]
+position = Vector2(2650, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("4")
+vers = &"anneau_lise"
+libelle = "Tourner autour de la cloche"
+rencontre_requise = &"e7_cloches"
+metadata/vers = "anneau_lise"
+metadata/note_level_design = "Derrière la cloche, vers l'anneau du dessous"
+
+[node name="Forme" type="CollisionShape2D" parent="Passages/VersAnneauLise"]
+shape = SubResource("RectangleShape2D_5")
+
+[node name="Visuel" type="ColorRect" parent="Passages/VersAnneauLise"]
+offset_left = -80.0
+offset_top = -150.0
+offset_right = 80.0
+offset_bottom = 150.0
+color = Color(0.2, 0.35, 0.6, 0.35)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Passages/VersAnneauLise"]
+offset_left = -80.0
+offset_top = 158.0
+offset_right = 1120.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-> anneau_lise"

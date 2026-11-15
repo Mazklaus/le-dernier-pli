@@ -1,0 +1,141 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scenes/etapes/etape_07/etape_07.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/etapes/etape_07/lieux/anneau_cloches.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/etapes/etape_07/lieux/anneau_lise.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/etapes/etape_07/lieux/anneau_porte.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/etapes/etape_07/lieux/mere_cloche.tscn" id="5"]
+[ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(1920, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(64, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
+size = Vector2(64, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
+size = Vector2(160, 300)
+
+[node name="Etape07" type="Node2D"]
+script = ExtResource("1")
+numero_etape = 7
+
+[node name="Surface" type="Node2D" parent="."]
+
+[node name="Galerie" type="Node2D" parent="Surface"]
+position = Vector2(0, 0)
+
+[node name="Fond" type="ColorRect" parent="Surface/Galerie"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1920.0
+offset_bottom = 900.0
+color = Color(0.82, 0.82, 0.8, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Sol" type="StaticBody2D" parent="Surface/Galerie"]
+position = Vector2(960.0, 990.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Galerie/Sol"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Galerie/Sol"]
+offset_left = -960.0
+offset_top = -90.0
+offset_right = 960.0
+offset_bottom = 90.0
+color = Color(0.35, 0.35, 0.35, 1)
+mouse_filter = 2
+
+[node name="MurGauche" type="StaticBody2D" parent="Surface/Galerie"]
+position = Vector2(-32.0, 540.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Galerie/MurGauche"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Galerie/MurGauche"]
+offset_left = -32.0
+offset_top = -540.0
+offset_right = 32.0
+offset_bottom = 540.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="MurDroit" type="StaticBody2D" parent="Surface/Galerie"]
+position = Vector2(1952.0, 540.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Galerie/MurDroit"]
+shape = SubResource("RectangleShape2D_3")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Galerie/MurDroit"]
+offset_left = -32.0
+offset_top = -540.0
+offset_right = 32.0
+offset_bottom = 540.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="Titre" type="Label" parent="Surface/Galerie"]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1240.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "1 Galerie · derrière la porte de la Mère-Cloche, le haut de la grande salle"
+
+[node name="entree_galerie" type="Marker2D" parent="Surface/Galerie"]
+position = Vector2(300, 900)
+
+[node name="Descendre" type="Area2D" parent="Surface/Galerie" groups=["passages"]]
+position = Vector2(1500, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("6")
+vers = &"anneau_cloches"
+libelle = "Descendre"
+metadata/vers = "anneau_cloches"
+metadata/note_level_design = "Le bord de la galerie : la descente commence"
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Galerie/Descendre"]
+shape = SubResource("RectangleShape2D_4")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Galerie/Descendre"]
+offset_left = -80.0
+offset_top = -150.0
+offset_right = 80.0
+offset_bottom = 150.0
+color = Color(0.2, 0.35, 0.6, 0.35)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Galerie/Descendre"]
+offset_left = -80.0
+offset_top = 158.0
+offset_right = 1120.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-> anneau_cloches"
+
+[node name="Lieux" type="Node2D" parent="."]
+
+[node name="AnneauCloches" parent="Lieux" instance=ExtResource("2")]
+position = Vector2(0, 1400)
+
+[node name="AnneauLise" parent="Lieux" instance=ExtResource("3")]
+position = Vector2(4200, 2800)
+
+[node name="AnneauPorte" parent="Lieux" instance=ExtResource("4")]
+position = Vector2(8400, 4200)
+
+[node name="MereCloche" parent="Lieux" instance=ExtResource("5")]
+position = Vector2(12600, 5600)
+
+[node name="Messager" parent="." instance=ExtResource("7")]
+position = Vector2(300, 900)
