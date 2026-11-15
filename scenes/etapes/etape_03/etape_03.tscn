@@ -125,7 +125,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Lisiere/e3_detail_lisiere_fusils"]
@@ -151,7 +151,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.75, 0.1, 0.1, 0.25)
+color = Color(0.35, 0.4, 0.6, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Lisiere/e3_lisiere"]
@@ -245,7 +245,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/RuePlace/e3_detail_place_lampions"]
@@ -274,7 +274,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.75, 0.1, 0.1, 0.25)
+color = Color(0.35, 0.4, 0.6, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/RuePlace/e3_noce"]
