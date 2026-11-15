@@ -91,9 +91,9 @@ func test_le_retour_de_boucle_lance_la_croix_tout_seul() -> void:
 	DialogueManager.dialogue_ended.emit(croix.dialogue)
 
 
-func test_les_emplacements_reserves_sont_au_campement_et_a_la_clairiere() -> void:
-	assert_true(_etape.get_node("Surface/Campement").has_node("reserve_detail_campement"))
-	assert_true(_etape.get_node("Surface/Clairiere").has_node("reserve_detail_clairiere"))
+func test_plus_aucun_emplacement_reserve() -> void:
+	# La durée convient (GD, 2026-11-15) : les emplacements de détails réservés sont libérés.
+	assert_eq(_etape.find_children("reserve_detail_*", "", true, false).size(), 0)
 
 
 func test_aucun_placeholder_rouge() -> void:

@@ -194,9 +194,6 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 28
 text = "e4_salle"
 
-[node name="reserve_detail_salle" type="Marker2D" parent="Points"]
-position = Vector2(2800, 900)
-
 [node name="VersAtelier" type="Area2D" parent="Passages" groups=["passages"]]
 position = Vector2(3500, 750.0)
 collision_layer = 4
