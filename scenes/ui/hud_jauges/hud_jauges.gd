@@ -32,6 +32,12 @@ var _fondu: Tween
 var _minuteur: Timer
 var _temps: float = 0.0
 var _retenu: bool = false
+## Aperçu du coût de l'option qui a le focus dans la bulle (UI/UX) : {jauge: coût affiché}.
+var apercu: Dictionary = {}
+var _apercu_bave: bool = false
+var _rng := RandomNumberGenerator.new()
+## Amplitude du tremblement des bâtons d'un aperçu qui bave (celle de la bulle).
+const TREMBLEMENT_APERCU := 3.0
 
 
 func _ready() -> void:
@@ -73,6 +79,51 @@ func _process(delta: float) -> void:
 		(_icones[jauge] as TextureRect).position = secousse
 	_ruban_sceau.modulate.a = Battement.opacite(maintenant, GameState.palier, attenue)
 	_sceau.position = secousse
+	_animer_apercu(maintenant, attenue)
+
+
+## Montre ce que le coût AFFICHÉ d'une option retirerait (couts_affiches d'OptionsDialogue) :
+## bâtons en pointillé de lavis, libellé « [Affamé] » / « [Éteinte] » si le stock n'y suffit
+## pas, œil du palier visé à 50 % pour la Lucidité. `bave` : le chiffre de l'option bave,
+## les bâtons de l'aperçu tremblent avec lui.
+func apercu_couts(couts: Dictionary, bave: bool = false) -> void:
+	apercu = couts.duplicate()
+	_apercu_bave = bave
+	actualiser()
+
+
+func fin_apercu() -> void:
+	if apercu.is_empty():
+		return
+	apercu = {}
+	_apercu_bave = false
+	actualiser()
+
+
+## Bâtons retirés par un coût, et libellé d'aperçu (vide si le stock suffit).
+static func apercu_jauge(jauge: StringName, v: int, cout: int) -> Dictionary:
+	var retires := mini(cout, v)
+	var libelle := ""
+	if cout >= v and cout > 0:
+		libelle = "[%s]" % libelle_jauge(jauge, 0, &"", false)
+	return {"retires": retires, "libelle": libelle}
+
+
+## Clignement (plein sur les coups d'un cycle de battement : celui du palier, sinon celui du
+## Trouble) et tremblement ; tout se fige en effets atténués.
+func _animer_apercu(maintenant: float, attenue: bool) -> void:
+	var cycle := int(Battement.IMAGES_CYCLE.get(GameState.palier, Battement.IMAGES_CYCLE[&"trouble"]))
+	var plein := not attenue and (Battement.image(maintenant) % cycle) in Battement.IMAGES_COUP
+	var tremble := Vector2.ZERO
+	if _apercu_bave and not attenue and Engine.get_process_frames() % 6 == 0:
+		tremble = Vector2(0.0, _rng.randf_range(-TREMBLEMENT_APERCU, TREMBLEMENT_APERCU))
+	for jauge: StringName in _batons:
+		var batons: Batons = _batons[jauge]
+		batons.apercu_plein = plein
+		if not _apercu_bave or attenue:
+			batons.decalage_apercu = Vector2.ZERO
+		elif tremble != Vector2.ZERO:
+			batons.decalage_apercu = tremble
 
 
 ## Rectangles écran des deux plaques (l'invite d'interaction ne passe jamais dessous).
@@ -97,6 +148,18 @@ func actualiser() -> void:
 		libelle.set_meta(&"bas", souligne)
 		if _batons.has(jauge):
 			(_batons[jauge] as Batons).valeur = v
+		var cout := int(apercu.get(jauge, 0))
+		var icone_jauge_courante := _icones[jauge] as TextureRect
+		icone_jauge_courante.modulate.a = 1.0
+		if cout > 0 and jauge == GameState.LUCIDITE:
+			var vise := GameState.palier_pour(v - cout)
+			icone_jauge_courante.texture = StylePapier.icone(icone_jauge(jauge, v, vise))
+			icone_jauge_courante.modulate.a = 0.5
+		elif _batons.has(jauge):
+			var a := apercu_jauge(jauge, v, cout)
+			(_batons[jauge] as Batons).apercu = int(a["retires"])
+			if a["libelle"] != "":
+				libelle.text = a["libelle"]
 		if _chiffres.has(jauge):
 			var chiffre: Label = _chiffres[jauge]
 			chiffre.visible = chiffres
