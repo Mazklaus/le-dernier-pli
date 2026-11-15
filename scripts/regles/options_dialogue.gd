@@ -119,7 +119,8 @@ static func slug_timbre(personnage: String, tags: PackedStringArray) -> String:
 
 
 ## Geste demandé par les tags d'une réplique : {"cible": slug du personnage, "geste": nom,
-## "explicite": cible nommée, "tenir": garder la dernière image}, ou {} sans tag geste. Sans cible explicite (« nom:geste »), la cible est le locuteur.
+## "explicite": cible nommée, "tenir": garder la dernière image}, ou {} sans tag geste.
+## Sans cible explicite (« nom:geste »), la cible est le locuteur.
 static func geste(locuteur: String, tags: PackedStringArray) -> Dictionary:
 	var valeur := valeur_tag(tags, TAG_GESTE).strip_edges()
 	if valeur == "":
