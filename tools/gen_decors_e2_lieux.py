@@ -17,7 +17,7 @@ from __future__ import annotations
 from gen_decors_e1_lieux import (BAS_PLAFOND, DEFS, ENCRE, H, LAVIS, MINE, PAPIER, PLAFOND, SOL, ST,
                                  escalier, etai)
 from gen_decors_e1_surface import rnd
-from gen_decors_e2_surface import DST
+from gen_decors_e2_surface import DST, fil
 
 W = 1920
 
@@ -99,12 +99,34 @@ def boyau_detour() -> str:
     return "".join(out)
 
 
+def ceinture_fermee() -> str:
+    """Calque du Verrou de chaque ceinture de barbelés (CeintureUne, CeintureDeux) : la chicane
+    peinte dans le plan 3 est barrée par un piquet en X, trois brins tendus et un rouleau de
+    concertina. Calque de 180 x 320 centré sur le Verrou (y 750) : le sol (y 900) est à 310, les
+    piquets peints de part et d'autre (xc ± 70) à x 20 et 160. Il part avec le Verrou une fois la
+    ceinture passée (e2_barbeles) : reste la chicane ouverte et son fil arraché, déjà peints."""
+    w, h = 180, 320
+    sol = 310
+    out = [f'<path d="M68 {sol} L108 {sol - 176} M112 {sol} L72 {sol - 176}" stroke="{ENCRE}" stroke-width="7"/>']
+    for k, dy in enumerate((60, 110, 155)):
+        out.append(fil(20, 90, sol - dy, 7 + k))
+        out.append(fil(90, 160, sol - dy, 17 + k))
+    # rouleau de concertina posé au pied, en travers de la chicane
+    for k in range(7):
+        cx = 30 + k * 20
+        out.append(f'<ellipse cx="{cx}" cy="{sol - 26}" rx="16" ry="24" fill="none" stroke="{ENCRE}" stroke-width="1.6"/>')
+    out.append(f'<path d="M14 {sol - 26} H166" stroke="{ENCRE}" stroke-width="1.2" stroke-dasharray="5 6"/>')
+    return f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}">{"".join(out)}</svg>\n'
+
+
 def main() -> None:
     DST.mkdir(parents=True, exist_ok=True)
     svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">'
            f'{DEFS}{boyau_detour()}</svg>\n')
     (DST / "env_e2_plan3_boyau-detour_01.svg").write_text(svg, encoding="utf-8")
-    print("1 tuile dans art/src/env/e2/")
+    fx = DST.parent.parent / "fx"
+    (fx / "fx_ceinture-fermee.svg").write_text(ceinture_fermee(), encoding="utf-8")
+    print("1 tuile dans art/src/env/e2/ + fx_ceinture-fermee")
 
 
 if __name__ == "__main__":
