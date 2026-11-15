@@ -193,6 +193,17 @@ func test_le_vert_de_gris_de_l_etape_6_est_exact() -> void:
 		assert_true(trouve, f)
 
 
+func test_la_chute_dans_la_fissure_a_ses_planches() -> void:
+	# e6_chute_fissure (tools/gen_cin_e6.py) : plan A (fond, 6 images de 600×560 en grille 3 × 2),
+	# plan B (fond, la chute lourde : 7 images de 240×240 transparentes, en ligne).
+	var tailles := {"01": Vector2(1920, 1080), "02": Vector2(1800, 1120), "03": Vector2(1920, 1080), "04": Vector2(1680, 240)}
+	for k: String in tailles:
+		var t := load("res://assets/graphics/cin/cin_chute_%s.png" % k) as Texture2D
+		assert_not_null(t, k)
+		if t != null:
+			assert_eq(t.get_size(), tailles[k], k)
+
+
 ## Étape 7 (#145) : Lise, la vieille Enfouie, et la Mère-Cloche (« La Mère-Cloche » parle :
 ## son geste va au personnage principal de la rencontre, mere-cloche).
 const GESTES_E7 := {

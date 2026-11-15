@@ -1,6 +1,7 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_06/etape_06.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/decors/decor_e6.gd" id="decor_e6"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_06/lieux/nef.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_06/lieux/village.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_06/lieux/niche_veilleur.tscn" id="4"]
@@ -29,6 +30,9 @@ size = Vector2(160, 300)
 [node name="Etape06" type="Node2D"]
 script = ExtResource("1")
 numero_etape = 6
+
+[node name="Decors" type="Node2D" parent="."]
+script = ExtResource("decor_e6")
 
 [node name="Surface" type="Node2D" parent="."]
 

@@ -7,7 +7,7 @@
 [ext_resource type="Resource" path="res://dialogue/etape_06/e6_eloi.dialogue" id="5"]
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="6"]
 
-[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e6_chute_fissure.gd" id="cine_chute"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(5760, 180)
 
@@ -302,9 +302,9 @@ mouse_filter = 2
 z_index = -1
 
 [node name="e6_chute_fissure" type="Node2D" parent="."]
-script = ExtResource("cine_script")
+script = ExtResource("cine_chute")
 id = &"e6_chute_fissure"
-duree = 6.0
+duree = 6.4
 metadata/note_level_design = "Le sol cède : la caméra suit la glissade jusqu'au fond ; lancée par la première réplique de e6_nef"
 
 [node name="Camera" type="Camera2D" parent="e6_chute_fissure"]
