@@ -8,8 +8,8 @@ extends DecorParallaxe
 ##   devant le plan 3 mais derrière le messager et les personnages (DA : les silhouettes
 ##   restent entières), à la vitesse du sol.
 ## - Cheval de frise : ferme la chicane de Brisse, part avec le Verrou (e2_poste_passe).
-## - Fil qui retombe : une fois la seconde ceinture ouverte et franchie, le fil se referme
-##   derrière Tobie et bloque le retour (verrou de retour).
+## - Fil qui retombe : le dessin du VerrouRetour « FilRetour » (scène de l'étape), qui se
+##   ferme derrière Tobie une fois la seconde ceinture ouverte et franchie.
 ## - La sacoche de Matthieu au fond du grand trou.
 ## Masque aussi les gris de la maquette (fonds, sol, murs, bandes de brouillard, souche).
 
@@ -30,7 +30,9 @@ const BANDES := [
 	["fx_brouillard_03", 1.0, -10],
 ]
 const LARGEUR_BANDE := 1920.0
+## Bornes du brouillard par défaut ; lues sur la ZoneSombre du Level Designer quand elle existe.
 const BROUILLARD := Vector2(4800.0, 10100.0)
+const CHEMIN_ZONE_SOMBRE := "Surface/Brouillard/ZoneSombre"
 const FONDU_BROUILLARD := 0.1
 
 const CHEVAL_FRISE := "fx_cheval-frise"
@@ -39,10 +41,7 @@ const CHEMIN_CHICANE := "Surface/Poste/Chicane"
 const X_CHEVAL_FRISE := 3260.0
 
 const FIL_RETOMBE := "fx_fil-retombe"
-const CHEMIN_CEINTURE_DEUX := "Surface/Brouillard/CeintureDeux"
-const RENCONTRE_CEINTURE_DEUX: StringName = &"e2_barbeles_ceinture2"
-## Le fil retombe quand le messager a dépassé la seconde ceinture de cette distance.
-const MARGE_FIL := 80.0
+const CHEMIN_FIL_RETOUR := "Surface/Brouillard/FilRetour"
 
 const SACOCHE := "fx_sacoche-matthieu"
 const POSITION_SACOCHE := Vector2(12900.0, 1060.0)
@@ -60,9 +59,10 @@ const GRIS_MAQUETTE := [
 var plans: Array[Parallax2D] = []
 var bandes: Array[Parallax2D] = []
 var cheval_frise: Sprite2D
-var fil_retombe: StaticBody2D
+var fil_retombe: Sprite2D
 var sacoche: Sprite2D
-var fil_tombe: bool = false
+## [gauche, droite] du brouillard, en x global.
+var bornes_brouillard: Vector2 = BROUILLARD
 
 var _alpha_brouillard: float = 0.0
 
@@ -73,6 +73,7 @@ func _ready() -> void:
 		if plan != null:
 			add_child(plan)
 			plans.append(plan)
+	_lire_bornes_brouillard()
 	_creer_brouillard()
 	if masquer_fonds_maquette:
 		masquer_fonds_gris()
@@ -81,7 +82,7 @@ func _ready() -> void:
 			if gris != null:
 				gris.visible = false
 	_habiller_chicane()
-	_creer_fil_retombe()
+	_habiller_fil_retour()
 	_poser_sacoche()
 
 
@@ -90,12 +91,23 @@ func _process(delta: float) -> void:
 	if messager == null:
 		return
 	_maj_brouillard(messager.global_position.x, delta)
-	if not fil_tombe:
-		_maj_fil(messager.global_position.x)
 
 
-static func dans_le_brouillard(x: float) -> bool:
-	return x >= BROUILLARD.x and x <= BROUILLARD.y
+func dans_le_brouillard(x: float) -> bool:
+	return x >= bornes_brouillard.x and x <= bornes_brouillard.y
+
+
+## Le brouillard couvre la ZoneSombre (forme rectangulaire) : déplacer la zone déplace le visuel.
+func _lire_bornes_brouillard() -> void:
+	var zone: Node2D = get_parent().get_node_or_null(CHEMIN_ZONE_SOMBRE) as Node2D if get_parent() else null
+	if zone == null:
+		return
+	for enfant in zone.get_children():
+		if enfant is CollisionShape2D and (enfant as CollisionShape2D).shape is RectangleShape2D:
+			var forme := enfant as CollisionShape2D
+			var demi := (forme.shape as RectangleShape2D).size.x / 2.0 * absf(forme.global_scale.x)
+			bornes_brouillard = Vector2(forme.global_position.x - demi, forme.global_position.x + demi)
+			return
 
 
 func _sprite_fx(nom: String) -> Sprite2D:
@@ -163,43 +175,17 @@ func _habiller_chicane() -> void:
 	_poser_au_sol(cheval_frise, Vector2(X_CHEVAL_FRISE, _sol_sous(chicane)))
 
 
-## Le verrou de retour : invisible et sans collision jusqu'à ce que le fil retombe.
-func _creer_fil_retombe() -> void:
-	var ceinture: Node2D = get_parent().get_node_or_null(CHEMIN_CEINTURE_DEUX) as Node2D if get_parent() else null
-	if ceinture == null:
+## Le dessin du fil qui retombe, posé sur le VerrouRetour « FilRetour » du Level Designer :
+## il paraît quand le verrou se ferme derrière Tobie.
+func _habiller_fil_retour() -> void:
+	var verrou: Node2D = get_parent().get_node_or_null(CHEMIN_FIL_RETOUR) as Node2D if get_parent() else null
+	if verrou == null:
 		return
-	var dessin := _sprite_fx(FIL_RETOMBE)
-	if dessin == null:
+	fil_retombe = _sprite_fx(FIL_RETOMBE)
+	if fil_retombe == null:
 		return
-	fil_retombe = StaticBody2D.new()
-	fil_retombe.name = "FilRetombe"
-	var forme := CollisionShape2D.new()
-	forme.name = "Forme"
-	var rect := RectangleShape2D.new()
-	rect.size = Vector2(60.0, 300.0)
-	forme.shape = rect
-	forme.disabled = true
-	fil_retombe.add_child(forme)
-	fil_retombe.add_child(dessin)
-	fil_retombe.visible = false
-	add_child(fil_retombe)
-	fil_retombe.global_position = ceinture.global_position
-	_poser_au_sol(dessin, Vector2(ceinture.global_position.x, _sol_sous(ceinture)))
-
-
-func _maj_fil(x: float) -> void:
-	if fil_retombe == null or not GameState.rencontre_vue(RENCONTRE_CEINTURE_DEUX):
-		return
-	if x > fil_retombe.global_position.x + MARGE_FIL:
-		faire_tomber_fil()
-
-
-func faire_tomber_fil() -> void:
-	if fil_retombe == null or fil_tombe:
-		return
-	fil_tombe = true
-	fil_retombe.visible = true
-	(fil_retombe.get_node("Forme") as CollisionShape2D).set_deferred(&"disabled", false)
+	verrou.add_child(fil_retombe)
+	_poser_au_sol(fil_retombe, Vector2(verrou.global_position.x, _sol_sous(verrou)))
 
 
 func _poser_sacoche() -> void:
