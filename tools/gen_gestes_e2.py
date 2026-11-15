@@ -8,13 +8,12 @@ Même format que tools/gen_gestes_e1.py : chr_<perso>_<geste>_01, images de 200 
            biscuit de guerre), chauffer-cire (le pli au-dessus de sa bougie, la cire noire
            rougit à la dernière image : seul rouge permis, celui du sceau), montrer (vers la crête,
            à droite)
-  le mort : lever-bras (le bras raide se lève d'un coup, comme un panneau, puis ne bouge plus),
-            tourner-tete (la tête se relève et se tourne vers Tobie, sans visage lisible),
-            detourner-tete (elle retombe vers le chemin)
+  le mort : lever-bras (le bras raide se lève d'un coup, comme un panneau, puis ne bouge plus).
+            Arbitrage GD : ce bras est la seule chose anormale chez lui ; sa tête ne bouge jamais
+            (pas de tourner-tete ni de detourner-tete).
 
-Le mort est une image figée bras levé : lever-bras part du bras pendant, et tourner-tete finit
-tête tournée. Pour que ces gestes ne sautent pas au retour, le code doit garder leur dernière
-image (voir la PR).
+Le mort est une image figée bras levé : lever-bras part du bras pendant (sa première image est
+la pose à montrer avant la réplique) et finit sur la pose figée, sans saut au retour.
 
 Usage : python3 tools/gen_gestes_e2.py
 """
@@ -22,7 +21,7 @@ from __future__ import annotations
 
 import math
 
-from gen_chr_pnj_e2 import DEFS, DST, ENCRE, LAVIS, PAPIER, ST, brisse, mort, planche
+from gen_chr_pnj_e2 import DST, ENCRE, PAPIER, ST, brisse, mort, planche
 from gen_gestes_e1 import ROUGE, bras, main_index, main_ouverte, main_poing
 
 # --- Brisse : le bras gauche (à gauche de l'image) quitte la boîte de conserve ------------------
@@ -130,37 +129,18 @@ MORT_BRAS = (f'<path d="M146 228 L206 256 L200 270 L142 244 Z" fill="{PAPIER}" {
              f'<path d="M150 238 L200 262" stroke="#8C877A" stroke-width="1.4"/>',
              f'<path d="M202 252 L212 258 L210 268 L198 268 Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>',
              f'<path d="M210 262 L218 268" {ST} stroke-width="2.2"/>')
-MORT_TETE = (f'<path d="M160 258 Q180 252 188 270 Q190 290 176 298 Q160 300 154 286 Q150 268 160 258 Z" fill="url(#h2)" {ST} stroke-width="2.2"/>',
-             f'<path d="M158 300 Q150 272 170 256 Q192 248 200 272 Z" fill="{LAVIS}" {ST} stroke-width="2.4"/>',
-             f'<path d="M150 306 L206 270 L208 278 L156 312 Z" fill="{ENCRE}" {ST} stroke-width="1.4"/>')
-NUQUE = (156.0, 262.0)
-
-
 def bras_raide(ang: float) -> str:
     """Le bras tendu, raide comme une planche, tourné de ang degrés autour de l'épaule (0 = la pose
     figée, vers la droite et le bas ; positif = vers le bas)."""
     return f'<g transform="rotate({ang:.0f} 144 236)">' + "".join(MORT_BRAS) + '</g>'
 
 
-def tete(ang: float, miroir: bool, lever: float) -> str:
-    """La tête et le casque, pivotés autour de la nuque ; miroir = tournée vers Tobie (à gauche)."""
-    nx, ny = NUQUE
-    m = f" translate({nx} 0) scale(-1 1) translate({-nx} 0)" if miroir else ""
-    return f'<g transform="translate(0 {-lever:.0f}) rotate({ang:.0f} {nx} {ny}){m}">' + "".join(MORT_TETE) + '</g>'
-
-
-def mort_avec(bras_svg: str | None = None, tete_svg: str | None = None) -> str:
+def mort_avec(bras_svg: str) -> str:
     corps = mort()
-    if bras_svg is not None:
-        for p in MORT_BRAS:
-            corps = corps.replace(p, "", 1)
-        i = corps.index('<path d="M50 252 Q110 250')      # le fil reste par-dessus
-        corps = corps[:i] + bras_svg + corps[i:]
-    if tete_svg is not None:
-        for p in MORT_TETE:
-            corps = corps.replace(p, "", 1)
-        i = corps.index('<path d="M156 270 L152 306"')      # avant la plaque d'identité
-        corps = corps[:i] + tete_svg + corps[i:]
+    for p in MORT_BRAS:
+        corps = corps.replace(p, "", 1)
+    i = corps.index('<path d="M50 252 Q110 250')      # le fil reste par-dessus
+    corps = corps[:i] + bras_svg + corps[i:]
     return corps
 
 
@@ -169,23 +149,10 @@ def mort_lever_bras() -> list[str]:
     return [mort_avec(bras_raide(62)), mort_avec(bras_raide(20)), mort_avec(bras_raide(-6)), mort_avec(bras_raide(0))]
 
 
-def mort_tourner_tete() -> list[str]:
-    return [mort_avec(tete_svg=tete(0, False, 0)),
-            mort_avec(tete_svg=tete(-18, False, 8)),
-            mort_avec(tete_svg=tete(-30, True, 18)),
-            mort_avec(tete_svg=tete(-34, True, 20))]
-
-
-def mort_detourner_tete() -> list[str]:
-    return [mort_avec(tete_svg=tete(-34, True, 20)),
-            mort_avec(tete_svg=tete(-18, False, 8)),
-            mort_avec(tete_svg=tete(0, False, 0))]
-
-
 GESTES = {
     "brisse_lever-main": brisse_lever_main, "brisse_tendre": brisse_tendre, "brisse_donner": brisse_donner,
     "brisse_chauffer-cire": brisse_chauffer_cire, "brisse_montrer": brisse_montrer,
-    "mort_lever-bras": mort_lever_bras, "mort_tourner-tete": mort_tourner_tete, "mort_detourner-tete": mort_detourner_tete,
+    "mort_lever-bras": mort_lever_bras,
 }
 
 

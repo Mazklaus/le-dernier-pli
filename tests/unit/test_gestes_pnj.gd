@@ -56,7 +56,7 @@ func test_la_remise_du_pli_tient_dans_des_textures_de_4096() -> void:
 ## Étape 2 (#138) : Brisse et le mort.
 const GESTES_E2 := {
 	&"brisse": [&"lever-main", &"tendre", &"donner", &"chauffer-cire", &"montrer"],
-	&"mort": [&"lever-bras", &"tourner-tete", &"detourner-tete"],
+	&"mort": [&"lever-bras"],
 }
 
 
