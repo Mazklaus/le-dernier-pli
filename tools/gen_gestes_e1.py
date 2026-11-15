@@ -4,17 +4,14 @@
 Format du Gameplay (PR #134) : chr_<perso>_<geste>_01, bande horizontale d'images de 200 x 320,
 pieds à (100, 316), jouée une fois à 10 i/s, puis retour à la respiration (repos).
 
-  art/src/chr/chr_lamarre_tendre_01.svg    6 images : la main sort le pli de la capote, le tend,
-                                           le lâche (Tobie l'a pris), redescend vide
-  art/src/chr/chr_jacquot_siffler_01.svg   6 images : il siffle l'air du dépôt, lève la main,
-                                           l'agite deux fois, la rabaisse
+  art/src/chr/chr_<perso>_<geste>_01.svg   15 gestes balisés par la Narrative (voir GESTES)
   art/src/chr/chr_tobie_grimper_01.svg     4 images, Tobie de dos sur l'échelle (cinématique de
                                            sortie de tranchée) ; calques _red et -cendre vides
                                            (ni le ruban ni le front ne se voient de dos)
   art/src/fx/fx_rideau-sape-tombe.svg      6 images de 140 x 460 : la couverture anti-gaz se
                                            soulève au passage de Tobie et retombe derrière lui
 
-Lamarre et Jacquot reprennent les dessins de tools/donnees/pnj_e1.svgfrag (repère 240 x 420, sol
+Les personnages reprennent les dessins de tools/donnees/pnj_e1.svgfrag (repère 240 x 420, sol
 à y 405, échelle 0,845) : seuls le bras qui bouge, la main et la bouche changent d'une image à
 l'autre ; la dernière image est proche du repos pour que le retour à la respiration ne saute pas.
 
@@ -217,12 +214,6 @@ J_REPOS = bras_jacquot((64, 256), (68, 288)) + main_poing(68, 288)
 J_FIN = bras_jacquot((60, 252), (64, 280)) + main_poing(64, 280)
 
 
-def note(x: float, y: float, s: float = 1.0) -> str:
-    return (f'<g transform="translate({x:.1f} {y:.1f}) scale({s})">'
-            f'<path d="M3 0 V-14 L10 -16" fill="none" stroke-width="1.5"/>'
-            f'<ellipse cx="0" cy="0" rx="3.6" ry="2.6" fill="{ENCRE}" stroke="none" transform="rotate(-20)"/></g>')
-
-
 def bouche_sifflet(n: int) -> str:
     """Lèvres en cul de poule et n petits traits d'air qui partent vers la gauche, hors du visage."""
     out = ['<circle cx="120" cy="175" r="3" fill="#E8E5DA" stroke-width="1.4"/>']
@@ -232,13 +223,14 @@ def bouche_sifflet(n: int) -> str:
 
 
 def jacquot_siffler() -> list[str]:
-    """L'air du dépôt : il siffle, deux notes s'envolent à gauche de sa tête."""
+    """L'air du dépôt : lèvres pincées, traits d'air qui s'allongent puis s'éteignent. Pas de note
+    de musique (code de bande dessinée, refusé par le GD) : le sifflement est porté par le son."""
     return [J_REPOS + bouche_sifflet(0),
             J_REPOS + bouche_sifflet(1),
-            J_REPOS + bouche_sifflet(2) + note(82, 150),
-            J_REPOS + bouche_sifflet(2) + note(74, 132, 1.1) + note(90, 150, .9),
-            J_REPOS + bouche_sifflet(1) + note(66, 112, 1.1) + note(82, 130),
-            J_REPOS + bouche_sifflet(0) + note(76, 110, .9)]
+            J_REPOS + bouche_sifflet(2),
+            J_REPOS + bouche_sifflet(3),
+            J_REPOS + bouche_sifflet(2),
+            J_REPOS + bouche_sifflet(0)]
 
 
 def jacquot_lever_main() -> list[str]:

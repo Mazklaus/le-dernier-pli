@@ -183,7 +183,7 @@ def plan_a(k: int) -> str:
     else:
         out.append(pli_grand(pli_x, pli_y, ang))
         out.append(main_lamarre(True))
-    bouts = {1: 300, 2: 650, 3: 860, 4: 790, 5: 600}
+    bouts = {1: 470, 2: 680, 3: 860, 4: 790, 5: 600}
     if k in bouts:
         out.append(main_tobie(bouts[k], pli_y + 10, prise=k >= 3))
     return "".join(out)
