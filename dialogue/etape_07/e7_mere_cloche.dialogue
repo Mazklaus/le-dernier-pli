@@ -31,6 +31,10 @@ La Mère-Cloche: Comme les autres. Comme toujours.
 La Mère-Cloche: Comment t'appelles-tu ?
 Tobie: Tobie. On m'appelait Pied-Léger.
 Tobie: Et puis je lui dis les autres noms. Ceux que j'ai portés avec le pli.
+if GameState.possede_marque(&"hugues_lamarre")
+	Tobie: Hugues, le sergent, dont personne ne se servait du prénom.
+if GameState.possede_marque(&"il_s_appelait_aurele")
+	Tobie: Aurèle, parti avant moi avec la cire noire.
 if GameState.possede_marque(&"jacquot")
 	Tobie: Jacquot, qui sifflait l'air du dépôt.
 if GameState.possede_marque(&"il_s_appelait_gaspard")
