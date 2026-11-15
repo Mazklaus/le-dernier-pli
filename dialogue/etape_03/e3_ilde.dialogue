@@ -5,10 +5,10 @@
 
 ~ debut
 
-Tobie: Une femme ronde et calme, un trousseau de clés à la ceinture. Elle m'ouvre avant que je frappe.
+Tobie: Elle m'ouvre avant que je frappe.
 Ilde: Entre, petit. Tu as fait une longue route, ça se voit à tes bottes.
-Tobie: Son regard tombe sur ma sacoche. Sur la cire noire. Une seconde de trop.
-Ilde: Assieds-toi. Tiens.
+Tobie: Son regard tombe sur la cire noire. Une seconde de trop. [#geste=ilde:regarder_sacoche]
+Ilde: Assieds-toi. Tiens. [#geste=tendre]
 Tobie: Un pain blanc. Rond, tiède, avec une croûte qui chante sous le pouce. Je n'en avais jamais tenu.
 do GameState.ajouter_objet(&"pain_blanc")
 if GameState.possede_marque(&"promis_a_jacquot")
