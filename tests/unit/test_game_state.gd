@@ -415,3 +415,18 @@ func test_aller_retour_dictionnaire_json() -> void:
 	assert_eq_deep(autre.vers_dictionnaire(), gs.vers_dictionnaire())
 	assert_eq(autre.lucidite_max, 3)
 	assert_false(autre.ajouter_marque(&"autre", Marques.RELIQUE, &"camarade"))
+
+
+func test_nef_dans_le_noir_gratuite_avec_l_oeil_de_saint_ivo() -> void:
+	assert_false(gs.zone_noire_gratuite(&"e6_nef"))
+	gs.entrer_zone_sombre(false, &"e6_nef")
+	assert_eq(gs.lucidite, 7, "sans l'œil, le noir coûte")
+	gs.sortir_zone_sombre()
+	gs.marquer_rencontre_vue(&"oeil_saint_ivo")
+	assert_true(gs.zone_noire_gratuite(&"e6_nef"))
+	gs.entrer_zone_sombre(false, &"e6_nef")
+	assert_eq(gs.lucidite, 7, "avec l'œil, la nef ne coûte rien")
+	gs.entrer_zone_sombre(false, &"autre_zone")
+	assert_eq(gs.lucidite, 6, "seulement la nef")
+	assert_true(gs.entrer_zone_sombre(true, &"e6_nef"), "la lanterne coûte toujours son huile")
+	assert_eq(gs.huile, 3)
