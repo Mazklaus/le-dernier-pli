@@ -9,13 +9,13 @@ Un enfant: T'es un vrai soldat ? Avec un vrai fusil ?
 Tobie: Je n'ai pas de fusil. J'ai une sacoche.
 Un enfant: Alors tu fais l'ennemi. Tu dois tomber quand on dit pan.
 - [Faire l'ennemi] D'accord. Mais visez bien.
-	Un enfant: Pan !
+	Un enfant: Pan ! [#geste=viser]
 	Tobie: Je tombe dans l'herbe sèche. Je reste là, les bras en croix, et je ris. Je ne sais plus depuis quand.
 	do GameState.appliquer_effets({&"lucidite": 1})
 - [Refuser] J'ai une course à faire.
 	Un enfant: T'es pas drôle. Les soldats, c'est jamais drôle.
 Le plus petit: Dis, c'est où, le front ?
 Tobie: Il me regarde comme on demande où est la mer. Personne ne lui a jamais dit.
-Tobie: Je montre le chemin derrière moi. Il hausse les épaules et repart jouer.
+Tobie: Je montre le chemin derrière moi. [#geste=enfants:hausser-epaules]
 
 => END

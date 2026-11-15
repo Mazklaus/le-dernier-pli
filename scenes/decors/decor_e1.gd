@@ -283,15 +283,22 @@ func _appliquer_vieille_sape() -> void:
 	sape_noir.visible = not _sape_allumee
 
 
-## Le VerrouCendre de la sape de sortie : une couverture tendue en travers (contre le gaz), qui
-## disparaît avec le verrou après e1_adieu.
+## Le VerrouCendre de la sape de sortie : une couverture tendue en travers (contre le gaz).
+## Avec la planche animée, elle reste en place après e1_adieu et Tobie la soulève en passant
+## (RideauSape) ; sinon, elle disparaît avec le verrou.
 func _habiller_rideau() -> void:
 	var verrou := get_parent().get_node_or_null("Lieux/SapeSortie/VerrouCendre") if get_parent() else null
-	if verrou == null or not ResourceLoader.exists(RIDEAU):
+	if verrou == null:
+		return
+	var rideau := RideauSape.creer(verrou as Verrou)
+	if rideau == null and not ResourceLoader.exists(RIDEAU):
 		return
 	var visuel := verrou.get_node_or_null("Visuel") as CanvasItem
 	if visuel != null:
 		visuel.visible = false
+	if rideau != null:
+		verrou.get_parent().add_child.call_deferred(rideau)
+		return
 	var dessin := Sprite2D.new()
 	dessin.name = "Dessin"
 	dessin.texture = load(RIDEAU) as Texture2D

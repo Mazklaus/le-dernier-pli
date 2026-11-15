@@ -5,7 +5,7 @@
 
 Tobie: Une salle voûtée, des lits en rang. Personne ne gémit. C'est ça qui est étrange.
 Tobie: Un bras de bronze sur un drap. Une mâchoire d'argent. Des doigts qui ne vont pas avec la main.
-Tobie: Un homme se redresse sur son lit. L'écusson de la Tranchée-Mère, cousu sur sa chemise de nuit.
+Tobie: L'écusson de la Tranchée-Mère, cousu sur une chemise de nuit. [#geste=fernand:se-redresser]
 Fernand: Toi, tu viens de chez nous. Ça se sent. La boue de là-bas a une odeur.
 Fernand: Lamarre est toujours sergent ? Il gueule toujours ?
 Tobie: Toujours.
@@ -17,8 +17,8 @@ Fernand: Dis-le avec moi. Fer-nand. Retiens-le, toi, puisque tu pars.
 	Tobie: Je le répète jusqu'à ce qu'il me fasse mal à la tête. Fer-nand. Comme une pierre dans ma poche.
 	do GameState.ajouter_marque(&"il_s_appelait_fernand", &"nom_retenu", &"e4_salle")
 - [Se taire]
-	Tobie: Je ne dis rien. Il hoche la tête, comme s'il comprenait. Il a déjà oublié qu'il a demandé.
-Fernand: La porte du fond. Anselme t'attend.
+	Tobie: Je ne dis rien. Il a déjà oublié qu'il a demandé. [#geste=fernand:hocher-tete]
+Fernand: La porte du fond. Anselme t'attend. [#geste=montrer]
 Fernand: Il attend toujours les coureurs.
 
 => END
