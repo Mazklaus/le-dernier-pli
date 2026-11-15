@@ -28,6 +28,13 @@ signal dialogue_termine(declencheur: DeclencheurDialogue)
 ## d'office pour les détails à examiner (rencontre_id contenant « _detail_ »).
 @export var est_detail: bool = false
 
+@export_group("Sons")
+## Bruitage du geste au début de la rencontre (ex. sfx_periscope_regarder pour le Guetteur).
+@export var son_debut: String = ""
+## Bruitage du geste à la fin, si la rencontre a été jouée (ex. sfx_echelle_monter : Tobie
+## monte au parapet).
+@export var son_fin: String = ""
+
 @export_group("Apparence")
 ## Personnage dessiné de la rencontre (planche chr_<nom>_repos_01 de la DA), posé aux pieds du
 ## déclencheur ; masque le rectangle « Visuel » de la maquette. Vide : pas de personnage.
@@ -100,6 +107,8 @@ func interagir(_messager: Messager) -> void:
 	var verrouille := est_verrouille()
 	en_cours = true
 	dialogue_commence.emit(self)
+	if son_debut != "":
+		AudioDirector.jouer_variante(son_debut)
 	DialogueManager.show_dialogue_balloon(dialogue, titre_a_jouer())
 	await DialogueManager.dialogue_ended
 	terminer(verrouille)
@@ -110,6 +119,8 @@ func terminer(etait_verrouille: bool) -> void:
 	en_cours = false
 	if not etait_verrouille:
 		GameState.marquer_rencontre_vue(rencontre_id)
+		if son_fin != "":
+			AudioDirector.jouer_variante(son_fin)
 	dialogue_termine.emit(self)
 	if fin_etape and not etait_verrouille:
 		SceneRouter.etape_suivante()

@@ -7,6 +7,7 @@ extends Node
 ## - huile qui remonte : sfx_lanterne_remplir ; vivres qui remontent : sfx_pain_manger ;
 ## - lanterne allumée en entrant dans le noir : sfx_lanterne_allumer, éteinte en sortant
 ##   ou faute d'huile : sfx_lanterne_eteindre ;
+## - ligne du pli lue en transparence : sfx_pli_lire ;
 ## - Cassien cendre le messager (e1_cendre vue) : sfx_cendre_front.
 
 const SONS_SCEAU := {
@@ -25,6 +26,7 @@ func _ready() -> void:
 		_jouer("sfx_carnet_fremir", AudioDirector.BUS_UI))
 	GameState.jauge_changee.connect(func(nom: StringName, a: int, n: int) -> void:
 		_jouer(son_jauge(nom, a, n)))
+	GameState.ligne_pli_lue.connect(_sur_ligne_pli)
 	GameState.zone_sombre_changee.connect(_sur_zone_sombre)
 	GameState.etat_declenche.connect(_sur_etat)
 	GameState.rencontre_vue_marquee.connect(func(id: StringName) -> void:
@@ -55,6 +57,10 @@ func _sur_zone_sombre(dans_zone: bool, lanterne: bool) -> void:
 	elif _lanterne_allumee and not (dans_zone and lanterne):
 		_jouer("sfx_lanterne_eteindre")
 	_lanterne_allumee = dans_zone and lanterne
+
+
+func _sur_ligne_pli(_index: int) -> void:
+	_jouer("sfx_pli_lire")
 
 
 func _sur_etat(etat: StringName) -> void:

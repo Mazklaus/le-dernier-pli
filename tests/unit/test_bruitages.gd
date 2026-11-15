@@ -71,3 +71,36 @@ func test_etape_1_marche_sur_les_caillebotis() -> void:
 	var etape: EtapeBase = load("res://scenes/etapes/etape_01/etape_01.tscn").instantiate()
 	assert_eq(etape.pas_surface, "sfx_pas_planche")
 	etape.free()
+
+
+func test_les_sons_des_gestes_existent() -> void:
+	for b: String in ["sfx_pli_lire", "sfx_periscope_regarder", "sfx_echelle_monter"]:
+		assert_false(AudioDirector.variantes_de(b).is_empty(), b)
+
+
+func test_lire_une_ligne_du_pli_emet_le_signal_du_son() -> void:
+	watch_signals(GameState)
+	GameState.passer_etape()
+	GameState.rechauffer_sceau()
+	assert_eq(GameState.lire_ligne_pli(), 0)
+	assert_signal_emitted_with_parameters(GameState, "ligne_pli_lue", [0])
+	assert_eq(GameState.lire_ligne_pli(), -1)
+	assert_signal_emit_count(GameState, "ligne_pli_lue", 1, "pas de son sans lecture")
+	var ecoute := false
+	for c: Dictionary in GameState.ligne_pli_lue.get_connections():
+		ecoute = ecoute or (c["callable"] as Callable).get_object() is BruitagesJeu
+	assert_true(ecoute, "BruitagesJeu joue sfx_pli_lire")
+
+
+func test_periscope_et_echelle_a_l_etape_1() -> void:
+	var etape: EtapeBase = add_child_autofree(load("res://scenes/etapes/etape_01/etape_01.tscn").instantiate())
+	assert_eq(etape.trouver_declencheur(&"e1_guetteur").son_debut, "sfx_periscope_regarder")
+	assert_eq(etape.trouver_declencheur(&"e1_parapet").son_fin, "sfx_echelle_monter")
+
+
+func test_un_passage_peut_imposer_son_son() -> void:
+	var p: Passage = ScenePassage.instantiate()
+	assert_eq(p.son, "", "par défaut l'étape choisit")
+	p.son = "sfx_echelle_monter"
+	assert_eq(p.son, "sfx_echelle_monter")
+	p.free()

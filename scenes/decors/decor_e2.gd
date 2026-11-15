@@ -12,9 +12,13 @@ extends DecorParallaxe
 ##   ferme derrière Tobie une fois la seconde ceinture ouverte et franchie.
 ## - La sacoche de Matthieu au fond du grand trou.
 ## Masque aussi les gris de la maquette (fonds, sol, murs, bandes de brouillard, souche).
+## Le vieux boyau sous le poste (Lieux/BoyauDetour, détour facultatif) reçoit son fond peint fixe.
 
 const DOSSIER := "res://assets/graphics/env/e2/env_e2_"
 const DOSSIER_FX := "res://assets/graphics/fx/"
+## [nœud du lieu, nom du dessin] : env_e2_plan3_<nom>_NN.png, posé en (0, 0) dans le lieu.
+const LIEUX := [["BoyauDetour", "boyau-detour"]]
+const Z_LIEU := -20
 ## [nom du plan, vitesse, couche] du plus lointain au plus proche.
 const PLANS := [
 	["plan0_ciel", 0.05, -50],
@@ -44,6 +48,10 @@ const FIL_RETOMBE := "fx_fil-retombe"
 const CHEMIN_FIL_RETOUR := "Surface/Brouillard/FilRetour"
 
 const SACOCHE := "fx_sacoche-matthieu"
+## Les deux ceintures du brouillard (Verrou) : la chicane peinte est barrée tant qu'elles sont
+## fermées (piquet en X, brins, concertina) ; le calque part avec le Verrou. Centré sur le Verrou.
+const CEINTURE_FERMEE := "fx_ceinture-fermee"
+const CHEMINS_CEINTURES := ["Surface/Brouillard/CeintureUne", "Surface/Brouillard/CeintureDeux"]
 const POSITION_SACOCHE := Vector2(12900.0, 1060.0)
 
 ## Gris de la maquette que le décor remplace, en plus des fonds, du sol et des murs.
@@ -83,7 +91,9 @@ func _ready() -> void:
 				gris.visible = false
 	_habiller_chicane()
 	_habiller_fil_retour()
+	_habiller_ceintures()
 	_poser_sacoche()
+	_habiller_lieux()
 
 
 func _process(delta: float) -> void:
@@ -175,6 +185,20 @@ func _habiller_chicane() -> void:
 	_poser_au_sol(cheval_frise, Vector2(X_CHEVAL_FRISE, _sol_sous(chicane)))
 
 
+func _habiller_ceintures() -> void:
+	for chemin: String in CHEMINS_CEINTURES:
+		var ceinture: Node2D = get_parent().get_node_or_null(chemin) as Node2D if get_parent() else null
+		if ceinture == null:
+			continue
+		var dessin := _sprite_fx(CEINTURE_FERMEE)
+		if dessin == null:
+			return
+		var visuel := ceinture.get_node_or_null("Visuel") as CanvasItem
+		if visuel != null:
+			visuel.visible = false
+		ceinture.add_child(dessin)
+
+
 ## Le dessin du fil qui retombe, posé sur le VerrouRetour « FilRetour » du Level Designer :
 ## il paraît quand le verrou se ferme derrière Tobie.
 func _habiller_fil_retour() -> void:
@@ -205,3 +229,20 @@ func _poser_au_sol(sprite: Sprite2D, pied: Vector2) -> void:
 ## Bas du rectangle gris d'un Verrou de la maquette (300 px de haut, centré) : le sol.
 func _sol_sous(verrou: Node2D) -> float:
 	return verrou.global_position.y + 150.0
+
+
+func _habiller_lieux() -> void:
+	var lieux := get_parent().get_node_or_null("Lieux") if get_parent() else null
+	if lieux == null:
+		return
+	for l: Array in LIEUX:
+		var lieu := lieux.get_node_or_null(String(l[0])) as Node2D
+		if lieu == null:
+			continue
+		var dessin := dessin_lieu(DOSSIER + "plan3_" + String(l[1]), "Dessin", Z_LIEU)
+		if dessin == null:
+			continue
+		lieu.add_child(dessin)
+		lieu.move_child(dessin, 0)
+		if masquer_fonds_maquette:
+			masquer_gris_lieu(lieu)

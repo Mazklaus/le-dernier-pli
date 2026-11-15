@@ -1,0 +1,37 @@
+# Étape 4, clôture : la bénédiction à la porte. Obligatoire, fin d'étape.
+# Lire la prochaine ligne non lue du pli : −1 Huile, si le sceau le permet (même règle que e2_cantique).
+# La ligne lue dépend de l'avancée du joueur : ligne 1 ou 2 (au plus une lecture avant, à l'étape 2).
+
+~ debut
+
+do GameState.sortir_zone_sombre()
+Tobie: En haut de l'escalier, la porte. Anselme y attend, un pot de cendre à la main.
+Tobie: Il trace la croix sur mon front, par-dessus celle de Cassien. Son pouce appuie fort.
+Anselme: Tu es prêt, maintenant.
+if GameState.possede_marque(&"recousu")
+	Anselme: Il te va bien. Saint Ivo est content, je le sais.
+Anselme: Va. Et ne te salis pas trop en route.
+Tobie: La porte se referme derrière moi. Dehors, la lumière est blanche. Je sors le pli.
+- [Lire en transparence] [if GameState.peut_lire_ligne() /] [#cout_huile=1, #sans_prelevement]
+	=> lecture
+- [Le garder fermé]
+	Tobie: Il est tiède contre ma poitrine. Je le range.
+Tobie: Au loin, une forêt. Des arbres trop droits, qui n'ont pas de branches.
+
+=> END
+
+~ lecture
+
+do GameState.lire_ligne_pli()
+Tobie: Je tiens le papier contre le ciel blanc. La cire rouge laisse passer une ligne.
+if GameState.pli_lignes_lues == 1
+	Tobie: « À celle qui écoute sous les cloches tues, »
+	Tobie: Une prière. À une sainte, sûrement. Ici, ils en ont plein les caves.
+elif GameState.pli_lignes_lues == 2
+	Tobie: « au nom de la Cendre et selon le Pacte du Sceau Noir : »
+	Tobie: Un pacte. Je ne savais pas que la Cendre signait des choses avec quelqu'un.
+else
+	Tobie: La lumière est trop forte. Je ne distingue rien.
+Tobie: Au loin, une forêt. Des arbres trop droits, qui n'ont pas de branches.
+
+=> END

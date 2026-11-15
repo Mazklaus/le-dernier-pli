@@ -133,3 +133,54 @@ func test_un_seul_fondu_du_noir_par_emetteur() -> void:
 	ad._regler_son_du_noir(fils, 3.0)
 	assert_false(premier.is_valid(), "le premier fondu est tué")
 	assert_ne(fils.get_meta(&"fondu_noir"), premier)
+
+
+class EtapeFactice:
+	extends Node
+	signal phase_changee(nuit: bool)
+	var nuit: bool = false
+
+
+func test_etape_3_joue_jour_nuit_et_autre_de_jour() -> void:
+	var ad: Node = AudioDirectorScript.new()
+	add_child_autofree(ad)
+	ad.jouer_etape(3)
+	ad._appliquer_mixage(true)
+	assert_eq(ad._couches.keys(), ["jour", "nuit", "autre"])
+	assert_almost_eq(_volume(ad, "jour"), MixageSon.vers_db(ad._mix_reel), 0.01)
+	assert_eq(_volume(ad, "nuit"), MixageSon.GAIN_MUET_DB)
+
+
+func test_phase_changee_bascule_vers_la_nuit() -> void:
+	var ad: Node = AudioDirectorScript.new()
+	add_child_autofree(ad)
+	ad.jouer_etape(3)
+	ad._appliquer_mixage(true)
+	var etape := EtapeFactice.new()
+	add_child_autofree(etape)
+	ad._sur_etape_prete(etape)
+	etape.phase_changee.emit(true)
+	assert_true(ad._fondu_phase != null and ad._fondu_phase.is_valid(), "fondu croisé lancé")
+	ad.definir_nuit(true, 0.0)
+	assert_eq(_volume(ad, "jour"), MixageSon.GAIN_MUET_DB)
+	assert_almost_eq(_volume(ad, "nuit"), MixageSon.vers_db(ad._mix_reel), 0.01)
+
+
+func test_etape_prete_reprend_l_etat_de_nuit() -> void:
+	var ad: Node = AudioDirectorScript.new()
+	add_child_autofree(ad)
+	ad.jouer_etape(3)
+	var etape := EtapeFactice.new()
+	etape.nuit = true
+	add_child_autofree(etape)
+	ad._sur_etape_prete(etape)
+	assert_eq(ad._mix_nuit, 1.0, "un chargement en pleine nuit démarre sans fondu")
+
+
+func test_nouvelle_etape_repart_de_jour() -> void:
+	var ad: Node = AudioDirectorScript.new()
+	add_child_autofree(ad)
+	ad.jouer_etape(3)
+	ad.definir_nuit(true, 0.0)
+	ad.jouer_etape(3)
+	assert_eq(ad._mix_nuit, 0.0)

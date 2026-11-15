@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://cmlwfkwcuiry3"
+path="res://.godot/imported/e4_benediction.dialogue-9bf5778a8518ab6d5be2c5b537452353.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_04/e4_benediction.dialogue"
+dest_files=["res://.godot/imported/e4_benediction.dialogue-9bf5778a8518ab6d5be2c5b537452353.tres"]
+
+[params]
+
+defaults=true

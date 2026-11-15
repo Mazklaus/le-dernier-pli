@@ -17,6 +17,9 @@ signal franchi(passage: Passage, vers: StringName)
 @export var rencontre_requise: StringName
 ## Durée (s) de chaque moitié du fondu au noir ; 0 = passage instantané.
 @export var fondu_noir: float = 0.0
+## Bruitage du passage (ex. sfx_echelle_monter pour une échelle) ; vide : l'étape choisit
+## l'escalier ou la toile selon le changement de niveau (EtapeBase.son_passage).
+@export var son: String = ""
 
 const COUCHE_FONDU := 20
 

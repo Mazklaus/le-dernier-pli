@@ -116,3 +116,20 @@ func test_sacoche_au_fond_du_grand_trou() -> void:
 	assert_not_null(_decor.sacoche)
 	assert_almost_eq(_decor.sacoche.global_position.x, 12900.0, 0.5)
 	assert_almost_eq(_decor.sacoche.global_position.y + 45.0, 1060.0, 0.5)
+
+
+func test_vieux_boyau_habille_sans_gris() -> void:
+	var boyau := _etape.get_node("Lieux/BoyauDetour")
+	var dessin := boyau.get_node_or_null("Dessin") as Node2D
+	assert_not_null(dessin, "fond peint du vieux boyau")
+	if dessin != null:
+		assert_lt(dessin.z_index, 0, "derrière le jeu")
+	assert_false((boyau.get_node("Fond") as CanvasItem).visible)
+	assert_false((boyau.get_node("Plafond/Visuel") as CanvasItem).visible)
+
+
+func test_ceintures_fermees_dessinees_sans_barre_rouge() -> void:
+	for chemin: String in DecorE2.CHEMINS_CEINTURES:
+		var ceinture := _etape.get_node(chemin)
+		assert_not_null(ceinture.get_node_or_null("Dessin"), chemin)
+		assert_false((ceinture.get_node("Visuel") as CanvasItem).visible, "%s : rect rouge de maquette" % chemin)
