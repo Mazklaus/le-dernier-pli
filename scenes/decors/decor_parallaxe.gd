@@ -24,7 +24,7 @@ static func creer_plan(chemin_base: String, vitesse: float, z: int) -> Parallax2
 		if not ResourceLoader.exists(chemin):
 			break
 		var tuile := Sprite2D.new()
-		tuile.texture = load(chemin) as Texture2D
+		tuile.texture = charger_tuile(chemin)
 		tuile.centered = false
 		tuile.position = Vector2(x, 0.0)
 		plan.add_child(tuile)
@@ -34,6 +34,16 @@ static func creer_plan(chemin_base: String, vitesse: float, z: int) -> Parallax2
 		return null
 	plan.set_meta(&"largeur", x)
 	return plan
+
+
+## Charge une tuile : son AtlasTexture rogné (<nom>.tres, écrit par tools/rogner_tuiles.py)
+## s'il existe, sinon le PNG. Le .tres a la taille et la position d'origine (marge), seul
+## le dessin utile est en mémoire vidéo.
+static func charger_tuile(chemin_png: String) -> Texture2D:
+	var rognee := chemin_png.get_basename() + ".tres"
+	if ResourceLoader.exists(rognee):
+		return load(rognee) as Texture2D
+	return load(chemin_png) as Texture2D
 
 
 ## Largeur totale d'un plan construit par creer_plan.

@@ -44,6 +44,9 @@ def main() -> None:
         print(f"{svg.relative_to(ROOT)} -> {png.relative_to(ROOT)}")
         done += 1
     print(f"{done} fichier(s) exporté(s)")
+    if done:
+        # Les tuiles de premier plan réexportées en taille pleine sont rognées à nouveau.
+        subprocess.run([sys.executable, str(ROOT / "tools" / "rogner_tuiles.py")], check=True)
 
 
 if __name__ == "__main__":

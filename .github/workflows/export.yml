@@ -35,6 +35,10 @@ jobs:
           lfs: true
       - name: Nommage, formats, tailles, réglages d'import
         run: python3 tools/check_assets.py .
+      - name: Tuiles de décor presque vides non rognées (avertissement)
+        run: |
+          pip install --quiet pillow
+          python3 tools/rogner_tuiles.py --verifier
 
   tests:
     name: Tests GUT
