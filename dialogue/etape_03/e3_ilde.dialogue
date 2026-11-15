@@ -7,7 +7,7 @@
 
 Tobie: Elle m'ouvre avant que je frappe.
 Ilde: Entre, petit. Tu as fait une longue route, ça se voit à tes bottes.
-Tobie: Son regard tombe sur la cire noire. Une seconde de trop. [#geste=ilde:regarder_sacoche]
+Tobie: Son regard tombe sur la cire noire. Une seconde de trop. [#geste=ilde:regarder-sacoche]
 Ilde: Assieds-toi. Tiens. [#geste=tendre]
 Tobie: Un pain blanc. Rond, tiède, avec une croûte qui chante sous le pouce. Je n'en avais jamais tenu.
 do GameState.ajouter_objet(&"pain_blanc")

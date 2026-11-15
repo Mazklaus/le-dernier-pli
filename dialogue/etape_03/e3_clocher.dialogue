@@ -7,7 +7,7 @@
 
 Tobie: Le clocher est vide. Par le haut, on voit le ciel.
 Tobie: Un vieil homme, une corde. Elle ne tient à rien.
-Le sonneur: On nous les a prises. Il y a longtemps. On ne demande pas. [#geste=tirer_corde]
+Le sonneur: On nous les a prises. Il y a longtemps. On ne demande pas. [#geste=tirer-corde]
 Le sonneur: Je monte tous les soirs. Il faut bien que quelqu'un le fasse.
 if GameState.possede_objet(&"petit_battant")
 	Tobie: Il voit ce qui pend à ma ceinture. Le petit battant de la sape.
