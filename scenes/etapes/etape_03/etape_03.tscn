@@ -36,6 +36,10 @@ size = Vector2(64, 1080)
 script = ExtResource("1")
 numero_etape = 3
 lieux_nuit = Array[StringName]([&"chambre", &"chemin_nuit"])
+teintes_lieux = {
+&"chambre": Color(0.32, 0.35, 0.48, 1),
+&"chemin_nuit": Color(0.85, 0.88, 1, 1)
+}
 limite_surface_y = 1300.0
 bornes_camera_surface = Vector2(0, 7680)
 
