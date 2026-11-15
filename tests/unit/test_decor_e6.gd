@@ -44,3 +44,20 @@ func test_les_gris_de_la_maquette_sont_masques() -> void:
 		var lieu := _etape.get_node(String(a[0]))
 		assert_false((lieu.get_node("Fond") as CanvasItem).visible, String(a[0]))
 		assert_false((lieu.get_node("Sol/Visuel") as CanvasItem).visible, String(a[0]))
+
+
+func test_l_eboulement_n_apparait_qu_apres_la_cine() -> void:
+	var eboule := _etape.get_node("Lieux/Village/Eboulement") as Sprite2D
+	assert_not_null(eboule.texture)
+	assert_lt(eboule.z_index, 0, "derrière le jeu")
+	assert_false(eboule.visible, "la galerie est encore ouverte avant la ciné")
+	GameState.marquer_rencontre_vue(Cinematique.drapeau(&"e6_eboulement"))
+	assert_true(eboule.visible, "la voûte est tombée après la ciné")
+
+
+func test_l_eboulement_reste_en_place_au_rechargement() -> void:
+	GameState.marquer_rencontre_vue(Cinematique.drapeau(&"e6_eboulement"))
+	var autre: EtapeBase = ETAPE.instantiate()
+	add_child_autofree(autre)
+	await wait_process_frames(2)
+	assert_true((autre.get_node("Lieux/Village/Eboulement") as CanvasItem).visible)

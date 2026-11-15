@@ -39,6 +39,9 @@ from gen_decors_e3_surface import DEFS, ENCRE, H, LAVIS, MINE, PAPIER, ROOT, SOL
 
 DST = ROOT / "art" / "src" / "env" / "e6"
 PLAFOND = 450
+FX = ROOT / "art" / "src" / "fx"
+# coin haut-gauche du calque fx_eboule-village dans le repère du village (DecorE6.ANCRE_EBOULE)
+EBOULE_X, EBOULE_Y, EBOULE_W, EBOULE_H = 790, 330, 250, 580
 
 
 # --------------------------------------------------------------------------- briques
@@ -149,8 +152,7 @@ def maison(x: float, larg: float, haut: float, seed: int, porte: bool = True) ->
     out = [f'<path d="M{x} {SOL} V{y0 + 30} Q{x + larg / 2} {y0 - 30} {x + larg} {y0 + 30} V{SOL} Z" fill="{PAPIER}" {ST} stroke-width="3"/>',
            f'<path d="M{x - 10} {y0 + 34} H{x + larg + 10}" {ST} stroke-width="7"/>']
     fx = x + r.uniform(30, larg - 110)
-    out.append(f'<rect x="{fx:.0f}" y="{y0 + 70}" width="70" height="56" fill="url(#h2)" {ST} stroke-width="2.6"/>'
-               f'<path d="M{fx + 35:.0f} {y0 + 70} V{y0 + 126} M{fx:.0f} {y0 + 98} H{fx + 70:.0f}" stroke="{ENCRE}" stroke-width="2"/>')
+    out.append(fenetre_eclairee(fx, y0 + 70))
     if porte:
         px = x + larg - 100 if fx < x + larg / 2 else x + 30
         out.append(f'<path d="M{px:.0f} {SOL} V{SOL - 150} Q{px + 35:.0f} {SOL - 176} {px + 70:.0f} {SOL - 150} V{SOL} Z" fill="url(#h1)" {ST} stroke-width="2.6"/>')
@@ -215,44 +217,134 @@ def nef() -> str:
     return "".join(out)
 
 
+def flaque(x: float, rx: float = 130, fort: float = 1.0) -> str:
+    """La flaque de lumière qu'un bocal pose sur la terre battue : claire à l'écran (lavis), deux
+    ovales emboîtés, posée par-dessus le sol."""
+    return (f'<ellipse cx="{x:.0f}" cy="{SOL + 22}" rx="{rx:.0f}" ry="{rx * .15:.0f}" fill="{LAVIS}" opacity="{.35 * fort:.2f}"/>'
+            f'<ellipse cx="{x:.0f}" cy="{SOL + 18}" rx="{rx * .55:.0f}" ry="{rx * .08:.0f}" fill="{LAVIS}" opacity="{.7 * fort:.2f}"/>')
+
+
+def fenetre_eclairee(fx: float, fy: float, w: float = 70, h: float = 56) -> str:
+    """Une fenêtre où il y a quelqu'un : le carreau en lavis (clair à l'écran), un halo de hachure
+    serrée autour, la croisée en papier (sombre à l'écran)."""
+    return (f'<ellipse cx="{fx + w / 2:.0f}" cy="{fy + h / 2:.0f}" rx="{w * .95:.0f}" ry="{h:.0f}" fill="url(#v1)" opacity=".5"/>'
+            f'<rect x="{fx:.0f}" y="{fy:.0f}" width="{w:.0f}" height="{h:.0f}" fill="{LAVIS}" {ST} stroke-width="2.6"/>'
+            f'<path d="M{fx + w / 2:.0f} {fy:.0f} V{fy + h:.0f} M{fx:.0f} {fy + h / 2:.0f} H{fx + w:.0f}" stroke="{PAPIER}" stroke-width="3"/>')
+
+
+def clocher_renverse(x: float) -> str:
+    """Le clocher de l'étape 3, à l'envers : une tour de moellons qui descend de la terre du
+    plafond, ses deux baies vides (rien n'y pend), la flèche pointée vers le sol, qui s'enfonce
+    dans la margelle d'un puits. Aucune cloche."""
+    l = 220
+    x0 = x - l / 2
+    out = [f'<rect x="{x0:.0f}" y="300" width="{l}" height="360" fill="url(#moellons)" {ST} stroke-width="3.4"/>',
+           f'<rect x="{x0 + 10:.0f}" y="560" width="{l - 20}" height="14" fill="url(#h1)" {ST} stroke-width="2.2"/>']
+    # les baies, arcs vers le bas : du vide (papier nu, nuit à l'écran)
+    for bx in (x0 + 14, x0 + 116):
+        out.append(f'<path d="M{bx:.0f} 360 V470 Q{bx:.0f} 530 {bx + 45:.0f} 530 Q{bx + 90:.0f} 530 {bx + 90:.0f} 470 V360 Z" fill="{PAPIER}" {ST} stroke-width="3"/>')
+    out.append(f'<circle cx="{x:.0f}" cy="620" r="26" fill="{PAPIER}" {ST} stroke-width="2.6"/>')
+    # la flèche, à l'envers, ardoises en hachure, qui plonge dans le puits
+    out.append(f'<path d="M{x0 - 14:.0f} 660 H{x0 + l + 14:.0f} L{x:.0f} {SOL + 30} Z" fill="url(#tuiles)" {ST} stroke-width="3"/>')
+    # la margelle du puits, devant la pointe : le trou descend encore
+    out.append(f'<path d="M{x - 120:.0f} {SOL} V{SOL - 40} Q{x:.0f} {SOL - 56} {x + 120:.0f} {SOL - 40} V{SOL} Z" fill="url(#moellons)" {ST} stroke-width="3"/>'
+               f'<ellipse cx="{x:.0f}" cy="{SOL + 6}" rx="104" ry="18" fill="{PAPIER}" {ST} stroke-width="2.6"/>')
+    return "".join(out)
+
+
+def tablee(x0: float, x1: float, couvert: float) -> str:
+    """La tablée, le cœur chaud du village : la lumière la plus claire de l'étape (lavis plein
+    sous un dôme de hachures serrées), une nappe, des assiettes posées sans ordre, des pichets ;
+    au bout, le couvert de plus, propre, une chaise à haut dossier tirée pour quelqu'un."""
+    r = rnd(6230)
+    xc = (x0 + x1) / 2
+    y = SOL - 120
+    out = [f'<ellipse cx="{xc:.0f}" cy="{y + 20:.0f}" rx="{(x1 - x0) * .78:.0f}" ry="330" fill="url(#v1)" opacity=".55"/>',
+           f'<ellipse cx="{xc:.0f}" cy="{y + 30:.0f}" rx="{(x1 - x0) * .62:.0f}" ry="250" fill="url(#v2)" opacity=".7"/>',
+           f'<ellipse cx="{xc:.0f}" cy="{y + 40:.0f}" rx="{(x1 - x0) * .5:.0f}" ry="170" fill="{LAVIS}" opacity=".55"/>']
+    # les bancs puis la table et sa nappe
+    out.append(f'<rect x="{x0 - 20:.0f}" y="{SOL - 60}" width="{x1 - x0 + 40:.0f}" height="12" fill="url(#h1)" {ST} stroke-width="2.4"/>'
+               f'<path d="M{x0 + 30:.0f} {y + 18:.0f} V{SOL} M{x1 - 30:.0f} {y + 18:.0f} V{SOL} M{xc:.0f} {y + 18:.0f} V{SOL}" {ST} stroke-width="6"/>'
+               f'<path d="M{x0:.0f} {y:.0f} H{x1:.0f} V{y + 46:.0f} Q{x1 - 40:.0f} {y + 54:.0f} {x1 - 90:.0f} {y + 44:.0f} '
+               f'Q{xc:.0f} {y + 58:.0f} {x0 + 90:.0f} {y + 46:.0f} Q{x0 + 40:.0f} {y + 54:.0f} {x0:.0f} {y + 46:.0f} Z" fill="{LAVIS}" {ST} stroke-width="3"/>')
+    # les couverts des vivants : en désordre, servis, un pichet, du pain
+    x = x0 + 40
+    while x < couvert - 70:
+        out.append(f'<ellipse cx="{x:.0f}" cy="{y - 4:.0f}" rx="22" ry="6" fill="{ENCRE}" stroke="{PAPIER}" stroke-width="1.6"/>')
+        if r.random() < .5:
+            out.append(f'<path d="M{x + 26:.0f} {y - 16:.0f} V{y - 2:.0f}" stroke="{PAPIER}" stroke-width="2"/>')
+        x += r.uniform(62, 104)
+    for px in (x0 + 210, xc + 140):
+        out.append(f'<path d="M{px - 12:.0f} {y:.0f} V{y - 34:.0f} Q{px:.0f} {y - 44:.0f} {px + 12:.0f} {y - 34:.0f} V{y:.0f} Z" fill="{ENCRE}" stroke="{PAPIER}" stroke-width="1.6"/>')
+    out.append(f'<ellipse cx="{xc - 60:.0f}" cy="{y - 10:.0f}" rx="30" ry="12" fill="{ENCRE}" stroke="{PAPIER}" stroke-width="1.6"/>')
+    # le couvert de plus : un peu à l'écart, net, son assiette, son gobelet, sa chaise
+    c = couvert
+    out.append(f'<ellipse cx="{c:.0f}" cy="{y - 4:.0f}" rx="26" ry="7" fill="{ENCRE}" stroke="{PAPIER}" stroke-width="2"/>'
+               f'<ellipse cx="{c:.0f}" cy="{y - 5:.0f}" rx="14" ry="3.5" fill="none" stroke="{PAPIER}" stroke-width="1.2"/>'
+               f'<path d="M{c - 34:.0f} {y - 14:.0f} V{y - 2:.0f} M{c + 34:.0f} {y - 14:.0f} V{y - 2:.0f}" stroke="{PAPIER}" stroke-width="2"/>'
+               f'<rect x="{c + 44:.0f}" y="{y - 30:.0f}" width="14" height="26" fill="{ENCRE}" stroke="{PAPIER}" stroke-width="1.6"/>')
+    cx = c + 30
+    out.append(f'<g transform="rotate(-6 {cx:.0f} {SOL})">'
+               f'<path d="M{cx:.0f} {SOL} V{SOL - 230} M{cx:.0f} {SOL - 70} H{cx + 64:.0f} V{SOL}" fill="none" {ST} stroke-width="7"/>'
+               f'<path d="M{cx:.0f} {SOL - 230} V{SOL - 70}" stroke="{LAVIS}" stroke-width="3"/>'
+               f'<path d="M{cx:.0f} {SOL - 200} H{cx + 16:.0f} M{cx:.0f} {SOL - 150} H{cx + 16:.0f}" {ST} stroke-width="4"/></g>')
+    return "".join(out)
+
+
 def village() -> str:
-    """Le village enfoui : chaud, éclairé de bocaux, maisons creusées, la tablée au centre."""
+    """Le village enfoui : chaud, éclairé de bocaux, maisons creusées, la tablée au centre. Il
+    rappelle la place de l'étape 3 sans la recopier : la tablée là où était la noce, et là où se
+    dressait le clocher, un clocher renversé qui descend de la terre vers un puits.
+
+    Le passage par où Tobie est arrivé (x 928) est encore ouvert : l'éboulement est un calque,
+    fx_eboule-village, affiché après la ciné e6_eboulement (DecorE6)."""
     w = 4800
-    r = rnd(6201)
     out = [f'<rect width="{w}" height="{H}" fill="{PAPIER}"/>', terre_haut(w, 6202, 330)]
     # les poutres de soutènement, d'un bout à l'autre
     out.append(f'<path d="M0 360 H{w}" {ST} stroke-width="16"/><path d="M0 360 H{w}" stroke="{PAPIER}" stroke-width="10"/>')
     for x in range(160, w, 420):
+        if 3260 < x < 3540:
+            continue
         out.append(f'<rect x="{x - 12}" y="360" width="24" height="{SOL - 360}" fill="url(#h1)" {ST} stroke-width="2.6"/>'
                    f'<path d="M{x - 12} 420 L{x - 70} 362 M{x + 12} 420 L{x + 70} 362" {ST} stroke-width="5"/>')
-    # la voûte tombée derrière Tobie (x 928) : un mur de terre et de pierres jusqu'au plafond
-    out.append(f'<path d="M820 {SOL} L860 600 L840 420 L900 340 L1000 360 L1010 500 L990 {SOL} Z" fill="url(#h2)" {ST} stroke-width="3"/>')
+    # le passage d'où vient Tobie (x 928) : une galerie étayée, ouverte sur le noir
+    out.append(f'<path d="M850 {SOL} V520 Q925 440 1000 520 V{SOL} Z" fill="{PAPIER}" {ST} stroke-width="3"/>'
+               f'<path d="M866 {SOL} V528 M984 {SOL} V528 M858 528 H992" {ST} stroke-width="6"/>')
+    # les maisons creusées, fenêtres allumées ; le clocher renversé à la place de la maison de x 3320
+    for x, larg, haut, s in ((1060, 300, 300, 1), (1400, 260, 340, 2), (3000, 260, 320, 3), (4000, 300, 330, 5)):
+        out.append(maison(x, larg, haut, 6210 + s))
+    out.append(clocher_renverse(3410))
+    # la porte de la niche du veilleur (x 3720) : basse, une lueur dedans
+    out.append(f'<path d="M3640 {SOL} V700 Q3720 650 3800 700 V{SOL} Z" fill="{PAPIER}" {ST} stroke-width="3"/>'
+               f'<path d="M3656 {SOL} V708 Q3720 668 3784 708 V{SOL}" fill="url(#v1)" opacity=".6" {ST} stroke-width="1.6"/>')
+    # le chemin du seuil (x 4600) : un tunnel qui descend encore, sans lumière
+    out.append(f'<path d="M4500 {SOL} V640 Q4600 560 4700 640 V{SOL} Z" fill="{PAPIER}" {ST} stroke-width="3"/>'
+               f'<path d="M4520 {SOL} L4560 700 M4680 {SOL} L4640 700" stroke="{ENCRE}" stroke-width="1.4"/>')
+    out.append(tablee(2080, 2800, 2710))
+    # les bocaux de vers luisants pendus aux poutres : la lumière du village
+    bocaux = (1240, 1560, 1760, 1920, 2120, 2300, 2470, 2650, 3160, 3640, 3900, 4300)
+    for x in bocaux:
+        out.append(bocal_lumiere(x, 440 + (x * 7) % 60, 1.2 if 2080 <= x <= 2800 or abs(x - 1920) < 10 else 1.0))
+    out.append(sol_terre(w, 6203))
+    # les flaques de lumière, posées sur la terre battue ; la plus large sous la tablée
+    for x in bocaux:
+        out.append(flaque(x, 150 if 2080 <= x <= 2800 else 120))
+    out.append(flaque(2440, 520, 1.3))
+    return "".join(out)
+
+
+def fx_eboule() -> str:
+    """La voûte tombée derrière Tobie : un mur de terre et de pierres du sol au plafond, qui bouche
+    la galerie. Repère du calque : son coin haut-gauche est en (EBOULE_X, EBOULE_Y) du village."""
+    r = rnd(6201)
+    x0, y0 = EBOULE_X, EBOULE_Y
+    out = [f'<g transform="translate({-x0} {-y0})">',
+           f'<path d="M820 {SOL + 4} L860 600 L840 420 L900 340 L1004 360 L1014 500 L1018 {SOL + 4} Z" fill="url(#h2)" {ST} stroke-width="3"/>']
     for _ in range(14):
         x, y = r.uniform(840, 990), r.uniform(420, 880)
         out.append(f'<path d="M{x:.0f} {y:.0f} l20 -10 l18 8 l-6 18 l-26 4 Z" fill="{PAPIER}" {ST} stroke-width="2"/>')
-    # les maisons creusées
-    for x, larg, haut, s in ((1060, 300, 300, 1), (1400, 260, 340, 2), (3000, 280, 320, 3), (3320, 240, 300, 4), (4000, 300, 330, 5)):
-        out.append(maison(x, larg, haut, 6210 + s))
-    # la porte de la niche du veilleur (x 3720) : basse, une lampe à côté
-    out.append(f'<path d="M3640 {SOL} V700 Q3720 650 3800 700 V{SOL} Z" fill="{PAPIER}" {ST} stroke-width="3"/>'
-               f'<path d="M3656 {SOL} V708 Q3720 668 3784 708 V{SOL}" fill="none" {ST} stroke-width="1.6"/>')
-    # le chemin du seuil (x 4600) : un tunnel qui descend encore
-    out.append(f'<path d="M4500 {SOL} V640 Q4600 560 4700 640 V{SOL} Z" fill="{PAPIER}" {ST} stroke-width="3"/>'
-               f'<path d="M4520 {SOL} L4560 700 M4680 {SOL} L4640 700" stroke="{ENCRE}" stroke-width="1.4"/>')
-    # la tablée au centre (x 2420) : une longue table, des bancs, les couverts ; un de plus (x 2700)
-    out.append(f'<rect x="2080" y="{SOL - 120}" width="720" height="18" fill="url(#h1)" {ST} stroke-width="3"/>'
-               f'<path d="M2110 {SOL - 102} V{SOL} M2770 {SOL - 102} V{SOL} M2440 {SOL - 102} V{SOL}" {ST} stroke-width="6"/>'
-               f'<rect x="2060" y="{SOL - 60}" width="760" height="12" fill="url(#h1)" {ST} stroke-width="2.4"/>')
-    for x in range(2120, 2800, 80):
-        out.append(f'<ellipse cx="{x}" cy="{SOL - 124}" rx="22" ry="6" fill="{PAPIER}" {ST} stroke-width="2"/>'
-                   f'<path d="M{x + 28} {SOL - 136} V{SOL - 122}" stroke="{ENCRE}" stroke-width="2"/>')
-    out.append(f'<rect x="2686" y="{SOL - 150}" width="14" height="28" fill="{PAPIER}" {ST} stroke-width="2"/>')
-    # les bocaux de vers luisants pendus aux poutres : la lumière du village
-    for x in (1240, 1560, 1760, 1920, 2080, 2240, 2420, 2600, 2780, 3160, 3460, 3860, 4300):
-        out.append(bocal_lumiere(x, 440 + (x * 7) % 60, 1.0 if abs(x - 1920) > 200 else 1.2))
-        # la flaque de lumière qu'il pose sur la terre battue
-        out.append(f'<ellipse cx="{x}" cy="{SOL + 14}" rx="120" ry="16" fill="url(#v1)" opacity=".6"/>')
-    out.append(sol_terre(w, 6203))
+    out.append(f'<path d="M800 {SOL + 4} Q830 {SOL - 30} 850 {SOL - 10} M1000 {SOL - 8} Q1020 {SOL - 24} 1030 {SOL + 4}" fill="url(#h1)" {ST} stroke-width="2.4"/>')
+    out.append('</g>')
     return "".join(out)
 
 
@@ -335,7 +427,11 @@ LIEUX = {"fissure": (fissure, 1920), "nef": (nef, 5760), "village": (village, 48
 
 def main() -> None:
     total = sum(ecrire(nom, fn(), w) for nom, (fn, w) in LIEUX.items())
-    print(f"{total} tuiles de l'étape 6 dans art/src/env/e6")
+    FX.mkdir(parents=True, exist_ok=True)
+    (FX / "fx_eboule-village.svg").write_text(
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{EBOULE_W}" height="{EBOULE_H}" viewBox="0 0 {EBOULE_W} {EBOULE_H}">{DEFS}{fx_eboule()}</svg>\n',
+        encoding="utf-8")
+    print(f"{total} tuiles de l'étape 6 dans art/src/env/e6 et le calque fx_eboule-village")
 
 
 if __name__ == "__main__":
