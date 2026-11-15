@@ -108,6 +108,8 @@ position = Vector2(200, 900)
 [node name="e3_procession_champs" parent="Rencontres" instance=ExtResource("1")]
 position = Vector2(1800, 900)
 rencontre_id = &"e3_procession_champs"
+personnage = &"procession"
+cortege = 4
 dialogue = ExtResource("2")
 libelle = "Rejoindre les villageois"
 titre = "champs"

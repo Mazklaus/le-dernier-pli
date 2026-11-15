@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_03/e3_details.dialogue" id="2"]
 [ext_resource type="Resource" path="res://dialogue/etape_03/e3_procession.dialogue" id="3"]
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="4"]
+[ext_resource type="Script" uid="uid://9vjga4usikz6a" path="res://scenes/interactions/personnage/procession_fenetre.gd" id="5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1440, 180)
@@ -99,6 +100,9 @@ theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 32
 text = "5 Chambre d'Ilde (nuit, fermée) · 0.75 écran(s)"
 
+[node name="ProcessionFenetre" type="Node2D" parent="."]
+script = ExtResource("5")
+
 [node name="Rencontres" type="Node2D" parent="."]
 
 [node name="Details" type="Node2D" parent="."]
@@ -144,6 +148,7 @@ une_seule_fois = true
 metadata/note_level_design = "La procession chante sous la fenêtre : suivre ou rester"
 
 [node name="Visuel" type="ColorRect" parent="Rencontres/e3_procession"]
+visible = false
 offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
