@@ -12,6 +12,8 @@ signal etat_declenche(etat: StringName)  # &"affame", &"perdu", &"lanterne_etein
 signal marque_gagnee(marque: Dictionary)
 signal promesse_resolue(id: StringName, etat: StringName)
 signal sceau_change(drapeau: StringName)  # &"abime", &"rechauffe", &"ouvert"
+## Une ligne du pli vient d'être lue en transparence (index 0 à 5).
+signal ligne_pli_lue(index: int)
 signal etape_changee(etape: int)
 ## Émis après depuis_dictionnaire() (menu debug, autosave) : les abonnés relisent tout l'état.
 signal etat_charge()
@@ -360,6 +362,7 @@ func lire_ligne_pli() -> int:
 	modifier_jauge(HUILE, -1)
 	etape_derniere_lecture = etape
 	pli_lignes_lues += 1
+	ligne_pli_lue.emit(pli_lignes_lues - 1)
 	return pli_lignes_lues - 1
 
 
