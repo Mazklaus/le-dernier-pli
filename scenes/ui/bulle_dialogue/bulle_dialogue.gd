@@ -213,6 +213,12 @@ func _bouton_option(i: int, option: Dictionary) -> Button:
 	texte.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	phrase.add_child(texte)
 	var affiches: Dictionary = option["couts_affiches"]
+	# Une option trop longue est coupée (points de suspension) pour garder son coût dans la bulle.
+	var place := largeur_texte_option(_taille(), affiches.size())
+	if police_texte != null and police_texte.get_string_size(texte.text, HORIZONTAL_ALIGNMENT_LEFT, -1, taille_option).x > place:
+		texte.custom_minimum_size.x = place
+		texte.clip_text = true
+		texte.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	for nom: StringName in affiches:
 		# Icône et chiffre serrés (6 px) pour se lire comme un seul signe.
 		var signe := HBoxContainer.new()
@@ -306,6 +312,14 @@ static func recadrer(texture: Texture2D) -> Texture2D:
 	atlas.atlas = texture
 	atlas.region = Rect2(zone)
 	return atlas
+
+
+## Largeur laissée au texte d'une option : la bulle moins ses marges, le numéro et la place
+## des coûts (icône, chiffre, écart de 0,8 em chacun).
+static func largeur_texte_option(taille: int, nb_couts: int) -> float:
+	var numero := taille * 0.76 * 2.0 + 14.0
+	var un_cout := taille * 0.9 + 6.0 + taille * 0.78 * 1.4 + taille * 0.93 * ECART_COUT_EM
+	return maxf(120.0, LARGEUR - 100.0 - numero - nb_couts * un_cout)
 
 
 func _apercu(option: Dictionary) -> void:
