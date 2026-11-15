@@ -436,6 +436,7 @@ rencontre_id = &"e1_guetteur"
 personnage = &"guetteur"
 dialogue = ExtResource("12")
 libelle = "Regarder au périscope"
+son_debut = "sfx_periscope_regarder"
 metadata/note_level_design = "Le Guetteur au périscope, facultatif. -1 lucidité au deuxième regard"
 
 [node name="Visuel" type="ColorRect" parent="Surface/Carrefour/e1_guetteur"]
@@ -587,6 +588,7 @@ rencontre_id = &"e1_parapet"
 personnage = &"lamarre"
 dialogue = ExtResource("13")
 libelle = "Monter"
+son_fin = "sfx_echelle_monter"
 fin_etape = true
 une_seule_fois = true
 metadata/note_level_design = "Lamarre au pied de l'échelle : regarder le pli, monter, bilan"
