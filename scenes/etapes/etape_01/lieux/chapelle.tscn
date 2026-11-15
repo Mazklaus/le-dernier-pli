@@ -163,6 +163,7 @@ text = "chapelle_ex_voto"
 [node name="e1_cendre" parent="Rencontres" instance=ExtResource("2")]
 position = Vector2(1400, 900)
 rencontre_id = &"e1_cendre"
+personnage = &"cassien"
 dialogue = ExtResource("4")
 libelle = "S'approcher de Cassien"
 une_seule_fois = true

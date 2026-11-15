@@ -28,8 +28,14 @@ signal dialogue_termine(declencheur: DeclencheurDialogue)
 ## d'office pour les détails à examiner (rencontre_id contenant « _detail_ »).
 @export var est_detail: bool = false
 
+@export_group("Apparence")
+## Personnage dessiné de la rencontre (planche chr_<nom>_repos_01 de la DA), posé aux pieds du
+## déclencheur ; masque le rectangle « Visuel » de la maquette. Vide : pas de personnage.
+@export var personnage: StringName
+
 var en_cours: bool = false
 var repere: RepereExamen = null
+var dessin: Personnage = null
 
 
 func _ready() -> void:
@@ -38,6 +44,12 @@ func _ready() -> void:
 		repere = RepereExamen.new()
 		repere.rencontre_id = rencontre_id
 		add_child(repere)
+	dessin = Personnage.creer(personnage)
+	if dessin != null:
+		var visuel := get_node_or_null("Visuel") as CanvasItem
+		if visuel != null:
+			visuel.visible = false
+		add_child(dessin)
 
 
 func est_verrouille() -> bool:
