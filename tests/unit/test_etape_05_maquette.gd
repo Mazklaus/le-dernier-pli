@@ -156,3 +156,15 @@ func test_les_points_d_interaction_sont_espaces() -> void:
 				continue
 			assert_true(absf(a.global_position.x - b.global_position.x) >= 200.0,
 				"%s trop près de %s" % [a.name, b.name])
+
+
+func test_le_raccord_de_boucle_et_les_ambiances_de_la_foret() -> void:
+	assert_eq(_passage("Continuer").son, "sfx_boucle_raccord", "même oiseau, même craquement")
+	for zone in ["Oree", "Boucle", "Campement", "Cimetiere", "Clairiere"]:
+		var son := _etape.get_node_or_null("Surface/%s/SonZone" % zone) as AudioStreamPlayer2D
+		assert_not_null(son, "%s sans ambiance" % zone)
+		if son != null:
+			assert_eq(son.bus, &"Ambiance", zone)
+			assert_true(son.autoplay, zone)
+			assert_true(son.stream.resource_path.contains("amb_foret-de-croix_"), zone)
+	assert_eq((_etape.get_node("Surface/Cimetiere/SonZone") as AudioStreamPlayer2D).volume_db, -3.0)
