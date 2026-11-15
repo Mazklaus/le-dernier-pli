@@ -1,0 +1,35 @@
+# Étape 6, rencontre 4 : le veilleur Mathurin, dans sa niche-maison. Facultatif. Le choix à 2 points.
+# Le croire : −2 Lucidité (−1 au palier Égaré), Nom retenu « Il s'appelait Mathurin ».
+# Le traiter d'ennemi : Relique « L'ennemi reste l'ennemi » (Ombre). Écouter sans répondre : rien.
+# Garde-fou : il ne dit ni pourquoi ni comment la guerre s'est arrêtée.
+
+~ debut
+
+Tobie: Dans une niche creusée à part, un très vieil homme. Un uniforme plié sur les genoux.
+Tobie: Une couleur que je n'ai jamais vue sur un soldat. Pas la nôtre. L'autre.
+Mathurin: J'étais de l'autre côté du fil, autrefois. Comme toi, de ton côté. Avec un fusil.
+Mathurin: On ne se bat plus, ici. Depuis longtemps. Avant que tu naisses.
+Tobie: Là-haut, on se bat tous les jours. J'ai vu les morts. J'en ai porté.
+Mathurin: Je sais, petit. Je sais.
+Tobie: Il ne dit rien de plus. Il caresse l'uniforme, comme on caresse un chien qui dort.
+- [Le croire] [#cout_lucidite=2, #enfoui]
+	=> croire
+- [Le traiter d'ennemi] Tu mens.
+	Tobie: Tu mens. Vous mentez tous. Vous êtes sous nos pieds depuis toujours, à attendre.
+	Mathurin: Oui. Ça, c'est vrai. On attend.
+	Tobie: Je ne lui tourne pas le dos en partant.
+	do GameState.ajouter_marque(&"l_ennemi_reste_l_ennemi", &"relique", &"e6_veilleur")
+- [Écouter sans répondre]
+	Tobie: Je reste assis près de lui un moment. Je ne dis rien. Lui non plus.
+
+=> END
+
+~ croire
+
+Tobie: Je le crois. Je ne sais pas pourquoi. Peut-être parce qu'il ne cherche pas à me convaincre.
+Tobie: Ça fait mal, en dedans. Tous ces hivers dans la boue. Pour quoi ?
+Mathurin: Mathurin. C'est mon nom. Personne ne me l'a demandé depuis longtemps.
+Tobie: Mathurin. Je le garde.
+do GameState.ajouter_marque(&"il_s_appelait_mathurin", &"nom_retenu", &"e6_veilleur")
+
+=> END

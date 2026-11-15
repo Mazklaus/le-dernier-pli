@@ -1,0 +1,42 @@
+# Étape 6, rencontre 3 : la tablée du village enfoui. Obligatoire (ouvre le seuil). Reflet inversé de la noce (étape 3).
+# Manger : +1 Vivres, +1 Lucidité (le seul vrai repos). Apprendre un mot : −1 Lucidité (tag #enfoui, gratuit au palier Égaré),
+# Nom retenu « La langue d'en dessous ». On peut faire les deux (boucle ~ table).
+# Garde-fou : personne ne compte les couverts ; personne ne dit pourquoi on l'attendait.
+
+~ debut
+
+Tobie: Un village sous la terre. Des maisons creusées dans l'argile, des fumées, une odeur de pain.
+Tobie: Au milieu, une longue table. Des familles, des vieux, des enfants qui se poussent du coude.
+Tobie: Une chaise est vide. Un couvert est mis devant. Une femme me fait signe de m'asseoir.
+Tobie: Personne ne demande qui je suis. Ils savent, peut-être.
+if GameState.palier == GameState.EGARE
+	Tobie: Je me pince le bras sous la table. Si c'est un rêve, il sent vraiment le pain.
+=> table
+
+~ table
+
+- [Manger avec eux] [if not GameState.rencontre_vue(&"e6_tablee_repas") /] [#cache]
+	do GameState.marquer_rencontre_vue(&"e6_tablee_repas")
+	Tobie: Du pain noir, une soupe de racines, de l'eau qui a le goût de la pierre. C'est chaud.
+	Tobie: À côté de moi, un enfant me vole un morceau de pain, et sa mère lui tape sur les doigts. On rit.
+	do GameState.appliquer_effets({&"vivres": 1, &"lucidite": 1})
+	=> table
+- [Apprendre un mot] [if not GameState.possede_marque(&"la_langue_d_en_dessous") /] [#cout_lucidite=1, #enfoui, #cache]
+	=> mot
+- [Se lever de table]
+	Tobie: Je repousse ma chaise. Elle racle la pierre, et tout le monde se tait une seconde.
+	if GameState.possede_marque(&"la_langue_d_en_dessous")
+		Tobie: La petite fille dit le mot. Reste. Je fais semblant de ne pas l'avoir compris.
+	else
+		Tobie: La petite fille me retient par la manche. Sa mère lui détache les doigts, un par un, doucement.
+	Tobie: Je remercie avec la main sur le cœur. Ils hochent la tête. Ils ont l'habitude.
+
+=> END
+
+~ mot
+
+Tobie: Une petite fille me tire la manche. Elle montre le pain, et elle dit un mot. Je le répète. Elle rit.
+Tobie: Elle montre sa bouche, puis la mienne. Un autre mot. Merci, je crois.
+Tobie: Le dernier, elle le dit en me tenant la main. Je comprends sans qu'elle explique. Reste.
+do GameState.ajouter_marque(&"la_langue_d_en_dessous", &"nom_retenu", &"e6_tablee")
+=> table

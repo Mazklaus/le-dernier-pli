@@ -1,0 +1,63 @@
+# Étape 6 : détails à examiner, sans coût ni marque, rejouables, 15 à 30 s chacun.
+# Titres du plan du Level Designer. nef_vitraux et nef_racines sont en zone sombre : versions au toucher.
+# Garde-fous : rien sur la fin de la guerre, rien sur ce que deviennent les coureurs, rien derrière la porte.
+
+~ nef_vitraux
+
+if not GameState.lanterne_allumee
+	=> nef_vitraux_toucher
+Tobie: Un vitrail, intact. Des saints en couleur, et derrière le verre, de la terre noire, tassée.
+Tobie: Pas de lumière derrière. Il n'y en a jamais eu. Quelqu'un a fait ces couleurs pour le noir.
+
+=> END
+
+~ nef_vitraux_toucher
+
+Tobie: Du verre, froid, découpé en petits morceaux soudés au plomb. Un vitrail.
+Tobie: Derrière, ma main ne sent rien d'autre que de la terre. Pas de jour, de l'autre côté.
+
+=> END
+
+~ nef_racines
+
+if not GameState.lanterne_allumee
+	=> nef_racines_toucher
+Tobie: Une racine a fendu le pilier de haut en bas. La pierre s'est ouverte comme une écorce.
+Tobie: Il a fallu longtemps. Très longtemps. Les arbres de là-haut ont eu le temps de pousser.
+
+=> END
+
+~ nef_racines_toucher
+
+Tobie: Sous mes doigts, de la pierre, puis du bois vivant, puis de la pierre. La racine a traversé le pilier.
+Tobie: Elle est tiède. Plus tiède que la pierre.
+
+=> END
+
+~ village_lanternes
+
+Tobie: Les lumières du village : des bocaux pleins de vers luisants, pendus aux poutres.
+Tobie: Quand on parle fort, ils s'éteignent un instant. Ici, tout le monde parle bas.
+
+=> END
+
+~ tablee_couvert
+
+Tobie: Le couvert mis pour moi. Une cuillère de bois, sculptée. Il y a une petite cloche gravée sur le manche.
+Tobie: Les autres cuillères n'en ont pas.
+
+=> END
+
+~ veilleur_uniforme
+
+Tobie: L'uniforme plié. Les boutons ont été cousus et recousus. Quelqu'un l'entretient depuis des années.
+Tobie: Pour un homme qui ne se bat plus. Ou pour se souvenir qu'il s'est battu.
+
+=> END
+
+~ seuil_porte
+
+Tobie: La cire de la porte. Des couches, des couches et des couches, chacune un peu différente.
+Tobie: La plus récente est encore souple sous l'ongle. Quelqu'un est passé ici il n'y a pas si longtemps.
+
+=> END

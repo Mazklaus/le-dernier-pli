@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://4bsselsygces"
+path="res://.godot/imported/e6_veilleur.dialogue-a42394e9fd350452ca72df629418a2f9.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_06/e6_veilleur.dialogue"
+dest_files=["res://.godot/imported/e6_veilleur.dialogue-a42394e9fd350452ca72df629418a2f9.tres"]
+
+[params]
+
+defaults=true

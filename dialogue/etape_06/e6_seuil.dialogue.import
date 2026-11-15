@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://0meqf26r6goa"
+path="res://.godot/imported/e6_seuil.dialogue-cc229b42148a6254b3efc7edf473aed9.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_06/e6_seuil.dialogue"
+dest_files=["res://.godot/imported/e6_seuil.dialogue-cc229b42148a6254b3efc7edf473aed9.tres"]
+
+[params]
+
+defaults=true

@@ -1,0 +1,20 @@
+# Étape 6, rencontre 1 : la nef engloutie. Obligatoire, ouvre la zone sombre (refermée par e6_eloi).
+# Lanterne : −1 Huile. Noir : −1 Lucidité, gratuit avec l'œil greffé (GameState.zone_noire_gratuite, PR #109).
+
+~ debut
+
+Tobie: La fente s'ouvre sous mes pieds. Je glisse, je roule, je m'arrête sur de la pierre taillée.
+Tobie: Une église. Couchée dans la terre, de travers, comme un navire au fond de l'eau.
+Tobie: Le noir est entier. Il sent la racine et la cire très ancienne.
+- [Allumer la lanterne] [if GameState.valeur(&"huile") >= 1 /] [#cout_huile=1, #sans_prelevement]
+	do GameState.entrer_zone_sombre(true, &"e6_nef")
+	Tobie: Des piliers penchés, fendus par des racines grosses comme des bras. Ça descend.
+- [Avancer dans le noir] [if not GameState.zone_noire_gratuite(&"e6_nef") /] [#cout_lucidite=1, #sans_prelevement, #cache]
+	do GameState.entrer_zone_sombre(false, &"e6_nef")
+	Tobie: Mes mains sur la pierre froide. Le sol penche. Je descends à quatre pattes, comme un enfant.
+- [Laisser voir l'œil du saint] [if GameState.zone_noire_gratuite(&"e6_nef") /] [#cache]
+	do GameState.entrer_zone_sombre(false, &"e6_nef")
+	Tobie: Mon œil de saint voit les marches, les racines, le vide. L'autre pleure.
+	Tobie: Je ferme le mien. Je laisse le sien me conduire.
+
+=> END

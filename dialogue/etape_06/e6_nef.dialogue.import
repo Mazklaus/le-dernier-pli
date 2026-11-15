@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://dfpv1o5jbcx25"
+path="res://.godot/imported/e6_nef.dialogue-64426f0c279876218e52d7d7d1a5e2a9.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_06/e6_nef.dialogue"
+dest_files=["res://.godot/imported/e6_nef.dialogue-64426f0c279876218e52d7d7d1a5e2a9.tres"]
+
+[params]
+
+defaults=true
