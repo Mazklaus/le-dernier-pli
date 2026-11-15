@@ -35,7 +35,7 @@ ST = f'stroke="{ENCRE}" stroke-linejoin="round" stroke-linecap="round"'
 FUSILS_X = 900            # détail lisiere_fusils
 LISIERE_X = 1500          # rencontre e3_lisiere
 VILLAGE_X = 2400          # premiers pavés
-PORTE_ILDE = (3780, 3940)  # passage VersMaisonIlde (centre 4000 côté maquette, porte 980 + 2880)
+PORTE_ILDE = (3920, 4080)  # passage VersMaisonIlde (centre 4000, zone 3920 à 4080)
 LAMPIONS_X = 4800         # détail place_lampions
 NOCE_X = 5300             # rencontre e3_noce
 PORTE_CLOCHER = (6520, 6680)  # passage VersClocher (centre 6600)
@@ -252,9 +252,9 @@ def plan3() -> str:
     out.append(maison(2420, 2980, 470, 300, [2490, 2640, 2810]))
     out.append(maison(3000, 3520, 520, 380, [3070, 3260, 3410], porte=(3200, 3330)))
     # maison d'Ilde : la porte du passage, un pot de fleurs à la fenêtre
-    out.append(maison(3560, 4200, 450, 260, [3620, 4060, 3840], porte=PORTE_ILDE))
-    out.append(f'<path d="M4050 640 H4134 L4126 664 H4058 Z" fill="url(#h1)" {ST} stroke-width="2"/>'
-               f'<path d="M4070 640 Q4066 616 4080 606 M4092 640 Q4094 612 4108 604 M4114 640 Q4120 622 4128 618" fill="none" {ST} stroke-width="2"/>')
+    out.append(maison(3560, 4200, 450, 260, [3620, 3780], porte=PORTE_ILDE))
+    out.append(f'<path d="M3770 640 H3854 L3846 664 H3778 Z" fill="url(#h1)" {ST} stroke-width="2"/>'
+               f'<path d="M3790 640 Q3786 616 3800 606 M3812 640 Q3814 612 3828 604 M3834 640 Q3840 622 3848 618" fill="none" {ST} stroke-width="2"/>')
     # portail fermé derrière la maison d'Ilde : le chemin des champs, clos le jour
     out.append(f'<rect x="4200" y="660" width="120" height="{SOL - 660}" fill="url(#moellons)" {ST} stroke-width="2.6"/>')
     out.append(f'<rect x="4214" y="680" width="92" height="{SOL - 680}" fill="url(#vantail)" {ST} stroke-width="2.6"/>')
