@@ -719,6 +719,7 @@ text = "souche_village"
 [node name="Poste" type="AudioStreamPlayer2D" parent="Sons"]
 position = Vector2(2900, 700)
 stream = ExtResource("son_poste")
+volume_db = -2.0
 autoplay = true
 max_distance = 2200.0
 bus = &"Ambiance"
@@ -727,6 +728,7 @@ metadata/note_level_design = "Ambiance du poste de Brisse, sur la crête"
 [node name="BrouillardOuest" type="AudioStreamPlayer2D" parent="Sons"]
 position = Vector2(6200, 800)
 stream = ExtResource("son_brouillard")
+volume_db = -3.0
 autoplay = true
 max_distance = 2600.0
 bus = &"Ambiance"
@@ -735,6 +737,7 @@ metadata/note_level_design = "Vent du brouillard, première moitié"
 [node name="BrouillardEst" type="AudioStreamPlayer2D" parent="Sons"]
 position = Vector2(8900, 800)
 stream = ExtResource("son_brouillard")
+volume_db = -3.0
 autoplay = true
 max_distance = 2600.0
 bus = &"Ambiance"
@@ -759,6 +762,7 @@ metadata/note_level_design = "Fils de la 2e ceinture : seulement dans le noir (A
 [node name="TrousObus" type="AudioStreamPlayer2D" parent="Sons"]
 position = Vector2(12800, 1000)
 stream = ExtResource("son_trous")
+volume_db = -4.0
 autoplay = true
 max_distance = 1800.0
 bus = &"Ambiance"
