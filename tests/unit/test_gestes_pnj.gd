@@ -145,3 +145,11 @@ func test_les_gestes_de_tobie_de_l_etape_5_ont_leurs_trois_calques() -> void:
 				largeur = t.get_width()
 			assert_eq(t.get_width(), largeur, "calques synchronisés : " + motif % geste)
 		assert_between(largeur / 200, 3, 6, geste)
+
+
+func test_l_autre_se_retourne_a_ses_planches() -> void:
+	# le fond, et 6 images de 200 x 170 (3 x 2) autour de l'Autre, au bout du sentier
+	var fond := load("res://assets/graphics/cin/cin_autre_01.png") as Texture2D
+	var images := load("res://assets/graphics/cin/cin_autre_02.png") as Texture2D
+	assert_eq(fond.get_size(), Vector2(1920, 1080))
+	assert_eq(images.get_size(), Vector2(600, 340))
