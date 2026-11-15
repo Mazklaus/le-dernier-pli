@@ -58,3 +58,42 @@ func masquer_fonds_gris() -> void:
 				var visuel := corps.get_node_or_null("Visuel") as CanvasItem
 				if visuel != null:
 					visuel.visible = false
+
+
+## Fond fixe d'un lieu (pièce, chemin fermé) : tuiles <chemin_base>_NN.png bout à bout depuis
+## (0, 0), sans parallaxe. null si aucune tuile n'existe.
+static func dessin_lieu(chemin_base: String, nom_noeud: String, z: int) -> Node2D:
+	var dessin := Node2D.new()
+	dessin.name = nom_noeud
+	dessin.z_index = z
+	var x := 0.0
+	for n in range(1, 10):
+		var chemin := "%s_%02d.png" % [chemin_base, n]
+		if not ResourceLoader.exists(chemin):
+			break
+		var tuile := Sprite2D.new()
+		tuile.texture = load(chemin) as Texture2D
+		tuile.centered = false
+		tuile.position = Vector2(x, 0.0)
+		tuile.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		dessin.add_child(tuile)
+		x += tuile.texture.get_width()
+	if dessin.get_child_count() == 0:
+		dessin.free()
+		return null
+	return dessin
+
+
+## Gris de maquette d'un lieu habillé : Fond, Visuel de Sol/Plafond/Mur*, et le voile noir de la
+## ZoneSombre (il passait devant Tobie et assombrissait le ruban ; le noir est peint dans le fond).
+static func masquer_gris_lieu(lieu: Node) -> void:
+	for chemin: String in ["Fond", "ZoneSombre/Visuel"]:
+		var gris := lieu.get_node_or_null(chemin) as CanvasItem
+		if gris != null:
+			gris.visible = false
+	for corps: Node in lieu.get_children():
+		var nom := String(corps.name)
+		if corps is StaticBody2D and (nom == "Sol" or nom == "Plafond" or nom.begins_with("Mur")):
+			var visuel := corps.get_node_or_null("Visuel") as CanvasItem
+			if visuel != null:
+				visuel.visible = false

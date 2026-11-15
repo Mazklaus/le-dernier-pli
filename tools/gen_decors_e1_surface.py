@@ -185,7 +185,7 @@ def plan2(w: int) -> str:
 
 
 def plan1(w: int) -> str:
-    forme = f"M0 {crete(0, w, 400, 14, 120, 31)} L{w} {H} L0 {H} Z"
+    forme = f"M{crete(0, w, 400, 14, 120, 31)} L{w} {H} L0 {H} Z"
     out = [f'<path d="{forme}" fill="{MINE}"/>']
     # clochers sans cloche : la baie est vide, en papier
     for cx in (900, 2700):
