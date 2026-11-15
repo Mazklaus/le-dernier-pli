@@ -6,8 +6,9 @@ extends Cinematique
 ## Designer et décrit ses plans dans `construire()`, qui renvoie l'Animation `jouer`.
 ## Les clés sont posées au pas de 1/10 s, en mode discret (pas d'interpolation molle).
 
-## Au-dessus du jeu et de l'interface (masquée de toute façon pendant la cinématique).
-const COUCHE_PLEIN_ECRAN := 60
+## Au-dessus du jeu, sous l'écran gravure : les plans prennent le même papier (tremblé,
+## grain) que le reste du jeu (DA). L'interface est masquée pendant la cinématique.
+const COUCHE_PLEIN_ECRAN := EtapeBase.COUCHE_GRAVURE - 1
 
 
 func _ready() -> void:
