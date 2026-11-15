@@ -54,3 +54,18 @@ func test_gain_voix_sans_repere_vaut_1() -> void:
 func test_vers_db_plancher_muet() -> void:
 	assert_eq(MixageSon.vers_db(0.0), MixageSon.GAIN_MUET_DB)
 	assert_almost_eq(MixageSon.vers_db(1.0), 0.0, 0.001)
+
+
+func test_gain_phase_croise_jour_et_nuit() -> void:
+	assert_almost_eq(MixageSon.gain_phase("jour", 0.0), 1.0, 0.001)
+	assert_almost_eq(MixageSon.gain_phase("nuit", 0.0), 0.0, 0.001)
+	assert_almost_eq(MixageSon.gain_phase("jour", 1.0), 0.0, 0.001)
+	assert_almost_eq(MixageSon.gain_phase("nuit", 1.0), 1.0, 0.001)
+	var j := MixageSon.gain_phase("jour", 0.5)
+	var n := MixageSon.gain_phase("nuit", 0.5)
+	assert_almost_eq(j * j + n * n, 1.0, 0.001, "puissance constante au milieu du fondu")
+
+
+func test_gain_phase_ignore_les_autres_couches() -> void:
+	assert_eq(MixageSon.gain_phase("autre", 1.0), 1.0)
+	assert_eq(MixageSon.gain_phase("surface", 0.3), 1.0)

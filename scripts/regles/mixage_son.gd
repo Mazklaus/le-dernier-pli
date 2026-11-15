@@ -40,6 +40,21 @@ const GAIN_VOIX_REPERES := {
 
 const GAIN_MUET_DB := -80.0
 
+## Étapes qui passent du jour à la nuit (3, puis 4 et 6) : la couche « jour » et la couche
+## « nuit » se croisent à puissance constante, le temps du fondu au noir du Passage.
+const DUREE_FONDU_PHASE := 6.0
+
+
+## Gain d'une couche selon la part de nuit (0 : plein jour, 1 : pleine nuit).
+## Toute couche autre que « jour » et « nuit » n'est pas concernée (1).
+static func gain_phase(couche: String, nuit: float) -> float:
+	match couche:
+		"jour":
+			return cos(clampf(nuit, 0.0, 1.0) * PI / 2.0)
+		"nuit":
+			return sin(clampf(nuit, 0.0, 1.0) * PI / 2.0)
+	return 1.0
+
 
 ## Mélange cible pour un état donné : {"reel": float, "autre": float, "coupure_hz": float}.
 static func cible(palier: StringName, perdu: bool, dans_le_noir: bool) -> Dictionary:
