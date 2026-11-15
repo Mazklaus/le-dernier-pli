@@ -44,7 +44,7 @@ func test_le_pied_qui_se_pose_fait_un_pas() -> void:
 	watch_signals(s)
 	s.jouer(SilhouetteTobie.MARCHE)
 	await wait_seconds(0.85)
-	var n := get_signal_emit_count(s, "pas_pose")
+	var n: int = get_signal_emit_count(s, "pas_pose")
 	assert_between(n, 2, 3, "deux appuis par cycle de 0,8 s")
 	s.jouer(SilhouetteTobie.REPOS)
 	await wait_seconds(0.5)

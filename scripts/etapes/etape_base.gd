@@ -93,7 +93,7 @@ func son_passage(depart: Vector2, arrivee: Vector2) -> String:
 
 func _sur_passage_franchi(passage: Passage, vers: StringName) -> void:
 	var messager := trouver_messager()
-	if messager != null:
+	if messager != null and passage != null:
 		AudioDirector.jouer_variante(son_passage(passage.global_position, messager.global_position))
 	if not lieux_musique.is_empty():
 		if lieux_musique.has(vers):
