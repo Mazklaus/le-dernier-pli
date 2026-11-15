@@ -47,9 +47,9 @@ func test_les_personnages_de_l_etape_1_sont_poses() -> void:
 	for e: Array in ETAPE_1:
 		var lieu: Node = add_child_autofree((load(String(e[0])) as PackedScene).instantiate())
 		var trouve := false
-		for n in lieu.find_children("*", "DeclencheurDialogue", true, false):
+		for n in lieu.find_children("*", "", true, false):
 			var d := n as DeclencheurDialogue
-			if d.rencontre_id == e[1]:
+			if d != null and d.rencontre_id == e[1]:
 				trouve = true
 				assert_not_null(d.dessin, String(e[1]))
 				if d.dessin != null:
