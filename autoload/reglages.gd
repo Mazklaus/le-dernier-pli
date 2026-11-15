@@ -23,6 +23,10 @@ const DEFAUTS := {
 	&"volume_UI": 0.8,
 }
 
+## false : rien n'est lu ni écrit dans FICHIER (tests GUT, voir tests/pre_run.gd),
+## pour qu'un test qui change un réglage ne pollue pas les lancements suivants.
+var persistance: bool = true
+
 var _valeurs: Dictionary = {}
 
 
@@ -44,6 +48,14 @@ func changer(cle: StringName, nouvelle: Variant) -> void:
 	_appliquer(cle)
 	reglage_change.emit(cle, nouvelle)
 	sauver()
+
+
+## Coupe la persistance et revient aux valeurs par défaut (sans lire ni écrire FICHIER).
+func isoler_pour_tests() -> void:
+	persistance = false
+	_valeurs = DEFAUTS.duplicate()
+	for cle: StringName in _valeurs:
+		_appliquer(cle)
 
 
 func charger() -> void:
@@ -82,6 +94,8 @@ static func reponse_vraie(reponse: Variant) -> bool:
 
 
 func sauver() -> void:
+	if not persistance:
+		return
 	var cfg := ConfigFile.new()
 	for cle: StringName in _valeurs:
 		cfg.set_value(SECTION, String(cle), _valeurs[cle])

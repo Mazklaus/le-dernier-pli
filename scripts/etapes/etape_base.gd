@@ -184,6 +184,11 @@ func ajouter_gravure() -> ShaderMaterial:
 	add_child(couche)
 	PapierEtapes.appliquer(materiau, numero_etape)
 	_appliquer_effets_attenues()
+	# La Lucidité pilote le tremblé et le rouge (LuciditeEcran).
+	var lucidite := LuciditeEcran.new()
+	lucidite.name = "LuciditeEcran"
+	lucidite.materiau = materiau
+	couche.add_child(lucidite)
 	if not Reglages.reglage_change.is_connected(_sur_reglage_change):
 		Reglages.reglage_change.connect(_sur_reglage_change)
 	return materiau
