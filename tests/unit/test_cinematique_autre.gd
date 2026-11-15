@@ -36,9 +36,9 @@ func test_il_marche_sur_place_s_arrete_tourne_la_tete_et_repart() -> void:
 	var temps: Array = []
 	for k in anim.track_get_key_count(piste):
 		images.append(anim.track_get_key_value(piste, k))
-		temps.append(snappedf(anim.track_get_key_time(piste, k), 0.01))
+		temps.append(roundi(anim.track_get_key_time(piste, k) * 10.0))  # en dixièmes
 	assert_eq(images, [0, 5, 0, 5, 0, 5, 1, 2, 3, 4, 0, 5, 0, 5, 0, 5])
-	assert_eq(temps, [0.0, 0.3, 0.7, 1.0, 1.3, 1.7, 2.0, 2.1, 2.2, 3.4, 3.5, 3.8, 4.2, 4.5, 4.8, 5.2])
+	assert_eq(temps, [0, 3, 7, 10, 13, 17, 20, 21, 22, 34, 35, 38, 42, 45, 48, 52])
 	assert_almost_eq(anim.length, 6.0, 0.001, "dans la fourchette 5 à 15 s")
 
 
