@@ -12,8 +12,8 @@ Grammaire de la planche n° 4 : sous terre, la lumière est faite d'anneaux de h
 des sources (bougie, braise, jour en haut d'un escalier), jamais de dégradé. Hors des anneaux :
 hachure + contre-hachure ; dans l'anneau : hachure seule ; au cœur : le papier.
 La vieille sape (zone sombre) a deux versions : « noir » (tout sous la contre-hachure, seule
-une lueur au battant de cloche) et « lumiere » (lanterne : la niche à la ration et le mot gravé
-« ...RELE »). Le code choisit selon le choix fait à e1_sape. Le voile gris de la maquette
+une lueur au battant de cloche) et « lumiere » (lanterne : toute la galerie sous une simple hachure, sans anneau fixe,
+la niche à la ration et le mot gravé « ...RELE »). Le code choisit selon le choix fait à e1_sape. Le voile gris de la maquette
 (ZoneSombre/Visuel) est masqué par le code : l'obscurité est peinte ici.
 
 Usage : python3 tools/gen_decors_e1_lieux.py
@@ -336,9 +336,10 @@ def vieille_sape(allumee: bool) -> str:
                "M1786 612 v20 h12 "
                "M1818 612 h-12 v20 h12 m-12 -10 h9")
         out.append(f'<path d="{mot}" stroke="{PAPIER}" stroke-width="2.4" fill="none" transform="translate(1800 622) scale(1.7) translate(-1765 -622)"/>')
-    # le petit battant de cloche, tombé au sol (x 2500)
-    out.append(f'<path d="M2486 {SOL - 6} L2516 {SOL - 14}" {ST} stroke-width="4"/>')
-    out.append(f'<circle cx="2522" cy="{SOL - 15}" r="7" fill="{PAPIER}" {ST} stroke-width="2.4"/>')
+    # le petit battant de cloche, tombé au sol (x 2500) : seulement dans le noir (contenu exclusif)
+    if not allumee:
+        out.append(f'<path d="M2486 {SOL - 6} L2516 {SOL - 14}" {ST} stroke-width="4"/>')
+        out.append(f'<circle cx="2522" cy="{SOL - 15}" r="7" fill="{PAPIER}" {ST} stroke-width="2.4"/>')
     # sol défoncé
     out.append(f'<rect y="{SOL}" width="{w}" height="{H - SOL}" fill="url(#terre)" {ST} stroke-width="3"/>')
     for xc in range(0, w, 36):
@@ -348,14 +349,9 @@ def vieille_sape(allumee: bool) -> str:
     # l'obscurité, peinte (la ZoneSombre commence à x 560)
     cadre = f'maskUnits="userSpaceOnUse" x="0" y="0" width="{w}" height="{H}"'
     if allumee:
-        # la lanterne : la galerie sous une simple hachure, la niche et la poutre au clair
-        out.append(f'<mask id="vs-l" {cadre}><rect x="560" width="{w - 560}" height="{H}" fill="#fff"/>'
-                   f'<ellipse cx="1800" cy="{SOL - 120}" rx="200" ry="170" fill="#000"/></mask>')
-        out.append(f'<rect width="{w}" height="{H}" fill="url(#v1)" mask="url(#vs-l)"/>')
-        out.append(f'<mask id="vs-l2" {cadre}><rect x="560" width="{w - 560}" height="{H}" fill="#fff"/>'
-                   f'<ellipse cx="1800" cy="{SOL - 120}" rx="380" ry="330" fill="#000"/>'
-                   f'<rect x="560" width="400" height="{H}" fill="#000"/></mask>')
-        out.append(f'<rect width="{w}" height="{H}" fill="url(#v2)" mask="url(#vs-l2)"/>')
+        # la lanterne : Tobie la porte avec lui, donc pas d'anneau fixe (ce serait un projecteur sur
+        # la niche) ; toute la galerie sous une simple hachure, la niche et le mot en papier s'y lisent.
+        out.append(f'<rect x="560" width="{w - 560}" height="{H}" fill="url(#v1)"/>')
     else:
         # le noir : tout sous la contre-hachure, puis l'encre ; seule lueur, le battant
         out.append(f'<mask id="vs-n" {cadre}><rect x="560" width="{w - 560}" height="{H}" fill="#fff"/>'
