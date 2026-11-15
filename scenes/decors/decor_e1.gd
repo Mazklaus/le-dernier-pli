@@ -4,11 +4,12 @@ extends DecorParallaxe
 ## niveau de 10624 px, la cendre qui tombe entre le plan 2 et le plan 3. La tombée du jour
 ## est peinte dans les tuiles (crans à x 6600 et 9000) : aucun modulate.
 ## Masque les fonds, sols et murs gris de la maquette (Surface/*/Fond, Sol, Mur*) quand le décor est posé, et habille
-## la Chicane (fx_chicane) et l'échelle de sortie (ombre, puis claire après e1_adieu).
+## la Chicane (fx_chicane), la banquette du périscope (fx_banquette) et l'échelle de sortie (ombre, puis claire après e1_adieu).
 
 const DOSSIER := "res://assets/graphics/env/e1/env_e1_"
 const CENDRE := "res://assets/graphics/fx/fx_cendre.png"
 const CHICANE := "res://assets/graphics/fx/fx_chicane.png"
+const BANQUETTE := "res://assets/graphics/fx/fx_banquette.png"
 const ECHELLE_OMBRE := "res://assets/graphics/fx/fx_echelle-ombre.png"
 const ECHELLE_CLAIRE := "res://assets/graphics/fx/fx_echelle-claire.png"
 ## L'échelle de sortie passe au clair quand l'adieu de Jacquot a été fait (Level Designer).
@@ -55,6 +56,7 @@ func _ready() -> void:
 	if masquer_fonds_maquette:
 		masquer_fonds_gris()
 	_habiller_chicane()
+	_habiller_banquette()
 	_habiller_echelle()
 
 
@@ -155,6 +157,22 @@ func _habiller_chicane() -> void:
 	dessin.texture = load(CHICANE) as Texture2D
 	dessin.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	chicane.add_child(dessin)
+
+
+## La banquette du périscope prend le dessin du DA (caillebotis sur sacs, déjà sous le voile)
+## à la place du rectangle gris.
+func _habiller_banquette() -> void:
+	var banquette := get_parent().get_node_or_null("Surface/Carrefour/BanquettePeriscope") if get_parent() else null
+	if banquette == null or not ResourceLoader.exists(BANQUETTE):
+		return
+	var visuel := banquette.get_node_or_null("Visuel") as CanvasItem
+	if visuel != null:
+		visuel.visible = false
+	var dessin := Sprite2D.new()
+	dessin.name = "Dessin"
+	dessin.texture = load(BANQUETTE) as Texture2D
+	dessin.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	banquette.add_child(dessin)
 
 
 ## L'échelle de sortie : dans l'ombre tant que l'adieu de Jacquot n'est pas fait, claire ensuite.

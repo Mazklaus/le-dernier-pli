@@ -286,6 +286,14 @@ def fx() -> None:
     (FX / "fx_chicane.svg").write_text(
         f'<svg xmlns="http://www.w3.org/2000/svg" width="200" height="260" viewBox="0 0 200 260">{DEFS}'
         f'<path d="M10 260 L18 60 Q100 30 182 60 L190 260 Z" fill="url(#sacs)" stroke="{ENCRE}" stroke-width="3"/></svg>\n')
+    # Banquette de tir du périscope (Surface/Carrefour/BanquettePeriscope, 480 x 120, monde x 7780) :
+    # caillebotis sur deux rangs de sacs, déjà sous le premier cran de voile (x > 6600).
+    (FX / "fx_banquette.svg").write_text(
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="480" height="120" viewBox="0 0 480 120">{DEFS}'
+        f'<path d="M2 120 L6 26 H474 L478 120 Z" fill="url(#sacs)" stroke="{ENCRE}" stroke-width="3"/>'
+        f'<path d="M0 4 H480 V28 H0 Z" fill="url(#planches)" stroke="{ENCRE}" stroke-width="3"/>'
+        f'<path d="M30 28 V62 M450 28 V62 M240 28 V50" stroke="{ENCRE}" stroke-width="7"/>'
+        f'<path d="M2 120 L6 4 H474 L478 120 Z" fill="url(#v1f)"/></svg>\n')
 
 
 def main() -> None:
