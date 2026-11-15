@@ -57,6 +57,7 @@ func masquer_fonds_gris() -> void:
 	var surface := get_parent().get_node_or_null("Surface") if get_parent() else null
 	if surface == null:
 		return
+	masquer_maquette(surface)
 	for section in surface.get_children():
 		var fond := section.get_node_or_null("Fond") as CanvasItem
 		if fond != null:
@@ -97,6 +98,7 @@ static func dessin_lieu(chemin_base: String, nom_noeud: String, z: int) -> Node2
 ## Gris de maquette d'un lieu habillé : Fond, Visuel de Sol/Plafond/Mur*, et le voile noir de la
 ## ZoneSombre (il passait devant Tobie et assombrissait le ruban ; le noir est peint dans le fond).
 static func masquer_gris_lieu(lieu: Node) -> void:
+	masquer_maquette(lieu)
 	for chemin: String in ["Fond", "ZoneSombre/Visuel"]:
 		var gris := lieu.get_node_or_null(chemin) as CanvasItem
 		if gris != null:
@@ -105,5 +107,20 @@ static func masquer_gris_lieu(lieu: Node) -> void:
 		var nom := String(corps.name)
 		if corps is StaticBody2D and (nom == "Sol" or nom == "Plafond" or nom.begins_with("Mur")):
 			var visuel := corps.get_node_or_null("Visuel") as CanvasItem
+			if visuel != null:
+				visuel.visible = false
+
+
+## Rectangles et étiquettes de la maquette dans un lieu habillé (QA, #96) : le « Visuel » des
+## Interactif (passages, détails, rencontres) et des Verrou (ceintures, chicane), et toutes
+## les étiquettes posées dans le monde (noms des rencontres, titres et notes du Level
+## Designer). Le dessin d'un personnage, le repère d'un détail et le dessin posé sur un
+## verrou restent visibles : seul le nœud nommé « Visuel » est masqué.
+static func masquer_maquette(racine: Node) -> void:
+	for n in racine.find_children("*", "", true, false):
+		if n is Label and (n as Label).get_canvas_layer_node() == null:
+			(n as Label).visible = false
+		elif n is Interactif or n is Verrou:
+			var visuel := n.get_node_or_null("Visuel") as CanvasItem
 			if visuel != null:
 				visuel.visible = false
