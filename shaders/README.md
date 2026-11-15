@@ -9,7 +9,8 @@ Au changement d'étape : `PapierEtapes.appliquer(materiau, etape)` (`scripts/ren
 ## Paramètres
 - Trait tremblé : `amplitude_px` (1,5 au repos, à monter quand la Lucidité baisse), `echelle_px`, `images_par_seconde` (6), `variantes` (3).
 - Papier : `couleur_papier`, `couleur_encre` (inversion aux étapes 5 et 6), `grain` (réduit d'un tiers sur papier foncé), `taille_grain_px`, `grain_par_seconde`.
-- Rouge : `couleur_rouge` (jamais remappé ni granuleux), `seuil_rouge`, `rouge_efface` (0 à 1, effets de Lucidité).
+- Teinte : `teinte` (blanc par défaut), nuit et éclairage par lieu, posée par `EtapeBase.definir_teinte()` ; ne touche ni le rouge ni l'accent.
+- Rouge : `couleur_rouge` (jamais remappé, granuleux ni teinté), `seuil_rouge`, `rouge_efface` (0 à 1, effets de Lucidité).
 - Accent : `accent_actif`, `couleur_accent` (ocre `#B08A3E` en 5, vert-de-gris `#5F7F72` en 6), `tolerance_accent`.
 
 ## Contrainte pour les assets

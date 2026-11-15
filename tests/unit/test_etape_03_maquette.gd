@@ -122,3 +122,12 @@ func test_les_points_d_interaction_sont_espaces() -> void:
 				continue
 			assert_true(absf(a.global_position.x - b.global_position.x) >= 200.0,
 				"%s trop près de %s" % [a.name, b.name])
+
+
+func test_teinte_par_lieu_de_nuit() -> void:
+	_etape.entrer_lieu(&"chambre")
+	assert_eq(_etape.teinte_actuelle(), Color(0.32, 0.35, 0.48))
+	_etape.entrer_lieu(&"chemin_nuit")
+	assert_eq(_etape.teinte_actuelle(), Color(0.85, 0.88, 1.0))
+	_etape.entrer_lieu(&"")
+	assert_eq(_etape.teinte_actuelle(), Color.WHITE)

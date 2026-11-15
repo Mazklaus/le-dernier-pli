@@ -133,7 +133,7 @@ func test_fondu_au_noir_teleporte_dans_le_noir() -> void:
 	assert_eq(noirs.size(), 0, "voile retiré")
 
 
-func test_lieux_nuit_basculent_l_eclairage() -> void:
+func test_lieux_nuit_teintent_l_ecran_gravure() -> void:
 	etape.lieux_nuit = [&"chambre"]
 	_marqueur("entree_chambre", Vector2(-3000, 400))
 	_marqueur("entree_place", Vector2(3000, 400))
@@ -144,11 +144,11 @@ func test_lieux_nuit_basculent_l_eclairage() -> void:
 	vers_chambre.interagir(m)
 	assert_true(etape.nuit)
 	assert_signal_emitted_with_parameters(etape, "phase_changee", [true])
-	var eclairage := etape.get_node("Eclairage") as CanvasModulate
-	assert_eq(eclairage.color, etape.teinte_nuit)
+	assert_eq(etape.teinte_actuelle(), etape.teinte_nuit)
+	assert_null(etape.get_node_or_null("Eclairage"), "plus de CanvasModulate")
 	vers_place.interagir(m)
 	assert_false(etape.nuit)
-	assert_eq(eclairage.color, Color.WHITE)
+	assert_eq(etape.teinte_actuelle(), Color.WHITE)
 
 
 func test_l_etape_s_annonce_quand_elle_est_prete() -> void:
