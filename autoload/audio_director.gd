@@ -28,6 +28,7 @@ const SLUGS_ETAPES := {
 const COUCHES_AMBIANCE := {
 	1: ["surface-lit", "surface-voix", "autre"],
 	2: ["surface", "autre"],
+	3: ["jour", "nuit", "autre"],
 }
 ## Groupe des émetteurs qu'on n'entend que dans le noir sans lanterne (ex. les fils de
 ## l'étape 2). Le Level Designer met l'AudioStreamPlayer2D dans ce groupe, en autoplay :
@@ -50,6 +51,9 @@ var _couches: Dictionary = {}
 var _mix_reel: float = 1.0
 var _mix_autre: float = 0.0
 var _gain_voix: float = 1.0
+## Part de la nuit dans le mélange des couches « jour » et « nuit » (0 : jour, 1 : nuit).
+var _mix_nuit: float = 0.0
+var _fondu_phase: Tween
 var _dans_le_noir: bool = false
 var _fondu: Tween
 var _fondu_musique: Tween
@@ -70,6 +74,8 @@ func _ready() -> void:
 	GameState.etat_charge.connect(_sur_etat_charge)
 	GameState.zone_sombre_changee.connect(_sur_zone_sombre_changee)
 	get_tree().node_added.connect(_sur_noeud_ajoute)
+	# SceneRouter est chargé après nous : on s'y abonne une fois tous les autoloads posés.
+	_brancher_scene_router.call_deferred()
 	# Bruitages déclenchés par l'état du jeu (sceau, marques, lanterne, jauges).
 	var bruitages := BruitagesJeu.new()
 	bruitages.name = "BruitagesJeu"
@@ -101,6 +107,8 @@ func jouer_etape(numero: int) -> void:
 	if _fondu_musique and _fondu_musique.is_valid():
 		_fondu_musique.kill()
 	_musique.stop()
+	# Chaque étape commence de jour ; etape_prete donne ensuite son état réel.
+	definir_nuit(false, 0.0)
 	var slug: String = SLUGS_ETAPES.get(numero, "")
 	if slug.is_empty():
 		return
@@ -286,6 +294,37 @@ func _regler_son_du_noir(noeud: Node, duree: float) -> void:
 	noeud.set_meta(&"fondu_noir", fondu)
 
 
+## Jour / nuit (étapes à lieux_nuit) : l'étape prévient par son signal phase_changee.
+func _brancher_scene_router() -> void:
+	var routeur := get_node_or_null(^"/root/SceneRouter")
+	if routeur and not routeur.etape_prete.is_connected(_sur_etape_prete):
+		routeur.etape_prete.connect(_sur_etape_prete)
+
+
+func _sur_etape_prete(etape: Node) -> void:
+	if etape.has_signal(&"phase_changee") and not etape.is_connected(&"phase_changee", definir_nuit):
+		etape.connect(&"phase_changee", definir_nuit)
+	definir_nuit(etape.get(&"nuit") == true, 0.0)
+
+
+## Fondu croisé entre les couches « jour » et « nuit » de l'étape (duree 0 : immédiat).
+## Sans ces couches (étapes 1 et 2), ne change rien.
+func definir_nuit(nuit: bool, duree: float = MixageSon.DUREE_FONDU_PHASE) -> void:
+	if _fondu_phase and _fondu_phase.is_valid():
+		_fondu_phase.kill()
+	var cible := 1.0 if nuit else 0.0
+	if duree <= 0.0:
+		_regler_mix_nuit(cible)
+		return
+	_fondu_phase = create_tween().set_trans(Tween.TRANS_SINE)
+	_fondu_phase.tween_method(_regler_mix_nuit, _mix_nuit, cible, duree)
+
+
+func _regler_mix_nuit(valeur: float) -> void:
+	_mix_nuit = valeur
+	_maj_volumes()
+
+
 ## Lance le fondu vers le mélange cible (ou l'applique d'un coup si `instantane`).
 func _appliquer_mixage(instantane: bool = false) -> void:
 	var cible := MixageSon.cible(GameState.palier, GameState.est_perdu(), _dans_le_noir)
@@ -320,6 +359,7 @@ func _maj_volumes() -> void:
 		var gain := _mix_autre if couche in COUCHES_AUTRE else _mix_reel
 		if couche in COUCHES_VOIX:
 			gain *= _gain_voix
+		gain *= MixageSon.gain_phase(couche, _mix_nuit)
 		(_couches[couche] as AudioStreamPlayer).volume_db = MixageSon.vers_db(gain)
 
 
