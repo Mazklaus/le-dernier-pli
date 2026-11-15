@@ -99,7 +99,8 @@ func jouer_geste(nom: StringName, vers: Node2D = null, ecart: float = 0.0) -> bo
 		regard = 1 if vers.global_position.x >= global_position.x else -1
 		_silhouette.scale.x = regard
 		if ecart > 0.0:
-			global_position.x = vers.global_position.x - regard * ecart
+			# Glissé et non posé : un mur arrête Tobie au lieu de le laisser dedans.
+			move_and_collide(Vector2(vers.global_position.x - regard * ecart - global_position.x, 0.0))
 	geste = nom
 	_silhouette.jouer(nom)
 	return true
