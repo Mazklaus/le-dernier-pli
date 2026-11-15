@@ -141,7 +141,14 @@ func test_vieille_sape_noire_puis_eclairee_selon_la_lanterne() -> void:
 
 func test_rideau_sur_le_verrou_de_la_sape_de_sortie() -> void:
 	var verrou := _etape.get_node("Lieux/SapeSortie/VerrouCendre")
-	assert_not_null(verrou.get_node_or_null("Dessin"))
+	if ResourceLoader.exists(RideauSape.PLANCHE):
+		# couverture animée : posée à côté du verrou, pour rester visible une fois ouvert
+		var rideau := verrou.get_parent().get_node_or_null("RideauSape") as RideauSape
+		assert_not_null(rideau)
+		assert_eq(rideau.position, (verrou as Node2D).position)
+		assert_null(verrou.get_node_or_null("Dessin"))
+	else:
+		assert_not_null(verrou.get_node_or_null("Dessin"))
 	assert_false((verrou.get_node("Visuel") as CanvasItem).visible)
 
 
