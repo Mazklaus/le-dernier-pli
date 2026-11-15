@@ -112,6 +112,12 @@ func borner_camera_rect(rect: Rect2) -> void:
 	_camera.reset_smoothing()
 
 
+## Rend la vue à la caméra du messager (après une cinématique, ou si une autre caméra l'a prise).
+func activer_camera() -> void:
+	_camera.enabled = true
+	_camera.make_current()
+
+
 func liberer_camera() -> void:
 	_camera.limit_left = -10000000
 	_camera.limit_right = 10000000

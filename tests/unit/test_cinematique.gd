@@ -177,3 +177,16 @@ func test_au_debut_etape_ignore_une_etape_qui_n_est_pas_la_scene_courante() -> v
 	SceneRouter.etape_prete.emit(etape)
 	await wait_process_frames(2)
 	assert_false(c.en_cours, "étape de test : pas de cinématique d'arrivée")
+
+
+func test_la_camera_du_plan_ne_prend_pas_la_vue_hors_lecture() -> void:
+	# #164 : une Camera2D active prenait la vue dès son entrée dans l'arbre.
+	await wait_process_frames(1)
+	assert_false(_camera().enabled, "éteinte hors lecture")
+	assert_ne(get_viewport().get_camera_2d(), _camera())
+	cine.jouer()
+	assert_true(_camera().enabled)
+	assert_true(_camera().is_current())
+	cine.sauter()
+	assert_false(_camera().enabled, "éteinte après la lecture")
+	assert_ne(get_viewport().get_camera_2d(), _camera())
