@@ -3,7 +3,8 @@
 
 ~ debut
 
-# [ciné e6_chute_fissure] la fente s'ouvre, Tobie glisse et roule jusqu'à la pierre taillée.
+# Cinématique : la fente s'ouvre, Tobie glisse et roule jusqu'à la pierre taillée.
+do Cinematiques.jouer(&"e6_chute_fissure")
 Tobie: Une église, couchée dans la terre comme un navire au fond de l'eau.
 Tobie: Le noir est entier. Il sent la racine et la cire très ancienne.
 - [Allumer la lanterne] [if GameState.valeur(&"huile") >= 1 /] [#cout_huile=1, #sans_prelevement]

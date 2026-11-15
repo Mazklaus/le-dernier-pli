@@ -20,7 +20,8 @@ Tobie: Personne ne me verra, ici. Personne ne saura.
 ~ ouvrir
 
 do GameState.ouvrir_sceau()
-# [ciné e7_ouverture_sceau] la cire craque sous le pouce, le ruban glisse, le papier se déplie.
+# Cinématique : la cire craque sous le pouce, le ruban glisse, le papier se déplie.
+do Cinematiques.jouer(&"e7_ouverture_sceau")
 Tobie: Je lis lentement, avec le doigt.
 Tobie: « À celle qui écoute sous les cloches tues, »
 Tobie: « au nom de la Cendre et selon le Pacte du Sceau Noir : »
