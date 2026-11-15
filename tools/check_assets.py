@@ -30,6 +30,7 @@ GFX_RULES = [
     rf"env_e[1-7]_plan[0-4]_{SEG}(?:_\d{{2}})?",
     rf"fx_{SEG}(?:_\d{{2}})?",
     rf"ui_{SEG}(?:_\d{{2}})?",
+    rf"cin_{SEG}(?:_\d{{2}})?",  # gravures plein écran (épilogues)
 ]
 
 errors: list[str] = []
@@ -92,7 +93,7 @@ def check_graphics() -> None:
         base = stem[:-4] if stem.endswith("_red") else stem
         if not any(re.fullmatch(r, base) for r in GFX_RULES):
             errors.append(f"{rel(p)} : nom hors convention (chr_<perso>_<anim>_NN, "
-                          "env_eN_planN_<nom>, fx_<nom>, ui_<nom>, suffixe _red optionnel)")
+                          "env_eN_planN_<nom>, fx_<nom>, ui_<nom>, cin_<nom>, suffixe _red optionnel)")
         if stem.endswith("_red") and base not in pngs:
             errors.append(f"{rel(p)} : calque rouge sans base {base}.png")
         size = png_size(p)

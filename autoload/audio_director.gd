@@ -30,6 +30,7 @@ const COUCHES_AMBIANCE := {
 	2: ["surface", "autre"],
 	3: ["jour", "nuit", "autre"],
 	4: ["hopital", "autre"],
+	7: ["salle", "autre"],
 }
 ## Groupe des émetteurs qu'on n'entend que dans le noir sans lanterne (ex. les fils de
 ## l'étape 2). Le Level Designer met l'AudioStreamPlayer2D dans ce groupe, en autoplay :
@@ -135,6 +136,40 @@ func jouer_musique(numero: int, moment: String, fondu: float = DUREE_FONDU_MUSIQ
 	_jouer_boucle(_musique, chemin)
 	if _musique.playing:
 		_fondu_musique_vers(0.0, fondu)
+
+
+## Épilogue de l'étape 7 (mus_destinataire_<moment>.ogg, moment = fin-a à fin-e ; la table
+## lettre → fin est dans tools/son/README.md, jamais dans un nom de fichier).
+## Joué une seule fois, sans boucle, depuis son début ; les couches d'ambiance se retirent
+## en `fondu` secondes pour laisser le Cantique seul sous le carton.
+func jouer_epilogue(moment: String, fondu: float = DUREE_FONDU_MUSIQUE) -> void:
+	var chemin := "res://assets/audio/mus_%s_%s.ogg" % [SLUGS_ETAPES[7], moment]
+	if not audio_deverrouille or not ResourceLoader.exists(chemin):
+		return
+	if _fondu_musique and _fondu_musique.is_valid():
+		_fondu_musique.kill()
+	var flux := (load(chemin) as AudioStream).duplicate()
+	if flux is AudioStreamOggVorbis:
+		(flux as AudioStreamOggVorbis).loop = false
+	_musique.stream = flux
+	_musique.volume_db = 0.0
+	_musique.play()
+	_retirer_couches(fondu)
+
+
+## Éteint les couches d'ambiance de l'étape en fondu puis les libère.
+func _retirer_couches(fondu: float) -> void:
+	if _fondu and _fondu.is_valid():
+		_fondu.kill()
+	for couche: String in _couches:
+		var lecteur: AudioStreamPlayer = _couches[couche]
+		if fondu <= 0.0:
+			lecteur.queue_free()
+			continue
+		var t := create_tween().set_trans(Tween.TRANS_SINE)
+		t.tween_property(lecteur, "volume_db", MixageSon.GAIN_MUET_DB, fondu)
+		t.tween_callback(lecteur.queue_free)
+	_couches.clear()
 
 
 ## Retire la musique en fondu puis l'arrête (silence d'exploration).

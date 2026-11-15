@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_04/etape_04.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_04/lieux/salle.tscn" id="2"]
@@ -14,6 +14,14 @@
 [ext_resource type="Resource" path="res://dialogue/etape_04/e4_benediction.dialogue" id="12"]
 [ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="13"]
 
+[ext_resource type="AudioStream" path="res://assets/audio/amb_hopital-recousus_atelier.ogg" id="son_amb_hopital_recousus_atelier"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_hopital-recousus_crypte.ogg" id="son_amb_hopital_recousus_crypte"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_hopital-recousus_escalier-service.ogg" id="son_amb_hopital_recousus_escalier_service"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_hopital-recousus_escalier.ogg" id="son_amb_hopital_recousus_escalier"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_hopital-recousus_lingerie.ogg" id="son_amb_hopital_recousus_lingerie"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_hopital-recousus_porche.ogg" id="son_amb_hopital_recousus_porche"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_hopital-recousus_porte-laterale.ogg" id="son_amb_hopital_recousus_porte_laterale"]
+[ext_resource type="AudioStream" path="res://assets/audio/amb_hopital-recousus_salle.ogg" id="son_amb_hopital_recousus_salle"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 180)
 
@@ -120,7 +128,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.85, 0.65, 0.1, 0.25)
+color = Color(0.55, 0.6, 0.7, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Porche/e4_detail_porche_tronc"]
@@ -145,7 +153,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.75, 0.1, 0.1, 0.25)
+color = Color(0.35, 0.4, 0.6, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/Porche/e4_porche"]
@@ -164,6 +172,7 @@ collision_mask = 0
 monitoring = false
 script = ExtResource("11")
 vers = &"salle"
+son = "sfx_porte_fermer"
 libelle = "Entrer"
 rencontre_requise = &"e4_porche"
 metadata/vers = "salle"
@@ -268,7 +277,7 @@ offset_left = -96.0
 offset_top = -300.0
 offset_right = 96.0
 offset_bottom = 0.0
-color = Color(0.75, 0.1, 0.1, 0.25)
+color = Color(0.35, 0.4, 0.6, 0.25)
 mouse_filter = 2
 
 [node name="Nom" type="Label" parent="Surface/RueLaterale/e4_benediction"]
@@ -308,6 +317,65 @@ arrivee = NodePath("../../../../Surface/RueLaterale/sortie_hopital")
 
 [node name="Messager" parent="." instance=ExtResource("13")]
 position = Vector2(200, 900)
+
+[node name="Porche" type="AudioStreamPlayer2D" parent="Surface/Porche"]
+position = Vector2(960, 700)
+stream = ExtResource("son_amb_hopital_recousus_porche")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="PorteLaterale" type="AudioStreamPlayer2D" parent="Surface/RueLaterale"]
+position = Vector2(960, 700)
+stream = ExtResource("son_amb_hopital_recousus_porte_laterale")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/Salle"]
+position = Vector2(1920, 700)
+stream = ExtResource("son_amb_hopital_recousus_salle")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/Lingerie"]
+position = Vector2(720, 700)
+stream = ExtResource("son_amb_hopital_recousus_lingerie")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/Atelier"]
+position = Vector2(960, 700)
+stream = ExtResource("son_amb_hopital_recousus_atelier")
+volume_db = -4.0
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+metadata/note_level_design = "Le silence clinique : presque vide (Sound Designer)"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/Escalier"]
+position = Vector2(480, 700)
+stream = ExtResource("son_amb_hopital_recousus_escalier")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="SonLieu" type="AudioStreamPlayer2D" parent="Lieux/EscalierService"]
+position = Vector2(480, 700)
+stream = ExtResource("son_amb_hopital_recousus_escalier_service")
+autoplay = true
+max_distance = 1200.0
+bus = &"Ambiance"
+
+[node name="SaintsRespirent" type="AudioStreamPlayer2D" parent="Lieux/Crypte" groups=["son_du_noir"]]
+position = Vector2(1765, 700)
+stream = ExtResource("son_amb_hopital_recousus_crypte")
+autoplay = true
+max_distance = 1600.0
+bus = &"Ambiance"
+metadata/note_level_design = "Dans la partie sombre : les saints ne respirent que dans le noir et sans lanterne"
 
 [editable path="Lieux/Lingerie"]
 [editable path="Lieux/EscalierService"]

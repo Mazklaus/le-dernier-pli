@@ -124,3 +124,30 @@ func test_les_points_d_interaction_sont_espaces() -> void:
 				continue
 			assert_true(absf(a.global_position.x - b.global_position.x) >= 200.0,
 				"%s trop près de %s" % [a.name, b.name])
+
+
+func test_les_portes_sans_retour_retombent_derriere_tobie() -> void:
+	for nom in ["VersSalle", "VersAtelier", "VersEscalier", "VersCrypte", "VersEscalierService"]:
+		var p := _etape.find_child(nom, true, false) as Passage
+		assert_eq(p.son, "sfx_porte_fermer", nom)
+	var lingerie := _etape.find_child("VersLingerie", true, false) as Passage
+	assert_eq(lingerie.son, "", "la lingerie garde le son par défaut")
+
+
+func test_chaque_lieu_a_son_ambiance_et_la_crypte_respire_dans_le_noir() -> void:
+	for lieu in _etape.get_node("Lieux").get_children():
+		var son: AudioStreamPlayer2D = lieu.get_node_or_null("SonLieu")
+		if lieu.name == &"Crypte":
+			son = lieu.get_node_or_null("SaintsRespirent")
+			assert_true(son.is_in_group(&"son_du_noir"), "la crypte ne s'entend que dans le noir")
+			var zone := lieu.get_node("ZoneSombre") as Node2D
+			assert_almost_eq(son.global_position.x, zone.global_position.x, 1.0)
+		assert_not_null(son, "%s sans ambiance" % lieu.name)
+		if son != null:
+			assert_eq(son.bus, &"Ambiance", lieu.name)
+			assert_true(son.autoplay, lieu.name)
+			assert_true(son.stream.resource_path.contains("amb_hopital-recousus_"), lieu.name)
+	var atelier := _etape.get_node("Lieux/Atelier/SonLieu") as AudioStreamPlayer2D
+	assert_eq(atelier.volume_db, -4.0, "l'atelier reste presque vide")
+	for chemin in ["Surface/Porche/Porche", "Surface/RueLaterale/PorteLaterale"]:
+		assert_true(_etape.get_node_or_null(chemin) is AudioStreamPlayer2D, chemin)
