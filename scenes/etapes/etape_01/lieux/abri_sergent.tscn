@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="2"]
 [ext_resource type="Resource" path="res://dialogue/etape_01/e1_details.dialogue" id="3"]
 [ext_resource type="Resource" path="res://dialogue/etape_01/e1_ordre.dialogue" id="4"]
 
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e1_remise_pli.gd" id="cine_remise"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
 
@@ -216,3 +217,20 @@ position = Vector2(360, 900)
 
 [node name="sortie_abri_sergent" type="Marker2D" parent="Points"]
 position = Vector2(360, 900)
+
+[node name="e1_remise_pli" type="Node2D" parent="."]
+script = ExtResource("cine_remise")
+id = &"e1_remise_pli"
+duree = 6.0
+metadata/note_level_design = "Gros plan sur la main de Lamarre et le pli ; lancée par une réplique de e1_ordre"
+
+[node name="Camera" type="Camera2D" parent="e1_remise_pli"]
+position = Vector2(2450, 800)
+
+[node name="Depart" type="Marker2D" parent="e1_remise_pli"]
+position = Vector2(2450, 800)
+scale = Vector2(1.5, 1.5)
+
+[node name="Arrivee" type="Marker2D" parent="e1_remise_pli"]
+position = Vector2(2450, 830)
+scale = Vector2(2.5, 2.5)

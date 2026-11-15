@@ -172,6 +172,7 @@ text = "-> lingerie"
 [node name="e4_salle" parent="Rencontres" instance=ExtResource("1")]
 position = Vector2(2100, 900)
 rencontre_id = &"e4_salle"
+personnage = &"fernand"
 dialogue = ExtResource("4")
 libelle = "Parler à Fernand"
 une_seule_fois = true

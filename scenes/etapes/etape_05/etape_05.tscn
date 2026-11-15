@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3]
+[gd_scene load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_05/etape_05.gd" id="1"]
 [ext_resource type="Script" path="res://scenes/interactions/verrou/verrou_retour.gd" id="2"]
@@ -13,6 +13,7 @@
 [ext_resource type="Resource" path="res://dialogue/etape_05/e5_clairiere.dialogue" id="11"]
 [ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="12"]
 
+[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 180)
 
@@ -722,3 +723,20 @@ mouse_filter = 2
 
 [node name="Messager" parent="." instance=ExtResource("12")]
 position = Vector2(200, 900)
+
+[node name="e5_autre_se_retourne" type="Node2D" parent="Surface/Boucle"]
+script = ExtResource("cine_script")
+id = &"e5_autre_se_retourne"
+duree = 8.0
+metadata/note_level_design = "L'Autre se retourne à demi et s'éloigne vers la droite ; lancée par une réplique de e5_autre"
+
+[node name="Camera" type="Camera2D" parent="Surface/Boucle/e5_autre_se_retourne"]
+position = Vector2(3150, 760)
+
+[node name="Depart" type="Marker2D" parent="Surface/Boucle/e5_autre_se_retourne"]
+position = Vector2(3150, 760)
+scale = Vector2(1.2, 1.2)
+
+[node name="Arrivee" type="Marker2D" parent="Surface/Boucle/e5_autre_se_retourne"]
+position = Vector2(3450, 760)
+scale = Vector2(1.2, 1.2)

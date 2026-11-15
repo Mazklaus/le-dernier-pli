@@ -12,7 +12,8 @@ Tobie: J'accélère. Il ne s'approche pas. Il ne s'éloigne pas non plus.
 	Tobie: Ils coupent entre les croix, au plus court. Je les suis sans réfléchir. Mes jambes savent.
 	do GameState.marquer_rencontre_vue(&"marche_offerte")
 - [L'appeler] Hé ! Attends !
-	# [ciné e5_autre_se_retourne] il s'arrête, sa tête tourne à moitié, jamais jusqu'au visage.
+	# Cinématique : il s'arrête, sa tête tourne à moitié, jamais jusqu'au visage.
+	do Cinematiques.jouer(&"e5_autre_se_retourne")
 	Tobie: Il repart, du même pas.
 	if GameState.rencontre_vue(&"oeil_saint_ivo")
 		Tobie: Mon œil greffé l'a vu, une seconde, de profil. Il avait mon nez. Ou j'ai le sien.
