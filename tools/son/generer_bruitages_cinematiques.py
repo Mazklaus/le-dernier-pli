@@ -122,6 +122,18 @@ def cloche_souffle(i):  # la grande cloche respire : un bourdon qui enfle sans a
     n=mk(6.0); tt=np.arange(n)/SR; f=D2*(1+0.004*i)
     y=sum(a*np.sin(2*np.pi*f*r*tt+rng.uniform(0,6)) for r,a in ((0.5,1),(1,0.8),(1.2,0.4),(1.5,0.3),(2,0.25)))
     return y*np.sin(np.pi*tt/tt[-1])**3
+def greffe_fausse_note(i):   # e4_greffe, à la coupe au noir : un ré fredonné bouche cousue, un quart de ton trop bas,
+    n=mk(2.6); tt=np.arange(n)/SR    # qui enfle puis se resserre ; le fil qui tire le coupe
+    f=146.83*2**((-0.5+0.03*i)/12)*(1+0.004*np.sin(2*np.pi*4.6*tt))
+    ph=np.cumsum(f)/SR; y=np.zeros(n)
+    for k in range(1,24):
+        if 146.83*k>4000: break
+        w=np.exp(-((146.83*k-250)/120)**2)+0.3*np.exp(-((146.83*k-2200)/300)**2)+0.02/k
+        y+=w*np.sin(2*np.pi*k*ph+rng.uniform(0,6))
+    y*=np.clip(tt/0.5,0,1)**1.5*np.clip((2.3-tt)/0.25,0,1)
+    k=mk(0.3); t2=np.arange(k)/SR; fl=np.linspace(1800,2600,k)
+    at(y,fftfilt(np.sin(2*np.pi*np.cumsum(fl)/SR)*(0.5+0.5*np.sign(np.sin(2*np.pi*90*t2)))*np.hanning(k),lo=1000,hi=5000)*0.25,2.15)
+    return y
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -135,3 +147,4 @@ for base,fn in (("sfx_pli_tendre",pli_tendre),("sfx_couverture_tomber",couvertur
                 ("sfx_voute_effondrer",voute_effondrer),("sfx_pli_deplier",pli_deplier)):
     save(base,fn)
 save("sfx_cloche_souffle",cloche_souffle,0.45)   # un fond, pas un événement
+save("sfx_greffe_fausse-note",greffe_fausse_note,0.6)

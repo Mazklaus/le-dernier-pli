@@ -59,7 +59,7 @@ Dans une piste de méthode de l'AnimationPlayer (ou depuis un geste de dialogue)
 | 3 | La noce | Anim | rien : la musique `mus_village-cloches-muettes_noce` joue déjà sur la place |
 | 3 | La procession de nuit | Ciné | rien : `mus_village-cloches-muettes_procession` (lieux_musique) |
 | 3 | Le sonneur | Anim | `sfx_corde_tirer` à chaque traction |
-| 4 | La greffe de l'œil | Ciné | `sfx_aiguille_coudre` (le fil passe trois fois, hors champ) |
+| 4 | La greffe de l'œil | Ciné | `sfx_aiguille_coudre` (le fil passe trois fois, hors champ), puis `sfx_greffe_fausse-note` à la coupe au noir (un fredonnement bouche cousue, un quart de ton trop bas) |
 | 4 | Les saints qui respirent | Anim | rien : l'émetteur `amb_hopital-recousus_crypte` (son_du_noir) |
 | 4 | La bénédiction | Anim | `sfx_cendre_front` |
 | 5 | L'entaille et le retour | Anim | `sfx_lame_entailler` |
