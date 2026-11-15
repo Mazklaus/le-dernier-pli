@@ -14,6 +14,7 @@ Dépendances : Python 3, `numpy`, `scipy`, et `ffmpeg` (avec libvorbis) pour la 
 | `generer_ambiance_village_cloches_muettes.py` | Étape 3 : `jour`, `nuit`, `autre` (80 s, fondu croisé jour/nuit dans AudioDirector), lieux `verger`, `place`, `maison-ilde`, `clocher`, `chambre`, `chemin-nuit`, `chemin-aube`, et les musiques `mus_village-cloches-muettes_noce` (diégétique, 32 s) et `_procession` |
 | `generer_ambiance_hopital_recousus.py` | Étape 4 : `hopital`, `autre` (80 s), lieux `porche`, `salle`, `lingerie`, `atelier`, `escalier`, `crypte` (groupe `son_du_noir`), `escalier-service`, `porte-laterale`, et `sfx_porte_fermer_01..03` (2e argument : dossier des bruitages) |
 | `generer_epilogues_destinataire.py` | Étape 7 : `salle`, `autre` (80 s, bourdon sans attaque) et les cinq épilogues du Cantique `mus_destinataire_fin-a` à `fin-e`, joués sans boucle par `AudioDirector.jouer_epilogue` |
+| `generer_bruitages_cinematiques.py` | Bruitages des gestes et des cinématiques courtes (directive du 15/11), `sfx_<famille>_<action>_01..03.wav` : voir la table ci-dessous |
 | `generer_timbres.py` | Timbres de dialogue sans mots, `vox_<personnage>_01..03.wav` |
 
 ```sh
@@ -42,3 +43,31 @@ Les noms de fichiers restent neutres (règle du Game Director : aucun nom de fin
 | c | Le Dernier Pli, refus | la même résolution, puis les cloches sonnent (la seule fois du jeu), coupure nette |
 | d | Le Quatorzième | l'harmonium seul manque d'air et se brise à la septième mesure |
 | e | La Remontée | suspendu sur la, sans se poser |
+
+## Gestes et cinématiques : quel son sur quel moment
+
+Dans une piste de méthode de l'AnimationPlayer (ou depuis un geste de dialogue) : `AudioDirector.jouer_variante("<base>")`, à l'image où le geste se produit. Les cloches ne sonnent pas : `sfx_cloche_souffle` n'a pas d'attaque.
+
+| Étape | Moment | Type | Sons (dans l'ordre) |
+| --- | --- | --- | --- |
+| 1 | L'officier remet le pli | Ciné | `sfx_pli_tendre` (main tendue → poitrine) |
+| 1 | Adieu de Jacquot, couverture | Anim | sifflet = `vox_jacquot_*` ; `sfx_couverture_tomber` |
+| 1 | Sortie de tranchée | Ciné | `sfx_echelle_monter` en boucle, puis `sfx_parapet_franchir` quand la caméra le perd |
+| 2 | Brisse réchauffe la cire | Anim | `sfx_sceau_rechauffer` |
+| 2 | Le Mort indique | Anim | `sfx_mort_bras` à l'image où le bras se lève |
+| 2 | Le terrain se referme | Anim | `sfx_terre_ebouler` |
+| 3 | La noce | Anim | rien : la musique `mus_village-cloches-muettes_noce` joue déjà sur la place |
+| 3 | La procession de nuit | Ciné | rien : `mus_village-cloches-muettes_procession` (lieux_musique) |
+| 3 | Le sonneur | Anim | `sfx_corde_tirer` à chaque traction |
+| 4 | La greffe de l'œil | Ciné | `sfx_aiguille_coudre` (le fil passe trois fois, hors champ) |
+| 4 | Les saints qui respirent | Anim | rien : l'émetteur `amb_hopital-recousus_crypte` (son_du_noir) |
+| 4 | La bénédiction | Anim | `sfx_cendre_front` |
+| 5 | L'entaille et le retour | Anim | `sfx_lame_entailler` |
+| 5 | L'Autre Tobie | Ciné | rien de neuf : la couche autre de l'étape monte d'elle-même |
+| 5 | Graver son nom | Anim | `sfx_lame_graver`, une fois par lettre |
+| 6 | La chute dans la fissure | Ciné | `sfx_sol_ceder`, puis `sfx_lanterne_rouler` |
+| 6 | Éloi éclaire | Anim | `sfx_lampe_approcher` |
+| 6 | L'éboulement | Ciné | `sfx_voute_effondrer`, puis silence |
+| 7 | La descente sous la grande cloche | Ciné | `sfx_cloche_souffle` (la cloche respire, elle ne sonne pas) |
+| 7 | L'ouverture du sceau | Ciné | `sfx_sceau_ouvrir`, puis `sfx_pli_deplier` |
+| Toutes | Lecture d'une ligne du pli | Anim | `sfx_sceau_rechauffer` puis `sfx_pli_lire` |
