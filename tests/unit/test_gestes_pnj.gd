@@ -250,3 +250,20 @@ func test_le_ruban_du_pli_reste_rouge_chez_la_mere_cloche() -> void:
 		assert_true(_a_du_rouge(planche.call(&"graver"), i), "graver %d : toujours au sol" % i)
 	for p in ["chr_lise_repos_01.png", "chr_lise_lire-doigts_01.png", "chr_lise_montrer_01.png"]:
 		assert_false(_a_du_rouge("res://assets/graphics/chr/" + p), p)
+
+
+func test_la_descente_et_le_sceau_de_l_etape_7_ont_leurs_planches() -> void:
+	# tools/gen_cin_e7.py. e7_descente : plans 1, 3, 4 en 1920×1080 ; plan 2 : fond et avant-plan
+	# plus hauts que l'écran du pan (PAN_2 = 410, et le double pour l'avant-plan) ; Tobie, 4 images
+	# de 120×200 en ligne. e7_ouverture_sceau : le fond et 10 images de 1320×940 en grille 3 × 4.
+	var tailles := {
+		"descente_01": Vector2(1920, 1080), "descente_02": Vector2(1920, 1490), "descente_03": Vector2(1920, 1900),
+		"descente_04": Vector2(1920, 1080), "descente_05": Vector2(1920, 1080), "descente_06": Vector2(480, 200),
+		"sceau_01": Vector2(1920, 1080), "sceau_02": Vector2(3960, 3760),
+	}
+	for k: String in tailles:
+		var t := load("res://assets/graphics/cin/cin_%s.png" % k) as Texture2D
+		assert_not_null(t, k)
+		if t != null:
+			assert_eq(t.get_size(), tailles[k], k)
+			assert_lte(maxf(t.get_size().x, t.get_size().y), 4096.0, k)
