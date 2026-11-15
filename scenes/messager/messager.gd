@@ -95,12 +95,28 @@ func placer_devant(declencheur: Node2D) -> void:
 func borner_camera(gauche: int, droite: int) -> void:
 	_camera.limit_left = gauche
 	_camera.limit_right = droite
+	_camera.limit_top = -10000000
+	_camera.limit_bottom = 10000000
+	_camera.reset_smoothing()
+
+
+## Bornes d'un lieu (rectangle global) : la vue reste dedans. Un lieu plus étroit (ou plus bas)
+## que l'écran est centré, avec la même marge de chaque côté.
+func borner_camera_rect(rect: Rect2) -> void:
+	var vue := get_viewport_rect().size / _camera.zoom
+	var marge := ((vue - rect.size) / 2.0).max(Vector2.ZERO)
+	_camera.limit_left = floori(rect.position.x - marge.x)
+	_camera.limit_right = ceili(rect.end.x + marge.x)
+	_camera.limit_top = floori(rect.position.y - marge.y)
+	_camera.limit_bottom = ceili(rect.end.y + marge.y)
 	_camera.reset_smoothing()
 
 
 func liberer_camera() -> void:
 	_camera.limit_left = -10000000
 	_camera.limit_right = 10000000
+	_camera.limit_top = -10000000
+	_camera.limit_bottom = 10000000
 	_camera.reset_smoothing()
 
 

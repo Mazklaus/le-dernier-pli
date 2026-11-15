@@ -124,6 +124,25 @@ func test_les_points_d_interaction_sont_espaces() -> void:
 				"%s trop près de %s" % [a.name, b.name])
 
 
+func test_la_camera_reste_dans_le_rectangle_de_chaque_lieu() -> void:
+	var messager := _etape.trouver_messager()
+	var camera := messager.get_node("%Camera") as Camera2D
+	var vue := messager.get_viewport_rect().size / camera.zoom
+	for nom in ["MaisonIlde", "Clocher", "Chambre", "CheminNuit", "CheminAube"]:
+		var lieu := _etape.get_node("Lieux/" + nom) as Node2D
+		var rect := _etape.rect_lieu(lieu)
+		messager.teleporter(lieu.global_position + Vector2(100, 900))
+		var marge := maxf(0.0, (vue.x - rect.size.x) / 2.0)
+		assert_eq(camera.limit_left, floori(rect.position.x - marge), nom)
+		assert_eq(camera.limit_right, ceili(rect.end.x + marge), nom)
+		assert_eq(camera.limit_bottom, ceili(maxf(rect.end.y, rect.get_center().y + vue.y / 2.0)), nom)
+	assert_eq(_etape.rect_lieu(_etape.get_node("Lieux/Chambre")).size.x, 1440.0)
+	assert_eq(_etape.rect_lieu(_etape.get_node("Lieux/CheminNuit")).size.x, 3840.0)
+	messager.teleporter(_etape.find_child("porte_maison_ilde", true, false).global_position)
+	assert_eq(camera.limit_left, 0, "retour en surface : bornes de surface")
+	assert_eq(camera.limit_right, 7680)
+
+
 func test_teinte_par_lieu_de_nuit() -> void:
 	_etape.entrer_lieu(&"chambre")
 	assert_eq(_etape.teinte_actuelle(), Color(0.32, 0.35, 0.48))
