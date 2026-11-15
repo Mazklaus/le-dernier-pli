@@ -78,3 +78,20 @@ func test_slug_timbre() -> void:
 	assert_eq(OptionsDialogue.slug_timbre("Aurèle", PackedStringArray()), "aurele")
 	assert_eq(OptionsDialogue.slug_timbre("Aurèle", PackedStringArray(["timbre=ravaude"])), "ravaude")
 	assert_eq(OptionsDialogue.slug_timbre("Voix sous terre", PackedStringArray()), "voix-sous-terre")
+
+
+func test_cout_enfoui_baisse_d_un_a_l_egare_seulement() -> void:
+	var c := {&"lucidite": 2, &"vivres": 1}
+	assert_eq_deep(OptionsDialogue.cout_enfoui(c, GameState.EGARE), {&"lucidite": 1, &"vivres": 1})
+	assert_eq_deep(OptionsDialogue.cout_enfoui({&"lucidite": 1}, GameState.EGARE), {}, "jamais sous 0")
+	assert_eq_deep(OptionsDialogue.cout_enfoui({&"vivres": 1}, GameState.EGARE), {&"vivres": 1})
+	assert_eq_deep(OptionsDialogue.cout_enfoui(c, GameState.TROUBLE), c)
+	assert_eq_deep(OptionsDialogue.cout_enfoui(c, GameState.CLAIR), c)
+
+
+func test_option_enfouie_presentee_avec_le_cout_reduit() -> void:
+	GameState.modifier_jauge(&"lucidite", -GameState.lucidite + 2)  # Égaré
+	assert_eq(GameState.palier, GameState.EGARE)
+	var vues := OptionsDialogue.presenter([_o("Descendre", ["cout_lucidite=2", "enfoui"])])
+	assert_eq_deep(vues[0]["couts_reels"], {&"lucidite": 1})
+	assert_eq_deep(vues[0]["a_prelever"], {&"lucidite": 1})

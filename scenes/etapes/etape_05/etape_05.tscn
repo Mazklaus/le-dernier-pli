@@ -1,0 +1,696 @@
+[gd_scene load_steps=27 format=3]
+
+[ext_resource type="Script" path="res://scenes/etapes/etape_05/etape_05.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/interactions/verrou/verrou_retour.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="3"]
+[ext_resource type="Resource" path="res://dialogue/etape_05/e5_details.dialogue" id="4"]
+[ext_resource type="Resource" path="res://dialogue/etape_05/e5_sentier.dialogue" id="5"]
+[ext_resource type="Script" path="res://scenes/interactions/verrou/verrou.gd" id="6"]
+[ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="7"]
+[ext_resource type="Resource" path="res://dialogue/etape_05/e5_autre.dialogue" id="8"]
+[ext_resource type="Resource" path="res://dialogue/etape_05/e5_campement.dialogue" id="9"]
+[ext_resource type="Resource" path="res://dialogue/etape_05/e5_croix.dialogue" id="10"]
+[ext_resource type="Resource" path="res://dialogue/etape_05/e5_clairiere.dialogue" id="11"]
+[ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="12"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(1920, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(64, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
+size = Vector2(3840, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
+size = Vector2(64, 900)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5"]
+size = Vector2(60, 900)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6"]
+size = Vector2(160, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7"]
+size = Vector2(160, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8"]
+size = Vector2(64, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_9"]
+size = Vector2(1920, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_10"]
+size = Vector2(64, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_11"]
+size = Vector2(2880, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_12"]
+size = Vector2(60, 900)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_13"]
+size = Vector2(1920, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_14"]
+size = Vector2(64, 1080)
+
+[node name="Etape05" type="Node2D"]
+script = ExtResource("1")
+numero_etape = 5
+
+[node name="Surface" type="Node2D" parent="."]
+
+[node name="Oree" type="Node2D" parent="Surface"]
+position = Vector2(0, 0)
+
+[node name="Fond" type="ColorRect" parent="Surface/Oree"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1920.0
+offset_bottom = 900.0
+color = Color(0.82, 0.82, 0.8, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Sol" type="StaticBody2D" parent="Surface/Oree"]
+position = Vector2(960.0, 990.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Oree/Sol"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Oree/Sol"]
+offset_left = -960.0
+offset_top = -90.0
+offset_right = 960.0
+offset_bottom = 90.0
+color = Color(0.35, 0.35, 0.35, 1)
+mouse_filter = 2
+
+[node name="MurGauche" type="StaticBody2D" parent="Surface/Oree"]
+position = Vector2(-32.0, 540.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Oree/MurGauche"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Oree/MurGauche"]
+offset_left = -32.0
+offset_top = -540.0
+offset_right = 32.0
+offset_bottom = 540.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="Titre" type="Label" parent="Surface/Oree"]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1240.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "1 Orée · 1 écran"
+
+[node name="entree_oree" type="Marker2D" parent="Surface/Oree"]
+position = Vector2(200, 900)
+
+[node name="e5_detail_sentier_bornes" parent="Surface/Oree" instance=ExtResource("3")]
+position = Vector2(1000, 900)
+rencontre_id = &"e5_detail_sentier_bornes"
+dialogue = ExtResource("4")
+titre = "sentier_bornes"
+libelle = "Regarder les bornes"
+metadata/note_level_design = "Croix-bornes, une tous les cent pas"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Oree/e5_detail_sentier_bornes"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Oree/e5_detail_sentier_bornes"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "sentier_bornes"
+
+[node name="Boucle" type="Node2D" parent="Surface"]
+position = Vector2(1920, 0)
+
+[node name="Fond" type="ColorRect" parent="Surface/Boucle"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 3840.0
+offset_bottom = 900.0
+color = Color(0.82, 0.82, 0.8, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Sol" type="StaticBody2D" parent="Surface/Boucle"]
+position = Vector2(1920.0, 990.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Boucle/Sol"]
+shape = SubResource("RectangleShape2D_3")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Boucle/Sol"]
+offset_left = -1920.0
+offset_top = -90.0
+offset_right = 1920.0
+offset_bottom = 90.0
+color = Color(0.35, 0.35, 0.35, 1)
+mouse_filter = 2
+
+[node name="Titre" type="Label" parent="Surface/Boucle"]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1240.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "2 Boucle du sentier · 2 écrans, parcourus deux fois · le bout ramène au début"
+
+[node name="OreeRetour" type="StaticBody2D" parent="Surface/Boucle"]
+position = Vector2(-32.0, 450.0)
+script = ExtResource("2")
+marge = 60.0
+metadata/note_level_design = "Verrou de retour : l'orée se ferme derrière Tobie dès qu'il entre dans la boucle"
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Boucle/OreeRetour"]
+shape = SubResource("RectangleShape2D_4")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Boucle/OreeRetour"]
+offset_left = -32.0
+offset_top = -450.0
+offset_right = 32.0
+offset_bottom = 450.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="boucle_debut" type="Marker2D" parent="Surface/Boucle"]
+position = Vector2(150, 900)
+
+[node name="e5_sentier" parent="Surface/Boucle" instance=ExtResource("3")]
+position = Vector2(600, 900)
+rencontre_id = &"e5_sentier"
+dialogue = ExtResource("5")
+libelle = "Regarder la croix"
+rencontre_requise = &"e5_entaille"
+titre_si_verrouille = "premier_passage"
+une_seule_fois = true
+metadata/note_level_design = "La croix-repère : premier_passage (entaille) puis debut au second passage"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Boucle/e5_sentier"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.75, 0.1, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Boucle/e5_sentier"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e5_sentier"
+
+[node name="Ronces" type="StaticBody2D" parent="Surface/Boucle"]
+position = Vector2(850.0, 450.0)
+script = ExtResource("6")
+rencontre = &"e5_entaille"
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Boucle/Ronces"]
+shape = SubResource("RectangleShape2D_5")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Boucle/Ronces"]
+offset_left = -30.0
+offset_top = -450.0
+offset_right = 30.0
+offset_bottom = 450.0
+color = Color(0.6, 0.15, 0.15, 1)
+mouse_filter = 2
+
+[node name="QuitterSentier" type="Area2D" parent="Surface/Boucle" groups=["passages"]]
+position = Vector2(1100, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("7")
+vers = &"campement"
+libelle = "Quitter le sentier"
+rencontre_requise = &"e5_sentier"
+arrivee = NodePath("../../Campement/entree_campement")
+metadata/vers = "campement"
+metadata/note_level_design = "Sortie de la boucle, ouverte au second passage (e5_sentier)"
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Boucle/QuitterSentier"]
+shape = SubResource("RectangleShape2D_6")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Boucle/QuitterSentier"]
+offset_left = -80.0
+offset_top = -150.0
+offset_right = 80.0
+offset_bottom = 150.0
+color = Color(0.2, 0.35, 0.6, 0.35)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Boucle/QuitterSentier"]
+offset_left = -80.0
+offset_top = 158.0
+offset_right = 1120.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-> campement"
+
+[node name="e5_detail_sentier_traces" parent="Surface/Boucle" instance=ExtResource("3")]
+position = Vector2(1700, 900)
+rencontre_id = &"e5_detail_sentier_traces"
+dialogue = ExtResource("4")
+titre = "sentier_traces"
+libelle = "Regarder les traces"
+metadata/note_level_design = "Traces de pas à sa pointure"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Boucle/e5_detail_sentier_traces"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Boucle/e5_detail_sentier_traces"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "sentier_traces"
+
+[node name="e5_detail_autre_branche" parent="Surface/Boucle" instance=ExtResource("3")]
+position = Vector2(2500, 900)
+rencontre_id = &"e5_detail_autre_branche"
+dialogue = ExtResource("4")
+titre = "autre_branche"
+libelle = "Regarder la branche"
+metadata/note_level_design = "Branche cassée à hauteur d'épaule"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Boucle/e5_detail_autre_branche"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Boucle/e5_detail_autre_branche"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "autre_branche"
+
+[node name="e5_autre" parent="Surface/Boucle" instance=ExtResource("3")]
+position = Vector2(3150, 900)
+rencontre_id = &"e5_autre"
+dialogue = ExtResource("8")
+libelle = "Appeler la silhouette"
+une_seule_fois = true
+metadata/note_level_design = "L'Autre Tobie, au bout de la boucle : on ne le rattrape pas"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Boucle/e5_autre"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.75, 0.1, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Boucle/e5_autre"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e5_autre"
+
+[node name="Continuer" type="Area2D" parent="Surface/Boucle" groups=["passages"]]
+position = Vector2(3640, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("7")
+vers = &"boucle"
+libelle = "Continuer sur le sentier"
+arrivee = NodePath("../boucle_debut")
+metadata/vers = "boucle"
+metadata/note_level_design = "Le bout du sentier ramène, sans fondu, devant la même croix"
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Boucle/Continuer"]
+shape = SubResource("RectangleShape2D_7")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Boucle/Continuer"]
+offset_left = -80.0
+offset_top = -150.0
+offset_right = 80.0
+offset_bottom = 150.0
+color = Color(0.2, 0.35, 0.6, 0.35)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Boucle/Continuer"]
+offset_left = -80.0
+offset_top = 158.0
+offset_right = 1120.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-> boucle"
+
+[node name="MurDroit" type="StaticBody2D" parent="Surface/Boucle"]
+position = Vector2(3872.0, 540.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Boucle/MurDroit"]
+shape = SubResource("RectangleShape2D_8")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Boucle/MurDroit"]
+offset_left = -32.0
+offset_top = -540.0
+offset_right = 32.0
+offset_bottom = 540.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="Campement" type="Node2D" parent="Surface"]
+position = Vector2(6720, 0)
+
+[node name="Fond" type="ColorRect" parent="Surface/Campement"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1920.0
+offset_bottom = 900.0
+color = Color(0.82, 0.82, 0.8, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Sol" type="StaticBody2D" parent="Surface/Campement"]
+position = Vector2(960.0, 990.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Campement/Sol"]
+shape = SubResource("RectangleShape2D_9")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Campement/Sol"]
+offset_left = -960.0
+offset_top = -90.0
+offset_right = 960.0
+offset_bottom = 90.0
+color = Color(0.35, 0.35, 0.35, 1)
+mouse_filter = 2
+
+[node name="MurGauche" type="StaticBody2D" parent="Surface/Campement"]
+position = Vector2(-32.0, 540.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Campement/MurGauche"]
+shape = SubResource("RectangleShape2D_10")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Campement/MurGauche"]
+offset_left = -32.0
+offset_top = -540.0
+offset_right = 32.0
+offset_bottom = 540.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="Titre" type="Label" parent="Surface/Campement"]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1240.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "3 Campement · 1 écran · le feu encore tiède"
+
+[node name="entree_campement" type="Marker2D" parent="Surface/Campement"]
+position = Vector2(200, 900)
+
+[node name="e5_detail_campement_gamelle" parent="Surface/Campement" instance=ExtResource("3")]
+position = Vector2(700, 900)
+rencontre_id = &"e5_detail_campement_gamelle"
+dialogue = ExtResource("4")
+titre = "campement_gamelle"
+libelle = "Regarder la gamelle"
+metadata/note_level_design = "Gamelle encore grasse"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Campement/e5_detail_campement_gamelle"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Campement/e5_detail_campement_gamelle"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "campement_gamelle"
+
+[node name="e5_campement" parent="Surface/Campement" instance=ExtResource("3")]
+position = Vector2(1250, 900)
+rencontre_id = &"e5_campement"
+dialogue = ExtResource("9")
+libelle = "S'approcher du feu"
+une_seule_fois = true
+metadata/note_level_design = "Le feu encore tiède, quelqu'un vient de partir"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Campement/e5_campement"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.75, 0.1, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Campement/e5_campement"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e5_campement"
+
+[node name="Cimetiere" type="Node2D" parent="Surface"]
+position = Vector2(8640, 0)
+
+[node name="Fond" type="ColorRect" parent="Surface/Cimetiere"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 2880.0
+offset_bottom = 900.0
+color = Color(0.82, 0.82, 0.8, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Sol" type="StaticBody2D" parent="Surface/Cimetiere"]
+position = Vector2(1440.0, 990.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Cimetiere/Sol"]
+shape = SubResource("RectangleShape2D_11")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Cimetiere/Sol"]
+offset_left = -1440.0
+offset_top = -90.0
+offset_right = 1440.0
+offset_bottom = 90.0
+color = Color(0.35, 0.35, 0.35, 1)
+mouse_filter = 2
+
+[node name="Titre" type="Label" parent="Surface/Cimetiere"]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1240.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "4 Cimetière des coureurs · 1,5 écran · le pic · croix SANS alignement, aucun décompte"
+
+[node name="e5_detail_croix_objets" parent="Surface/Cimetiere" instance=ExtResource("3")]
+position = Vector2(900, 900)
+rencontre_id = &"e5_detail_croix_objets"
+dialogue = ExtResource("4")
+titre = "croix_objets"
+libelle = "Regarder les objets"
+metadata/note_level_design = "Objets laissés sur les croix"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Cimetiere/e5_detail_croix_objets"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Cimetiere/e5_detail_croix_objets"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "croix_objets"
+
+[node name="e5_croix" parent="Surface/Cimetiere" instance=ExtResource("3")]
+position = Vector2(1750, 900)
+rencontre_id = &"e5_croix"
+dialogue = ExtResource("10")
+libelle = "Lire les croix"
+une_seule_fois = true
+metadata/note_level_design = "Devant la croix sans nom"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Cimetiere/e5_croix"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.75, 0.1, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Cimetiere/e5_croix"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e5_croix"
+
+[node name="MurClairiere" type="StaticBody2D" parent="Surface/Cimetiere"]
+position = Vector2(2630.0, 450.0)
+script = ExtResource("6")
+rencontre = &"e5_croix"
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Cimetiere/MurClairiere"]
+shape = SubResource("RectangleShape2D_12")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Cimetiere/MurClairiere"]
+offset_left = -30.0
+offset_top = -450.0
+offset_right = 30.0
+offset_bottom = 450.0
+color = Color(0.6, 0.15, 0.15, 1)
+mouse_filter = 2
+
+[node name="Clairiere" type="Node2D" parent="Surface"]
+position = Vector2(11520, 0)
+
+[node name="Fond" type="ColorRect" parent="Surface/Clairiere"]
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1920.0
+offset_bottom = 900.0
+color = Color(0.82, 0.82, 0.8, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Sol" type="StaticBody2D" parent="Surface/Clairiere"]
+position = Vector2(960.0, 990.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Clairiere/Sol"]
+shape = SubResource("RectangleShape2D_13")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Clairiere/Sol"]
+offset_left = -960.0
+offset_top = -90.0
+offset_right = 960.0
+offset_bottom = 90.0
+color = Color(0.35, 0.35, 0.35, 1)
+mouse_filter = 2
+
+[node name="Titre" type="Label" parent="Surface/Clairiere"]
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 1240.0
+offset_bottom = 88.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "5 Clairière · 1 écran · fin d'étape"
+
+[node name="e5_detail_clairiere_ciel" parent="Surface/Clairiere" instance=ExtResource("3")]
+position = Vector2(700, 900)
+rencontre_id = &"e5_detail_clairiere_ciel"
+dialogue = ExtResource("4")
+titre = "clairiere_ciel"
+libelle = "Regarder le ciel"
+metadata/note_level_design = "Le ciel qui s'ouvre enfin"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Clairiere/e5_detail_clairiere_ciel"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.85, 0.65, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Clairiere/e5_detail_clairiere_ciel"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "clairiere_ciel"
+
+[node name="e5_clairiere" parent="Surface/Clairiere" instance=ExtResource("3")]
+position = Vector2(1250, 900)
+rencontre_id = &"e5_clairiere"
+dialogue = ExtResource("11")
+libelle = "Entrer dans la clairière"
+fin_etape = true
+metadata/note_level_design = "La clairière : fin d'étape"
+
+[node name="Visuel" type="ColorRect" parent="Surface/Clairiere/e5_clairiere"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.75, 0.1, 0.1, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Surface/Clairiere/e5_clairiere"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e5_clairiere"
+
+[node name="MurDroit" type="StaticBody2D" parent="Surface/Clairiere"]
+position = Vector2(1952.0, 540.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Surface/Clairiere/MurDroit"]
+shape = SubResource("RectangleShape2D_14")
+
+[node name="Visuel" type="ColorRect" parent="Surface/Clairiere/MurDroit"]
+offset_left = -32.0
+offset_top = -540.0
+offset_right = 32.0
+offset_bottom = 540.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="Messager" parent="." instance=ExtResource("12")]
+position = Vector2(200, 900)
