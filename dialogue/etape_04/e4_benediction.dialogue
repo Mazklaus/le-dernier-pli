@@ -22,7 +22,7 @@ Tobie: Au loin, une forêt. Des arbres trop droits, qui n'ont pas de branches.
 ~ lecture
 
 do GameState.lire_ligne_pli()
-Tobie: La cire rouge laisse passer une ligne.
+Tobie: Sous la cire noire, le papier laisse passer une ligne.
 if GameState.pli_lignes_lues == 1
 	Tobie: « À celle qui écoute sous les cloches tues, »
 	Tobie: Une prière. À une sainte, sûrement. Ici, ils en ont plein les caves.

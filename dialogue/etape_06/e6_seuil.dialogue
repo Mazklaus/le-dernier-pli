@@ -20,7 +20,7 @@ Tobie: Derrière la porte, très loin, quelque chose respire. Ou c'est la terre.
 ~ lecture
 
 do GameState.lire_ligne_pli()
-Tobie: La cire rouge laisse passer une ligne verte.
+Tobie: Sous la cire noire, le papier laisse passer une ligne verte.
 if GameState.pli_lignes_lues == 1
 	Tobie: « À celle qui écoute sous les cloches tues, »
 	Tobie: Une sainte qui écoute. Sous les cloches. Je regarde la porte.

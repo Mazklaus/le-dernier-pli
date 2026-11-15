@@ -37,7 +37,7 @@ Tobie: Ce n'est pas un message. C'est un reçu.
 ~ lecture
 
 do GameState.lire_ligne_pli()
-Tobie: La cire rouge laisse passer une ligne.
+Tobie: Sous la cire noire, le papier laisse passer une ligne.
 if GameState.pli_lignes_lues == 1
 	Tobie: « À celle qui écoute sous les cloches tues, »
 	Tobie: Celle qui écoute. Elle est derrière cette porte.
