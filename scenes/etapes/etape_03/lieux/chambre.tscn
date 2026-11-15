@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_03/e3_details.dialogue" id="2"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="4"]
 [ext_resource type="Script" uid="uid://9vjga4usikz6a" path="res://scenes/interactions/personnage/procession_fenetre.gd" id="5"]
 
+[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1440, 180)
 
@@ -229,3 +230,18 @@ offset_bottom = 198.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> chemin_aube"
+
+[node name="e3_procession_nuit" type="Node2D" parent="."]
+script = ExtResource("cine_script")
+id = &"e3_procession_nuit"
+duree = 10.0
+metadata/note_level_design = "La file passe sous la fenêtre, glissement lent ; lancée par une réplique de e3_procession"
+
+[node name="Camera" type="Camera2D" parent="e3_procession_nuit"]
+position = Vector2(700, 700)
+
+[node name="Depart" type="Marker2D" parent="e3_procession_nuit"]
+position = Vector2(700, 700)
+
+[node name="Arrivee" type="Marker2D" parent="e3_procession_nuit"]
+position = Vector2(1100, 700)

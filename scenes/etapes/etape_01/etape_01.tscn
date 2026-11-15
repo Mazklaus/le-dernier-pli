@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3]
+[gd_scene load_steps=31 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_01/etape_01.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_01/lieux/couchette.tscn" id="2"]
@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="14"]
 [ext_resource type="Script" path="res://scenes/decors/decor_e1.gd" id="decor_e1"]
 
+[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(3840, 180)
 
@@ -709,6 +710,23 @@ position = Vector2(7780, 800)
 
 [node name="pied_echelle" type="Marker2D" parent="ReperesVoix"]
 position = Vector2(10144, 800)
+
+[node name="e1_sortie_tranchee" type="Node2D" parent="Surface/PiedEchelle"]
+script = ExtResource("cine_script")
+id = &"e1_sortie_tranchee"
+duree = 6.0
+metadata/note_level_design = "Caméra au pied de l'échelle, Tobie disparaît au-dessus du parapet ; lancée par une réplique de e1_parapet"
+
+[node name="Camera" type="Camera2D" parent="Surface/PiedEchelle/e1_sortie_tranchee"]
+position = Vector2(760, 780)
+
+[node name="Depart" type="Marker2D" parent="Surface/PiedEchelle/e1_sortie_tranchee"]
+position = Vector2(760, 780)
+scale = Vector2(1.5, 1.5)
+
+[node name="Arrivee" type="Marker2D" parent="Surface/PiedEchelle/e1_sortie_tranchee"]
+position = Vector2(760, 720)
+scale = Vector2(1.5, 1.5)
 
 [editable path="Lieux/AbriSergent"]
 [editable path="Lieux/Cantine"]
