@@ -46,14 +46,30 @@ def mur_interieur(w: int) -> str:
     return "".join(out)
 
 
-def pain(x: int, y: int, n: int) -> str:
-    """Miches de pain blanc, en papier nu : il y en a trop pour une femme seule (ilde_pain)."""
+def miche(px: float, py: float) -> str:
+    return (f'<path d="M{px - 30:.0f} {py:.0f} Q{px - 30:.0f} {py - 34:.0f} {px:.0f} {py - 36:.0f} Q{px + 30:.0f} {py - 34:.0f} {px + 30:.0f} {py:.0f} Z" fill="{PAPIER}" {ST} stroke-width="2.2"/>'
+            f'<path d="M{px - 14:.0f} {py - 26:.0f} L{px - 6:.0f} {py - 18:.0f} M{px + 2:.0f} {py - 30:.0f} L{px + 10:.0f} {py - 22:.0f}" {ST} stroke-width="1.6"/>')
+
+
+def pain(x0: int, x1: int, y: int) -> str:
+    """Une montagne de miches de pain blanc, en papier nu, qui déborde de la table et roule au sol :
+    beaucoup trop pour une femme seule (ilde_pain)."""
     out = []
-    for i in range(n):
-        px = x + (i % 4) * 58 + (i // 4) * 26
-        py = y - (i // 4) * 26
-        out.append(f'<path d="M{px - 30} {py} Q{px - 30} {py - 34} {px} {py - 36} Q{px + 30} {py - 34} {px + 30} {py} Z" fill="{PAPIER}" {ST} stroke-width="2.2"/>')
-        out.append(f'<path d="M{px - 14} {py - 26} L{px - 6} {py - 18} M{px + 2} {py - 30} L{px + 10} {py - 22}" {ST} stroke-width="1.6"/>')
+    larg = x1 - x0
+    rangs = 7
+    for rg in range(rangs):
+        n = 7 - rg
+        pas = larg / 7.4
+        dx = x0 + 34 + rg * pas / 2
+        for i in range(n):
+            out.append(miche(dx + i * pas, y - rg * 30))
+    # celles qui ont roulé : au bord, au sol, et une corbeille pleine sous la table
+    out.append(miche(x1 + 16, y + 6))
+    out.append(miche(x0 + 120, SOL))
+    out.append(miche(x1 - 40, SOL))
+    out.append(f'<path d="M{x0 + 170} {SOL} L{x0 + 160} {SOL - 70} H{x0 + 300} L{x0 + 290} {SOL} Z" fill="url(#h2)" {ST} stroke-width="2.4"/>')
+    for i in range(3):
+        out.append(miche(x0 + 190 + i * 40, SOL - 66))
     return "".join(out)
 
 
@@ -72,7 +88,7 @@ def maison_ilde() -> str:
                f'<rect x="372" y="720" width="176" height="10" fill="{PAPIER}" {ST} stroke-width="2"/>')
     # la table et le pain blanc
     out.append(table(560, 900))
-    out.append(pain(610, SOL - 130, 7))
+    out.append(pain(560, 900, SOL - 130))
     # l'âtre : hotte de pierre, feu éteint, crémaillère
     out.append(f'<path d="M1180 {SOL} V620 L1140 560 H1440 L1400 620 V{SOL} Z" fill="url(#moellons)" {ST} stroke-width="3"/>')
     out.append(f'<path d="M1220 {SOL} V680 H1360 V{SOL} Z" fill="{ENCRE}"/>')
@@ -170,7 +186,11 @@ def cierge(x: int, haut: int, allume: bool) -> str:
 
 
 def chemin(allume: bool) -> str:
-    """Le chemin des champs derrière la maison d'Ilde : talus, haie, champs plantés de cierges."""
+    """Le chemin des champs derrière la maison d'Ilde : talus, champs plantés de cierges.
+    La nuit est un vrai noir de gravure (contre-hachure dense) : les flammes des cierges, en
+    réserve de papier, sont les seuls points clairs. L'aube reprend le papier."""
+    if allume:
+        return chemin_nuit()
     w = 3840
     out = [f'<rect width="{w}" height="{H}" fill="{PAPIER}"/>']
     r = rnd(371)
@@ -178,34 +198,70 @@ def chemin(allume: bool) -> str:
         y = r.randint(40, 300)
         x = r.randint(-200, w)
         out.append(f'<path d="M{x} {y} H{x + r.randint(300, 800)}" stroke="{MINE}" stroke-width="1.4" opacity=".6"/>')
-    if allume:
-        out.append(f'<path d="M3000 150 A60 60 0 1 0 3000 270 A44 52 0 1 1 3000 150 Z" fill="none" stroke="{MINE}" stroke-width="2.6"/>')
-    else:
-        out.append(f'<path d="M2640 520 A90 90 0 0 1 2820 520" fill="none" stroke="{MINE}" stroke-width="2.6"/>')
-    # champs lointains en lavis, le clocher du village tout petit derrière (baie vide)
+    out.append(f'<path d="M2640 520 A90 90 0 0 1 2820 520" fill="none" stroke="{MINE}" stroke-width="2.6"/>')
+    # champs lointains, le clocher du village tout petit derrière (baie vide)
     out.append(f'<path d="M{crete(0, w, 520, 8, 160, 372)} L{w} {H} L0 {H} Z" fill="{MINE}"/>')
     out.append(f'<path d="M300 520 V420 L320 396 L340 420 V520 Z" fill="{MINE}"/><rect x="312" y="430" width="16" height="20" fill="{PAPIER}"/>')
     out.append(f'<path d="M{crete(0, w, 640, 10, 120, 373)} L{w} {H} L0 {H} Z" fill="{LAVIS}"/>')
-    # rangées de cierges dans les champs lointains (petits) puis au bord du chemin
     for y, pas, haut, ep in ((640, 70, 22, 4), (700, 90, 34, 6)):
         x = r.randint(20, 60)
         while x < w:
             out.append(f'<rect x="{x}" y="{y - haut}" width="{ep}" height="{haut}" fill="{PAPIER}"/>')
-            if allume:
-                out.append(f'<path d="M{x + ep / 2:.0f} {y - haut - 2} Q{x - 2} {y - haut - 8} {x + ep / 2:.0f} {y - haut - 16} Q{x + ep + 2} {y - haut - 8} {x + ep / 2:.0f} {y - haut - 2} Z" fill="{PAPIER}"/>')
             x += pas + r.randint(-20, 20)
-    # talus et haie basse côté plafond de collision : le chemin est encaissé
     out.append(f'<path d="M0 {SOL} V{SOL - 40} Q{w / 2:.0f} {SOL - 70} {w} {SOL - 40} V{SOL} Z" fill="url(#herbe)" {ST} stroke-width="2"/>')
-    # cierges du bord du chemin, à hauteur de Tobie (détail champs_cierges à x 1800)
     x = 140
     while x < w:
         if abs(x - 1800) > 60:
-            out.append(cierge(x, r.randint(110, 170), allume))
+            out.append(cierge(x, r.randint(110, 170), False))
         x += r.randint(220, 380)
-    out.append(cierge(1800, 190, allume))
+    out.append(cierge(1800, 190, False))
     out.append(f'<rect y="{SOL}" width="{w}" height="{H - SOL}" fill="url(#terre)"/><path d="M0 {SOL} H{w}" {ST} stroke-width="3"/>')
-    # au bout du chemin, la route (e3_route, x 3500) : une borne et deux ornières
     out.append(f'<path d="M3440 {SOL} V{SOL - 70} Q3470 {SOL - 96} 3500 {SOL - 70} V{SOL} Z" fill="url(#moellons)" {ST} stroke-width="2.4"/>')
+    return "".join(out)
+
+
+def flamme(x: float, y: float, h: float, cerne: bool = True) -> str:
+    """Flamme en papier nu, pointe en haut ; y est la mèche."""
+    trait = f' {ST} stroke-width="1.6"' if cerne else ""
+    return (f'<path d="M{x:.0f} {y:.0f} Q{x - h * .24:.0f} {y - h * .45:.0f} {x:.0f} {y - h:.0f} '
+            f'Q{x + h * .24:.0f} {y - h * .45:.0f} {x:.0f} {y:.0f} Z" fill="{PAPIER}"{trait}/>')
+
+
+def chemin_nuit() -> str:
+    w = 3840
+    r = rnd(371)
+    # le ciel : lavis sous une contre-hachure d'encre serrée, un noir de gravure
+    out = [f'<rect width="{w}" height="{H}" fill="{LAVIS}"/>',
+           f'<rect width="{w}" height="{H}" fill="url(#v2)"/>']
+    # lointain : lavis puis encre, le clocher du village en silhouette sans jour
+    out.append(f'<path d="M{crete(0, w, 520, 8, 160, 372)} L{w} {H} L0 {H} Z" fill="{LAVIS}"/>')
+    out.append(f'<path d="M300 520 V420 L320 396 L340 420 V520 Z" fill="{LAVIS}"/>')
+    out.append(f'<path d="M{crete(0, w, 640, 10, 120, 373)} L{w} {H} L0 {H} Z" fill="{ENCRE}"/>')
+    # cierges des champs : le corps se perd dans le noir, seules les flammes restent
+    for y, pas, h in ((640, 70, 12), (700, 90, 18)):
+        x = r.randint(20, 60)
+        while x < w:
+            out.append(f'<rect x="{x - 1}" y="{y - h * 1.6:.0f}" width="{2 + h // 8}" height="{h * 1.6:.0f}" fill="{LAVIS}"/>')
+            out.append(flamme(x, y - h * 1.6, h, cerne=False))
+            x += pas + r.randint(-20, 20)
+    # talus en silhouette
+    out.append(f'<path d="M0 {SOL} V{SOL - 40} Q{w / 2:.0f} {SOL - 70} {w} {SOL - 40} V{SOL} Z" fill="{ENCRE}"/>')
+    # cierges du bord du chemin : une réserve de papier autour de chaque flamme, nette
+    x = 140
+    while x < w:
+        haut = 190 if abs(x - 1800) <= 60 else r.randint(110, 170)
+        if abs(x - 1800) <= 60:
+            x = 1800
+        out.append(f'<circle cx="{x}" cy="{SOL - haut - 16}" r="30" fill="{PAPIER}"/>')
+        out.append(f'<rect x="{x - 8}" y="{SOL - haut}" width="16" height="{haut}" fill="{MINE}" {ST} stroke-width="1.8"/>')
+        out.append(flamme(x, SOL - haut - 3, 36))
+        out.append(f'<path d="M{x} {SOL - haut - 3} V{SOL - haut + 4}" {ST} stroke-width="1.6"/>')
+        x += r.randint(220, 380)
+    # le sol du chemin, sombre
+    out.append(f'<rect y="{SOL}" width="{w}" height="{H - SOL}" fill="{LAVIS}"/>')
+    out.append(f'<rect y="{SOL}" width="{w}" height="{H - SOL}" fill="url(#v1)"/>')
+    out.append(f'<path d="M0 {SOL} H{w}" stroke="{ENCRE}" stroke-width="3"/>')
+    out.append(f'<path d="M3440 {SOL} V{SOL - 70} Q3470 {SOL - 96} 3500 {SOL - 70} V{SOL} Z" fill="{ENCRE}"/>')
     return "".join(out)
 
 
