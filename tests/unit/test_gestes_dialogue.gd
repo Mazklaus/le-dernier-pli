@@ -119,3 +119,66 @@ func test_le_mort_bras_pendant_avant_la_rencontre() -> void:
 	var mort := etape.trouver_declencheur(&"e2_mort").dessin
 	assert_eq(mort.animation, &"lever-bras")
 	assert_eq(mort.frame, 0)
+
+
+func test_geste_de_tobie_joue_par_le_messager_tourne_vers_la_croix() -> void:
+	var messager: Messager = add_child_autofree(preload("res://scenes/messager/messager.tscn").instantiate())
+	var silhouette := messager.get_node("%Silhouette") as SilhouetteTobie
+	if not silhouette.est_dessine():
+		pass_test("planches de Tobie absentes")
+		return
+	_faux_geste_tobie(silhouette, &"entailler")
+	d.global_position = Vector2(500, 0)
+	messager.global_position = Vector2(560, 0)
+	assert_true(d.jouer_geste_replique("Tobie", PackedStringArray(["geste=tobie:entailler"])))
+	assert_eq(messager.regard, -1, "tourné vers la croix, à sa gauche")
+	assert_almost_eq(messager.global_position.x, 500.0 + d.ecart_geste_tobie, 0.01, "à une main de distance")
+	assert_eq(messager.animation_voulue(0.0), &"entailler")
+	assert_eq(silhouette.base.animation, &"entailler")
+	await wait_seconds(0.4)
+	assert_eq(messager.geste, &"", "geste fini")
+	assert_ne(messager.animation_voulue(0.0), &"entailler")
+	assert_eq(d.dessin.animation, SilhouetteTobie.REPOS, "Lamarre ne bouge pas")
+
+
+## Faux geste de 2 images sur chaque calque (les vraies planches viennent de la DA).
+func _faux_geste_tobie(silhouette: SilhouetteTobie, nom: StringName) -> void:
+	for calque in silhouette.calques():
+		calque.sprite_frames.add_animation(nom)
+		calque.sprite_frames.set_animation_loop(nom, false)
+		calque.sprite_frames.set_animation_speed(nom, 10.0)
+		var image := calque.sprite_frames.get_frame_texture(SilhouetteTobie.REPOS, 0)
+		calque.sprite_frames.add_frame(nom, image)
+		calque.sprite_frames.add_frame(nom, image)
+
+
+func test_geste_de_tobie_vers_le_repere_du_geste() -> void:
+	var messager: Messager = add_child_autofree(preload("res://scenes/messager/messager.tscn").instantiate())
+	var silhouette := messager.get_node("%Silhouette") as SilhouetteTobie
+	if not silhouette.est_dessine():
+		pass_test("planches de Tobie absentes")
+		return
+	_faux_geste_tobie(silhouette, &"graver")
+	_faux_geste_tobie(silhouette, &"accrocher")
+	var repere := Marker2D.new()
+	repere.name = "geste_graver"
+	repere.position = Vector2(140, 0)
+	d.add_child(repere)
+	d.global_position = Vector2(500, 0)
+	assert_eq(d.repere_geste(&"graver"), repere)
+	assert_eq(d.repere_geste(&"accrocher"), d, "sans repère, le déclencheur")
+	messager.global_position = Vector2(300, 0)
+	assert_true(d.jouer_geste_replique("Tobie", PackedStringArray(["geste=tobie:graver"])))
+	assert_eq(messager.regard, 1)
+	assert_almost_eq(messager.global_position.x, 640.0 - d.ecart_geste_tobie, 0.01, "devant la croix sans nom")
+	await wait_seconds(0.4)
+	assert_true(d.jouer_geste_replique("Tobie", PackedStringArray(["geste=tobie:accrocher"])))
+	assert_eq(messager.regard, -1, "la croix d'Aubin est derrière lui")
+	assert_almost_eq(messager.global_position.x, 500.0 + d.ecart_geste_tobie, 0.01)
+
+
+func test_geste_de_tobie_sans_planche() -> void:
+	var messager: Messager = add_child_autofree(preload("res://scenes/messager/messager.tscn").instantiate())
+	assert_false(messager.jouer_geste(&"geste_inexistant"))
+	assert_false(messager.jouer_geste(SilhouetteTobie.MARCHE), "les animations de base ne sont pas des gestes")
+	assert_eq(messager.geste, &"")

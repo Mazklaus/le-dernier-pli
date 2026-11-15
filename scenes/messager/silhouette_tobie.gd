@@ -23,6 +23,8 @@ const RENCONTRE_CENDRE: StringName = &"e1_cendre"
 
 ## Un pied se pose (images 0 et 4 de la marche) : le Messager joue le pas.
 signal pas_pose()
+## Un geste joué une fois (entailler, graver, accrocher…) est arrivé à sa dernière image.
+signal geste_fini(nom: StringName)
 
 ## Images de la marche où un pied touche le sol (cycle de 8, un appui par demi-cycle).
 const IMAGES_PAS: Array[int] = [0, 4]
@@ -39,6 +41,7 @@ func _ready() -> void:
 	cendre = _calque("Cendre", "chr_tobie-cendre_%s_01.png")
 	if base != null:
 		base.frame_changed.connect(_sur_image)
+		base.animation_finished.connect(_sur_animation_finie)
 	jouer(REPOS)
 	GameState.rencontre_vue_marquee.connect(func(_id: StringName) -> void: actualiser_cendre())
 	GameState.etat_charge.connect(actualiser_cendre)
@@ -72,6 +75,30 @@ func jouer(nom: StringName) -> void:
 		calque.play(nom)
 
 
+## Charge un geste de Tobie (planches chr_tobie_<nom>_01, _red et chr_tobie-cendre_<nom>_01 de
+## la DA), joué une fois. Faux tant que la planche de base n'existe pas.
+func charger_geste(nom: StringName) -> bool:
+	if base == null or nom == &"":
+		return false
+	for a: Array in ANIMATIONS:
+		if StringName(a[0]) == nom:
+			return false
+	for calque in calques():
+		if calque.sprite_frames.has_animation(nom):
+			continue
+		var chemin := DOSSIER + String(calque.get_meta(&"motif", "")) % String(nom)
+		if ResourceLoader.exists(chemin):
+			ajouter_planche(calque.sprite_frames, nom, load(chemin) as Texture2D, false)
+	return base.sprite_frames.has_animation(nom)
+
+
+func _sur_animation_finie() -> void:
+	for a: Array in ANIMATIONS:
+		if StringName(a[0]) == animation:
+			return
+	geste_fini.emit(animation)
+
+
 func calques() -> Array[AnimatedSprite2D]:
 	var liste: Array[AnimatedSprite2D] = []
 	for c in [base, ruban, cendre]:
@@ -98,6 +125,7 @@ func _calque(nom: String, motif: String) -> AnimatedSprite2D:
 		return null
 	var sprite := AnimatedSprite2D.new()
 	sprite.name = nom
+	sprite.set_meta(&"motif", motif)
 	sprite.sprite_frames = images
 	sprite.centered = false
 	sprite.offset = -PIEDS

@@ -30,6 +30,8 @@ const COUCHES_AMBIANCE := {
 	2: ["surface", "autre"],
 	3: ["jour", "nuit", "autre"],
 	4: ["hopital", "autre"],
+	5: ["foret", "autre"],
+	6: ["profondeur", "autre"],
 	7: ["salle", "autre"],
 }
 ## Groupe des émetteurs qu'on n'entend que dans le noir sans lanterne (ex. les fils de

@@ -6,7 +6,7 @@
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="4"]
 [ext_resource type="Script" uid="uid://9vjga4usikz6a" path="res://scenes/interactions/personnage/procession_fenetre.gd" id="5"]
 
-[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e3_procession_nuit.gd" id="cine_procession"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1440, 180)
 
@@ -232,7 +232,7 @@ theme_override_font_sizes/font_size = 24
 text = "-> chemin_aube"
 
 [node name="e3_procession_nuit" type="Node2D" parent="."]
-script = ExtResource("cine_script")
+script = ExtResource("cine_procession")
 id = &"e3_procession_nuit"
 duree = 10.0
 metadata/note_level_design = "La file passe sous la fenêtre, glissement lent ; lancée par une réplique de e3_procession"

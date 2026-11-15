@@ -15,6 +15,7 @@ Dépendances : Python 3, `numpy`, `scipy`, et `ffmpeg` (avec libvorbis) pour la 
 | `generer_ambiance_hopital_recousus.py` | Étape 4 : `hopital`, `autre` (80 s), lieux `porche`, `salle`, `lingerie`, `atelier`, `escalier`, `crypte` (groupe `son_du_noir`), `escalier-service`, `porte-laterale`, et `sfx_porte_fermer_01..03` (2e argument : dossier des bruitages) |
 | `generer_epilogues_destinataire.py` | Étape 7 : `salle`, `autre` (80 s, bourdon sans attaque) et les cinq épilogues du Cantique `mus_destinataire_fin-a` à `fin-e`, joués sans boucle par `AudioDirector.jouer_epilogue` |
 | `generer_bruitages_cinematiques.py` | Bruitages des gestes et des cinématiques courtes (directive du 15/11), `sfx_<famille>_<action>_01..03.wav` : voir la table ci-dessous |
+| `generer_ambiance_foret_cathedrale.py` | Étapes 5 et 6 : `foret-de-croix_{foret,autre}` et lieux `oree`, `boucle`, `campement`, `cimetiere`, `clairiere` ; `cathedrale-enterree_{profondeur,autre}` et lieux `fissure`, `nef`, `village`, `niche-veilleur`, `seuil` ; `sfx_boucle_raccord_01` (le même oiseau et le même craquement à chaque tour) ; `mus_cathedrale-enterree_tablee` (la noce de l'étape 3 à l'envers, plus lente et plus chaude ; 3e argument : `mus_village-cloches-muettes_noce`) |
 | `generer_timbres.py` | Timbres de dialogue sans mots, `vox_<personnage>_01..03.wav` |
 
 ```sh
@@ -59,7 +60,7 @@ Dans une piste de méthode de l'AnimationPlayer (ou depuis un geste de dialogue)
 | 3 | La noce | Anim | rien : la musique `mus_village-cloches-muettes_noce` joue déjà sur la place |
 | 3 | La procession de nuit | Ciné | rien : `mus_village-cloches-muettes_procession` (lieux_musique) |
 | 3 | Le sonneur | Anim | `sfx_corde_tirer` à chaque traction |
-| 4 | La greffe de l'œil | Ciné | `sfx_aiguille_coudre` (le fil passe trois fois, hors champ) |
+| 4 | La greffe de l'œil | Ciné | `sfx_aiguille_coudre` (le fil passe trois fois, hors champ), puis `sfx_greffe_fausse-note` à la coupe au noir (un fredonnement bouche cousue, un quart de ton trop bas, coupé à 0,6 s au retour de l’image) |
 | 4 | Les saints qui respirent | Anim | rien : l'émetteur `amb_hopital-recousus_crypte` (son_du_noir) |
 | 4 | La bénédiction | Anim | `sfx_cendre_front` |
 | 5 | L'entaille et le retour | Anim | `sfx_lame_entailler` |
