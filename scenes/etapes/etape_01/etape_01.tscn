@@ -64,6 +64,7 @@ size = Vector2(64, 1080)
 [node name="Etape01" type="Node2D"]
 script = ExtResource("1")
 limite_surface_y = 1150.0
+pas_surface = "sfx_pas_planche"
 numero_etape = 1
 bornes_camera_surface = Vector2(0, 10624)
 lieux_musique = {
