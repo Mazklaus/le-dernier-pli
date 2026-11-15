@@ -83,8 +83,8 @@ func _process(delta: float) -> void:
 
 
 ## Montre ce que le coût AFFICHÉ d'une option retirerait (couts_affiches d'OptionsDialogue) :
-## bâtons en pointillé de lavis, libellé « [Affamé] » / « [Éteinte] » si le stock n'y suffit
-## pas, œil du palier visé à 50 % pour la Lucidité. `bave` : le chiffre de l'option bave,
+## bâtons en pointillé de lavis, libellé « [Affamé] » / « [Éteinte] » / « [Perdu] » si le
+## stock n'y suffit pas, œil du palier visé à 50 % pour la Lucidité. `bave` : le chiffre de l'option bave,
 ## les bâtons de l'aperçu tremblent avec lui.
 func apercu_couts(couts: Dictionary, bave: bool = false) -> void:
 	apercu = couts.duplicate()
@@ -105,7 +105,7 @@ static func apercu_jauge(jauge: StringName, v: int, cout: int) -> Dictionary:
 	var retires := mini(cout, v)
 	var libelle := ""
 	if cout >= v and cout > 0:
-		libelle = "[%s]" % libelle_jauge(jauge, 0, &"", false)
+		libelle = "[%s]" % libelle_jauge(jauge, 0, &"", jauge == GameState.LUCIDITE)
 	return {"retires": retires, "libelle": libelle}
 
 
@@ -155,6 +155,9 @@ func actualiser() -> void:
 			var vise := GameState.palier_pour(v - cout)
 			icone_jauge_courante.texture = StylePapier.icone(icone_jauge(jauge, v, vise))
 			icone_jauge_courante.modulate.a = 0.5
+			var al := apercu_jauge(jauge, v, cout)
+			if al["libelle"] != "":
+				libelle.text = al["libelle"]
 		elif _batons.has(jauge):
 			var a := apercu_jauge(jauge, v, cout)
 			(_batons[jauge] as Batons).apercu = int(a["retires"])

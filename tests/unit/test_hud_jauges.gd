@@ -319,6 +319,19 @@ func test_apercu_en_lucidite_montre_le_palier_vise() -> void:
 	assert_almost_eq(oeil.modulate.a, 1.0, 0.001)
 
 
+func test_apercu_en_lucidite_jusqu_a_zero_annonce_perdu() -> void:
+	# UI/UX : l'œil pâlit, et le libellé dit que le joueur va perdre la raison.
+	var hud := _hud()
+	var v := GameState.valeur(GameState.LUCIDITE)
+	hud.apercu_couts({GameState.LUCIDITE: v})
+	assert_eq((hud._libelles[GameState.LUCIDITE] as Label).text, "[Perdu]")
+	hud.fin_apercu()
+	assert_ne((hud._libelles[GameState.LUCIDITE] as Label).text, "[Perdu]")
+	hud.apercu_couts({GameState.LUCIDITE: v - 1})
+	assert_ne((hud._libelles[GameState.LUCIDITE] as Label).text, "[Perdu]", "il reste un bâton")
+	assert_eq_deep(HudJauges.apercu_jauge(GameState.LUCIDITE, 2, 3), {"retires": 2, "libelle": "[Perdu]"})
+
+
 func test_apercu_fige_en_effets_attenues() -> void:
 	Reglages.changer(&"effets_attenues", true)
 	var hud := _hud()
