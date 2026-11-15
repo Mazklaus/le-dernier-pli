@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://boxw7pkjyo1no"
+path="res://.godot/imported/e5_clairiere.dialogue-741dcb75252b750a198a5526990d1cb7.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_05/e5_clairiere.dialogue"
+dest_files=["res://.godot/imported/e5_clairiere.dialogue-741dcb75252b750a198a5526990d1cb7.tres"]
+
+[params]
+
+defaults=true

@@ -1,0 +1,44 @@
+# Étape 5 : détails à examiner, sans coût ni marque, rejouables, 15 à 30 s chacun.
+# Titres du plan du Level Designer. Garde-fous : aucun nombre total, aucune date, aucun ordre dans le cimetière.
+
+~ sentier_bornes
+
+Tobie: Une croix plus grosse que les autres, peinte en blanc. Une borne, comme sur les routes.
+Tobie: Plus loin, une autre. Quelqu'un a voulu qu'on ne se perde pas. Ça n'a pas suffi.
+
+=> END
+
+~ sentier_traces
+
+Tobie: Des traces de pas dans la boue. Je pose ma botte à côté. Même pointure. Même usure au talon.
+Tobie: Elles vont dans le même sens que moi. Elles sont un peu plus vieilles. D'un jour, peut-être.
+
+=> END
+
+~ autre_branche
+
+Tobie: Une branche cassée net, à hauteur d'épaule. La cassure est fraîche, encore claire.
+Tobie: À la hauteur de mon épaule. Pile.
+
+=> END
+
+~ campement_gamelle
+
+Tobie: La gamelle, encore grasse. Une cuillère dedans, tordue d'une façon que je connais.
+Tobie: Je tords la mienne pareil, pour qu'elle tienne dans la poche. Personne ne m'a appris.
+
+=> END
+
+~ croix_objets
+
+Tobie: Sur les croix, des choses laissées : une gourde, un sifflet, un bout de ruban rouge délavé.
+Tobie: Ce qu'on garde sur soi jusqu'au bout. Ce qu'on pose quand on n'en a plus besoin.
+
+=> END
+
+~ clairiere_ciel
+
+Tobie: Le ciel, enfin. Pas de fumée, pas de branches, pas de croix. Juste du bleu, très haut.
+Tobie: Je ne l'avais pas vu en entier depuis la tranchée. Il est plus grand que dans mon souvenir.
+
+=> END

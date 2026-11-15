@@ -1,0 +1,33 @@
+# Étape 5, rencontre 1 : la croix-repère sur le sentier qui boucle.
+# Déclencheur à verrou : rencontre_requise = e5_entaille, titre_si_verrouille = premier_passage, titre = debut.
+# Premier passage : entailler (−1 Lucidité, drapeau e5_entaille_faite) ou non ; pose toujours e5_entaille.
+# Second passage (debut) : l'entaille retrouvée, et une plus ancienne dessous ; sans entaille, une boucle de plus (−1 Vivres).
+# Garde-fou du Game Director : la boucle ne doit jamais passer pour un bug, Tobie le dit tout de suite.
+
+~ premier_passage
+
+Tobie: Des croix plantées comme des arbres. Toutes pareilles, toutes de travers, à perte de vue.
+Tobie: Pas un oiseau. Le sentier tourne doucement entre elles.
+Tobie: Il me faudrait un repère.
+- [Entailler la croix] [#cout_lucidite=1]
+	Tobie: Je taille une encoche au couteau, à hauteur d'œil. Le bois est dur. Ça prend du temps.
+	do GameState.marquer_rencontre_vue(&"e5_entaille_faite")
+- [Continuer]
+	Tobie: Une croix, c'est une croix. Je continue.
+do GameState.marquer_rencontre_vue(&"e5_entaille")
+
+=> END
+
+~ debut
+
+if GameState.rencontre_vue(&"e5_entaille_faite")
+	Tobie: C'est ma croix. Mon entaille, toute fraîche. Je suis revenu au même endroit.
+	Tobie: Et juste dessous, une autre encoche. Plus vieille, noircie. Faite du même geste que la mienne.
+	Tobie: Quelqu'un s'est perdu ici avant moi. Et il a eu la même idée.
+else
+	Tobie: Encore une croix. Celle-ci, ou une autre. Je tourne depuis une heure, peut-être plus.
+	do GameState.appliquer_effets({&"vivres": -1})
+	Tobie: Une encoche sur le bois, vieille, noircie. Je la reconnais. Je suis déjà passé ici.
+	Tobie: Le sentier tourne en rond. Il faut que j'en sorte.
+
+=> END

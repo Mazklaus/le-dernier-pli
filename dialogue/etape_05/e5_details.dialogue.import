@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://b8iduyugke1qd"
+path="res://.godot/imported/e5_details.dialogue-323262d191f01ed1a6079d840d1f2961.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_05/e5_details.dialogue"
+dest_files=["res://.godot/imported/e5_details.dialogue-323262d191f01ed1a6079d840d1f2961.tres"]
+
+[params]
+
+defaults=true
