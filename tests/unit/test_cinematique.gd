@@ -156,3 +156,24 @@ func test_cadrage_par_marqueurs_sans_animation() -> void:
 		c._process(0.1)
 	assert_false(c.en_cours)
 	assert_almost_eq(camera.zoom.x, 2.0, 0.01)
+
+
+func test_retiree_en_cours_de_lecture_rend_la_main() -> void:
+	watch_signals(cine)
+	cine.jouer()
+	remove_child(cine)
+	assert_false(cine.en_cours)
+	assert_false(messager.bloque, "contrôle rendu")
+	assert_signal_emitted_with_parameters(cine, "finie", [true])
+	add_child(cine)
+
+
+func test_au_debut_etape_ignore_une_etape_qui_n_est_pas_la_scene_courante() -> void:
+	var etape := Node2D.new()
+	add_child_autofree(etape)
+	var c := _fabriquer(&"test_arrivee")
+	c.au_debut_etape = true
+	etape.add_child(c)
+	SceneRouter.etape_prete.emit(etape)
+	await wait_process_frames(2)
+	assert_false(c.en_cours, "étape de test : pas de cinématique d'arrivée")

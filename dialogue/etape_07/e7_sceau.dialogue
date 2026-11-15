@@ -20,7 +20,8 @@ Tobie: Personne ne me verra, ici. Personne ne saura.
 ~ ouvrir
 
 do GameState.ouvrir_sceau()
-Tobie: La cire craque sous mon pouce. Le ruban glisse. Je déplie le papier. Je lis lentement, avec le doigt.
+# [ciné e7_ouverture_sceau] la cire craque sous le pouce, le ruban glisse, le papier se déplie.
+Tobie: Je lis lentement, avec le doigt.
 Tobie: « À celle qui écoute sous les cloches tues, »
 Tobie: « au nom de la Cendre et selon le Pacte du Sceau Noir : »
 Tobie: « voici le quatorzième. »
@@ -35,7 +36,7 @@ Tobie: Ce n'est pas un message. C'est un reçu.
 ~ lecture
 
 do GameState.lire_ligne_pli()
-Tobie: Je lève le papier vers la lueur sous la porte. La cire rouge laisse passer une ligne.
+Tobie: La cire rouge laisse passer une ligne.
 if GameState.pli_lignes_lues == 1
 	Tobie: « À celle qui écoute sous les cloches tues, »
 	Tobie: Celle qui écoute. Elle est derrière cette porte.

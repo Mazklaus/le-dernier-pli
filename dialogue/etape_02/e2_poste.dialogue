@@ -6,14 +6,14 @@
 
 ~ debut
 
-Brisse: Halte. Qui va là ? ... Un coureur. Ça faisait longtemps.
+Brisse: Halte. Qui va là ? ... Un coureur. Ça faisait longtemps. [#geste=lever-main]
 Brisse: Caporal Brisse. Je tiens le poste. Tout seul, depuis la dernière relève.
-Brisse: Montre ton pli. C'est le règlement.
+Brisse: Montre ton pli. C'est le règlement. [#geste=tendre]
 if GameState.condition_remplie({"sceau": &"intact"})
 	Brisse: Cire noire, intacte. Passe, petit.
 	do GameState.marquer_rencontre_vue(&"e2_poste_passe")
 	if GameState.possede_marque(&"obei_sans_question")
-		Brisse: Et prends ça. Un gars qui obéit, ça se nourrit.
+		Brisse: Et prends ça. Un gars qui obéit, ça se nourrit. [#geste=donner]
 		do GameState.appliquer_effets({&"vivres": 1})
 else
 	Brisse: La cire est fendue. Ça, c'est pas bon pour toi.
@@ -32,13 +32,13 @@ Brisse: Personne n'en saura rien. À part moi.
 	- [Confirmer] Allez-y.
 		do GameState.rechauffer_sceau(true)
 		do GameState.marquer_rencontre_vue(&"temoin_garde_sceau")
-		Brisse: Doucement... Voilà. Elle est rouge, maintenant. Comme du sang.
+		Brisse: Doucement... Voilà. Elle est rouge, maintenant. Comme du sang. [#geste=chauffer-cire]
 		Brisse: Tu verras peut-être à travers le papier, avec une lampe. Moi, j'ai rien dit.
 	- [Renoncer] Non, finalement.
 		Brisse: T'as raison. Moi non plus, j'ai jamais osé.
 - [Refuser] Non. Je n'ai pas le droit.
 	Brisse: T'as raison. Moi non plus, j'ai jamais osé.
-Brisse: Va. Le brouillard commence juste après la crête. Il est méchant, ce matin.
+Brisse: Va. Le brouillard commence après la crête. Il est méchant, ce matin. [#geste=montrer]
 
 => END
 

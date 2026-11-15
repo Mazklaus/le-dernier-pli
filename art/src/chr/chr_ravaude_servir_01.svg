@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="320" viewBox="0 0 1000 320"><defs>
+<pattern id="hach-1" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><rect width="5" height="5" fill="#E8E5DA"/>
+      <line x1="0" y1="0" x2="0" y2="5" stroke="#15130F" stroke-width=".7"/>
+    </pattern>
+<pattern id="hach-2" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(38)"><rect width="4" height="4" fill="#E8E5DA"/>
+      <line x1="0" y1="0" x2="0" y2="4" stroke="#15130F" stroke-width="1"/>
+      <line x1="0" y1="2" x2="4" y2="2" stroke="#15130F" stroke-width=".6"/>
+    </pattern>
+<pattern id="molletiere" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-22)">
+      <rect width="9" height="9" fill="#E8E5DA"/>
+      <line x1="0" y1="0" x2="9" y2="0" stroke="#15130F" stroke-width="1.6"/>
+      <line x1="0" y1="4.5" x2="9" y2="4.5" stroke="#15130F" stroke-width=".5"/>
+    </pattern>
+<pattern id="pointille" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#E8E5DA"/>
+      <circle cx="2" cy="2" r=".7" fill="#15130F"/>
+    </pattern>
+</defs><g transform="translate(-1.40 -26.22) scale(0.845)"><g id="p-ravaude" stroke="#15130F" stroke-linejoin="round" stroke-linecap="round">
+      <!-- jupe en cloche -->
+      <path d="M72 232 Q60 320 44 405 L196 405 Q180 320 168 232 Z" fill="url(#hach-1)" stroke-width="2.6"/>
+      <path d="M44 405 L196 405" stroke-width="3"/>
+      <!-- tablier taché -->
+      <path d="M92 232 L148 232 L158 398 L82 398 Z" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M102 300 Q110 292 118 300 Q112 312 102 300 Z M132 344 Q140 338 146 346 Q140 354 132 344 Z" fill="url(#hach-2)" stroke="none"/>
+      <!-- poche du tablier avec la pipe d'Aurèle -->
+      <path d="M100 330 L130 330 L130 356 L100 356 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <path d="M112 330 L120 312 L132 312 Q136 312 136 318 L128 318" fill="none" stroke-width="2.4"/>
+      <!-- buste et châle croisé -->
+      <path d="M88 140 Q120 128 152 140 L172 238 L68 238 Z" fill="#E8E5DA" stroke-width="2.4"/>
+      <path d="M88 140 L148 236 L170 236 L150 140 Z" fill="url(#hach-2)" stroke-width="1.8"/>
+      <path d="M152 140 L92 236 L70 236 L90 140 Z" fill="url(#hach-2)" stroke-width="1.8"/>
+      <path d="M68 236 L172 236" stroke-width="5"/>
+      <!-- gobelets pendus à la ceinture -->
+      <path d="M162 240 L166 258 M172 240 L178 256" stroke-width="1.2"/>
+      <path d="M158 258 L172 258 L170 274 L160 274 Z M172 256 L186 256 L184 272 L174 272 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <!-- bras gauche : louche levée -->
+      
+      
+      
+      
+      <!-- bras droit : marmite sur la hanche -->
+      <path d="M152 146 Q176 170 180 204 Q170 212 162 204 Q160 180 146 160 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M160 196 L204 196 L200 232 L164 232 Z" fill="url(#hach-1)" stroke-width="2.2"/>
+      <path d="M156 196 L208 196" stroke-width="3"/>
+      <!-- tête large sous un fichu -->
+      <circle cx="120" cy="108" r="26" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M100 118 Q120 140 140 118" fill="none" stroke-width="1.2"/>
+      <path d="M108 104 L116 104 M124 104 L132 104" stroke-width="2"/>
+      <path d="M112 120 Q120 116 128 120" fill="none" stroke-width="1.6"/>
+      <circle cx="96" cy="114" r="4" fill="none" stroke-width="1.4"/>
+      <path d="M92 104 Q92 76 120 76 Q148 76 148 104 Q136 92 120 92 Q104 92 92 104 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M144 98 L160 92 L156 104 L170 104" fill="none" stroke-width="2.2"/>
+    <g stroke="#15130F" stroke-linejoin="round" stroke-linecap="round"><path d="M91.0 140.5 L66.4 125.3 L57.6 138.7 L81.0 155.5 Z" fill="url(#hach-2)" stroke-width="2.2"/><path d="M70.0 132.8 L71.0 112.7 L57.0 111.3 L54.0 131.2 Z" fill="url(#hach-2)" stroke-width="2.2"/><circle cx="62.0" cy="132.0" r="7.4" fill="url(#hach-2)" stroke="none"/><g transform="translate(64.0 108.0) rotate(-8)"><path d="M0 0 L0 -46" stroke-width="3"/><path d="M-12 -48 Q0 -32 12 -48 Z" fill="#15130F" stroke-width="1.6"/></g><circle cx="64.0" cy="112.0" r="8" fill="#E8E5DA" stroke-width="2"/></g></g></g><g transform="translate(198.60 -26.22) scale(0.845)"><g id="p-ravaude" stroke="#15130F" stroke-linejoin="round" stroke-linecap="round">
+      <!-- jupe en cloche -->
+      <path d="M72 232 Q60 320 44 405 L196 405 Q180 320 168 232 Z" fill="url(#hach-1)" stroke-width="2.6"/>
+      <path d="M44 405 L196 405" stroke-width="3"/>
+      <!-- tablier taché -->
+      <path d="M92 232 L148 232 L158 398 L82 398 Z" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M102 300 Q110 292 118 300 Q112 312 102 300 Z M132 344 Q140 338 146 346 Q140 354 132 344 Z" fill="url(#hach-2)" stroke="none"/>
+      <!-- poche du tablier avec la pipe d'Aurèle -->
+      <path d="M100 330 L130 330 L130 356 L100 356 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <path d="M112 330 L120 312 L132 312 Q136 312 136 318 L128 318" fill="none" stroke-width="2.4"/>
+      <!-- buste et châle croisé -->
+      <path d="M88 140 Q120 128 152 140 L172 238 L68 238 Z" fill="#E8E5DA" stroke-width="2.4"/>
+      <path d="M88 140 L148 236 L170 236 L150 140 Z" fill="url(#hach-2)" stroke-width="1.8"/>
+      <path d="M152 140 L92 236 L70 236 L90 140 Z" fill="url(#hach-2)" stroke-width="1.8"/>
+      <path d="M68 236 L172 236" stroke-width="5"/>
+      <!-- gobelets pendus à la ceinture -->
+      <path d="M162 240 L166 258 M172 240 L178 256" stroke-width="1.2"/>
+      <path d="M158 258 L172 258 L170 274 L160 274 Z M172 256 L186 256 L184 272 L174 272 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <!-- bras gauche : louche levée -->
+      
+      
+      
+      
+      <!-- bras droit : marmite sur la hanche -->
+      <path d="M152 146 Q176 170 180 204 Q170 212 162 204 Q160 180 146 160 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M160 196 L204 196 L200 232 L164 232 Z" fill="url(#hach-1)" stroke-width="2.2"/>
+      <path d="M156 196 L208 196" stroke-width="3"/>
+      <!-- tête large sous un fichu -->
+      <circle cx="120" cy="108" r="26" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M100 118 Q120 140 140 118" fill="none" stroke-width="1.2"/>
+      <path d="M108 104 L116 104 M124 104 L132 104" stroke-width="2"/>
+      <path d="M112 120 Q120 116 128 120" fill="none" stroke-width="1.6"/>
+      <circle cx="96" cy="114" r="4" fill="none" stroke-width="1.4"/>
+      <path d="M92 104 Q92 76 120 76 Q148 76 148 104 Q136 92 120 92 Q104 92 92 104 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M144 98 L160 92 L156 104 L170 104" fill="none" stroke-width="2.2"/>
+    <g stroke="#15130F" stroke-linejoin="round" stroke-linecap="round"><path d="M78.2 152.5 L101.1 190.0 L114.9 182.0 L93.8 143.5 Z" fill="url(#hach-2)" stroke-width="2.2"/><path d="M112.5 192.6 L150.0 165.8 L142.0 154.2 L103.5 179.4 Z" fill="url(#hach-2)" stroke-width="2.2"/><circle cx="108.0" cy="186.0" r="7.4" fill="url(#hach-2)" stroke="none"/><g transform="translate(146.0 160.0) rotate(150)"><path d="M0 0 L0 -46" stroke-width="3"/><path d="M-12 -48 Q0 -32 12 -48 Z" fill="#15130F" stroke-width="1.6"/></g><circle cx="146.0" cy="160.0" r="8" fill="#E8E5DA" stroke-width="2"/></g></g></g><g transform="translate(398.60 -26.22) scale(0.845)"><g id="p-ravaude" stroke="#15130F" stroke-linejoin="round" stroke-linecap="round">
+      <!-- jupe en cloche -->
+      <path d="M72 232 Q60 320 44 405 L196 405 Q180 320 168 232 Z" fill="url(#hach-1)" stroke-width="2.6"/>
+      <path d="M44 405 L196 405" stroke-width="3"/>
+      <!-- tablier taché -->
+      <path d="M92 232 L148 232 L158 398 L82 398 Z" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M102 300 Q110 292 118 300 Q112 312 102 300 Z M132 344 Q140 338 146 346 Q140 354 132 344 Z" fill="url(#hach-2)" stroke="none"/>
+      <!-- poche du tablier avec la pipe d'Aurèle -->
+      <path d="M100 330 L130 330 L130 356 L100 356 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <path d="M112 330 L120 312 L132 312 Q136 312 136 318 L128 318" fill="none" stroke-width="2.4"/>
+      <!-- buste et châle croisé -->
+      <path d="M88 140 Q120 128 152 140 L172 238 L68 238 Z" fill="#E8E5DA" stroke-width="2.4"/>
+      <path d="M88 140 L148 236 L170 236 L150 140 Z" fill="url(#hach-2)" stroke-width="1.8"/>
+      <path d="M152 140 L92 236 L70 236 L90 140 Z" fill="url(#hach-2)" stroke-width="1.8"/>
+      <path d="M68 236 L172 236" stroke-width="5"/>
+      <!-- gobelets pendus à la ceinture -->
+      <path d="M162 240 L166 258 M172 240 L178 256" stroke-width="1.2"/>
+      <path d="M158 258 L172 258 L170 274 L160 274 Z M172 256 L186 256 L184 272 L174 272 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <!-- bras gauche : louche levée -->
+      
+      
+      
+      
+      <!-- bras droit : marmite sur la hanche -->
+      <path d="M152 146 Q176 170 180 204 Q170 212 162 204 Q160 180 146 160 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M160 196 L204 196 L200 232 L164 232 Z" fill="url(#hach-1)" stroke-width="2.2"/>
+      <path d="M156 196 L208 196" stroke-width="3"/>
+      <!-- tête large sous un fichu -->
+      <circle cx="120" cy="108" r="26" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M100 118 Q120 140 140 118" fill="none" stroke-width="1.2"/>
+      <path d="M108 104 L116 104 M124 104 L132 104" stroke-width="2"/>
+      <path d="M112 120 Q120 116 128 120" fill="none" stroke-width="1.6"/>
+      <circle cx="96" cy="114" r="4" fill="none" stroke-width="1.4"/>
+      <path d="M92 104 Q92 76 120 76 Q148 76 148 104 Q136 92 120 92 Q104 92 92 104 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M144 98 L160 92 L156 104 L170 104" fill="none" stroke-width="2.2"/>
+    <g stroke="#15130F" stroke-linejoin="round" stroke-linecap="round"><path d="M77.0 148.9 L82.0 186.8 L98.0 185.2 L95.0 147.1 Z" fill="url(#hach-2)" stroke-width="2.2"/><path d="M97.0 189.9 L116.1 153.4 L103.9 146.6 L83.0 182.1 Z" fill="url(#hach-2)" stroke-width="2.2"/><circle cx="90.0" cy="186.0" r="7.4" fill="url(#hach-2)" stroke="none"/><g transform="translate(110.0 150.0) rotate(170)"><path d="M0 0 L0 -46" stroke-width="3"/><path d="M-12 -48 Q0 -32 12 -48 Z" fill="#15130F" stroke-width="1.6"/><path d="M-10 -46 Q0 -42 10 -46" stroke="#4A463D" stroke-width="3"/></g><circle cx="110.0" cy="150.0" r="8" fill="#E8E5DA" stroke-width="2"/></g></g></g><g transform="translate(598.60 -26.22) scale(0.845)"><g id="p-ravaude" stroke="#15130F" stroke-linejoin="round" stroke-linecap="round">
+      <!-- jupe en cloche -->
+      <path d="M72 232 Q60 320 44 405 L196 405 Q180 320 168 232 Z" fill="url(#hach-1)" stroke-width="2.6"/>
+      <path d="M44 405 L196 405" stroke-width="3"/>
+      <!-- tablier taché -->
+      <path d="M92 232 L148 232 L158 398 L82 398 Z" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M102 300 Q110 292 118 300 Q112 312 102 300 Z M132 344 Q140 338 146 346 Q140 354 132 344 Z" fill="url(#hach-2)" stroke="none"/>
+      <!-- poche du tablier avec la pipe d'Aurèle -->
+      <path d="M100 330 L130 330 L130 356 L100 356 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <path d="M112 330 L120 312 L132 312 Q136 312 136 318 L128 318" fill="none" stroke-width="2.4"/>
+      <!-- buste et châle croisé -->
+      <path d="M88 140 Q120 128 152 140 L172 238 L68 238 Z" fill="#E8E5DA" stroke-width="2.4"/>
+      <path d="M88 140 L148 236 L170 236 L150 140 Z" fill="url(#hach-2)" stroke-width="1.8"/>
+      <path d="M152 140 L92 236 L70 236 L90 140 Z" fill="url(#hach-2)" stroke-width="1.8"/>
+      <path d="M68 236 L172 236" stroke-width="5"/>
+      <!-- gobelets pendus à la ceinture -->
+      <path d="M162 240 L166 258 M172 240 L178 256" stroke-width="1.2"/>
+      <path d="M158 258 L172 258 L170 274 L160 274 Z M172 256 L186 256 L184 272 L174 272 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <!-- bras gauche : louche levée -->
+      
+      
+      
+      
+      <!-- bras droit : marmite sur la hanche -->
+      <path d="M152 146 Q176 170 180 204 Q170 212 162 204 Q160 180 146 160 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M160 196 L204 196 L200 232 L164 232 Z" fill="url(#hach-1)" stroke-width="2.2"/>
+      <path d="M156 196 L208 196" stroke-width="3"/>
+      <!-- tête large sous un fichu -->
+      <circle cx="120" cy="108" r="26" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M100 118 Q120 140 140 118" fill="none" stroke-width="1.2"/>
+      <path d="M108 104 L116 104 M124 104 L132 104" stroke-width="2"/>
+      <path d="M112 120 Q120 116 128 120" fill="none" stroke-width="1.6"/>
+      <circle cx="96" cy="114" r="4" fill="none" stroke-width="1.4"/>
+      <path d="M92 104 Q92 76 120 76 Q148 76 148 104 Q136 92 120 92 Q104 92 92 104 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M144 98 L160 92 L156 104 L170 104" fill="none" stroke-width="2.2"/>
+    <g stroke="#15130F" stroke-linejoin="round" stroke-linecap="round"><path d="M79.6 141.6 L58.3 164.3 L69.7 175.7 L92.4 154.4 Z" fill="url(#hach-2)" stroke-width="2.2"/><path d="M69.1 163.9 L44.5 144.6 L35.5 155.4 L58.9 176.1 Z" fill="url(#hach-2)" stroke-width="2.2"/><circle cx="64.0" cy="170.0" r="7.4" fill="url(#hach-2)" stroke="none"/><g transform="translate(40.0 150.0) rotate(230)"><path d="M0 0 L0 -46" stroke-width="3"/><path d="M-12 -48 Q0 -32 12 -48 Z" fill="#15130F" stroke-width="1.6"/></g><circle cx="40.0" cy="150.0" r="8" fill="#E8E5DA" stroke-width="2"/><path d="M14 206 Q24 200 30 210" stroke="#4A463D" stroke-width="3" fill="none"/></g></g></g><g transform="translate(798.60 -26.22) scale(0.845)"><g id="p-ravaude" stroke="#15130F" stroke-linejoin="round" stroke-linecap="round">
+      <!-- jupe en cloche -->
+      <path d="M72 232 Q60 320 44 405 L196 405 Q180 320 168 232 Z" fill="url(#hach-1)" stroke-width="2.6"/>
+      <path d="M44 405 L196 405" stroke-width="3"/>
+      <!-- tablier taché -->
+      <path d="M92 232 L148 232 L158 398 L82 398 Z" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M102 300 Q110 292 118 300 Q112 312 102 300 Z M132 344 Q140 338 146 346 Q140 354 132 344 Z" fill="url(#hach-2)" stroke="none"/>
+      <!-- poche du tablier avec la pipe d'Aurèle -->
+      <path d="M100 330 L130 330 L130 356 L100 356 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <path d="M112 330 L120 312 L132 312 Q136 312 136 318 L128 318" fill="none" stroke-width="2.4"/>
+      <!-- buste et châle croisé -->
+      <path d="M88 140 Q120 128 152 140 L172 238 L68 238 Z" fill="#E8E5DA" stroke-width="2.4"/>
+      <path d="M88 140 L148 236 L170 236 L150 140 Z" fill="url(#hach-2)" stroke-width="1.8"/>
+      <path d="M152 140 L92 236 L70 236 L90 140 Z" fill="url(#hach-2)" stroke-width="1.8"/>
+      <path d="M68 236 L172 236" stroke-width="5"/>
+      <!-- gobelets pendus à la ceinture -->
+      <path d="M162 240 L166 258 M172 240 L178 256" stroke-width="1.2"/>
+      <path d="M158 258 L172 258 L170 274 L160 274 Z M172 256 L186 256 L184 272 L174 272 Z" fill="#E8E5DA" stroke-width="1.8"/>
+      <!-- bras gauche : louche levée -->
+      
+      
+      
+      
+      <!-- bras droit : marmite sur la hanche -->
+      <path d="M152 146 Q176 170 180 204 Q170 212 162 204 Q160 180 146 160 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M160 196 L204 196 L200 232 L164 232 Z" fill="url(#hach-1)" stroke-width="2.2"/>
+      <path d="M156 196 L208 196" stroke-width="3"/>
+      <!-- tête large sous un fichu -->
+      <circle cx="120" cy="108" r="26" fill="#E8E5DA" stroke-width="2.2"/>
+      <path d="M100 118 Q120 140 140 118" fill="none" stroke-width="1.2"/>
+      <path d="M108 104 L116 104 M124 104 L132 104" stroke-width="2"/>
+      <path d="M112 120 Q120 116 128 120" fill="none" stroke-width="1.6"/>
+      <circle cx="96" cy="114" r="4" fill="none" stroke-width="1.4"/>
+      <path d="M92 104 Q92 76 120 76 Q148 76 148 104 Q136 92 120 92 Q104 92 92 104 Z" fill="url(#hach-2)" stroke-width="2.2"/>
+      <path d="M144 98 L160 92 L156 104 L170 104" fill="none" stroke-width="2.2"/>
+    <g stroke="#15130F" stroke-linejoin="round" stroke-linecap="round"><path d="M91.0 140.5 L66.4 125.3 L57.6 138.7 L81.0 155.5 Z" fill="url(#hach-2)" stroke-width="2.2"/><path d="M70.0 132.8 L71.0 112.7 L57.0 111.3 L54.0 131.2 Z" fill="url(#hach-2)" stroke-width="2.2"/><circle cx="62.0" cy="132.0" r="7.4" fill="url(#hach-2)" stroke="none"/><g transform="translate(64.0 108.0) rotate(-8)"><path d="M0 0 L0 -46" stroke-width="3"/><path d="M-12 -48 Q0 -32 12 -48 Z" fill="#15130F" stroke-width="1.6"/></g><circle cx="64.0" cy="112.0" r="8" fill="#E8E5DA" stroke-width="2"/></g></g></g></svg>

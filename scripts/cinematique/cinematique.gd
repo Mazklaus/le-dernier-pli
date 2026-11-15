@@ -63,9 +63,18 @@ func _ready() -> void:
 	set_process(false)
 
 
+## Seulement pour l'étape réellement chargée (scène courante) : une étape instanciée par un
+## test ne lance pas sa cinématique d'arrivée (le messager resterait bloqué).
 func _sur_etape_prete(etape: Node) -> void:
-	if etape.is_ancestor_of(self):
+	if etape.is_ancestor_of(self) and etape == get_tree().current_scene:
 		Cinematiques.jouer.call_deferred(id)
+
+
+## Retirée en pleine lecture (changement de scène, test) : on rend la main et on prévient
+## ceux qui attendent la fin, pour qu'aucun dialogue ne reste suspendu.
+func _exit_tree() -> void:
+	if en_cours:
+		_terminer(true)
 
 
 ## Cadrage sans animation : la caméra va de Depart à Arrivee (position et zoom) en `duree`.
@@ -192,7 +201,8 @@ func _terminer(sautee: bool) -> void:
 		return
 	en_cours = false
 	set_process(false)
-	_lecteur.stop(true)  # garde l'état final
+	if is_instance_valid(_lecteur) and _lecteur.is_inside_tree():
+		_lecteur.stop(true)  # garde l'état final
 	_rendre_controle()
 	if une_seule_fois:
 		GameState.marquer_rencontre_vue(drapeau(id))
