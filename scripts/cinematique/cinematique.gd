@@ -51,6 +51,11 @@ func _ready() -> void:
 	add_to_group(GROUPE)
 	_lecteur = get_node_or_null("Animation") as AnimationPlayer
 	_camera = get_node_or_null("Camera") as Camera2D
+	if _camera != null:
+		# Une Camera2D active prend la vue en entrant dans l'arbre (#164) : celle du plan ne
+		# s'allume que pendant la lecture, et la vue revient au messager.
+		_camera.enabled = false
+		_rendre_vue_au_messager.call_deferred()
 	if _lecteur == null and get_node_or_null("Depart") is Marker2D:
 		_lecteur = _lecteur_depuis_marqueurs()
 	if au_debut_etape:
@@ -184,16 +189,32 @@ func _prendre_controle() -> void:
 		_messager.velocity = Vector2.ZERO
 	_camera_precedente = get_viewport().get_camera_2d()
 	if _camera != null:
+		_camera.enabled = true
 		_camera.make_current()
 	Cinematiques.masquer_interface(true)
 
 
 func _rendre_controle() -> void:
-	if _camera != null and is_instance_valid(_camera_precedente):
-		_camera_precedente.make_current()
+	if _camera != null:
+		if is_instance_valid(_camera_precedente) and _camera_precedente != _camera and _camera_precedente.enabled:
+			_camera_precedente.make_current()
+		_camera.enabled = false
+		_rendre_vue_au_messager()
 	if _messager != null and is_instance_valid(_messager):
 		_messager.bloque = _messager_bloque_avant
 	Cinematiques.masquer_interface(false)
+
+
+## Hors lecture, si aucune caméra active ne tient la vue, elle revient à celle du messager.
+func _rendre_vue_au_messager() -> void:
+	if en_cours or not is_inside_tree():
+		return
+	var courante := get_viewport().get_camera_2d()
+	if courante != null and courante.enabled and courante != _camera:
+		return
+	var messager := _trouver_messager()
+	if messager != null:
+		messager.activer_camera()
 
 
 func _terminer(sautee: bool) -> void:
