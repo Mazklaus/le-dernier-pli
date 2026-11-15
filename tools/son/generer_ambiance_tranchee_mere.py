@@ -150,7 +150,10 @@ def muted_bell():  # la cloche muette : une résonance inversée qui monte… et
 
 print("réel…",file=sys.stderr)
 lit = 0.55*wind() + 0.12*rain() + 0.35*norm(drips(70),1) + 0.9*artillery([3.2,17.5,24.1,41.0,58.3,66.0]) + 0.25*norm(creaks(10),1)
-voix = 0.22*norm(distant_men(),1)
+# Issue #129 : les voix viennent des groupes de soldats dessinés par la DA près des repères
+# et des abris voisins ; plus basses et étouffées (sacs, terre), elles ne flottent plus sans corps.
+_dm = distant_men()
+voix = 0.12*norm(np.stack([reverb(fftfilt(_dm[:,c],lo=120,hi=900,order=3),2.0,0.5,seed=129+c) for c in (0,1)],1),1)
 reel = lit + voix
 _k = 0.9/np.abs(reel).max(); lit_s = lit*_k; voix_s = voix*_k
 reel = norm(reel,0.9)
