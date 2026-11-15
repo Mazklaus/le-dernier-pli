@@ -10,6 +10,7 @@ Lamarre: Un pli pour l'arrière. Cire noire. Tu sais ce que ça veut dire ? [#ge
 - Que je pars longtemps.
 	Lamarre: Tu pars. Le reste, on verra.
 # [ciné e1_remise_pli] la main de Lamarre, le sceau, le ruban ; Tobie glisse le pli contre sa poitrine.
+do Cinematiques.jouer(&"e1_remise_pli")
 Lamarre: Tu le portes contre toi. Tu l'ouvres pas. Tu le perds pas. [#geste=tendre]
 - [Le prendre sans un mot]
 	Lamarre: Bien. T'apprends vite.
