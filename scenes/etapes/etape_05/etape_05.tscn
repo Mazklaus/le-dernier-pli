@@ -1,6 +1,7 @@
-[gd_scene load_steps=34 format=3]
+[gd_scene load_steps=35 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_05/etape_05.gd" id="1"]
+[ext_resource type="Script" path="res://scenes/decors/decor_e5.gd" id="decor_e5"]
 [ext_resource type="Script" path="res://scenes/interactions/verrou/verrou_retour.gd" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="3"]
 [ext_resource type="Resource" path="res://dialogue/etape_05/e5_details.dialogue" id="4"]
@@ -67,6 +68,9 @@ size = Vector2(64, 1080)
 [node name="Etape05" type="Node2D"]
 script = ExtResource("1")
 numero_etape = 5
+
+[node name="Decors" type="Node2D" parent="."]
+script = ExtResource("decor_e5")
 
 [node name="Surface" type="Node2D" parent="."]
 
@@ -611,6 +615,10 @@ offset_bottom = -312.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 28
 text = "e5_croix"
+
+[node name="geste_graver" type="Marker2D" parent="Surface/Cimetiere/e5_croix"]
+position = Vector2(140, 0)
+metadata/note_level_design = "Graver vise la croix sans nom (x 1890) ; accrocher reste sur la croix d'Aubin"
 
 [node name="MurClairiere" type="StaticBody2D" parent="Surface/Cimetiere"]
 position = Vector2(2630.0, 450.0)
