@@ -34,7 +34,7 @@ def defs() -> str:
     return "<defs>" + "".join(pats) + "</defs>"
 
 
-def tete(x: float, y: float, f: int, yeux: str = "ouverts", calot: bool = True) -> str:
+def tete(x: float, y: float, f: int, yeux: str = "ouverts", calot: bool = True, couvre: str = "calot") -> str:
     """Tête ronde (r 26) tournée vers f (+1 droite, -1 gauche) ; yeux ouverts, clos ou baissés."""
     out = [f'<circle cx="{x}" cy="{y}" r="26" fill="{PAPIER}" {ST} stroke-width="2.2"/>']
     ex = x + 6 * f
@@ -45,14 +45,20 @@ def tete(x: float, y: float, f: int, yeux: str = "ouverts", calot: bool = True) 
     else:  # baissés, vers les mains
         out.append(f'<path d="M{ex - 10} {y + 2} h5 M{ex + 5} {y + 2} h5" fill="none" {ST} stroke-width="2"/>'
                    f'<path d="M{ex - 11} {y - 4} l6 1 M{ex + 5} {y - 3} l6 -1" fill="none" {ST} stroke-width="1.2"/>')
-    if calot:
+    if calot and couvre == "casque":   # casque rond à bord, un peu de travers
+        out.append(f'<path d="M{x - 34} {y - 8} Q{x - 30} {y - 44} {x} {y - 46} Q{x + 30} {y - 44} {x + 34} {y - 8} Z" fill="url(#hach-2)" {ST} stroke-width="2.4"/>'
+                   f'<path d="M{x - 40} {y - 6} H{x + 40}" {ST} stroke-width="4"/>')
+    elif calot and couvre == "bandeau":   # tête nue, cheveux ras, un pansement autour du front
+        out.append(f'<path d="M{x - 24} {y - 10} Q{x} {y - 40} {x + 24} {y - 10}" fill="url(#hach-1)" {ST} stroke-width="1.6"/>'
+                   f'<path d="M{x - 26} {y - 10} Q{x} {y - 20} {x + 26} {y - 10} L{x + 26} {y - 2} Q{x} {y - 12} {x - 26} {y - 2} Z" fill="{PAPIER}" {ST} stroke-width="2"/>')
+    elif calot:
         out.append(f'<path d="M{x - 26} {y - 12} Q{x - 20} {y - 34} {x + 2} {y - 34} Q{x + 22} {y - 32} {x + 28} {y - 18} '
                    f'L{x + 28} {y - 10} Q{x} {y - 24} {x - 26} {y - 6} Z" fill="url(#hach-2)" {ST} stroke-width="2.2"/>')
     return "".join(out)
 
 
 def assis(x: float, siege: float, f: int, bras: str, tete_y: float = 0, yeux: str = "ouverts",
-          bouche: str = "") -> str:
+          bouche: str = "", carrure: float = 44, couvre: str = "calot") -> str:
     """Soldat assis sur un siège à la hauteur siege (y du dessus), hanche en x, tourné vers f."""
     ty = siege - 140 + tete_y
     genou = x + 62 * f
@@ -62,10 +68,10 @@ def assis(x: float, siege: float, f: int, bras: str, tete_y: float = 0, yeux: st
         f'<path d="M{genou - 12 * f} {siege - 14} L{genou - 10 * f} {SOL - 20} L{genou + 12 * f} {SOL - 20} L{genou + 12 * f} {siege - 14} Z" fill="url(#molletiere)" {ST} stroke-width="2.2"/>',
         f'<path d="M{genou - 12 * f} {SOL - 22} L{genou - 14 * f} {SOL} L{genou + 26 * f} {SOL} L{genou + 18 * f} {SOL - 22} Z" fill="{ENCRE}" {ST} stroke-width="1.6"/>',
         # corps rond, un peu voûté
-        f'<ellipse cx="{x + 4 * f}" cy="{siege - 62}" rx="44" ry="52" fill="url(#hach-1)" {ST} stroke-width="2.6"/>',
+        f'<ellipse cx="{x + 4 * f}" cy="{siege - 62}" rx="{carrure}" ry="{52 + (carrure - 44) * -.3:.0f}" fill="url(#hach-1)" {ST} stroke-width="2.6"/>',
         f'<path d="M{x + 4 * f} {siege - 112} L{x + 4 * f} {siege - 12}" {ST} stroke-width="1.2"/>',
     ]
-    out.append(tete(x + 10 * f, ty, f, yeux))
+    out.append(tete(x + 10 * f, ty, f, yeux, couvre=couvre))
     if bouche == "parle":
         out.append(f'<path d="M{x + 18 * f} {ty + 14} q{5 * f} 3 {10 * f} 0" fill="none" {ST} stroke-width="1.8"/>'
                    f'<path d="M{x + 44 * f} {ty + 6} q{6 * f} 4 {4 * f} 10 M{x + 50 * f} {ty} q{8 * f} 8 {4 * f} 18" fill="none" {ST} stroke-width="1.1"/>')
@@ -134,17 +140,17 @@ def main() -> None:
     # Pons (raconte, la main levée) et Billard (écoute, sourit), face à face sur une caisse
     calque("fx_soldats-pons-billard", 400,
            caisse(110, 370, 330) + assis(170, 330, 1, "geste", bouche="parle")
-           + assis(310, 330, -1, "genoux", tete_y=4, bouche="sourit"))
+           + assis(310, 330, -1, "genoux", tete_y=4, bouche="sourit", carrure=50, couvre="casque"))
     # au boyau : un dormeur contre le parados, un homme qui graisse son fusil sur une caisse
     calque("fx_soldats-boyau", 440,
-           dormeur(110, 1) + caisse(290, 420, 336) + assis(360, 336, -1, "fusil", tete_y=6, yeux="baisses"))
+           dormeur(110, 1) + caisse(290, 420, 336) + assis(360, 336, -1, "fusil", tete_y=6, yeux="baisses", couvre="bandeau"))
     # au carrefour : trois hommes autour d'une gamelle posée sur une caisse
     calque("fx_soldats-carrefour", 520,
-           caisse(60, 200, 336) + assis(130, 336, 1, "gamelle", yeux="baisses")
+           caisse(60, 200, 336) + assis(130, 336, 1, "gamelle", yeux="baisses", carrure=36, couvre="casque")
            + caisse(250, 330, 360) + f'<path d="M262 360 Q290 340 318 360 Z" fill="{PAPIER}" {ST} stroke-width="2.2"/>'
            + f'<path d="M290 346 q-6 -14 0 -26 M300 344 q6 -12 0 -22" fill="none" stroke="{LAVIS}" stroke-width="1.6" stroke-dasharray="3 4"/>'
            + caisse(380, 560, 336) + assis(420, 336, -1, "geste", bouche="parle")
-           + assis(520, 336, -1, "genoux", tete_y=2))
+           + assis(520, 336, -1, "genoux", tete_y=2, carrure=52, couvre="bandeau"))
     print("3 calques fx_soldats-* dans art/src/fx/")
 
 
