@@ -285,3 +285,46 @@ func test_ruban_du_sceau_pose_sur_l_icone_et_bat_en_trouble() -> void:
 func test_tous_les_sceaux_ont_leur_ruban() -> void:
 	for etat in ["intact", "abime", "rechauffe", "ouvert"]:
 		assert_not_null(StylePapier.icone("sceau-%s_red" % etat), etat)
+
+
+func test_apercu_d_un_cout_en_vivres() -> void:
+	var hud := _hud()
+	hud.apercu_couts({GameState.VIVRES: 2})
+	var batons := hud._batons[GameState.VIVRES] as Batons
+	assert_eq(batons.apercu, 2)
+	assert_true(batons.en_apercu(5) and batons.en_apercu(4), "les deux derniers bâtons pleins")
+	assert_false(batons.en_apercu(3))
+	assert_eq((hud._libelles[GameState.VIVRES] as Label).text, "Vivres", "le stock suffit")
+	hud.fin_apercu()
+	assert_eq(batons.apercu, 0)
+
+
+func test_apercu_qui_depasse_le_stock() -> void:
+	var hud := _hud()
+	hud.apercu_couts({GameState.HUILE: 6})
+	assert_eq((hud._batons[GameState.HUILE] as Batons).apercu, 4, "tous les bâtons restants")
+	assert_eq((hud._libelles[GameState.HUILE] as Label).text, "[Éteinte]")
+	hud.fin_apercu()
+	assert_eq((hud._libelles[GameState.HUILE] as Label).text, "Huile")
+
+
+func test_apercu_en_lucidite_montre_le_palier_vise() -> void:
+	var hud := _hud()
+	hud.apercu_couts({GameState.LUCIDITE: 2})  # 8 -> 6 : Trouble
+	var oeil := hud._icones[GameState.LUCIDITE] as TextureRect
+	assert_eq(oeil.texture, StylePapier.icone("oeil-trouble"))
+	assert_almost_eq(oeil.modulate.a, 0.5, 0.001)
+	hud.fin_apercu()
+	assert_eq(oeil.texture, StylePapier.icone("oeil-clair"))
+	assert_almost_eq(oeil.modulate.a, 1.0, 0.001)
+
+
+func test_apercu_fige_en_effets_attenues() -> void:
+	Reglages.changer(&"effets_attenues", true)
+	var hud := _hud()
+	hud.apercu_couts({GameState.VIVRES: 1}, true)
+	await wait_seconds(0.6)
+	var batons := hud._batons[GameState.VIVRES] as Batons
+	assert_false(batons.apercu_plein, "pointillé fixe")
+	assert_eq(batons.decalage_apercu, Vector2.ZERO, "pas de tremblement")
+	Reglages.changer(&"effets_attenues", false)

@@ -19,6 +19,8 @@ const TAILLES_TEXTE := [28, 32, 38, 44]
 const ICONES_COUTS := {&"vivres": "cout-vivres", &"huile": "cout-huile", &"lucidite": "cout-lucidite"}
 const LARGEUR := 1076.0
 const MARGE_ECRAN := Vector2(46, 42)
+## Écart entre le texte d'une option et son coût, en em de la police de l'option (UI/UX).
+const ECART_COUT_EM := 0.8
 const ACTIONS_CHOIX: Array[StringName] = [&"choix_1", &"choix_2", &"choix_3", &"choix_4"]
 
 ## Polices de la maquette ; à défaut, celles du DA (IM Fell English SC, Spectral, Spectral italique).
@@ -184,26 +186,39 @@ func _bouton_option(i: int, option: Dictionary) -> Button:
 	bouton.disabled = not option["disponible"]
 	bouton.custom_minimum_size.y = _taille() * 1.5
 	bouton.pressed.connect(choisir.bind(i))
+	bouton.set_meta(&"option", option)
 	if not bouton.disabled:
 		bouton.mouse_entered.connect(_survoler)
 		bouton.focus_entered.connect(_survoler)
+		# Aperçu du coût affiché sur le HUD tant que l'option a le focus (UI/UX).
+		bouton.mouse_entered.connect(_apercu.bind(option))
+		bouton.focus_entered.connect(_apercu.bind(option))
+		bouton.mouse_exited.connect(_fin_apercu.bind(bouton))
+		bouton.focus_exited.connect(_fin_apercu.bind(bouton))
 	var rangee := HBoxContainer.new()
 	rangee.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	rangee.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	rangee.add_theme_constant_override(&"separation", 14)
 	bouton.add_child(rangee)
 	rangee.add_child(_etiquette("%d." % (i + 1), police_texte, roundi(_taille() * 0.76), LAVIS))
-	var texte := _etiquette(option["texte"], police_texte, roundi(_taille() * 0.93), ENCRE)
-	texte.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	texte.clip_text = true
-	rangee.add_child(texte)
+	# Le coût suit le texte de l'option, à 0,8 em (UI/UX : aligné à droite, il n'était pas lu).
+	var taille_option := roundi(_taille() * 0.93)
+	var phrase := HBoxContainer.new()
+	phrase.name = "Phrase"
+	phrase.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	phrase.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	phrase.add_theme_constant_override(&"separation", roundi(taille_option * ECART_COUT_EM))
+	rangee.add_child(phrase)
+	var texte := _etiquette(option["texte"], police_texte, taille_option, ENCRE)
+	texte.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	phrase.add_child(texte)
 	var affiches: Dictionary = option["couts_affiches"]
 	for nom: StringName in affiches:
 		# Icône et chiffre serrés (6 px) pour se lire comme un seul signe.
 		var signe := HBoxContainer.new()
 		signe.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		signe.add_theme_constant_override(&"separation", 6)
-		rangee.add_child(signe)
+		phrase.add_child(signe)
 		var icone := TextureRect.new()
 		icone.texture = StylePapier.icone(ICONES_COUTS.get(nom, ""))
 		icone.custom_minimum_size = Vector2.ONE * roundf(_taille() * 0.9)
@@ -293,7 +308,31 @@ static func recadrer(texture: Texture2D) -> Texture2D:
 	return atlas
 
 
+func _apercu(option: Dictionary) -> void:
+	var couts: Dictionary = option["couts_affiches"]
+	if is_inside_tree():
+		get_tree().call_group(HudJauges.GROUPE, &"apercu_couts", couts, bool(option["bave"]))
+
+
+## La souris ou le focus quitte l'option : l'aperçu revient à l'option qui garde le focus
+## (évalué après le changement de focus), sinon il s'efface.
+func _fin_apercu(_bouton: Button) -> void:
+	_reprendre_apercu.call_deferred()
+
+
+func _reprendre_apercu() -> void:
+	if not is_inside_tree():
+		return
+	var focus := get_viewport().gui_get_focus_owner()
+	if focus is Button and focus in _boutons and (focus as Button).has_meta(&"option"):
+		_apercu((focus as Button).get_meta(&"option"))
+	else:
+		get_tree().call_group(HudJauges.GROUPE, &"fin_apercu")
+
+
 func _vider_options() -> void:
+	if is_inside_tree():
+		get_tree().call_group(HudJauges.GROUPE, &"fin_apercu")
 	_retenir_hud(false)
 	for b in _boutons:
 		b.queue_free()
