@@ -1,0 +1,300 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
+[ext_resource type="Resource" path="res://dialogue/etape_06/e6_nef.dialogue" id="2"]
+[ext_resource type="Script" path="res://scenes/interactions/verrou/verrou.gd" id="3"]
+[ext_resource type="Resource" path="res://dialogue/etape_06/e6_details.dialogue" id="4"]
+[ext_resource type="Resource" path="res://dialogue/etape_06/e6_eloi.dialogue" id="5"]
+[ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(5760, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(5760, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
+size = Vector2(64, 750)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
+size = Vector2(64, 750)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5"]
+size = Vector2(60, 450)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6"]
+size = Vector2(60, 450)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7"]
+size = Vector2(160, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8"]
+size = Vector2(3150, 450)
+
+[node name="Nef" type="Node2D"]
+
+[node name="Fond" type="ColorRect" parent="."]
+offset_left = 0.0
+offset_top = 450.0
+offset_right = 5760.0
+offset_bottom = 900.0
+color = Color(0.55, 0.53, 0.5, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Sol" type="StaticBody2D" parent="."]
+position = Vector2(2880.0, 990.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Sol"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Visuel" type="ColorRect" parent="Sol"]
+offset_left = -2880.0
+offset_top = -90.0
+offset_right = 2880.0
+offset_bottom = 90.0
+color = Color(0.35, 0.35, 0.35, 1)
+mouse_filter = 2
+
+[node name="Plafond" type="StaticBody2D" parent="."]
+position = Vector2(2880.0, 390.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Plafond"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="Visuel" type="ColorRect" parent="Plafond"]
+offset_left = -2880.0
+offset_top = -60.0
+offset_right = 2880.0
+offset_bottom = 60.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="MurGauche" type="StaticBody2D" parent="."]
+position = Vector2(-32.0, 705.0)
+
+[node name="Forme" type="CollisionShape2D" parent="MurGauche"]
+shape = SubResource("RectangleShape2D_3")
+
+[node name="Visuel" type="ColorRect" parent="MurGauche"]
+offset_left = -32.0
+offset_top = -375.0
+offset_right = 32.0
+offset_bottom = 375.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="MurDroit" type="StaticBody2D" parent="."]
+position = Vector2(5792.0, 705.0)
+
+[node name="Forme" type="CollisionShape2D" parent="MurDroit"]
+shape = SubResource("RectangleShape2D_4")
+
+[node name="Visuel" type="ColorRect" parent="MurDroit"]
+offset_left = -32.0
+offset_top = -375.0
+offset_right = 32.0
+offset_bottom = 375.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="Titre" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 466.0
+offset_right = 1240.0
+offset_bottom = 514.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "2 Nef engloutie · terre, racines, piliers penchés, pentes irrégulières (DA) · zone sombre jusqu'à Eloi · 3 écran(s)"
+
+[node name="Rencontres" type="Node2D" parent="."]
+
+[node name="Details" type="Node2D" parent="."]
+
+[node name="Passages" type="Node2D" parent="."]
+
+[node name="Points" type="Node2D" parent="."]
+
+[node name="entree_nef" type="Marker2D" parent="Points"]
+position = Vector2(200, 900)
+
+[node name="e6_nef" parent="Rencontres" instance=ExtResource("1")]
+position = Vector2(500, 900)
+rencontre_id = &"e6_nef"
+dialogue = ExtResource("2")
+libelle = "Descendre dans la nef"
+une_seule_fois = true
+metadata/note_level_design = "La descente : lanterne ou noir (ouvre la zone sombre)"
+
+[node name="Visuel" type="ColorRect" parent="Rencontres/e6_nef"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.35, 0.4, 0.6, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Rencontres/e6_nef"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e6_nef"
+
+[node name="Pente" type="StaticBody2D" parent="."]
+position = Vector2(730.0, 675.0)
+script = ExtResource("3")
+rencontre = &"e6_nef"
+
+[node name="Forme" type="CollisionShape2D" parent="Pente"]
+shape = SubResource("RectangleShape2D_5")
+
+[node name="Visuel" type="ColorRect" parent="Pente"]
+offset_left = -30.0
+offset_top = -225.0
+offset_right = 30.0
+offset_bottom = 225.0
+color = Color(0.3, 0.32, 0.4, 1)
+mouse_filter = 2
+
+[node name="e6_detail_nef_vitraux" parent="Details" instance=ExtResource("1")]
+position = Vector2(1500, 900)
+rencontre_id = &"e6_detail_nef_vitraux"
+dialogue = ExtResource("4")
+titre = "nef_vitraux"
+libelle = "Regarder les vitraux"
+metadata/note_level_design = "Vitraux, la terre plaquée derrière le verre"
+
+[node name="Visuel" type="ColorRect" parent="Details/e6_detail_nef_vitraux"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.55, 0.6, 0.7, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Details/e6_detail_nef_vitraux"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "nef_vitraux"
+
+[node name="e6_detail_nef_racines" parent="Details" instance=ExtResource("1")]
+position = Vector2(2700, 900)
+rencontre_id = &"e6_detail_nef_racines"
+dialogue = ExtResource("4")
+titre = "nef_racines"
+libelle = "Regarder les racines"
+metadata/note_level_design = "Racines qui ont fendu les piliers"
+
+[node name="Visuel" type="ColorRect" parent="Details/e6_detail_nef_racines"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.55, 0.6, 0.7, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Details/e6_detail_nef_racines"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -316.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "nef_racines"
+
+[node name="e6_eloi" parent="Rencontres" instance=ExtResource("1")]
+position = Vector2(3800, 900)
+rencontre_id = &"e6_eloi"
+dialogue = ExtResource("5")
+libelle = "Écouter la voix"
+une_seule_fois = true
+metadata/note_level_design = "Eloi rejoint Tobie et l'éclaire (ferme la zone sombre)"
+
+[node name="Visuel" type="ColorRect" parent="Rencontres/e6_eloi"]
+offset_left = -96.0
+offset_top = -300.0
+offset_right = 96.0
+offset_bottom = 0.0
+color = Color(0.35, 0.4, 0.6, 0.25)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Rencontres/e6_eloi"]
+offset_left = -96.0
+offset_top = -356.0
+offset_right = 1104.0
+offset_bottom = -312.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 28
+text = "e6_eloi"
+
+[node name="Eboulement" type="StaticBody2D" parent="."]
+position = Vector2(4230.0, 675.0)
+script = ExtResource("3")
+rencontre = &"e6_eloi"
+
+[node name="Forme" type="CollisionShape2D" parent="Eboulement"]
+shape = SubResource("RectangleShape2D_6")
+
+[node name="Visuel" type="ColorRect" parent="Eboulement"]
+offset_left = -30.0
+offset_top = -225.0
+offset_right = 30.0
+offset_bottom = 225.0
+color = Color(0.3, 0.32, 0.4, 1)
+mouse_filter = 2
+
+[node name="VersVillage" type="Area2D" parent="Passages" groups=["passages"]]
+position = Vector2(5500, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("6")
+vers = &"village"
+libelle = "Suivre Eloi"
+metadata/vers = "village"
+metadata/note_level_design = "Eloi conduit Tobie au village ; pas de retour"
+
+[node name="Forme" type="CollisionShape2D" parent="Passages/VersVillage"]
+shape = SubResource("RectangleShape2D_7")
+
+[node name="Visuel" type="ColorRect" parent="Passages/VersVillage"]
+offset_left = -80.0
+offset_top = -150.0
+offset_right = 80.0
+offset_bottom = 150.0
+color = Color(0.2, 0.35, 0.6, 0.35)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Passages/VersVillage"]
+offset_left = -80.0
+offset_top = 158.0
+offset_right = 1120.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-> village"
+
+[node name="ZoneSombre" type="Area2D" parent="." groups=["zones_sombres"]]
+position = Vector2(2225.0, 675.0)
+monitoring = false
+monitorable = false
+metadata/note_level_design = "Zone sombre : ouverte par e6_nef (lanterne ou noir), fermée par e6_eloi"
+
+[node name="Forme" type="CollisionShape2D" parent="ZoneSombre"]
+shape = SubResource("RectangleShape2D_8")
+
+[node name="Visuel" type="ColorRect" parent="ZoneSombre"]
+offset_left = -1575.0
+offset_top = -225.0
+offset_right = 1575.0
+offset_bottom = 225.0
+color = Color(0, 0, 0, 0.45)
+mouse_filter = 2
+z_index = -1
