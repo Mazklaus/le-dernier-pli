@@ -30,11 +30,11 @@ Tobie: Sur chaque vitre, une buée qui vient et qui s'en va. Lentement. Comme qu
 		Tobie: Et dessous, une petite cloche de bronze sans battant. Usée.
 	else
 		Tobie: À tâtons, au pied des niches : de la cire en forme de jambe, des perles, des médailles.
-		Tobie: Et dessous, une petite cloche de métal. Pas de battant. Je connais cette forme par cœur.
-	Tobie: Comme la mienne.
+		Tobie: Et dessous, une petite cloche de métal. Pas de battant. Mes doigts vont à mon col.
+	Tobie: Comme celle que je porte au col. L'insigne des coureurs.
 	- [La prendre]
 		do GameState.ajouter_marque(&"l_insigne_du_saint", &"relique", &"e4_crypte")
-		Tobie: Je la glisse dans ma poche, à côté de l'autre.
+		Tobie: Je la glisse dans ma poche, sans la regarder.
 	- [La laisser]
 		Tobie: Je la repose où elle était.
 	=> crypte
