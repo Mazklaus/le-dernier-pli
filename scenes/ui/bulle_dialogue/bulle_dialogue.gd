@@ -40,6 +40,7 @@ var _boutons: Array[Button] = []
 var _baves: Array[Label] = []
 var _variante_tache: int = 0
 var _rng := RandomNumberGenerator.new()
+var _options_posees: bool = false
 
 
 func _ready() -> void:
@@ -106,7 +107,10 @@ func choisir(i: int) -> void:
 		return
 	var option := options_affichees[i]
 	if not option["disponible"]:
+		# Option grisée : un refus très sourd (aucun son propre aux options qui bavent).
+		AudioDirector.jouer_variante("sfx_ui_refus", AudioDirector.BUS_UI)
 		return
+	AudioDirector.jouer_variante("sfx_ui_valider", AudioDirector.BUS_UI)
 	var a_prelever: Dictionary = option["a_prelever"]
 	if not a_prelever.is_empty():
 		GameState.appliquer_couts(a_prelever)
@@ -165,10 +169,12 @@ func _montrer_options() -> void:
 		var bouton := _bouton_option(i, options_affichees[i])
 		_options.add_child(bouton)
 		_boutons.append(bouton)
+	_options_posees = false
 	for b in _boutons:
 		if not b.disabled:
 			b.grab_focus()
 			break
+	_options_posees = true
 
 
 func _bouton_option(i: int, option: Dictionary) -> Button:
@@ -178,6 +184,9 @@ func _bouton_option(i: int, option: Dictionary) -> Button:
 	bouton.disabled = not option["disponible"]
 	bouton.custom_minimum_size.y = _taille() * 1.5
 	bouton.pressed.connect(choisir.bind(i))
+	if not bouton.disabled:
+		bouton.mouse_entered.connect(_survoler)
+		bouton.focus_entered.connect(_survoler)
 	var rangee := HBoxContainer.new()
 	rangee.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	rangee.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -217,6 +226,13 @@ func _bouton_option(i: int, option: Dictionary) -> Button:
 	if bouton.disabled:
 		rangee.modulate.a = 0.42
 	return bouton
+
+
+## Survol d'une option (souris ou focus clavier) : sfx_ui_survol, sauf pour le premier focus
+## posé d'office à l'affichage des options.
+func _survoler() -> void:
+	if _options_posees:
+		AudioDirector.jouer_variante("sfx_ui_survol", AudioDirector.BUS_UI)
 
 
 ## Encre qui bave : halo rouge et contour épaissi ; tremble sauf en « effets atténués ».

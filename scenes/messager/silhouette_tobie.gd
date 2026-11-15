@@ -21,6 +21,12 @@ const ANIMATIONS := [[REPOS, true], [MARCHE, true], [INTERAGIR, false]]
 ## Rencontre qui laisse la cendre au front.
 const RENCONTRE_CENDRE: StringName = &"e1_cendre"
 
+## Un pied se pose (images 0 et 4 de la marche) : le Messager joue le pas.
+signal pas_pose()
+
+## Images de la marche où un pied touche le sol (cycle de 8, un appui par demi-cycle).
+const IMAGES_PAS: Array[int] = [0, 4]
+
 var base: AnimatedSprite2D
 var ruban: AnimatedSprite2D
 var cendre: AnimatedSprite2D
@@ -31,6 +37,8 @@ func _ready() -> void:
 	base = _calque("Base", "chr_tobie_%s_01.png")
 	ruban = _calque("Ruban", "chr_tobie_%s_01_red.png")
 	cendre = _calque("Cendre", "chr_tobie-cendre_%s_01.png")
+	if base != null:
+		base.frame_changed.connect(_sur_image)
 	jouer(REPOS)
 	GameState.rencontre_vue_marquee.connect(func(_id: StringName) -> void: actualiser_cendre())
 	GameState.etat_charge.connect(actualiser_cendre)
@@ -42,6 +50,11 @@ func _process(_delta: float) -> void:
 	if ruban != null:
 		ruban.modulate.a = Battement.opacite(Battement.maintenant(), GameState.palier,
 			Reglages.valeur(&"effets_attenues"))
+
+
+func _sur_image() -> void:
+	if animation == MARCHE and base.frame in IMAGES_PAS:
+		pas_pose.emit()
 
 
 func est_dessine() -> bool:

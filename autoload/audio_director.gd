@@ -70,6 +70,10 @@ func _ready() -> void:
 	GameState.etat_charge.connect(_sur_etat_charge)
 	GameState.zone_sombre_changee.connect(_sur_zone_sombre_changee)
 	get_tree().node_added.connect(_sur_noeud_ajoute)
+	# Bruitages déclenchés par l'état du jeu (sceau, marques, lanterne, jauges).
+	var bruitages := BruitagesJeu.new()
+	bruitages.name = "BruitagesJeu"
+	add_child(bruitages)
 	set_process(false)
 
 

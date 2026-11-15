@@ -22,6 +22,8 @@ const ACCROCHE_SOL := 24.0
 @export var gravite: float = 2400.0
 
 var bloque: bool = false
+## Variante de pas jouée à chaque appui (posée par l'étape selon le sol : surface ou sous terre).
+var son_pas: String = "sfx_pas_boue"
 ## 1 vers la droite, -1 vers la gauche.
 var regard: int = 1
 var cible: Interactif = null
@@ -42,6 +44,7 @@ func _ready() -> void:
 	floor_constant_speed = true
 	floor_snap_length = ACCROCHE_SOL
 	floor_stop_on_slope = true
+	_silhouette.pas_pose.connect(func() -> void: AudioDirector.jouer_variante(son_pas))
 	_detecteur.area_entered.connect(_sur_zone_entree)
 	_detecteur.area_exited.connect(_sur_zone_sortie)
 	DialogueManager.dialogue_started.connect(_sur_dialogue_commence)

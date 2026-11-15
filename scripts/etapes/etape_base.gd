@@ -27,6 +27,9 @@ const NOEUD_REPERES_VOIX := "ReperesVoix"
 ## Bornes horizontales de la caméra à la surface (le décor parallaxe est calculé pour elles) ;
 ## levées sous terre. x > y : pas de borne.
 @export var bornes_camera_surface: Vector2 = Vector2(1, 0)
+## Pas du messager à la surface et sous terre (variantes du Sound Designer).
+@export var pas_surface: String = "sfx_pas_boue"
+@export var pas_sous_terre: String = "sfx_pas_terre"
 
 
 signal phase_changee(nuit: bool)
@@ -42,11 +45,11 @@ func _ready() -> void:
 	SceneRouter.etape_prete.emit(self)
 
 
-## Borne la caméra à la surface (bornes_camera_surface), la libère sous terre, à chaque
-## téléportation du messager.
+## Borne la caméra à la surface (bornes_camera_surface), la libère sous terre, et choisit le
+## son des pas, à chaque téléportation du messager.
 func brancher_bornes_camera() -> void:
 	var messager := trouver_messager()
-	if messager == null or bornes_camera_surface.x > bornes_camera_surface.y:
+	if messager == null:
 		return
 	if not messager.teleporte.is_connected(_sur_teleporte_bornes):
 		messager.teleporte.connect(_sur_teleporte_bornes)
@@ -56,6 +59,10 @@ func brancher_bornes_camera() -> void:
 func maj_bornes_camera() -> void:
 	var messager := trouver_messager()
 	if messager == null:
+		return
+	# Le sol sous les pas suit aussi le niveau (surface ou sous terre).
+	messager.son_pas = pas_surface if est_en_surface(messager.global_position) else pas_sous_terre
+	if bornes_camera_surface.x > bornes_camera_surface.y:
 		return
 	if est_en_surface(messager.global_position):
 		messager.borner_camera(int(bornes_camera_surface.x), int(bornes_camera_surface.y))
@@ -67,11 +74,9 @@ func _sur_teleporte_bornes(_position_globale: Vector2) -> void:
 	maj_bornes_camera()
 
 
-## Relie les Passages de l'étape (tous les Interactif de type Passage) à la musique et à la
-## nuit par lieu (lieux_musique, lieux_nuit).
+## Relie les Passages de l'étape (tous les Interactif de type Passage) au son de passage, et
+## à la musique et à la nuit par lieu (lieux_musique, lieux_nuit).
 func brancher_musique_lieux() -> void:
-	if lieux_musique.is_empty() and lieux_nuit.is_empty():
-		return
 	for n in get_tree().get_nodes_in_group(Interactif.GROUPE):
 		if n is Passage and is_ancestor_of(n):
 			var passage := n as Passage
@@ -79,7 +84,17 @@ func brancher_musique_lieux() -> void:
 				passage.franchi.connect(_sur_passage_franchi)
 
 
-func _sur_passage_franchi(_passage: Passage, vers: StringName) -> void:
+## Son d'un passage : l'escalier quand on change de niveau (surface ↔ sous terre), la toile
+## sinon (bâche, porte de lieu).
+func son_passage(depart: Vector2, arrivee: Vector2) -> String:
+	return "sfx_passage_escalier" if est_en_surface(depart) != est_en_surface(arrivee) \
+		else "sfx_passage_toile"
+
+
+func _sur_passage_franchi(passage: Passage, vers: StringName) -> void:
+	var messager := trouver_messager()
+	if messager != null:
+		AudioDirector.jouer_variante(son_passage(passage.global_position, messager.global_position))
 	if not lieux_musique.is_empty():
 		if lieux_musique.has(vers):
 			AudioDirector.jouer_musique(numero_etape, String(lieux_musique[vers]))
