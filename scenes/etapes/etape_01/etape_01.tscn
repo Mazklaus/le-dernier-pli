@@ -16,7 +16,7 @@
 [ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="14"]
 [ext_resource type="Script" path="res://scenes/decors/decor_e1.gd" id="decor_e1"]
 
-[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e1_sortie_tranchee.gd" id="cine_sortie"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(3840, 180)
 
@@ -584,7 +584,6 @@ rencontre_id = &"e1_parapet"
 personnage = &"lamarre"
 dialogue = ExtResource("13")
 libelle = "Monter"
-son_fin = "sfx_echelle_monter"
 fin_etape = true
 une_seule_fois = true
 metadata/note_level_design = "Lamarre au pied de l'échelle : regarder le pli, monter, bilan"
@@ -712,7 +711,7 @@ position = Vector2(7780, 800)
 position = Vector2(10144, 800)
 
 [node name="e1_sortie_tranchee" type="Node2D" parent="Surface/PiedEchelle"]
-script = ExtResource("cine_script")
+script = ExtResource("cine_sortie")
 id = &"e1_sortie_tranchee"
 duree = 6.0
 metadata/note_level_design = "Caméra au pied de l'échelle, Tobie disparaît au-dessus du parapet ; lancée par une réplique de e1_parapet"
