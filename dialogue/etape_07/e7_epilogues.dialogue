@@ -1,0 +1,50 @@
+# Étape 7 : textes des cartons d'épilogue (4 à 8 lignes, sur la gravure fixe du DA, avec le Cantique).
+# Titres neutres, alignés sur CalculFin : porteur, ordre, dernier_pli_tribut, dernier_pli_cloches, recousu.
+# Le carton ajoute (côté code) les Noms retenus et les Promesses encore ouvertes. Correspondance avec les fichiers
+# cin_epilogue_a..e et fin-a..e : table tenue dans le code (DA, Sound).
+
+~ epilogue_porteur
+
+Narrateur: On l'attacha dans la grande cloche, avec les noms qu'il avait portés.
+Narrateur: Là-haut, la Longue Tranchée continua de creuser. On n'y mourait plus guère.
+Narrateur: Un soir, un soldat siffla l'air du dépôt, et ne sut pas pourquoi il pleurait.
+Narrateur: Sous la terre, une vieille femme répétait des noms, pour que quelqu'un s'en souvienne.
+
+=> END
+
+~ epilogue_ordre
+
+Narrateur: Le pli fut rangé avec les autres.
+Narrateur: Personne ne grava rien. Personne ne demanda rien.
+Narrateur: Quelques hivers plus tard, un garçon reçut une sacoche, une cloche sans battant et un ordre.
+Narrateur: Il avait le même pas.
+
+=> END
+
+~ epilogue_dernier_pli_tribut
+
+Narrateur: Il fut le dernier. On brisa le moule, devant lui, et la cire noire refroidit pour toujours.
+Narrateur: Là-haut, aucun garçon ne reçut plus de sacoche.
+Narrateur: Ce que la Cendre dirait au prochain hiver, personne ne le savait encore.
+Narrateur: Sous la terre, une cloche portait un nom gravé, et ne sonnait pas.
+
+=> END
+
+~ epilogue_dernier_pli_cloches
+
+Narrateur: Toutes les cloches sonnèrent à la fois, pour la première fois depuis quarante hivers.
+Narrateur: Le son monta par les galeries, par la forêt, par les champs d'Ilde, jusqu'à la tranchée.
+Narrateur: Il mourut dessous, la corde dans les mains.
+Narrateur: Là-haut, on leva la tête. Personne ne sut si c'était la guerre qui revenait,
+Narrateur: ou l'Église qui tombait.
+
+=> END
+
+~ epilogue_recousu
+
+Narrateur: Il remonta. Lentement, par les galeries, avec les autres.
+Narrateur: Il ne se souvenait d'aucun nom. Ses mains ne faisaient plus mal.
+Narrateur: Un matin, il sortit de terre devant une tranchée qu'il croyait reconnaître.
+Narrateur: Un soldat leva son fusil. Il sifflait un air, entre ses dents.
+
+=> END

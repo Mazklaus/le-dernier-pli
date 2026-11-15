@@ -1,0 +1,31 @@
+# Étape 7, rencontre 1 : les cloches tues, anneau 2. Obligatoire.
+# La descente : −1 Vivres, obligatoire. Dernière occasion de manger le pain blanc (+2 Vivres, trahit « Promis à Jacquot »).
+# Regarder la cloche qui bouge : −1 Lucidité, drapeau e7_cloche_regardee (une réplique de plus face à la Mère-Cloche).
+# Garde-fou : on montre une forme dans la cloche, jamais ce qu'elle est. Pas de grand-guignol.
+
+~ debut
+
+Tobie: Des cloches. Partout, suspendues dans le noir, à toutes les hauteurs. Couvertes de cire.
+Tobie: Des grandes, des petites. Aucune ne sonne. L'escalier tourne autour de la plus grande, et descend.
+Tobie: Il descend longtemps. Mes jambes tremblent. Mon ventre crie.
+do GameState.appliquer_effets({&"vivres": -1})
+=> halte
+
+~ halte
+
+- [Manger le pain blanc] [if GameState.possede_objet(&"pain_blanc") /] [#cache]
+	Tobie: Le pain d'Ilde. Celui de Jacquot. Il est dur comme une pierre, maintenant.
+	Tobie: Je le mange quand même, en entier, assis sur une marche. Pardon, Jacquot.
+	do GameState.manger_objet_promis(&"pain_blanc", 2, &"promis_a_jacquot")
+	=> halte
+- [Regarder la cloche qui bouge] [if not GameState.rencontre_vue(&"e7_cloche_regardee") /] [#cout_lucidite=1, #cache]
+	do GameState.marquer_rencontre_vue(&"e7_cloche_regardee")
+	Tobie: Une cloche se balance, toute seule, sans un son. Je me penche pour voir dessous.
+	Tobie: À la place du battant, une forme longue, enveloppée de cire noire, serrée d'un ruban rouge.
+	Tobie: Elle se balance doucement. Elle ne touche jamais le bronze.
+	Tobie: Le même ruban que sur mon pli.
+	=> halte
+- [Continuer de descendre]
+	Tobie: Je baisse les yeux sur les marches. Je compte mes pas. C'est plus facile que de regarder en l'air.
+
+=> END

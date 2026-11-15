@@ -1,0 +1,35 @@
+# Étape 7, rencontre 2 : Lise, la vieille Enfouie, anneau 3. Obligatoire.
+# Résolution de la Promesse « La lettre de Matthieu » : donner la lettre la tient, la garder la trahit.
+# Sans la lettre : elle demande seulement s'il a croisé un Matthieu.
+# Garde-fou : elle ne dit pas ce qu'est devenu Matthieu ; « là-haut » et « il sonne » suffisent.
+
+~ debut
+
+Tobie: Sur l'anneau du dessous, une vieille femme assise contre la rambarde. Elle tricote sans regarder.
+Tobie: Ses yeux sont blancs, comme ceux d'Éloi, mais plus fatigués.
+Lise: Tu as le pas d'un coureur. Ils ont tous ce pas-là. Un peu pressé, un peu perdu.
+Lise: J'en ai connu un. Matthieu. Il m'écrivait, de là-haut, quand il pouvait.
+Lise: Un hiver, il n'a plus écrit. Et puis il est venu. Par cet escalier.
+if GameState.possede_marque(&"la_lettre_de_matthieu")
+	Tobie: Ma Lise. La lettre de la sacoche, contre mon pli. C'est elle.
+	- [Lui donner la lettre]
+		Tobie: Je la lui mets dans les mains. Elle déplie le papier et passe les doigts sur l'encre.
+		Lise: « Ma Lise. » Il disait toujours ça. Comme si j'étais à lui.
+		Lise: « Je crois que »... Il ne finissait jamais ses phrases. Merci, petit.
+		do GameState.resoudre_promesse(&"la_lettre_de_matthieu", true)
+	- [Garder la lettre]
+		Tobie: Je ne dis rien. La lettre reste contre mon pli. Je ne sais pas pourquoi. Peut-être pour moi.
+		Lise: Tu sens le papier, petit. Mais tu ne dis rien. C'est ton droit.
+		do GameState.resoudre_promesse(&"la_lettre_de_matthieu", false)
+elif GameState.rencontre_vue(&"e2_sacoche")
+	Lise: Tu l'as croisé, peut-être ? Matthieu ?
+	Tobie: J'ai trouvé sa sacoche, dans un trou d'obus. Il n'y avait personne.
+	Lise: Non. Il n'y avait plus personne, à ce moment-là.
+else
+	Lise: Tu l'as croisé, peut-être ? Matthieu ?
+	Tobie: Je ne connais pas de Matthieu.
+	Lise: Non. Bien sûr. On ne se croise pas, sur ce chemin. On se suit.
+Lise: Il est là-haut, maintenant. Il sonne, quand on ne l'entend pas.
+Lise: Descends, petit. Elle n'aime pas attendre. Elle a attendu toute sa vie.
+
+=> END

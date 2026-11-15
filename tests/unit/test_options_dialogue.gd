@@ -83,7 +83,7 @@ func test_slug_timbre() -> void:
 func test_cout_enfoui_baisse_d_un_a_l_egare_seulement() -> void:
 	var c := {&"lucidite": 2, &"vivres": 1}
 	assert_eq_deep(OptionsDialogue.cout_enfoui(c, GameState.EGARE), {&"lucidite": 1, &"vivres": 1})
-	assert_eq_deep(OptionsDialogue.cout_enfoui({&"lucidite": 1}, GameState.EGARE), {}, "jamais sous 0")
+	assert_eq_deep(OptionsDialogue.cout_enfoui({&"lucidite": 1}, GameState.EGARE), {})  # jamais sous 0
 	assert_eq_deep(OptionsDialogue.cout_enfoui({&"vivres": 1}, GameState.EGARE), {&"vivres": 1})
 	assert_eq_deep(OptionsDialogue.cout_enfoui(c, GameState.TROUBLE), c)
 	assert_eq_deep(OptionsDialogue.cout_enfoui(c, GameState.CLAIR), c)

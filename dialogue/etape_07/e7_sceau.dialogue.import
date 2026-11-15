@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://cpsyf0x6xcor2"
+path="res://.godot/imported/e7_sceau.dialogue-76c76d05d1553e8ac3227762eff96f3f.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_07/e7_sceau.dialogue"
+dest_files=["res://.godot/imported/e7_sceau.dialogue-76c76d05d1553e8ac3227762eff96f3f.tres"]
+
+[params]
+
+defaults=true

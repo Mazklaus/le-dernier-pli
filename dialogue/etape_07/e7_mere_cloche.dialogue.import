@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://7mkxc5ls2xas"
+path="res://.godot/imported/e7_mere_cloche.dialogue-f98bffd256ce6f74407b95abde2cdd5d.tres"
+
+[deps]
+
+source_file="res://dialogue/etape_07/e7_mere_cloche.dialogue"
+dest_files=["res://.godot/imported/e7_mere_cloche.dialogue-f98bffd256ce6f74407b95abde2cdd5d.tres"]
+
+[params]
+
+defaults=true

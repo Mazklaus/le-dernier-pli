@@ -1,0 +1,23 @@
+# Étape 7 : trois détails à examiner, sans coût ni marque, rejouables. Titres du plan du Level Designer.
+# Garde-fou : cloches_battants montre l'absence, jamais ce qui est dans les cloches (réservé à e7_cloches).
+
+~ cloches_battants
+
+Tobie: Sur la rambarde, des battants de bronze, posés en rang, verts de vieillesse.
+Tobie: On les a décrochés des cloches, un par un. Quelqu'un les cire encore, de temps en temps.
+
+=> END
+
+~ lise_lettre
+
+Tobie: À côté du tricot de Lise, une boîte à biscuits pleine de lettres. Toutes de la même main.
+Tobie: Les dernières ne sont pas ouvertes. Elle les garde quand même, dans l'ordre où elles sont arrivées.
+
+=> END
+
+~ porte_cire
+
+Tobie: La cire de la dernière porte. Des sceaux, des sceaux et des sceaux, collés les uns sur les autres.
+Tobie: Tous les mêmes que le mien. Le plus récent est encore souple. Le prochain sera dur.
+
+=> END
