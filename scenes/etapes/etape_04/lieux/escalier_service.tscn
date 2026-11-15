@@ -1,0 +1,136 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(960, 180)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2"]
+size = Vector2(960, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3"]
+size = Vector2(64, 750)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4"]
+size = Vector2(64, 750)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5"]
+size = Vector2(160, 300)
+
+[node name="EscalierService" type="Node2D"]
+
+[node name="Fond" type="ColorRect" parent="."]
+offset_left = 0.0
+offset_top = 450.0
+offset_right = 960.0
+offset_bottom = 900.0
+color = Color(0.55, 0.53, 0.5, 1)
+mouse_filter = 2
+z_index = -10
+
+[node name="Sol" type="StaticBody2D" parent="."]
+position = Vector2(480.0, 990.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Sol"]
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Visuel" type="ColorRect" parent="Sol"]
+offset_left = -480.0
+offset_top = -90.0
+offset_right = 480.0
+offset_bottom = 90.0
+color = Color(0.35, 0.35, 0.35, 1)
+mouse_filter = 2
+
+[node name="Plafond" type="StaticBody2D" parent="."]
+position = Vector2(480.0, 390.0)
+
+[node name="Forme" type="CollisionShape2D" parent="Plafond"]
+shape = SubResource("RectangleShape2D_2")
+
+[node name="Visuel" type="ColorRect" parent="Plafond"]
+offset_left = -480.0
+offset_top = -60.0
+offset_right = 480.0
+offset_bottom = 60.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="MurGauche" type="StaticBody2D" parent="."]
+position = Vector2(-32.0, 705.0)
+
+[node name="Forme" type="CollisionShape2D" parent="MurGauche"]
+shape = SubResource("RectangleShape2D_3")
+
+[node name="Visuel" type="ColorRect" parent="MurGauche"]
+offset_left = -32.0
+offset_top = -375.0
+offset_right = 32.0
+offset_bottom = 375.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="MurDroit" type="StaticBody2D" parent="."]
+position = Vector2(992.0, 705.0)
+
+[node name="Forme" type="CollisionShape2D" parent="MurDroit"]
+shape = SubResource("RectangleShape2D_4")
+
+[node name="Visuel" type="ColorRect" parent="MurDroit"]
+offset_left = -32.0
+offset_top = -375.0
+offset_right = 32.0
+offset_bottom = 375.0
+color = Color(0.25, 0.25, 0.25, 1)
+mouse_filter = 2
+
+[node name="Titre" type="Label" parent="."]
+offset_left = 40.0
+offset_top = 466.0
+offset_right = 1240.0
+offset_bottom = 514.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "6 Escalier de service (-3 → surface) · 0.5 écran(s)"
+
+[node name="Rencontres" type="Node2D" parent="."]
+
+[node name="Details" type="Node2D" parent="."]
+
+[node name="Passages" type="Node2D" parent="."]
+
+[node name="Points" type="Node2D" parent="."]
+
+[node name="entree_escalier_service" type="Marker2D" parent="Points"]
+position = Vector2(150, 900)
+
+[node name="VersPorte" type="Area2D" parent="Passages" groups=["passages"]]
+position = Vector2(750, 750.0)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+script = ExtResource("1")
+vers = &"rue_laterale"
+libelle = "Remonter"
+metadata/vers = "rue_laterale"
+metadata/note_level_design = "Remonter d'un coup jusqu'à la porte latérale"
+
+[node name="Forme" type="CollisionShape2D" parent="Passages/VersPorte"]
+shape = SubResource("RectangleShape2D_5")
+
+[node name="Visuel" type="ColorRect" parent="Passages/VersPorte"]
+offset_left = -80.0
+offset_top = -150.0
+offset_right = 80.0
+offset_bottom = 150.0
+color = Color(0.2, 0.35, 0.6, 0.35)
+mouse_filter = 2
+
+[node name="Nom" type="Label" parent="Passages/VersPorte"]
+offset_left = -80.0
+offset_top = 158.0
+offset_right = 1120.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "-> rue_laterale"
