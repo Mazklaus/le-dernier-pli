@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_03/etape_03.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_03/lieux/maison_ilde.tscn" id="2"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="10"]
 [ext_resource type="Resource" path="res://dialogue/etape_03/e3_noce.dialogue" id="11"]
 [ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="12"]
+[ext_resource type="Script" path="res://scenes/decors/decor_e3.gd" id="decor_e3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
@@ -35,6 +36,11 @@ size = Vector2(64, 1080)
 script = ExtResource("1")
 numero_etape = 3
 lieux_nuit = Array[StringName]([&"chambre", &"chemin_nuit"])
+limite_surface_y = 1300.0
+bornes_camera_surface = Vector2(0, 7680)
+
+[node name="Decors" type="Node2D" parent="."]
+script = ExtResource("decor_e3")
 
 [node name="Surface" type="Node2D" parent="."]
 
