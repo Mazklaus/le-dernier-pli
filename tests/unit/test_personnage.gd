@@ -142,3 +142,25 @@ func test_les_personnages_de_l_etape_3_sont_poses() -> void:
 	var champs := _declencheur(etape, &"e3_procession_champs")
 	if champs != null:
 		assert_not_null(champs.get_node_or_null("Cortege3"), "quatre silhouettes dans les champs")
+
+
+func test_la_procession_passe_sous_la_fenetre_de_la_chambre() -> void:
+	var chambre: Node = add_child_autofree(load("res://scenes/etapes/etape_03/lieux/chambre.tscn").instantiate())
+	var fenetre := chambre.get_node("ProcessionFenetre") as ProcessionFenetre
+	assert_eq(fenetre.silhouettes.size(), 5)
+	assert_true(fenetre.decoupe.clip_contents, "découpée dans la vitre")
+	assert_eq(fenetre.decoupe.position, Vector2(300, 520))
+	assert_eq(fenetre.decoupe.size, Vector2(200, 220))
+	var tete := fenetre.silhouettes[0]
+	assert_almost_eq(tete.scale.x, 0.28, 0.001)
+	assert_almost_eq(tete.global_position.y, 735.0, 0.5, "pieds au ras de l'appui")
+	assert_eq(fenetre.silhouettes[1].frame, 1, "déphasée d'une image")
+	var depart := fenetre.x_silhouette(0)
+	await wait_seconds(0.5)
+	assert_gt(fenetre.x_silhouette(0), depart, "elles vont vers la droite")
+	for i in 5:
+		var x := fenetre.x_silhouette(i)
+		assert_between(x, 260.0, 610.0, "dans la boucle")
+	var croisee := fenetre.get_child(fenetre.get_child_count() - 1) as CanvasItem
+	assert_gt(croisee.get_index(), fenetre.decoupe.get_index(), "la croisée reste devant")
+	assert_false((chambre.get_node("Rencontres/e3_procession/Visuel") as CanvasItem).visible)
