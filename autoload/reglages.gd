@@ -54,8 +54,21 @@ func charger() -> void:
 			var lu: Variant = cfg.get_value(SECTION, String(cle), DEFAUTS[cle])
 			if typeof(lu) == typeof(DEFAUTS[cle]):
 				_valeurs[cle] = lu
+	else:
+		# Tout premier lancement : sur le web, on suit la préférence du navigateur
+		# (prefers-reduced-motion) ; le joueur reste libre de changer ensuite (UI/UX).
+		_valeurs[&"effets_attenues"] = mouvement_reduit_demande()
 	for cle: StringName in _valeurs:
 		_appliquer(cle)
+
+
+## Le navigateur demande-t-il moins d'animations (prefers-reduced-motion) ? Faux hors web.
+static func mouvement_reduit_demande() -> bool:
+	if not OS.has_feature("web"):
+		return false
+	var reponse: Variant = JavaScriptBridge.eval(
+		"!!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)", true)
+	return reponse == true
 
 
 func sauver() -> void:
