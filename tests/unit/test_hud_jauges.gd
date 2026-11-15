@@ -259,3 +259,25 @@ func test_chiffres_de_cout_normaux_en_lavis() -> void:
 	var icone: TextureRect = bulle._options.find_children("*", "TextureRect", true, false)[0]
 	var chiffre := icone.get_parent().get_child(1) as Label
 	assert_eq(chiffre.get_theme_color(&"font_color"), StylePapier.LAVIS)
+
+
+func test_ruban_du_sceau_pose_sur_l_icone_et_bat_en_trouble() -> void:
+	var hud := _hud()
+	var ruban := hud._ruban_sceau
+	assert_eq(ruban.get_parent(), hud._sceau)
+	assert_not_null(ruban.texture, "calque ui_sceau-intact_red")
+	assert_eq(ruban.texture.resource_path.get_file(), "ui_sceau-intact_red.png")
+	await wait_process_frames(2)
+	assert_eq(ruban.modulate.a, 1.0, "Clair : le ruban ne bat pas")
+	GameState.palier = GameState.TROUBLE
+	var vues := {}
+	for i in 24:
+		await wait_seconds(0.06)
+		vues[snappedf(ruban.modulate.a, 0.01)] = true
+	GameState.palier = GameState.palier_pour(GameState.lucidite)
+	assert_true(vues.has(0.55), "Trouble : le ruban bat")
+
+
+func test_tous_les_sceaux_ont_leur_ruban() -> void:
+	for etat in ["intact", "abime", "rechauffe", "ouvert"]:
+		assert_not_null(StylePapier.icone("sceau-%s_red" % etat), etat)
