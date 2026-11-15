@@ -3,13 +3,13 @@
 
 ~ debut
 
-Jacquot: Debout, Pied-Léger. Il pleut de la cendre, comme hier.
+Jacquot: Debout, Pied-Léger. Il pleut de la cendre, comme hier. [#geste=secouer]
 Jacquot: Paraît qu'un ordre est arrivé de l'arrière. Avec de la cire noire.
 - Une permission ?
 	Jacquot: Si c'est une permission, je te la vole.
 - C'est pour qui ?
 	Jacquot: Pour toi, vu comme le sergent t'a demandé.
-Jacquot: Le sergent te demande. L'abri, tout droit après le boyau.
+Jacquot: Le sergent te demande. L'abri, au bout du boyau. [#geste=montrer]
 Jacquot: Il a sa tête des mauvais jours.
 
 => END
