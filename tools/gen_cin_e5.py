@@ -79,11 +79,11 @@ def foret() -> str:
 def autre(k: int) -> str:
     """L'Autre de dos, en silhouette, à la moitié de la taille de Tobie : maigre, voûté, la tête
     rentrée, la pointe de la capuche qui tombe dans le dos, la lanterne allumée à la main.
-    k : 0 marche, 1 arrêt, 2 et 3 la tête tourne (la pointe de la capuche pivote, le nez et la
-    mâchoire sortent de profil, un liseré de brume les détache), 4 elle revient, 5 il repart. Dessiné à l'échelle 1 autour
+    k : 0 marche, 1 arrêt, 2 et 3 la tête tourne (la pointe de la capuche reste dans le dos et
+    pivote vers l'arrière ; la joue et la mâchoire débordent, un liseré de brume les détache), 4 elle revient, 5 il repart. Dessiné à l'échelle 1 autour
     des pieds puis réduit de moitié."""
     x, y = PIEDS
-    tour = (0, 0, 30, 70, 24, 0)[k]
+    tour = (0, 0, 26, 55, 20, 0)[k]
     a = math.sin(math.radians(tour))
     out = []
     # le halo de la lanterne, tenue au bout du bras droit (à droite de l'image) : l'écran est
@@ -122,12 +122,15 @@ def autre(k: int) -> str:
     out.append(f'<path d="M{x - 20 - 10 * a:.1f} {y - 214} Q{x - 22 - 10 * a:.1f} {y - 246} {x} {y - 250} Q{x + 22} {y - 246} {x + 20} {y - 214} '
                f'Q{x + 14} {y - 200} {x} {y - 198} Q{x - 14} {y - 200} {x - 20 - 10 * a:.1f} {y - 214} Z" fill="{ENCRE}"/>')
     if tour:
-        n = 14 * a
-        out.append(f'<path d="M{x - 18 - 10 * a:.1f} {y - 230} L{x - 20 - 10 * a - n:.1f} {y - 222} L{x - 18 - 10 * a - n * .4:.1f} {y - 218} '
-                   f'L{x - 18 - 10 * a - n * .7:.1f} {y - 210} Q{x - 14 - 8 * a:.1f} {y - 200} {x - 6} {y - 202} Z" fill="{ENCRE}"/>')
-        out.append(f'<path d="M{x + 14} {y - 236} Q{x + 22 + pointe * .6:.1f} {y - 226} {x + 20 + pointe:.1f} {y - 204} L{x + 12} {y - 210} Z" fill="{ENCRE}"/>'
-                   f'<path d="M{x - 18 - 10 * a:.1f} {y - 224} Q{x - 22 - 10 * a:.1f} {y - 208} {x - 10 - 6 * a:.1f} {y - 200}" '
-                   f'fill="none" stroke="{PAPIER}" stroke-width="{1.4 + tour / 12:.1f}" stroke-linecap="round"/>')
+        # la pointe reste derrière la tête et retombe dans le dos, en pivotant vers l'arrière ;
+        # pas de nez : seule la joue et la mâchoire débordent du bord de la capuche, à gauche
+        out.append(f'<path d="M{x + 4 - 6 * a:.1f} {y - 232} Q{x + 14 - 4 * a:.1f} {y - 222} {x + 10 - 10 * a:.1f} {y - 192} '
+                   f'L{x + 2 - 8 * a:.1f} {y - 206} Z" fill="{ENCRE}"/>'
+                   f'<path d="M{x + 2 - 6 * a:.1f} {y - 214} Q{x + 6 - 8 * a:.1f} {y - 200} {x + 10 - 10 * a:.1f} {y - 192}" fill="none" stroke="{MINE}" stroke-width="1.6"/>'
+                   f'<path d="M{x - 20 - 10 * a:.1f} {y - 222} Q{x - 25 - 12 * a:.1f} {y - 212} {x - 18 - 8 * a:.1f} {y - 203} '
+                   f'Q{x - 10 - 4 * a:.1f} {y - 198} {x - 4} {y - 200} L{x - 10} {y - 214} Z" fill="{ENCRE}"/>'
+                   f'<path d="M{x - 21 - 11 * a:.1f} {y - 220} Q{x - 25 - 12 * a:.1f} {y - 211} {x - 17 - 8 * a:.1f} {y - 202}" '
+                   f'fill="none" stroke="{MINE}" stroke-width="{1.4 + tour / 20:.1f}" stroke-linecap="round"/>')
     else:
         out.append(f'<path d="M{x - 6} {y - 204} Q{x} {y - 170} {x + 2} {y - 158} Q{x + 6} {y - 172} {x + 8} {y - 204}" '
                    f'fill="none" stroke="{MINE}" stroke-width="1.6"/>')
