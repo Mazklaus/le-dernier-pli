@@ -191,26 +191,63 @@ def boite_lettres(x: float) -> str:
     return "".join(out)
 
 
+def larme_cire(x: float, y: float, e: float, gl: float) -> str:
+    """Une coulure de cire figée qui part de (x, y), large de 2e, longue de gl."""
+    return (f'<path d="M{x - e:.0f} {y:.0f} Q{x - e * .5:.0f} {y + gl * .6:.0f} {x - e * 1.2:.0f} {y + gl:.0f} '
+            f'Q{x:.0f} {y + gl + e * 2.4:.0f} {x + e * 1.2:.0f} {y + gl:.0f} Q{x + e * .5:.0f} {y + gl * .6:.0f} {x + e:.0f} {y:.0f} Z" fill="{ENCRE}"/>')
+
+
+def sceau(x: float, y: float, e: float, r) -> str:
+    """Un sceau de cire noire : un disque au bord écrasé, irrégulier, cerné d'un fil de mine qui
+    le détache de ceux qu'il recouvre ; un bourrelet le long du bord ; au centre, l'empreinte du
+    même cachet que le pli de Tobie (un anneau et son point)."""
+    pts = []
+    for k in range(9):
+        a = k / 9 * 2 * math.pi + r.uniform(-.2, .2)
+        d = e * r.uniform(.88, 1.12)
+        pts.append((x + math.cos(a) * d, y + math.sin(a) * d * .92))
+    d = "M" + " ".join(f"{(pts[k][0] + pts[k - 1][0]) / 2:.0f} {(pts[k][1] + pts[k - 1][1]) / 2:.0f} Q{pts[k][0]:.0f} {pts[k][1]:.0f}" for k in range(9))
+    d = d.replace("M", "M", 1)
+    debut = d.split(" Q")[0]
+    d += " " + debut[1:] + " Z"
+    return (f'<path d="{d}" fill="{ENCRE}" stroke="{MINE}" stroke-width="2"/>'
+            f'<ellipse cx="{x:.0f}" cy="{y:.0f}" rx="{e * .78:.0f}" ry="{e * .72:.0f}" fill="none" stroke="{LAVIS}" stroke-width="2"/>'
+            f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{e * .42:.0f}" fill="none" stroke="{MINE}" stroke-width="{max(1.6, e * .09):.1f}"/>'
+            f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{e * .1:.0f}" fill="{MINE}"/>')
+
+
 def sceaux(x0: float, x1: float, y0: float, y1: float, seed: int, n: int) -> str:
-    """Des sceaux de cire noire collés les uns sur les autres : des galettes rondes aux bords
-    écrasés, plus serrées vers la porte, qui coulent vers le bas ; quelques-uns plus mats
-    (anciens, fendus)."""
+    """Des sceaux de cire noire collés les uns sur les autres, en couches : plus on approche de
+    x1 (la porte), plus ils sont serrés, fondus dans une nappe de cire qui a coulé ; jamais
+    alignés, jamais comptables. Les plus anciens d'abord, les plus récents dessus."""
     r = rnd(seed)
     out = []
+    # la nappe : la cire des couches anciennes, fondue, en grosses galettes sans empreinte qui
+    # se chevauchent, de plus en plus serrées vers la porte ; quelques coulures dessous
+    for _ in range(n // 2):
+        t = r.random() ** .35
+        x = x0 + (x1 - x0) * (.3 + .7 * t)
+        marge = (y1 - y0) * (.45 - .4 * t) * .6
+        y = r.uniform(y0 + marge, y1 - marge)
+        e = r.uniform(26, 50)
+        pts = []
+        for k in range(8):
+            a = k / 8 * 2 * math.pi + r.uniform(-.25, .25)
+            pts.append((x + math.cos(a) * e * r.uniform(.8, 1.2), y + math.sin(a) * e * r.uniform(.6, 1.0)))
+        d = " ".join(f"Q{pts[k][0]:.0f} {pts[k][1]:.0f} {(pts[k][0] + pts[(k + 1) % 8][0]) / 2:.0f} {(pts[k][1] + pts[(k + 1) % 8][1]) / 2:.0f}" for k in range(8))
+        out.append(f'<path d="M{(pts[7][0] + pts[0][0]) / 2:.0f} {(pts[7][1] + pts[0][1]) / 2:.0f} {d} Z" fill="{ENCRE}"/>')
+        if r.random() < .3:
+            out.append(larme_cire(x + r.uniform(-e * .5, e * .5), y + e * .7, r.uniform(4, 7), r.uniform(20, 70)))
+    # les sceaux, sur plusieurs couches
     for _ in range(n):
-        t = r.random() ** .5   # plus serrés vers x1
+        t = r.random() ** .5
         x = x0 + (x1 - x0) * t
-        y = r.uniform(y0, y1)
-        e = r.uniform(11, 22)
-        out.append(f'<path d="M{x - e:.0f} {y:.0f} Q{x - e:.0f} {y - e * .9:.0f} {x:.0f} {y - e * .95:.0f} Q{x + e * 1.05:.0f} {y - e * .9:.0f} '
-                   f'{x + e:.0f} {y:.0f} Q{x + e * .9:.0f} {y + e:.0f} {x:.0f} {y + e * .9:.0f} Q{x - e * 1.05:.0f} {y + e:.0f} {x - e:.0f} {y:.0f} Z" '
-                   f'fill="{ENCRE}" {ST} stroke-width="2"/>')
-        if r.random() < .5:
-            out.append(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{e * .55:.0f}" fill="none" stroke="{LAVIS}" stroke-width="2"/>')
-        if r.random() < .12:
-            gl, f = r.uniform(16, 50), e * .22
-            out.append(f'<path d="M{x - f:.0f} {y + e * .8:.0f} Q{x - f * .5:.0f} {y + e * .8 + gl * .6:.0f} {x - f * 1.2:.0f} {y + e * .8 + gl:.0f} '
-                       f'Q{x:.0f} {y + e * .8 + gl + f * 2.4:.0f} {x + f * 1.2:.0f} {y + e * .8 + gl:.0f} Q{x + f * .5:.0f} {y + e * .8 + gl * .6:.0f} {x + f:.0f} {y + e * .8:.0f} Z" fill="{ENCRE}"/>')
+        marge = (y1 - y0) * (.45 - .4 * t) * .5
+        y = r.uniform(y0 + marge, y1 - marge)
+        e = r.uniform(13, 24) * (1.1 - .2 * t)
+        out.append(sceau(x, y, e, r))
+        if r.random() < .15:
+            out.append(larme_cire(x + r.uniform(-e * .4, e * .4), y + e * .85, e * .2, r.uniform(16, 50)))
     return "".join(out)
 
 
