@@ -36,7 +36,8 @@ const AMPLITUDE_REPOS := 1.5
 ## Teinte par lieu de nuit (lieu -> Color), prioritaire sur teinte_nuit.
 @export var teintes_lieux: Dictionary = {}
 ## Bornes horizontales de la caméra à la surface (le décor parallaxe est calculé pour elles) ;
-## levées sous terre. x > y : pas de borne.
+## levées sous terre. x > y : pas de borne fixe, la caméra est alors bornée au tronçon de
+## surface où se trouve le messager (sections Surface/* contiguës réunies, voir rect_troncon).
 @export var bornes_camera_surface: Vector2 = Vector2(1, 0)
 ## Pas du messager à la surface et sous terre (variantes du Sound Designer).
 @export var pas_surface: String = "sfx_pas_boue"
@@ -81,6 +82,11 @@ func maj_bornes_camera() -> void:
 		messager.borner_camera_rect(rect_lieu(lieu))
 		return
 	if bornes_camera_surface.x > bornes_camera_surface.y:
+		var troncon := rect_troncon(messager.global_position)
+		if troncon.has_area():
+			messager.borner_camera_rect(troncon)
+		else:
+			messager.liberer_camera()
 		return
 	if est_en_surface(messager.global_position):
 		messager.borner_camera(int(bornes_camera_surface.x), int(bornes_camera_surface.y))
@@ -112,6 +118,35 @@ func lieu_a(position_globale: Vector2) -> Node2D:
 		if lieu is Node2D and rect_lieu(lieu as Node2D).has_point(position_globale):
 			return lieu as Node2D
 	return null
+
+
+## Rectangle du tronçon de surface qui contient cette position : la section Surface/* où elle
+## se trouve, réunie aux sections qui la touchent bout à bout (on y marche sans passage). Vide
+## hors de toute section. Ex. étape 5 : Orée + Boucle (0..5760), puis Campement à 6720.
+func rect_troncon(position_globale: Vector2) -> Rect2:
+	var surface := get_node_or_null("Surface")
+	if surface == null:
+		return Rect2()
+	var sections: Array[Rect2] = []
+	for n in surface.get_children():
+		if n is Node2D and n.get_node_or_null("Fond") != null:  # une section, pas un sol
+			sections.append(rect_lieu(n as Node2D))
+	var troncon := Rect2()
+	for r in sections:
+		if r.has_point(position_globale):
+			troncon = r
+	if not troncon.has_area():
+		return troncon
+	var agrandi := true
+	while agrandi:
+		agrandi = false
+		for r in sections:
+			var bout_a_bout := is_equal_approx(r.end.x, troncon.position.x) \
+				or is_equal_approx(r.position.x, troncon.end.x)
+			if bout_a_bout and is_equal_approx(r.position.y, troncon.position.y):
+				troncon = troncon.merge(r)
+				agrandi = true
+	return troncon
 
 
 func _sur_teleporte_bornes(_position_globale: Vector2) -> void:
