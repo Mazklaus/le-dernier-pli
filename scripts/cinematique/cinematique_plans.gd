@@ -11,9 +11,16 @@ extends Cinematique
 const COUCHE_PLEIN_ECRAN := EtapeBase.COUCHE_GRAVURE - 1
 
 
+## Les nœuds ajoutés par construire() (plans, sprites dans le décor), et le réglage « effets
+## atténués » au moment de la construction : s'il a changé avant la lecture, on reconstruit.
+var _noeuds_construits: Array[Node] = []
+var _construite := false
+var _attenues_construits := false
+
+
 func _ready() -> void:
 	if get_node_or_null("Animation") == null:
-		var anim := construire()
+		var anim := _construire()
 		if anim != null:
 			var biblio := AnimationLibrary.new()
 			biblio.add_animation(animation, anim)
@@ -21,8 +28,44 @@ func _ready() -> void:
 			lecteur.name = "Animation"
 			lecteur.add_animation_library(&"", biblio)
 			add_child(lecteur)
+			_construite = true
 	finie.connect(func(_sautee: bool) -> void: apres())
 	super()
+
+
+## construire(), en retenant les nœuds qu'il ajoute et le réglage qu'il a lu.
+func _construire() -> Animation:
+	var avant := get_children()
+	_attenues_construits = bool(Reglages.valeur(&"effets_attenues"))
+	var anim := construire()
+	_noeuds_construits.clear()
+	for n in get_children():
+		if not avant.has(n):
+			_noeuds_construits.append(n)
+	return anim
+
+
+## Le réglage « effets atténués » a changé depuis la construction (au chargement de l'étape) :
+## les plans sont refaits avant de jouer, pour qu'une ciné qui le lit (plan fixe au lieu d'un
+## mouvement) suive le réglage du moment.
+func _preparer_animation() -> StringName:
+	if _construite and bool(Reglages.valeur(&"effets_attenues")) != _attenues_construits:
+		_reconstruire()
+	return super()
+
+
+func _reconstruire() -> void:
+	for n in _noeuds_construits:
+		if is_instance_valid(n):
+			remove_child(n)
+			n.free()
+	var anim := _construire()
+	var biblio := _lecteur.get_animation_library(&"") if _lecteur != null else null
+	if anim == null or biblio == null:
+		return
+	if biblio.has_animation(animation):
+		biblio.remove_animation(animation)
+	biblio.add_animation(animation, anim)
 
 
 ## À redéfinir : l'animation de la cinématique, ou null si ses planches manquent (la
