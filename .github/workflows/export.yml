@@ -19,7 +19,8 @@ env:
   # la somme des fichiers compressés en gzip (GitHub Pages et itch.io servent en gzip ;
   # le moteur .wasm passe de ~35 Mo à ~9 Mo, les OGG et PNG ne bougent presque pas).
   WEB_BUDGET_MB: 60
-  WEB_WARN_MB: 50
+  # Seuil d'alerte du Lead Prog (2026-11-16) : au-delà, le prévenir.
+  WEB_WARN_MB: 57
 
 concurrency:
   group: export-${{ github.ref }}
