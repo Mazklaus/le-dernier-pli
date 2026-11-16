@@ -6,6 +6,17 @@ extends GutTest
 const ABRI := "res://scenes/etapes/etape_01/lieux/abri_sergent.tscn"
 const ETAPE := "res://scenes/etapes/etape_01/etape_01.tscn"
 
+var _attenues := false
+
+
+func before_each() -> void:
+	_attenues = bool(Reglages.valeur(&"effets_attenues"))
+	Reglages.changer(&"effets_attenues", false)
+
+
+func after_each() -> void:
+	Reglages.changer(&"effets_attenues", _attenues)
+
 
 func _cine(scene: String, chemin: String) -> CinematiquePlans:
 	var racine: Node = add_child_autofree((load(scene) as PackedScene).instantiate())
@@ -49,18 +60,43 @@ func test_remise_du_pli_sautee_les_plans_disparaissent() -> void:
 	GameState.reinitialiser()
 
 
-func test_sortie_tobie_grimpe_hors_du_cadre() -> void:
+func test_sortie_la_camera_suit_la_montee_puis_le_parapet_et_lamarre() -> void:
 	var c := _cine(ETAPE, "Surface/PiedEchelle/e1_sortie_tranchee")
 	assert_not_null(c)
 	var anim := _anim(c)
-	assert_almost_eq(anim.length, 6.0, 0.001)
+	assert_between(anim.length, 5.0, 6.0, "entre 5 et 6 s (GD)")
 	var piste := anim.find_track(NodePath("Grimpeur:position"), Animation.TYPE_VALUE)
 	assert_ne(piste, -1)
-	var dernier: Vector2 = anim.track_get_key_value(piste, anim.track_get_key_count(piste) - 1)
-	var camera_fin: Vector2 = (c.get_node("Arrivee") as Marker2D).position
-	var demi_hauteur := 540.0 / (c.get_node("Arrivee") as Marker2D).scale.y
-	assert_lt(dernier.y, camera_fin.y - demi_hauteur, "le haut du cadre perd Tobie (pieds au-dessus)")
+	var cam := anim.find_track(NodePath("Camera:position"), Animation.TYPE_VALUE)
+	assert_gt(anim.track_get_key_count(cam), 10, "la caméra suit Tobie vers le haut")
+	var haut: Vector2 = anim.track_get_key_value(cam, anim.track_get_key_count(cam) - 1)
+	var zoom: Vector2 = anim.track_get_key_value(anim.find_track(NodePath("Camera:zoom"), Animation.TYPE_VALUE), 0)
+	var bas: Vector2 = anim.track_get_key_value(cam, 0)
+	var demi := Vector2(960.0, 540.0) / zoom
+	assert_gte(haut.y - demi.y, 0.0, "la vue ne sort jamais du décor peint par le haut")
+	assert_lte(bas.y + demi.y, 1080.0, "ni par le bas")
+	assert_lte(bas.x + demi.x, 1330.0, "ni à droite, où finit la tranchée")
+	assert_eq((c.get_node("Plans/B/Tobie") as Sprite2D).hframes * (c.get_node("Plans/B/Tobie") as Sprite2D).vframes, 4)
+	assert_eq((c.get_node("Plans/C/Lamarre") as Sprite2D).hframes, 2)
+	var lamarre := anim.find_track(NodePath("Plans/C/Lamarre:frame"), Animation.TYPE_VALUE)
+	assert_eq(anim.track_get_key_value(lamarre, anim.track_get_key_count(lamarre) - 1), 1, "il baisse la tête")
 	assert_ne(anim.find_track(NodePath("/root/AudioDirector"), Animation.TYPE_METHOD), -1, "l'échelle sonne")
+
+
+func test_sortie_effets_attenues_deux_plans_fixes() -> void:
+	Reglages.changer(&"effets_attenues", true)
+	var anim := _anim(_cine(ETAPE, "Surface/PiedEchelle/e1_sortie_tranchee"))
+	var cam := anim.find_track(NodePath("Camera:position"), Animation.TYPE_VALUE)
+	assert_eq(anim.track_get_key_count(cam), 1, "la caméra ne bouge pas : l'échelle, puis le parapet")
+	assert_ne(anim.find_track(NodePath("Plans/B:visible"), Animation.TYPE_VALUE), -1)
+
+
+func test_sortie_clefs_au_pas_de_10_images_par_seconde() -> void:
+	var anim := _anim(_cine(ETAPE, "Surface/PiedEchelle/e1_sortie_tranchee"))
+	for piste in anim.get_track_count():
+		for k in anim.track_get_key_count(piste):
+			var t := anim.track_get_key_time(piste, k)
+			assert_almost_eq(fmod(t + 0.0001, Cinematique.PAS), 0.0, 0.001, "clé à %.3f s" % t)
 
 
 func test_sortie_masque_le_messager() -> void:
@@ -75,4 +111,5 @@ func test_sortie_masque_le_messager() -> void:
 	assert_false(messager.visible)
 	c.sauter()
 	assert_false(c.grimpeur.visible)
+	assert_false(c.couche.visible)
 	GameState.reinitialiser()
