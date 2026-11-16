@@ -250,7 +250,7 @@ func _voile_de_sortie() -> void:
 	voile.name = "VoileSortie"
 	voile.layer = EtapeBase.COUCHE_GRAVURE - 1
 	var noir := ColorRect.new()
-	noir.color = Color.BLACK
+	noir.color = couleur_voile(GameState.etape)
 	noir.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	noir.set_anchors_preset(Control.PRESET_FULL_RECT)
 	voile.add_child(noir)
@@ -259,6 +259,14 @@ func _voile_de_sortie() -> void:
 	var retrait := voile.create_tween()
 	retrait.tween_interval(DUREE_VOILE)
 	retrait.tween_callback(voile.queue_free)
+
+
+## Le voile passe sous l'écran gravure, qui remappe encre et papier : aux étapes inversées
+## (5 et 6, encre claire), le noir des assets deviendrait clair. Le blanc y donne le papier foncé.
+static func couleur_voile(etape: int) -> Color:
+	var v: Dictionary = PapierEtapes.ETAPES.get(clampi(etape, 1, 7))
+	var inversee: bool = (v["encre"] as Color).get_luminance() > (v["papier"] as Color).get_luminance()
+	return Color.WHITE if inversee else Color.BLACK
 
 
 func _trouver_messager() -> Messager:

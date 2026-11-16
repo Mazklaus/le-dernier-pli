@@ -217,3 +217,11 @@ func test_finit_au_bon_pas_malgre_les_arrondis() -> void:
 			c._process(Cinematique.PAS)
 			pas += 1
 		assert_eq(pas, roundi(duree * 10), "%.1f s" % duree)
+
+
+## Étapes 5 et 6 inversées par l'écran gravure : le voile reste sombre à l'écran (QA, e6).
+func test_le_voile_reste_sombre_aux_etapes_inversees() -> void:
+	for etape in [1, 2, 3, 4, 7]:
+		assert_eq(Cinematique.couleur_voile(etape), Color.BLACK, "étape %d" % etape)
+	for etape in [5, 6]:
+		assert_eq(Cinematique.couleur_voile(etape), Color.WHITE, "étape %d" % etape)
