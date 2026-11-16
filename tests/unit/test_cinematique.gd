@@ -190,3 +190,15 @@ func test_la_camera_du_plan_ne_prend_pas_la_vue_hors_lecture() -> void:
 	cine.sauter()
 	assert_false(_camera().enabled, "éteinte après la lecture")
 	assert_ne(get_viewport().get_camera_2d(), _camera())
+
+
+func test_une_image_noire_a_la_sortie() -> void:
+	# QA : à la sortie de e7_ouverture_sceau, une image du lieu hors cadre (caméra pas encore rendue).
+	cine.jouer()
+	cine.sauter()
+	var voile := get_tree().root.get_node_or_null("VoileSortie") as CanvasLayer
+	assert_not_null(voile, "voile noir posé à la sortie")
+	if voile != null:
+		assert_lt(voile.layer, EtapeBase.COUCHE_GRAVURE, "sous l'écran gravure")
+	await wait_seconds(Cinematique.DUREE_VOILE + 0.1)
+	assert_null(get_tree().root.get_node_or_null("VoileSortie"), "retiré aussitôt après")
