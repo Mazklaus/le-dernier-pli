@@ -202,3 +202,26 @@ func test_une_image_noire_a_la_sortie() -> void:
 		assert_lt(voile.layer, EtapeBase.COUCHE_GRAVURE, "sous l'écran gravure")
 	await wait_seconds(Cinematique.DUREE_VOILE + 0.1)
 	assert_null(get_tree().root.get_node_or_null("VoileSortie"), "retiré aussitôt après")
+
+
+## 5.4 s = 54 pas, pas 55 : le reste flottant (1e-15) ne coûte pas un pas de plus (QA).
+func test_finit_au_bon_pas_malgre_les_arrondis() -> void:
+	for duree in [5.4, 4.7, 6.3, 8.2]:
+		var c := _fabriquer(StringName("arrondi_%d" % roundi(duree * 10)))
+		var anim := (c.get_node("Animation") as AnimationPlayer).get_animation(Cinematique.ANIMATION_PAR_DEFAUT)
+		anim.length = duree
+		add_child_autofree(c)
+		c.jouer()
+		var pas := 0
+		while c.en_cours and pas < 200:
+			c._process(Cinematique.PAS)
+			pas += 1
+		assert_eq(pas, roundi(duree * 10), "%.1f s" % duree)
+
+
+## Étapes 5 et 6 inversées par l'écran gravure : le voile reste sombre à l'écran (QA, e6).
+func test_le_voile_reste_sombre_aux_etapes_inversees() -> void:
+	for etape in [1, 2, 3, 4, 7]:
+		assert_eq(Cinematique.couleur_voile(etape), Color.BLACK, "étape %d" % etape)
+	for etape in [5, 6]:
+		assert_eq(Cinematique.couleur_voile(etape), Color.WHITE, "étape %d" % etape)
