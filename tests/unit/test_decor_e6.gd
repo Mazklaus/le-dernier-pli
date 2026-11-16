@@ -46,6 +46,12 @@ func test_les_gris_de_la_maquette_sont_masques() -> void:
 		assert_false((lieu.get_node("Sol/Visuel") as CanvasItem).visible, String(a[0]))
 
 
+func test_le_pilier_gris_de_l_eboule_est_masque() -> void:
+	var eboule := _etape.get_node("Lieux/Village/Eboule")
+	assert_false((eboule.get_node("Visuel") as CanvasItem).visible, "plus de pilier plat devant le passage")
+	assert_not_null(eboule.get_node("Forme"), "la collision reste")
+
+
 func test_l_eboulement_n_apparait_qu_apres_la_cine() -> void:
 	var eboule := _etape.get_node("Lieux/Village/Eboulement") as Sprite2D
 	assert_not_null(eboule.texture)

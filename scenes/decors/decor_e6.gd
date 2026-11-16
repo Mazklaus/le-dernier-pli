@@ -5,7 +5,8 @@ extends DecorParallaxe
 ## leur repère, derrière le jeu ; les gris de la maquette sont masqués. L'écran inverse tout :
 ## les fonds sont dessinés pour ça (le vide en papier, la lumière en hachures serrées).
 ## Le village garde ouverte la galerie d'où vient Tobie : l'éboulement (fx_eboule-village) est un
-## calque qui n'apparaît qu'après la ciné e6_eboulement.
+## calque qui n'apparaît qu'après la ciné e6_eboulement. Le pilier gris de la maquette qui bouche
+## le passage (Eboule/Visuel) est masqué : seule sa collision reste.
 
 const DOSSIER := "res://assets/graphics/env/e6/env_e6_"
 ## [chemin du nœud sous l'étape, nom du fond].
@@ -47,6 +48,9 @@ func _ready() -> void:
 			masquer_gris_lieu(lieu)
 	var village := etape.get_node_or_null(VILLAGE) as Node2D
 	if village != null:
+		var pilier := village.get_node_or_null("Eboule/Visuel") as CanvasItem
+		if pilier != null and masquer_fonds_maquette:
+			pilier.visible = false
 		_eboule = Sprite2D.new()
 		_eboule.name = "Eboulement"
 		_eboule.texture = charger_tuile(FX_EBOULE)
