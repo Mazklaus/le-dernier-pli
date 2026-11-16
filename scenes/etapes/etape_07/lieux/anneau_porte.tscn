@@ -5,7 +5,7 @@
 [ext_resource type="Resource" path="res://dialogue/etape_07/e7_sceau.dialogue" id="3"]
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="4"]
 
-[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e7_ouverture_sceau.gd" id="cine_sceau"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
 
@@ -191,7 +191,7 @@ theme_override_font_sizes/font_size = 24
 text = "-> mere_cloche"
 
 [node name="e7_ouverture_sceau" type="Node2D" parent="."]
-script = ExtResource("cine_script")
+script = ExtResource("cine_sceau")
 id = &"e7_ouverture_sceau"
 duree = 8.0
 metadata/note_level_design = "La cire se brise, le ruban se défait ; lancée par une réplique de e7_sceau (branche ouvrir)"
