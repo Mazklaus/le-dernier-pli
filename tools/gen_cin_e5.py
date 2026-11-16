@@ -7,9 +7,14 @@ Il est vu de dos, en silhouette à contre-jour dans le brouillard : un coureur c
 capuche, la sacoche à la hanche, la jambe gauche qui traîne. Quand il tourne la tête, seul le bord
 de la capuche et un liseré de lumière sur la mâchoire changent : pas de nez, pas d'œil, pas de face.
 
-  cin_autre_01  le fond 1920 x 1080 : la forêt de croix dans le brouillard, le sentier qui
-                s'enfonce, l'Autre arrêté (image 1) ;
-  cin_autre_02  6 images de 200 x 170 en (880, 500), grille 3 x 2 :
+  Tout est rendu au double (FINESSE) : la caméra pousse lentement vers l'Autre (jusqu'à x2),
+  les planches sont posées à l'échelle 1/2 et restent nettes jusqu'au bout de la poussée.
+
+  cin_autre_01  le fond 3840 x 2160 (1920 x 1080 à l'écran) : la forêt de croix dans le
+                brouillard, le sentier qui s'enfonce, l'Autre arrêté (image 1) ;
+  cin_autre_03  la brume qui dérive devant les croix : une bande transparente de 1920 x 210,
+                posée à l'échelle 2 (3840 x 420 à l'écran), qui glisse lentement vers la gauche ;
+  cin_autre_02  6 images de 400 x 340 (200 x 170 à l'écran) en (880, 500), grille 3 x 2 :
                 0 il marche, 1 il s'arrête, 2 la tête tourne un peu, 3 un quart (le bord de la
                 capuche, le liseré de la mâchoire), 4 la tête revient, 5 il repart (pied gauche
                 qui traîne). À tenir sur l'image 3 (environ 0,8 s).
@@ -24,6 +29,8 @@ from gen_cin_e1 import DST, H, W, bande, svg
 from gen_decors_e1_surface import ENCRE, LAVIS, MINE, PAPIER, rnd
 
 ZONE = (880, 500, 200, 170)
+FINESSE = 2
+BRUME_W, BRUME_H = 3840, 420
 PIEDS = (960, 652)
 
 
@@ -128,11 +135,41 @@ def image(k: int) -> str:
     return foret() + autre(k)
 
 
+def double(contenu_svg: str) -> str:
+    """Le même SVG rendu FINESSE fois plus grand (la viewBox ne change pas)."""
+    tete, reste = contenu_svg.split(">", 1)
+    l, h = (int(v) for v in (tete.split('width="')[1].split('"')[0], tete.split('height="')[1].split('"')[0]))
+    tete = tete.replace(f'width="{l}"', f'width="{l * FINESSE}"', 1).replace(f'height="{h}"', f'height="{h * FINESSE}"', 1)
+    return tete + ">" + reste
+
+
+def brume() -> str:
+    """La nappe qui dérive : des bancs étirés, flous, en lavis léger (pâles à l'écran inversé),
+    sur fond transparent ; les bords gauche et droit s'effacent."""
+    r = rnd(506)
+    # rendue à demi-résolution (elle est floue) : la planche fait 1920 x 210, posée à l'échelle 2
+    out = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{BRUME_W // 2}" height="{BRUME_H // 2}" viewBox="0 0 {BRUME_W} {BRUME_H}">',
+           '<defs><filter id="flou" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="34"/></filter>'
+           '<linearGradient id="bords" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/>'
+           '<stop offset=".08" stop-color="#fff"/><stop offset=".92" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
+           f'<mask id="m-bords"><rect width="{BRUME_W}" height="{BRUME_H}" fill="url(#bords)"/></mask></defs>',
+           '<g mask="url(#m-bords)"><g filter="url(#flou)">']
+    x = -100.0
+    while x < BRUME_W + 100:
+        l = r.uniform(260, 620)
+        out.append(f'<ellipse cx="{x + l / 2:.0f}" cy="{r.uniform(150, 300):.0f}" rx="{l / 2:.0f}" ry="{r.uniform(36, 80):.0f}" '
+                   f'fill="{MINE}" opacity="{r.uniform(.25, .5):.2f}"/>')
+        x += l * r.uniform(.5, .9)
+    out.append('</g></g></svg>\n')
+    return "".join(out)
+
+
 def main() -> None:
     DST.mkdir(parents=True, exist_ok=True)
-    (DST / "cin_autre_01.svg").write_text(svg(image(1)), encoding="utf-8")
-    (DST / "cin_autre_02.svg").write_text(bande([image(k) for k in range(6)], ZONE, 3), encoding="utf-8")
-    print("cin_autre : 1 fond et 1 bande dans art/src/cin/")
+    (DST / "cin_autre_01.svg").write_text(double(svg(image(1))), encoding="utf-8")
+    (DST / "cin_autre_02.svg").write_text(double(bande([image(k) for k in range(6)], ZONE, 3)), encoding="utf-8")
+    (DST / "cin_autre_03.svg").write_text(brume(), encoding="utf-8")
+    print("cin_autre : 1 fond, 1 bande et la brume dans art/src/cin/")
 
 
 if __name__ == "__main__":
