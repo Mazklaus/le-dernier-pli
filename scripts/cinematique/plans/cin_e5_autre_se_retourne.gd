@@ -19,7 +19,7 @@ const TENUE_TETE := 1.2
 const TENUE_FIN := 0.5
 ## Les planches sont rendues au double : posées à 1/2, nettes jusqu'à une poussée de 2.
 const FINESSE := 2.0
-const ZOOM_FIN := 1.6
+const ZOOM_FIN := 2.5
 ## Centre de la poussée : l'Autre (milieu de sa zone de 200 × 170 en 880, 500).
 const CENTRE := Vector2(980, 585)
 ## La brume : posée à l'échelle 2, en y 560, elle glisse de 0 à BRUME_DERIVE px.

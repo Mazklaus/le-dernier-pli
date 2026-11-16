@@ -63,6 +63,6 @@ func test_la_camera_pousse_vers_l_autre_sans_qu_il_bouge() -> void:
 	var n := anim.track_get_key_count(piste)
 	assert_gt(n, 50, "une clé tous les dixièmes : un mouvement continu")
 	assert_eq(anim.track_get_key_value(piste, 0), Vector2.ONE)
-	assert_almost_eq((anim.track_get_key_value(piste, n - 1) as Vector2).x, 1.6, 0.01)
+	assert_almost_eq((anim.track_get_key_value(piste, n - 1) as Vector2).x, 2.5, 0.01)
 	var brume := anim.find_track(NodePath("Plans/Brume:position"), Animation.TYPE_VALUE)
 	assert_ne(brume, -1, "la brume dérive")

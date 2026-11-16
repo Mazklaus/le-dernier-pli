@@ -79,21 +79,21 @@ def foret() -> str:
 def autre(k: int) -> str:
     """L'Autre de dos, en silhouette, à la moitié de la taille de Tobie : maigre, voûté, la tête
     rentrée, la pointe de la capuche qui tombe dans le dos, la lanterne allumée à la main.
-    k : 0 marche, 1 arrêt, 2 et 3 la tête tourne (la pointe de la capuche pivote de profil, un
-    liseré de brume sur la mâchoire), 4 elle revient, 5 il repart. Dessiné à l'échelle 1 autour
+    k : 0 marche, 1 arrêt, 2 et 3 la tête tourne (la pointe de la capuche pivote, le nez et la
+    mâchoire sortent de profil, un liseré de brume les détache), 4 elle revient, 5 il repart. Dessiné à l'échelle 1 autour
     des pieds puis réduit de moitié."""
     x, y = PIEDS
-    tour = (0, 0, 16, 34, 12, 0)[k]
+    tour = (0, 0, 30, 70, 24, 0)[k]
     a = math.sin(math.radians(tour))
     out = []
-    # le halo de la lanterne, tenue au bout du bras droit (à droite de l'image) : un point de
-    # lumière pâle dans le brouillard, sans rouge
+    # le halo de la lanterne, tenue au bout du bras droit (à droite de l'image) : l'écran est
+    # inversé, la lumière se dessine donc en sombre (lavis au cœur, mine autour), sans rouge
     lx, ly = x + 50, y - 96
     out.append('<defs><radialGradient id="halo_autre">'
-               f'<stop offset="0" stop-color="#FFFFFF"/><stop offset=".3" stop-color="#FFFFFF" stop-opacity=".85"/>'
-               f'<stop offset=".62" stop-color="{PAPIER}" stop-opacity=".45"/><stop offset=".82" stop-color="{MINE}" stop-opacity=".16"/>'
+               f'<stop offset="0" stop-color="{LAVIS}" stop-opacity=".95"/><stop offset=".22" stop-color="{LAVIS}" stop-opacity=".75"/>'
+               f'<stop offset=".55" stop-color="{MINE}" stop-opacity=".45"/><stop offset=".8" stop-color="{MINE}" stop-opacity=".15"/>'
                f'<stop offset="1" stop-color="{MINE}" stop-opacity="0"/></radialGradient></defs>'
-               f'<circle cx="{lx}" cy="{ly + 2}" r="128" fill="url(#halo_autre)"/>')
+               f'<circle cx="{lx}" cy="{ly + 2}" r="150" fill="url(#halo_autre)"/>')
     # jambes maigres ; la gauche traîne quand il marche
     if k in (0, 5):
         g = (f'M{x - 14} {y - 112} L{x - 22} {y - 6} L{x - 8} {y - 2} L{x - 4} {y - 110} Z' if k == 0 else
@@ -114,14 +114,17 @@ def autre(k: int) -> str:
     # le bras droit tendu un peu à l'écart, la lanterne au bout
     out.append(f'<path d="M{x + 28} {y - 196} Q{x + 44} {y - 160} {x + 48} {y - 114} L{x + 40} {y - 114} Q{x + 36} {y - 160} {x + 22} {y - 192} Z" fill="{ENCRE}"/>'
                f'<path d="M{lx} {y - 114} V{ly - 10}" stroke="{ENCRE}" stroke-width="2"/>'
-               f'<path d="M{lx - 7} {ly - 10} H{lx + 7} L{lx + 6} {ly + 12} H{lx - 6} Z" fill="{ENCRE}"/>'
-               f'<path d="M{lx - 4} {ly - 6} H{lx + 4} V{ly + 8} H{lx - 4} Z" fill="#FFFFFF"/>')
+               f'<path d="M{lx - 7} {ly - 10} H{lx + 7} L{lx + 6} {ly + 12} H{lx - 6} Z" fill="{MINE}" stroke="{ENCRE}" stroke-width="1.6"/>'
+               f'<path d="M{lx - 4} {ly - 6} H{lx + 4} V{ly + 8} H{lx - 4} Z" fill="{ENCRE}"/>')
     # la tête rentrée dans les épaules, sous la capuche ; la pointe tombe dans le dos (un fil de
     # brume la détache), elle pivote de profil quand il tourne la tête
     pointe = 30 * a
     out.append(f'<path d="M{x - 20 - 10 * a:.1f} {y - 214} Q{x - 22 - 10 * a:.1f} {y - 246} {x} {y - 250} Q{x + 22} {y - 246} {x + 20} {y - 214} '
                f'Q{x + 14} {y - 200} {x} {y - 198} Q{x - 14} {y - 200} {x - 20 - 10 * a:.1f} {y - 214} Z" fill="{ENCRE}"/>')
     if tour:
+        n = 14 * a
+        out.append(f'<path d="M{x - 18 - 10 * a:.1f} {y - 230} L{x - 20 - 10 * a - n:.1f} {y - 222} L{x - 18 - 10 * a - n * .4:.1f} {y - 218} '
+                   f'L{x - 18 - 10 * a - n * .7:.1f} {y - 210} Q{x - 14 - 8 * a:.1f} {y - 200} {x - 6} {y - 202} Z" fill="{ENCRE}"/>')
         out.append(f'<path d="M{x + 14} {y - 236} Q{x + 22 + pointe * .6:.1f} {y - 226} {x + 20 + pointe:.1f} {y - 204} L{x + 12} {y - 210} Z" fill="{ENCRE}"/>'
                    f'<path d="M{x - 18 - 10 * a:.1f} {y - 224} Q{x - 22 - 10 * a:.1f} {y - 208} {x - 10 - 6 * a:.1f} {y - 200}" '
                    f'fill="none" stroke="{PAPIER}" stroke-width="{1.4 + tour / 12:.1f}" stroke-linecap="round"/>')
