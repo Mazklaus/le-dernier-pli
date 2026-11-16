@@ -26,6 +26,8 @@ signal finie(sautee: bool)
 const GROUPE := &"cinematiques"
 const ANIMATION_PAR_DEFAUT := &"jouer"
 const PAS := 0.1  # 10 images par seconde
+## Noir à la sortie (environ deux images), le temps que la caméra du jeu reprenne la vue.
+const DUREE_VOILE := 0.08
 
 ## Identifiant, préfixé par l'étape : e1_remise_pli, e3_procession…
 @export var id: StringName
@@ -200,6 +202,10 @@ func _rendre_controle() -> void:
 			_camera_precedente.make_current()
 		_camera.enabled = false
 		_rendre_vue_au_messager()
+		var vue := get_viewport().get_camera_2d() if is_inside_tree() else null
+		if vue != null and vue != _camera:
+			vue.reset_smoothing()
+			vue.force_update_scroll()
 	if _messager != null and is_instance_valid(_messager):
 		_messager.bloque = _messager_bloque_avant
 	Cinematiques.masquer_interface(false)
@@ -224,10 +230,32 @@ func _terminer(sautee: bool) -> void:
 	set_process(false)
 	if is_instance_valid(_lecteur) and _lecteur.is_inside_tree():
 		_lecteur.stop(true)  # garde l'état final
+	_voile_de_sortie()
 	_rendre_controle()
 	if une_seule_fois:
 		GameState.marquer_rencontre_vue(drapeau(id))
 	finie.emit(sautee)
+
+
+## Une image noire pendant que la vue repasse au messager : le changement de caméra (zoom,
+## limites, lissage) ne prend effet qu'à l'image suivante, et sans voile on voit une image du
+## lieu hors cadre (QA, sortie de e7_ouverture_sceau). Sous l'écran gravure, au-dessus des plans.
+func _voile_de_sortie() -> void:
+	if not is_inside_tree() or get_tree().root.has_node(^"VoileSortie"):
+		return
+	var voile := CanvasLayer.new()
+	voile.name = "VoileSortie"
+	voile.layer = EtapeBase.COUCHE_GRAVURE - 1
+	var noir := ColorRect.new()
+	noir.color = Color.BLACK
+	noir.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	noir.set_anchors_preset(Control.PRESET_FULL_RECT)
+	voile.add_child(noir)
+	get_tree().root.add_child(voile)
+	# Le voile s'enlève tout seul (tween porté par lui) : la cinématique peut disparaître avant.
+	var retrait := voile.create_tween()
+	retrait.tween_interval(DUREE_VOILE)
+	retrait.tween_callback(voile.queue_free)
 
 
 func _trouver_messager() -> Messager:

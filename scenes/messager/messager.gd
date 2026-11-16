@@ -143,6 +143,9 @@ func borner_camera_rect(rect: Rect2) -> void:
 func activer_camera() -> void:
 	_camera.enabled = true
 	_camera.make_current()
+	# Pas de glissé depuis une position périmée : la vue est tout de suite au bon endroit.
+	_camera.reset_smoothing()
+	_camera.force_update_scroll()
 
 
 func liberer_camera() -> void:
