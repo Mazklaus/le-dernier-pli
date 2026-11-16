@@ -53,10 +53,20 @@ func _set_flag(id: StringName, value: bool) -> void:
 
 
 func _goto_encounter(id: StringName) -> void:
+	poser_etape_de(id)
 	if SceneRouter.has_method(&"aller_rencontre"):
 		SceneRouter.call(&"aller_rencontre", id)
 	else:
 		push_warning("DebugMenu : SceneRouter n'expose pas encore de saut de rencontre")
+## Un saut F1 vers une rencontre pose GameState.etape au numéro de son étape : sans ça, tout ce
+## qui dépend de l'étape (gestes du sceau, usure de Lucidité) reste réglé sur l'étape 1 (QA).
+static func poser_etape_de(id: StringName) -> void:
+	var numero := SceneRouter.numero_etape_de(id)
+	if numero > 0 and GameState.etape != numero:
+		var etat: Dictionary = GameState.vers_dictionnaire()
+		etat["etape"] = numero
+		GameState.depuis_dictionnaire(etat)
+		GameState.etape_changee.emit(numero)
 # --- FIN ADAPTATEUR ---------------------------------------------------------
 
 var _panel: PanelContainer
