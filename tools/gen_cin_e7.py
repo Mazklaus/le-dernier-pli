@@ -19,7 +19,7 @@ e7_descente, 10 s, au début de e7_cloches : quatre plans.
   cin_descente_05  plan 4, 1920 x 1080 : en bas, la lèvre de la grande cloche ferme le ciel ;
                    l'escalier s'enfonce dans un blanc surexposé qui le mange presque.
   cin_descente_06  Tobie qui descend des marches, de profil vers la droite : 4 images de
-                   120 x 200 transparentes, en ligne, pieds en (60, 196) ; à retourner (flip_h)
+                   120 x 200 transparentes, en ligne, pieds en (60, 196) ; sans retournement :
                    il descend toujours vers la droite (la moitié devant de la spirale) ; à mettre
                    à l'échelle par plan (ECHELLES), le long des clés CHEMINS (une marche et une
                    image toutes les 0,2 s ; caché quand l'escalier passe derrière la cloche).
