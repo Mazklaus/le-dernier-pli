@@ -16,7 +16,7 @@ Tobie: Personne ne me demande d'où je viens.
 	Tobie: Tobie.
 	Rose: Alors danse, Tobie. Un seul tour. C'est la règle, le jour d'une noce. [#geste=danser]
 	do Cinematiques.jouer(&"e3_danse_rose")
-	Tobie: Je danse mal. Elle rit quand même. Elle sent la lavande et la poussière du chemin.
+	Tobie: Elle sent la lavande et la poussière du chemin.
 	do GameState.ajouter_marque(&"elle_s_appelait_rose", &"nom_retenu", &"e3_noce")
 - [Parler du front] [#cout_lucidite=1]
 	Tobie: Je dis que là-bas, on n'a plus de pain depuis l'hiver.
