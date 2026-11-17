@@ -299,6 +299,43 @@ def village_tablee(i):   # e6_village_sous_terre (12 s, PR #243 de la DA) : le v
     m=caverne*0.7+feux*0.7+cuilleres*0.55+vapeur
     m=reverb(m,2.2,0.35,seed=351+i)[:L]
     return m*np.clip(t/0.3,0,1)*np.clip((12.0-t)/0.5,0,1)
+def porte_scellee(i):   # e6_porte_scellee (10 s, PR #246 de la DA) : la porte de cire noire, au seuil.
+    #   0-3 s : contre-plongée, panoramique lent vers l'arc : l'air du seuil monte, la cire froide craque une fois.
+    #   3-7 s : devant la porte ; Tobie respire (une image toutes les 0,5 s : inspire, expire). Éloi se penche (3,6 s),
+    #           le bocal touche la pierre (4,4 s : un choc de verre étouffé, l'eau qui bouge), il se redresse (4,7 s).
+    #   7-10 s : Éloi recule sans se retourner, six pas de 7,2 à 9,4 s qui s'éloignent dans l'ombre.
+    #   Rien derrière la porte : aucun bourdon, aucun souffle de la Mère-Cloche, pas de note tenue.
+    L=mk(10.0); t=np.arange(L)/SR
+    air=fftfilt(burst(L,lo=60,hi=400),lo=60,hi=400)*0.5+fftfilt(burst(L,lo=500,hi=2000),lo=500,hi=2000)*0.05
+    air*=0.5+0.5*np.clip((t-0.2)/2.8,0,1)                                                      # le seuil s'ouvre vers l'arc
+    cire=np.zeros(L)
+    for tc,g in ((1.7,0.06),(2.75,0.04)):
+        k=mk(0.06); at(cire,burst(k,lo=1800,hi=6000)*np.exp(-np.arange(k)/SR*70)*g,tc)       # la cire qui se contracte
+    souffle=np.zeros(L)                                                                         # Tobie : inspire puis expire
+    for k in range(8):
+        n=mk(0.5); tt=np.arange(n)/SR; inspire=k%2==0
+        env=np.sin(np.pi*tt/tt[-1])**(1.5 if inspire else 2.5)
+        b=burst(n,lo=500 if inspire else 250,hi=3000 if inspire else 1500)
+        at(souffle,b*env*(0.12 if inspire else 0.15),3.0+k*0.5)
+    geste=np.zeros(L)
+    at(geste,froisse(0.35,600,4000,45)*0.35,3.55)                                               # le manteau d'Éloi qui se plie
+    at(geste,froisse(0.3,600,4000,40)*0.3,4.65)                                                 # et se déplie
+    n=mk(0.5); tt=np.arange(n)/SR
+    verre=fftfilt(rng.standard_normal(n),hi=900)*np.exp(-tt*60)*0.5                              # le cul du bocal sur la pierre
+    verre+=sum(a*np.sin(2*np.pi*f*tt)*np.exp(-tt*k) for f,a,k in ((1730,0.12,45),(3110,0.06,60),(4470,0.03,80)))   # verre épais, étouffé
+    at(geste,verre,4.4)
+    n=mk(0.6); tt=np.arange(n)/SR
+    eau=fftfilt(rng.standard_normal(n),lo=300,hi=1200)*(0.5+0.5*np.sin(2*np.pi*9*tt))*np.exp(-tt*6)*0.08   # l'eau du bocal qui bouge
+    at(geste,eau,4.43)
+    pas=np.zeros(L)
+    for k in range(6):
+        n=mk(0.3); tt=np.arange(n)/SR; g=0.9*(0.72**k)
+        y=fftfilt(rng.standard_normal(n),hi=600-60*k)*np.exp(-tt*45)+burst(n,lo=1200,hi=4000)*np.exp(-tt*60)*0.15
+        at(pas,y*g,7.2+k*0.44+rng.normal(0,0.02))
+    pas=pas*0.5+reverb(pas,2.6,1.0,seed=361+i)[:L]*0.45                                          # il s'efface dans l'ombre
+    m=air*0.6+cire+souffle+geste+pas
+    m=reverb(m,2.4,0.3,seed=371+i)[:L]
+    return m*np.clip(t/0.4,0,1)*np.clip((10.0-t)/0.6,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -318,3 +355,4 @@ save("sfx_danse_tourner",danse_tourner,0.6)    # 10 s pour toute la ciné, lanc�
 save("sfx_barbeles_foncer",barbeles_foncer,0.6)    # 7 s pour toute la ciné, lancé à 0
 save("sfx_crypte_descendre",crypte_descendre,0.6)    # 10 s pour toute la ciné, lancé à 0
 save("sfx_village_tablee",village_tablee,0.6)    # 12 s pour toute la ciné, lancé à 0
+save("sfx_porte_scellee",porte_scellee,0.6)    # 10 s pour toute la ciné, lancé à 0
