@@ -6,7 +6,7 @@ const PLANS := {
 	1: [&"e1_remise_pli", &"e1_sortie_tranchee", &"e1_adieu_jacquot"],
 	2: [&"e2_barbeles_foncer", &"e2_rites_matthieu"],
 	3: [&"e3_procession_nuit", &"e3_priere_champs", &"e3_danse_rose"],
-	4: [&"e4_greffe", &"e4_descente_crypte"],
+	4: [&"e4_greffe", &"e4_descente_crypte", &"e4_sortie_hopital"],
 	5: [&"e5_autre_se_retourne"],
 	6: [&"e6_chute_fissure", &"e6_eboulement", &"e6_village_sous_terre", &"e6_porte_scellee"],
 	7: [&"e7_descente", &"e7_ouverture_sceau", &"e7_mere_cloche", &"e7_moule_brise", &"e7_corde_tiree"],
