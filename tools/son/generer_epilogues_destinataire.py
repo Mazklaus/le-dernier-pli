@@ -120,19 +120,84 @@ def fin_b():   # tout revient : le chœur entier, l'harmonium, les fils, la viel
     v=np.zeros(L_EPI); place(v,vielle(32*B-12*B+10),mk(12*B))
     m=m+nrm(fils)*0.12+nrm(v)*0.18
     return stereo(reverb(m,3.5,0.45,seed=72),0.011)
-def fin_c():   # la résolution, puis les cloches sonnent pour de bon, couvrent tout, et tout s'arrête
-    L=L_EPI+mk(12)
-    m=np.zeros(L); m[:L_EPI]=fin_b()[:,0]*0.6      # le chœur plus bas : les cloches doivent tout couvrir
-    t0=mk(32*B+1.5)                                  # pendant que l'accord final tient encore
-    cl=np.zeros(L)
-    for k in range(18):                               # une volée qui enfle : quatre cloches en ronde
-        f=(D3,D3*0.75,D2*1.5,D2)[k%4]; force=min(1.0,0.25+k*0.06)
-        place(cl,cloche(f,force),t0+mk(k*0.62+rng.normal(0,0.02)))
-    cl=reverb(cl,4.5,0.4,seed=73,hi=6000,circ=False)[:L]
-    m=m+np.tanh(3*nrm(cl))*1.0                      # saturées : une volée pleine, sans pic isolé
-    coupe=t0+mk(18*0.62+2.5); m[coupe:]=0.0       # Tobie meurt sous le son : coupure nette, silence
-    m[coupe-mk(0.01):coupe]*=np.linspace(1,0,mk(0.01))
-    return stereo(m,0.009)
+# fin-c : la ciné « cloches » de la DA (36 s, planche du 17/11), la seule sonnerie du jeu. Grille de coups
+# partagée avec la DA (temps depuis le début de l'épilogue ; le noir de e7_corde_tiree reste muet) :
+#   0-8 s    la grande cloche oscille : un coup à chaque extrémité, toutes les 1,8 s ; les bouchons de cire
+#            claquent (2,6 / 4,4 / 6,0 s), tombent 0,4 s plus tard, et chaque petite cloche entre aussitôt ;
+#   8-18 s   travelling vers le haut : la volée continue, entendue à travers galeries, forêt, champs d'Ilde, tranchée ;
+#   18-26 s  la main de Tobie : la volée revient tout près, puis les coups s'espacent, la corde va seule ;
+#   26-36 s  Lamarre lève la tête : seule la résonance lointaine arrive là-haut, et dure sur le noir final (GD).
+GRANDE_PERIODE=1.8
+CIRE=(2.6,4.4,6.0)
+TRAVELLING=((8.0,"galeries"),(10.5,"foret"),(13.0,"champs"),(15.5,"tranchee"),(18.0,"main"))   # paliers DA : 10-11, 12,5-13,5, 15-16 s
+DERNIERS_COUPS=((18.0,1.0),(19.9,0.75),(22.0,0.5),(24.4,0.3))   # la corde va et vient seule
+def pan(x,p): a=(p+1)*np.pi/4; return np.stack([x*np.cos(a),x*np.sin(a)],1)
+def cire_claque():   # le bouchon de cire noire se fend : un craquement sec ; il tombe sur la pierre 0,4 s plus tard
+    k=mk(0.6); y=np.zeros(k); c=mk(0.05)
+    for j in range(3): place(y,burst(c,lo=2500,hi=8000)*np.exp(-np.arange(c)/SR*90)*(1-0.3*j),mk(j*0.018))
+    t=mk(0.12); tt=np.arange(t)/SR; place(y,(burst(t,hi=600)*0.6+np.sin(2*np.pi*180*tt))*np.exp(-tt*45)*0.5,mk(0.4))
+    return y
+def fin_c():   # son propre hasard (graine 1922), puis les tirages de l'ancienne fin-c : fin-d et fin-e restent identiques
+    global rng
+    principal=rng; rng=np.random.default_rng(1922)
+    try: y=_fin_c()
+    finally: rng=principal
+    _tirages_fin_c_v1()
+    return y
+def _tirages_fin_c_v1():   # l'ancienne fin-c (73 s, avant la ciné), rejouée pour ses seuls tirages ; le résultat est jeté
+    L=L_EPI+mk(12); fin_b(); t0=mk(32*B+1.5); cl=np.zeros(L)
+    for k in range(18):
+        f=(D3,D3*0.75,D2*1.5,D2)[k%4]; place(cl,cloche(f,1.0),t0+mk(k*0.62+rng.normal(0,0.02)))
+def _fin_c():
+    L=mk(41); t=np.arange(L)/SR
+    proche=np.zeros((L,2))
+    # la grande cloche : le battant frappe à chaque extrémité, gauche puis droite
+    n=0; tc=0.0
+    while tc<18.0-1e-6:
+        c=pan(cloche(D3,1.0,12.0),-0.3 if n%2==0 else 0.3)
+        place(proche[:,0],c[:,0],mk(tc)); place(proche[:,1],c[:,1],mk(tc))
+        n+=1; tc=n*GRANDE_PERIODE
+    for tc,force in DERNIERS_COUPS:
+        c=pan(cloche(D3,force,12.0),0.3 if round(tc/GRANDE_PERIODE)%2 else -0.3)
+        place(proche[:,0],c[:,0],mk(tc)); place(proche[:,1],c[:,1],mk(tc))
+    # les petites cloches : cire qui claque, qui tombe, puis des coups courts sans balancement
+    for j,(tcire,f,p) in enumerate(zip(CIRE,(D3*2,D3*2*2**(4/12),D3*3),(-0.6,0.6,0.1))):
+        cc=pan(cire_claque()*0.5,p); place(proche[:,0],cc[:,0],mk(tcire)); place(proche[:,1],cc[:,1],mk(tcire))
+        tc=tcire+0.7; k=0
+        while tc<20.0:
+            c=pan(cloche(f,0.45*(1.0 if tc<18.5 else 0.6),5.0),p)
+            place(proche[:,0],c[:,0],mk(tc)); place(proche[:,1],c[:,1],mk(tc))
+            k+=1; tc=tcire+0.7+k*0.9+rng.normal(0,0.03)
+    # le Cantique se pose encore dessous : l'accord final de la résolution, avalé par la volée
+    choeur=fin_b()[mk(28*B):,0]; choeur=choeur[:mk(12)]*np.linspace(1,0,mk(12))**1.5
+    proche[:len(choeur)]+=stereo(nrm(choeur)*0.25,0.011)
+    proche=np.stack([reverb(proche[:,c],4.5,0.4,seed=73+c,hi=6000,circ=False)[:L] for c in (0,1)],1)
+    proche=np.tanh(2.5*nrm(proche))                  # une volée pleine, saturée, sans pic isolé
+    # ce que le travelling entend : la même volée, à travers chaque décor
+    def couleur(x,lieu):
+        if lieu=="galeries": y=[fftfilt(reverb(x.mean(1),2.5,0.6,seed=81,hi=900),hi=400)]*2; g=0.8   # à travers la terre : plus de côtés
+        elif lieu=="foret":  y=[reverb(fftfilt(x[:,c],hi=2500),3.0,0.6,seed=83+c) for c in (0,1)]; g=0.6
+        elif lieu=="champs": y=[fftfilt(x[:,c],lo=80,hi=5000) for c in (0,1)]; g=0.45
+        elif lieu=="tranchee": y=[reverb(fftfilt(x[:,c],lo=120,hi=1500),2.0,0.7,seed=85+c) for c in (0,1)]; g=0.2
+        else: return x
+        return nrm(np.stack(y,1))*g
+    def fenetre(a,b,xa=0.4,xb=None):   # 1 entre a et b, fondus centrés de xa (entrée) et xb (sortie) secondes
+        xb=xa if xb is None else xb
+        return np.clip((t-a+xa/2)/xa,0,1)*np.clip((b-t+xb/2)/xb,0,1)
+    m=proche*fenetre(-1,8.0,0.4,0.1)[:,None]
+    bornes=[a for a,_ in TRAVELLING]
+    for (a,lieu),b in zip(TRAVELLING[:-1],bornes[1:]):   # coupes sèches à 8 et 18 s, fondus d'1 s pendant chaque palier
+        m+=couleur(proche,lieu)*fenetre(a,b,0.1 if a==8.0 else 1.0,0.1 if b==18.0 else 1.0)[:,None]
+    m+=proche*(fenetre(18.0,27.0,0.1,1.0)*np.clip((27.0-t)/3.0,0,1)**0.5)[:,None]    # la main : tout près, puis ça s'éteint
+    # Lamarre : la résonance arrive là-haut, très loin, avec le vent ; elle tient sur le noir final
+    n=L-mk(25.5); tt=np.arange(n)/SR
+    res=sum(a*np.sin(2*np.pi*D3*r*tt+rng.uniform(0,6)) for r,a in ((0.5,1),(1,0.6),(1.2,0.3),(2,0.15)))
+    res=fftfilt(res*np.clip(tt/1.5,0,1)*np.exp(-tt/8.0),hi=700)
+    vent=fftfilt(colored(n,1.4),lo=60,hi=900)*np.clip(tt/2,0,1)
+    loin=np.stack([reverb(nrm(res)*0.32+nrm(vent)*0.05,3.0,0.6,seed=87+c) for c in (0,1)],1)
+    loin*=np.clip((L-mk(1.0)-mk(25.5)-np.arange(n))/mk(3.0),0,1)[:,None]**2   # éteint vers 40 s, puis le silence
+    m[mk(25.5):]+=loin
+    return m
 def fin_d():   # l'harmonium seul, qui manque d'air ; il se brise à la septième mesure
     def souffle(b): return 1.0 if b<4 else max(0.2,1.0-(b-3)*0.25)
     m=jouer(MEL,ACC,L_EPI,[(0,0.0,'o')],harmo=1.0,arret=26,souffle_harmo=souffle)

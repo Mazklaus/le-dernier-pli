@@ -3,14 +3,16 @@
 #           (corrélation décalée > 0,95, cas de stereo() dans les générateurs) ou déjà mono ;
 #   mus_* : quality 3, en mono depuis le 15/11 (réserve de budget, ~3 Mo) : le mélange L+R est
 #           remonté à l'énergie de la stéréo (les canaux décorrélés perdaient 3 à 4,5 dB), crête ≤ -1 dBFS.
+#           Sauf STEREO_GARDEE (mus_destinataire_fin-c, la sonnerie), en stéréo. Le Cantique, dans toutes
+#           ses autres versions, reste en mono q3 (décision du GD du 17/11).
 #   sfx_*, vox_* : quality 3, en Ogg depuis le 17/11 (QOA en WAV avant : ~2 fois plus lourd).
-# Exception du Game Director : le Cantique du Pli (toutes versions) et la sonnerie de l'épilogue
-# « cloches » restent en stéréo et en qualité actuelle ; ce sont des mus_, que ce script laisse en q3.
 # Usage : python3 encoder_ogg.py <dossier des .wav> <repo>/assets/audio
 import sys, os, glob, subprocess, tempfile, numpy as np, scipy.io.wavfile as wf
 QUALITE = {"amb": 0, "mus": 3, "sfx": 3, "vox": 3}
 SEUIL_FAUSSE_STEREO = 0.95
 MONO_FORCE = {"mus"}
+# Exception du GD (17/11) : la seule sonnerie du jeu garde sa stéréo (la grande cloche oscille d'un côté à l'autre).
+STEREO_GARDEE = {"mus_destinataire_fin-c"}
 CRETE_MAX = 10 ** (-1 / 20)
 
 def fausse_stereo(x):
@@ -34,7 +36,7 @@ def encoder(wav, sortie):
     if famille not in QUALITE:
         return
     sr, x = wf.read(wav)
-    mono = x.ndim == 1 or famille in MONO_FORCE or (famille == "amb" and fausse_stereo(x))
+    mono = x.ndim == 1 or (famille in MONO_FORCE and nom not in STEREO_GARDEE) or (famille == "amb" and fausse_stereo(x))
     source = wav
     if mono and x.ndim == 2 and famille in MONO_FORCE:
         source = mixage_mono(sr, x)
