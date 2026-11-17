@@ -10,7 +10,8 @@ Tobie: Sa croix, par-dessus celle de Cassien. Son pouce appuie fort.
 if GameState.possede_marque(&"recousu")
 	Anselme: Il te va bien. Saint Ivo est content, je le sais.
 Anselme: Va. Et ne te salis pas trop en route.
-Tobie: La porte se referme derrière moi. Dehors, la lumière est blanche. Je sors le pli. [#sortie=anselme]
+do Cinematiques.jouer(&"e4_sortie_hopital")
+Tobie: Je sors le pli. [#sortie=anselme]
 - [Lire en transparence] [if GameState.peut_lire_ligne() /] [#cout_huile=1, #sans_prelevement]
 	=> lecture
 - [Le garder fermé]
