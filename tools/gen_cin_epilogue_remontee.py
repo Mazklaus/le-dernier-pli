@@ -5,7 +5,8 @@ l'utilisateur : des images faites exprès pour la ciné ; seule la gravure e est
 
   P1  cin_epi-e-galerie (1920 x 1300) : une galerie qui monte en biais vers une bouche de jour,
       étayée ; la caméra remonte avec eux. cin_epi-e-enfoui : un Enfoui qui grimpe, encapuchonné,
-      la toile pâle, 4 images ; la seconde rangée est Tobie, le bout de ruban au poignet (grille
+      la toile pâle, 4 images ; la seconde rangée est Tobie : sans ruban (sceau ouvert), on le
+      reconnaît à sa sacoche vide et à la seule lanterne, éteinte (grille
       4 x 2, 240 x 360, les pieds en PIED).
   P2  cin_epi-e-mains (1920 x 800) : ses deux mains ouvertes, recousues (couture noire en travers
       des paumes) ; cin_epi-e-fermer : elles se ferment à demi puis se rouvrent, 2 images
@@ -15,7 +16,7 @@ l'utilisateur : des images faites exprès pour la ciné ; seule la gravure e est
   P4  cin_epi-e-matin (1920 x 800) : le petit jour, un parapet de sacs, un soldat de face, il
       siffle ; cin_epi-e-epauler : il lève le fusil, l'épaule, vise, 6 images (grille 3 x 2 :
       image = pose x 2 + lèvres). Le noir tombe sur la dernière note : aucun coup n'est montré.
-Le rouge n'est que le ruban. Rien ne se compte : la colonne sort du noir et y rentre.
+Aucun rouge : à sceau ouvert, le ruban est tombé (e7_ouverture_sceau). Rien ne se compte : la colonne sort du noir et y rentre.
 
 Usage : python3 tools/gen_cin_epilogue_remontee.py
 """
@@ -25,7 +26,6 @@ import math
 import random
 
 from gen_cin_e1 import DST, W, bande, svg
-from gen_cin_epilogues import ruban
 from gen_decors_e1_surface import ENCRE, LAVIS, MINE, PAPIER
 
 ST = f'stroke="{ENCRE}" stroke-linejoin="round" stroke-linecap="round"'
@@ -88,7 +88,7 @@ def galerie() -> str:
 
 def enfoui(k: int, tobie: bool) -> str:
     """Un Enfoui qui grimpe vers la droite, penché, le capuchon baissé, la toile pâle qui s'effrange
-    sur les genoux ; k : le pas (4 images). Tobie porte le bout de ruban au poignet."""
+    sur les genoux ; k : le pas (4 images). Tobie : la sacoche vide et la lanterne éteinte, aucun ruban."""
     px, py = PIED
     ph = TAU * k / 4
     bob = -5 * abs(math.sin(ph))
@@ -111,6 +111,16 @@ def enfoui(k: int, tobie: bool) -> str:
     o.append(f'<path d="M150 {98 + bob:.0f} Q186 {124 + bob:.0f} 178 {256 + bob:.0f} L{ourlet} Q86 {160 + bob:.0f} 120 {104 + bob:.0f} Z" fill="{PAPIER}" {ST} stroke-width="4"/>'
              f'<path d="M120 {110 + bob:.0f} Q96 {170 + bob:.0f} 90 {254 + bob:.0f} L112 {256 + bob:.0f} Q112 {180 + bob:.0f} 130 {116 + bob:.0f} Z" fill="{CLAIR}"/>'
              f'<path d="M150 {130 + bob:.0f} Q160 {190 + bob:.0f} 150 {250 + bob:.0f}" fill="none" stroke="{ENCRE}" stroke-width="2"/>')
+    if tobie:
+        # Tobie, sans ruban (il est tombé à l'ouverture du sceau) : la sacoche vide, plate, sur la
+        # hanche, et le seul à porter une lanterne, éteinte, au bout du bras ballant
+        o.append(f'<path d="M150 {104 + bob:.0f} L104 {214 + bob:.0f}" stroke="{ENCRE}" stroke-width="5"/>'
+                 f'<path d="M86 {200 + bob:.0f} L124 {196 + bob:.0f} L126 {226 + bob:.0f} Q104 {232 + bob:.0f} 88 {228 + bob:.0f} Z" fill="{LAVIS}" {ST} stroke-width="3"/>')
+        lx, ly = 110 - 14 * math.cos(ph), 240 + bob
+        o.append(f'<path d="M{lx:.0f} {ly - 10:.0f} L{lx + 2:.0f} {ly + 6:.0f}" stroke="{ENCRE}" stroke-width="3"/>'
+                 f'<path d="M{lx - 12:.0f} {ly + 6:.0f} h28 l-3 6 h-22 Z M{lx - 10:.0f} {ly + 12:.0f} h24 v30 h-24 Z" fill="{LAVIS}" {ST} stroke-width="3"/>'
+                 f'<path d="M{lx - 4:.0f} {ly + 16:.0f} v22 M{lx + 8:.0f} {ly + 16:.0f} v22" stroke="{MINE}" stroke-width="2"/>'
+                 f'<path d="M{lx - 12:.0f} {ly + 42:.0f} h28 l-3 6 h-22 Z" fill="{ENCRE}"/>')
     # le capuchon baissé vers la pente, le creux noir du visage tourné vers le sol
     hx, hy = 168, 78 + bob
     o.append(f'<path d="M{hx - 34} {hy + 22:.0f} Q{hx - 36} {hy - 30:.0f} {hx + 4} {hy - 34:.0f} Q{hx + 40} {hy - 30:.0f} {hx + 40} {hy + 8:.0f} '
@@ -121,8 +131,6 @@ def enfoui(k: int, tobie: bool) -> str:
     o.append(f'<path d="M158 {126 + bob:.0f} Q190 {150 + bob:.0f} {mx:.0f} {my:.0f}" fill="none" stroke="{ENCRE}" stroke-width="20" stroke-linecap="round"/>'
              f'<path d="M158 {126 + bob:.0f} Q190 {150 + bob:.0f} {mx:.0f} {my:.0f}" fill="none" stroke="{PAPIER}" stroke-width="13" stroke-linecap="round"/>'
              f'<path d="M{mx:.0f} {my:.0f} l12 -6 M{mx:.0f} {my:.0f} l14 2 M{mx:.0f} {my:.0f} l10 9" stroke="{ENCRE}" stroke-width="4" stroke-linecap="round"/>')
-    if tobie:
-        o.append(ruban(f"M{mx - 16:.0f} {my - 8:.0f} q4 10 2 16 M{mx - 14:.0f} {my + 6:.0f} q-6 10 -14 12", 4))
     # un peu de terre sur les épaules
     r = random.Random(40 + k)
     for _ in range(9):
@@ -152,7 +160,7 @@ def couture(x0: float, y0: float, x1: float, y1: float, pas: float = 14) -> str:
     return "".join(o)
 
 
-def main_recousue(x: float, y: float, miroir: bool, ferme: bool, avec_ruban: bool) -> str:
+def main_recousue(x: float, y: float, miroir: bool, ferme: bool) -> str:
     """Une main ouverte, paume vers le ciel, les doigts vers le haut ; la manche de toile pâle sort
     du bas du cadre. La paume et le poignet cousus. ferme : les doigts repliés à demi."""
     doigts = []
@@ -187,7 +195,6 @@ def main_recousue(x: float, y: float, miroir: bool, ferme: bool, avec_ruban: boo
             f'<path d="M-20 14 Q30 34 96 26 M-40 44 Q20 62 98 54" fill="none" stroke="{ENCRE}" stroke-width="1.4"/>'
             # les coutures : en travers de la paume, et le tour du poignet
             + couture(-96, 86, 84, 10, 12) + couture(-112, 8, -108, 94, 11)
-            + (ruban("M-150 0 Q-160 50 -146 102 M-150 30 q-30 6 -44 26", 5) if avec_ruban else "")
             + '</g>')
 
 
@@ -204,7 +211,7 @@ def fond_mains() -> str:
 
 
 def mains(ferme: bool) -> str:
-    return main_recousue(*MAIN_G, False, ferme, True) + main_recousue(*MAIN_D, True, ferme, False)
+    return main_recousue(*MAIN_G, False, ferme) + main_recousue(*MAIN_D, True, ferme)
 
 
 # --- P3 : la terre qui glisse (sur la gravure e : silhouette en (1040, 426), parapet y 420) --------

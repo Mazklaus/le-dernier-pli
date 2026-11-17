@@ -301,7 +301,7 @@ def epilogue_d() -> str:
 def epilogue_e() -> str:
     """Vu du fond de la tranchée, en contre-plongée : le parapet coupe le cadre, le ciel blanc
     au-dessus (contre-jour). Une silhouette pâle sort de la terre au bord, de dos, tête basse sous le
-    capuchon ; il lui reste un bout de ruban au poignet. Au premier plan, le canon d'un fusil levé,
+    capuchon ; plus de ruban : il est tombé à l'ouverture du sceau. Au premier plan, le canon d'un fusil levé,
     hors de net : contour doublé, jamais de flou."""
     r = rnd(75)
     par = 420                                   # bord du parapet, vu d'en bas
@@ -323,11 +323,10 @@ def epilogue_e() -> str:
     out.append(f'<path d="M{sx + 4} {sy - 334} Q{sx + 12} {sy - 280} {sx + 2} {sy - 228}" {ST} stroke-width="1.6"/>')
     out.append(f'<path d="M{sx + 56} {sy - 226} Q{sx + 100} {sy - 214} {sx + 118} {sy - 176} Q{sx + 136} {sy - 120} {sx + 132} {sy} L{sx + 70} {sy} Q{sx + 80} {sy - 120} {sx + 56} {sy - 226} Z" fill="url(#v1)"/>')
     out.append(f'<path d="M{sx - 20} {sy - 190} Q{sx - 10} {sy - 100} {sx - 30} {sy} M{sx + 40} {sy - 170} Q{sx + 50} {sy - 90} {sx + 36} {sy}" {ST} stroke-width="1.6"/>')
-    # bras gauche tendu vers le parapet, la main agrippée à la terre ; le ruban au poignet
+    # bras gauche tendu vers le parapet, la main agrippée à la terre, le poignet nu
     BRAS = (f'<path d="M{sx - 112} {sy - 170} Q{sx - 200} {sy - 110} {sx - 270} {sy + 50} L{sx - 240} {sy + 62} Q{sx - 176} {sy - 70} {sx - 100} {sy - 128} Z" fill="{PAPIER}" {ST} stroke-width="3.6"/>'
             f'<path d="M{sx - 300} {sy + 70} Q{sx - 280} {sy + 44} {sx - 250} {sy + 46} Q{sx - 222} {sy + 52} {sx - 224} {sy + 78} Z" fill="{PAPIER}" {ST} stroke-width="3.4"/>'
-            f'<path d="M{sx - 300} {sy + 70} l-14 26 M{sx - 284} {sy + 76} l-8 30 M{sx - 266} {sy + 80} l-2 30 M{sx - 248} {sy + 80} l6 28" {ST} stroke-width="5" stroke-linecap="round"/>'
-            + ruban(f"M{sx - 262} {sy + 22} q16 8 30 6 M{sx - 246} {sy + 30} q4 20 -6 36", 6))
+            f'<path d="M{sx - 300} {sy + 70} l-14 26 M{sx - 284} {sy + 76} l-8 30 M{sx - 266} {sy + 80} l-2 30 M{sx - 248} {sy + 80} l6 28" {ST} stroke-width="5" stroke-linecap="round"/>')
     # la terre qui tombe des épaules et du bras
     for _ in range(46):
         dx, dy = r.randint(-150, 150), r.randint(-220, -10)
