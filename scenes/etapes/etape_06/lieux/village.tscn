@@ -157,18 +157,18 @@ theme_override_font_sizes/font_size = 24
 text = "village_lanternes"
 
 [node name="e6_tablee" parent="Rencontres" instance=ExtResource("1")]
-position = Vector2(2420, 900)
+position = Vector2(2920, 900)
 rencontre_id = &"e6_tablee"
 compagnons = {
-&"femme": Vector2(-280, 0),
-&"enfant": Vector2(-140, 0),
-&"mere": Vector2(0, 0),
-&"fillette": Vector2(140, 0)
+&"femme": Vector2(-780, 0),
+&"enfant": Vector2(-640, 0),
+&"mere": Vector2(-500, 0),
+&"fillette": Vector2(-360, 0)
 }
 dialogue = ExtResource("3")
 libelle = "S'approcher de la table"
 une_seule_fois = true
-metadata/note_level_design = "La tablée qui attendait Tobie, au centre (comme la noce)"
+metadata/note_level_design = "La tablée qui attendait Tobie : il s'arrête au bout, derrière la chaise vide (x 2740) et le couvert (détail, x 2700), jamais devant un villageois"
 
 [node name="Visuel" type="ColorRect" parent="Rencontres/e6_tablee"]
 offset_left = -96.0

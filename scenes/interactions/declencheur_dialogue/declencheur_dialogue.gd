@@ -61,6 +61,8 @@ signal geste_demande(cible: StringName, geste: StringName)
 @export var ecart_geste_tobie: float = 60.0
 
 const TAG_ENTREE := "entree"
+## [#sortie=<nom>] : le personnage s'efface (Anselme reste derrière la porte qui se referme).
+const TAG_SORTIE := "sortie"
 ## Cible [#geste=tous:<geste>] : tous les personnages dessinés de la rencontre, en désordre.
 const TOUS := &"tous"
 ## Décalage entre deux personnages pour un geste de tous (« un cliquetis, pas un ballet »).
@@ -152,8 +154,26 @@ func _sur_replique(ligne: DialogueLine) -> void:
 
 ## Fait apparaître le personnage nommé par [#entree=<nom>] (voir `entrees`). Vrai s'il entre.
 func entrer_replique(tags: PackedStringArray) -> bool:
+	var sortant := OptionsDialogue.valeur_tag(tags, TAG_SORTIE)
+	if sortant != "":
+		faire_sortir(StringName(sortant))
 	var nom := OptionsDialogue.valeur_tag(tags, TAG_ENTREE)
 	return nom != "" and faire_entrer(StringName(nom))
+
+
+## Efface en fondu un personnage dessiné de la rencontre (principal, compagnon ou entrant).
+## Faux s'il n'existe pas ou n'est déjà plus là.
+func faire_sortir(nom_personnage: StringName) -> bool:
+	var sortant := personnage_nomme(nom_personnage)
+	if sortant == null or not sortant.visible:
+		return false
+	if Reglages.valeur(&"effets_attenues") or not is_inside_tree():
+		sortant.visible = false
+	else:
+		var t := create_tween()
+		t.tween_property(sortant, "modulate:a", 0.0, DUREE_ENTREE)
+		t.tween_callback(sortant.hide)
+	return true
 
 
 ## Montre un personnage de `entrees` en fondu (à l'instant si les effets sont atténués).
