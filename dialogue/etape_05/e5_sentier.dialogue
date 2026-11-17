@@ -29,13 +29,13 @@ do GameState.marquer_rencontre_vue(&"e5_entaille")
 
 do Cinematiques.jouer(&"e5_boucle")
 if GameState.rencontre_vue(&"e5_entaille_faite")
-	Tobie: C'est ma croix. Mon entaille, toute fraîche. Je suis revenu au même endroit.
-	Tobie: Et juste dessous, une autre encoche. Plus vieille, noircie. Faite du même geste que la mienne.
+	Tobie: C'est ma croix. Je suis revenu au même endroit.
+	Tobie: L'encoche d'en dessous est faite du même geste que la mienne.
 	Tobie: Quelqu'un s'est perdu ici avant moi. Et il a eu la même idée.
 else
-	Tobie: Encore une croix. Celle-ci, ou une autre. Je tourne depuis une heure, peut-être plus.
+	Tobie: Je tourne depuis une heure, peut-être plus.
 	do GameState.appliquer_effets({&"vivres": -1})
-	Tobie: Une encoche sur le bois, vieille, noircie. Je la reconnais. Je suis déjà passé ici.
+	Tobie: Cette encoche, je la reconnais. Je suis déjà passé ici.
 	Tobie: Le sentier tourne en rond. Il faut que j'en sorte.
 
 => END
