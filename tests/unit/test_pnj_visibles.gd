@@ -57,6 +57,7 @@ func test_la_tablee_et_le_vieux_de_la_noce_sont_a_table() -> void:
 	assert_eq(gauche_a_droite, tries, "femme, enfant, mère, fillette")
 	var noce := _declencheur("res://scenes/etapes/etape_03/etape_03.tscn", "Surface/RuePlace/e3_noce")
 	assert_true(noce.compagnons.has(&"vieux"))
+	assert_true(noce.compagnons.has(&"marie"), "le marié, à droite du violoneux")
 	var texte := FileAccess.get_file_as_string("res://dialogue/etape_03/e3_noce.dialogue")
 	assert_true(texte.contains("[#geste=vieux:parler]"))
 
