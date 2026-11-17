@@ -13,6 +13,10 @@ const POINT_DE_DEPART: StringName = &"entree_oree"
 const CROIX: StringName = &"e5_sentier"
 ## Posée par premier_passage si Tobie entaille la croix (dialogue de la Narrative).
 const ENTAILLE_FAITE: StringName = &"e5_entaille_faite"
+## Fin de la rencontre de l'Autre : la ciné de la boucle s'enchaîne aussitôt (playtest du 17/11),
+## Tobie se retrouve devant la croix (repère PlaceTobie de la ciné) et la reconnaît.
+const AUTRE: StringName = &"e5_autre"
+const CINE_BOUCLE: StringName = &"e5_boucle"
 
 
 func _ready() -> void:
@@ -26,6 +30,9 @@ func _ready() -> void:
 		boucle.franchi.connect(_sur_retour_de_boucle)
 	GameState.rencontre_vue_marquee.connect(_sur_rencontre_vue)
 	maj_entaille()
+	var autre := trouver_declencheur(AUTRE)
+	if autre != null:
+		autre.dialogue_termine.connect(_sur_autre_termine)
 
 
 func _exit_tree() -> void:
@@ -43,6 +50,21 @@ func maj_entaille() -> void:
 	var entaille := croix.get_node_or_null("Entaille") as CanvasItem if croix != null else null
 	if entaille != null:
 		entaille.visible = GameState.rencontre_vue(ENTAILLE_FAITE)
+
+
+func _sur_autre_termine(_declencheur: DeclencheurDialogue) -> void:
+	enchainer_boucle.call_deferred()
+
+
+## Joue la ciné de la boucle (elle replace Tobie devant la croix), puis lance la croix (debut),
+## dont l'appel à la même ciné ne rejoue rien. Rien si la croix n'est pas prête.
+func enchainer_boucle() -> void:
+	var croix := trouver_declencheur(CROIX)
+	if croix == null or not croix.est_disponible() or croix.est_verrouille():
+		return
+	await Cinematiques.jouer(CINE_BOUCLE)
+	if is_instance_valid(croix) and croix.is_inside_tree() and croix.est_disponible():
+		croix.interagir(trouver_messager())
 
 
 ## Au retour devant la croix, Tobie reconnaît l'endroit sans que le joueur ait à appuyer.

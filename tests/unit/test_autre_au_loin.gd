@@ -43,3 +43,18 @@ func test_il_est_place_au_bout_de_la_boucle() -> void:
 	assert_not_null(autre)
 	if autre != null:
 		assert_eq(autre.declencheur, NodePath("../e5_autre"))
+
+
+func test_il_s_en_va_a_la_fin_de_la_rencontre() -> void:
+	var lieu := Node2D.new()
+	add_child_autofree(lieu)
+	var d: DeclencheurDialogue = SceneDeclencheur.instantiate()
+	d.name = "e5_autre"
+	lieu.add_child(d)
+	var autre := AutreAuLoin.new()
+	autre.declencheur = NodePath("../e5_autre")
+	lieu.add_child(autre)
+	d.dialogue_commence.emit(d)
+	assert_eq(autre.etat, AutreAuLoin.Etat.PRESENT)
+	d.dialogue_termine.emit(d)
+	assert_eq(autre.etat, AutreAuLoin.Etat.DISSIPE)

@@ -24,6 +24,9 @@ const DUREE_DISSIPATION := 1.5
 @export var recul_max: float = 120.0
 ## Acculée, elle se dissout si Tobie arrive plus près que ça (px).
 @export var distance_fuite: float = 300.0
+## Elle n'est plus là à la fin de ce drapeau (la ciné où elle se retourne puis repart), ni à la
+## fin de la rencontre (playtest du 17/11 : elle restait à l'écran après).
+@export var disparait_apres: StringName = &"cine_e5_autre_se_retourne"
 
 var etat: Etat = Etat.CACHE
 var dessin: Personnage = null
@@ -42,6 +45,16 @@ func _ready() -> void:
 	var d := get_node_or_null(declencheur) as DeclencheurDialogue
 	if d != null:
 		d.dialogue_commence.connect(func(_d: DeclencheurDialogue) -> void: apparaitre())
+		d.dialogue_termine.connect(func(_d: DeclencheurDialogue) -> void: dissiper())
+	GameState.rencontre_vue_marquee.connect(_sur_rencontre_vue_marquee)
+
+
+func _sur_rencontre_vue_marquee(id: StringName) -> void:
+	if id == disparait_apres and etat == Etat.PRESENT:
+		# La ciné couvre l'écran : elle disparaît sans fondu, le jeu reprend sans elle.
+		etat = Etat.DISSIPE
+		set_process(false)
+		visible = false
 
 
 ## La position où elle se tient : à `ecart` devant Tobie, sans dépasser le bout du sentier.
