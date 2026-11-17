@@ -1,7 +1,7 @@
 # Étape 3, rencontre 2 : Maîtresse Ilde, la maire. Obligatoire, elle ouvre la nuit.
 # Objet pain blanc (celui que Jacquot attend : le manger ou le troquer trahit « Promis à Jacquot »).
 # Promettre : Promesse « Promis à Ilde », résolue la nuit même (e3_procession).
-# Titre « lit » : réplique facultative avant le fondu du passage vers la chambre (requiert e3_ilde).
+# Le passage vers la chambre (volets, porte, clé) est montré par la ciné e3_cle_tourne, sans réplique.
 
 ~ debut
 
@@ -23,12 +23,5 @@ Ilde: Quoi que tu entendes. Promets-le-moi.
 	Tobie: Je n'ai pas parlé du front.
 - [Ne rien promettre] Je ne promets plus rien à personne.
 	Ilde: Alors je fermerai à clé. Ce sera plus simple pour tout le monde.
-
-=> END
-
-~ lit
-
-Tobie: Un vrai lit, des draps qui sentent le savon. Ilde ferme les volets elle-même.
-Tobie: J'entends la clé tourner. Une fois. Deux fois.
 
 => END
