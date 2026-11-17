@@ -7,6 +7,8 @@ extends Interactif
 ## On peut poser ce script directement sur une Area2D existante de la maquette.
 ## `fondu_noir` > 0 : fondu au noir, téléportation et signal `franchi` dans le noir (l'étape
 ## peut y basculer jour/nuit, éclairage, ambiances), puis retour de l'image.
+## `cinematique` : jouée avant le déplacement (ex. la chute dans la fissure de l'étape 6, qui
+## suit directement le choix « se laisser tomber ») ; le messager arrive à la fin du plan.
 
 signal franchi(passage: Passage, vers: StringName)
 
@@ -20,6 +22,8 @@ signal franchi(passage: Passage, vers: StringName)
 ## Bruitage du passage (ex. sfx_echelle_monter pour une échelle) ; vide : l'étape choisit
 ## l'escalier ou la toile selon le changement de niveau (EtapeBase.son_passage).
 @export var son: String = ""
+## Optionnel : identifiant de la cinématique jouée avant le déplacement.
+@export var cinematique: StringName = &""
 
 const COUCHE_FONDU := 20
 
@@ -60,6 +64,17 @@ func trouver_arrivee() -> Marker2D:
 func interagir(messager: Messager) -> void:
 	var cible := trouver_arrivee()
 	if cible == null or not est_disponible():
+		return
+	if cinematique != &"":
+		_en_fondu = true
+		await Cinematiques.jouer(cinematique)
+		_en_fondu = false
+		if not is_instance_valid(messager) or not is_inside_tree():
+			return
+		# La ciné cache tout l'écran jusqu'à sa dernière image : le messager arrive dans la
+		# même image, sans retour visible au lieu de départ.
+		messager.teleporter(cible.global_position)
+		franchi.emit(self, vers)
 		return
 	if fondu_noir <= 0.0:
 		messager.teleporter(cible.global_position)
