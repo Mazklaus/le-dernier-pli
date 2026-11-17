@@ -106,11 +106,84 @@ def jouer(mel,accords,L,pupitres,harmo=1.0,arret=None,souffle_harmo=None):
 L_EPI=mk(32*B+16)    # le thème, sa note finale tenue, puis la queue de réverbération
 PUPITRES=[(0,1,'o'),(0,0.9,'o'),(0,0.8,'u'),(-12,0.7,'o'),(-12,0.6,'u')]
 
-def fin_a():   # tout bas : un chœur réduit, bouche presque fermée, puis le battant dans le vide
-    m=jouer(MEL,ACC[:7]+[MAJEUR],L_EPI,[(0,1,'u'),(-12,0.6,'m')],harmo=0.5)*0.6
-    fin=np.zeros(L_EPI); place(fin,battant_dans_le_vide(),mk(32*B+5))
-    m=m+nrm(fin)*0.5
-    return stereo(reverb(m,3.5,0.5,seed=71),0.011)
+# fin-a : l'épilogue animé de la DA (32 s, quatre plans coupés à 8, 16 et 24 s, PR #223). Rien ne sonne :
+#   0-8 s    la corde se balance sous la bouche de la cloche (période 3,2 s) : le chanvre grince à chaque bout ;
+#   8-16 s   les pelletées de terre par-dessus le parapet, deux casques décalés ;
+#   16-24 s  un soldat siffle le Cantique ; la larme paraît à 19,5 s, le sifflet se casse quand elle coule (21,5 s) ;
+#   24-32 s  la Mère-Cloche murmure des noms (24,6-30 s), la lampe se rallume (26,5 s), ses doigts s'arrêtent
+#            sur un nom (28,5 s) : le chœur se résout tout bas, et tient sur le fondu au papier.
+PERIODE_CORDE=3.2
+PELLETEES=((8.4,9.9,11.4,12.9,14.4),(9.1,10.6,12.1,13.6,15.1))   # deux casques
+LARME,LARME_COULE=19.5,21.5
+MURMURE=(24.6,30.0); LAMPE=26.5; NOM=28.5
+def corde_grince(force=1.0):   # le chanvre qui tourne sur son anneau, au bout du balancement
+    n=mk(0.5); tt=np.arange(n)/SR; f=np.linspace(380,300,n)*(1+0.03*np.sin(2*np.pi*23*tt))
+    y=fftfilt(np.sign(np.sin(2*np.pi*np.cumsum(f)/SR))*burst(n,lo=300,hi=3000)*0.3+burst(n,lo=800,hi=2500)*0.2,lo=250,hi=2200)
+    return y*np.sin(np.pi*tt/tt[-1])**2*force
+def pelletee():   # la terre lancée qui retombe sur la toile et les planches
+    n=mk(0.9); tt=np.arange(n)/SR; y=np.zeros(n)
+    k=mk(0.08); place(y,burst(k,hi=500)*np.exp(-np.arange(k)/SR*30),0)                      # le choc mat
+    pluie=burst(n,lo=1500,hi=6000)*np.exp(-tt*6)*(rng.random(n)<0.04)*1.0
+    return y+fftfilt(pluie,lo=1200,hi=6000)*0.6+burst(n,hi=300)*np.exp(-tt*9)*0.4
+def sifflet(f,dur,casse=0.0):   # un sifflet humain : sinus, souffle, vibrato qui s'installe
+    n=mk(dur); tt=np.arange(n)/SR
+    fv=f*(1+0.006*np.sin(2*np.pi*5.2*tt)*np.clip(tt/0.3,0,1))*(1-casse*np.clip((tt-dur*0.4)/(dur*0.6),0,1)*0.04)
+    y=np.sin(2*np.pi*np.cumsum(fv)/SR)+burst(n,lo=f*0.9,hi=f*1.2)*0.15
+    return y*env_ar(n,0.06,0.12)*(1-casse*np.clip((tt-dur*0.5)/(dur*0.5),0,1))
+def fin_a():   # son propre hasard (graine 1920), puis les tirages de l'ancienne fin-a : tout ce qui suit reste identique
+    global rng
+    principal=rng; rng=np.random.default_rng(1920)
+    try: y=_fin_a()
+    finally: rng=principal
+    _tirages_fin_a_v1()
+    return y
+def _tirages_fin_a_v1():   # l'ancienne fin-a (62 s, avant la ciné), rejouée pour ses seuls tirages ; le résultat est jeté
+    jouer(MEL,ACC[:7]+[MAJEUR],L_EPI,[(0,1,'u'),(-12,0.6,'m')],harmo=0.5); battant_dans_le_vide()
+def _fin_a():
+    L=mk(35); t=np.arange(L)/SR
+    # 0-16 s : le chœur tout bas, bouche presque fermée, sur les deux premières mesures ; il se tait sous le sifflet
+    lit=jouer(MEL[:12]+[None]*20,ACC[:3],L,[(0,1,'u'),(-12,0.6,'m')],harmo=0.4)
+    lit*=np.clip((16.5-t)/2.5,0,1)
+    # 0-8 s : la corde, sous la bouche muette ; un souffle grave de bronze qui ne vient pas
+    plan1=np.zeros(L)
+    for k in range(int(8/(PERIODE_CORDE/2))+1):
+        place(plan1,corde_grince(0.8 if k%2 else 1.0),mk(0.2+k*PERIODE_CORDE/2))
+    tt=np.arange(mk(8.4))/SR
+    plan1[:len(tt)]+=sum(a*np.sin(2*np.pi*D2*r*tt) for r,a in ((1,1),(2,0.4),(2.4,0.2)))*0.08*np.clip(tt/2,0,1)*np.clip((8.2-tt)/0.3,0,1)
+    # 8-16 s : la terre
+    plan2=np.zeros(L)
+    for c,serie in enumerate(PELLETEES):
+        for tp in serie: place(plan2,pelletee()*(1.0 if c==0 else 0.75),mk(tp))
+    # 16-24 s : le Cantique sifflé, trois octaves au-dessus (registre d'un sifflet) ; il se casse quand la larme coule
+    plan3=np.zeros(L); bt=0.5; t0=16.4
+    for i,st in enumerate(MEL[:16]):
+        if st is None: continue
+        d=1
+        while i+d<16 and MEL[i+d] is None: d+=1
+        debut=t0+i*bt
+        if debut>=LARME_COULE+0.3: break
+        casse=1.0 if debut<=LARME_COULE<debut+d*bt else 0.0
+        trem=0.35 if debut>=LARME else 0.0               # la larme paraît : le souffle tremble
+        y=sifflet(D3*8*2**(st/12)*(1-0.01*trem),d*bt*1.02,casse)
+        if trem: y=y*(1+trem*0.5*np.sin(2*np.pi*7.5*np.arange(len(y))/SR))
+        place(plan3,y,mk(debut))
+    k=mk(0.6); place(plan3,burst(k,lo=300,hi=1500)*np.linspace(1,0,k)**2*0.25,mk(LARME_COULE+0.25))   # le souffle qui lâche
+    plan3=reverb(fftfilt(plan3,lo=400,hi=6000),2.0,0.5,seed=91,circ=False)[:L]
+    vent=fftfilt(colored(L,1.4),lo=80,hi=1200)*np.clip((t-16.0)/0.2,0,1)*np.clip((24.0-t)/0.2,0,1)   # dehors, l'air de la tranchée
+    plan3=nrm(plan3)+nrm(vent)*0.06
+    # 24-32 s : les noms murmurés, la lampe, le doigt qui s'arrête ; le chœur se pose tout bas
+    plan4=np.zeros(L); tm=MURMURE[0]
+    while tm<min(MURMURE[1],NOM+0.2):
+        n=mk(rng.uniform(0.35,0.7)); tt=np.arange(n)/SR
+        place(plan4,burst(n,lo=1200,hi=5000)*(0.5+0.5*np.sin(2*np.pi*rng.uniform(4,7)*tt))**2*np.hanning(n)*0.5,mk(tm))
+        tm+=n/SR+rng.uniform(0.08,0.25)
+    n=mk(0.5); tt=np.arange(n)/SR
+    place(plan4,(burst(n,lo=600,hi=4000)*np.exp(-tt*5)+burst(n,hi=250)*np.clip(tt/0.2,0,1))*0.35,mk(LAMPE))   # la mèche reprend
+    fin=jouer(MEL[28:29]+[None]*3,[MAJEUR],mk(10),[(0,1,'u'),(-12,0.6,'m')],harmo=0.5)
+    place(plan4,fin*np.clip((np.arange(len(fin))/SR)/1.5,0,1),mk(NOM))
+    m=nrm(lit)*0.35+nrm(plan1)*0.35+nrm(plan2)*0.7+nrm(plan3)*0.55+nrm(plan4)*0.6
+    m*=np.clip((34.5-t)/3.0,0,1)**2                          # le fondu au papier, puis plus rien
+    return stereo(reverb(m,3.5,0.4,seed=71,circ=False)[:L],0.011)
 def fin_b():   # tout revient : le chœur entier, l'harmonium, les fils, la vielle ; ré majeur
     m=jouer(MEL,ACC[:7]+[MAJEUR],L_EPI,PUPITRES+[(12,0.35,'a')])
     fils=np.zeros(L_EPI)
