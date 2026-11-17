@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_04/e4_crypte.dialogue" id="2"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="4"]
 
 [ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
+[ext_resource type="Script" path="res://scenes/decors/objet_anime.gd" id="objet_anime"]
+[ext_resource type="Texture2D" path="res://assets/graphics/fx/fx_buee-crypte_01.png" id="fx_buee"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
 
@@ -228,3 +230,26 @@ scale = Vector2(1.2, 1.2)
 [node name="Arrivee" type="Marker2D" parent="e4_descente_crypte"]
 position = Vector2(450, 820)
 scale = Vector2(1.2, 1.2)
+
+[node name="BueeVitre1" type="AnimatedSprite2D" parent="."]
+position = Vector2(260, 729)
+script = ExtResource("objet_anime")
+nom_objet = &"buee"
+boucle = ExtResource("fx_buee")
+largeur_image = 220
+images_par_seconde = 1.6667
+acceleration = 2.0
+declencheurs = Array[NodePath]([NodePath("../Rencontres/e4_crypte")])
+metadata/note_level_design = "Buée sur la vitre d'un saint : 0,6 s par image, 0,3 s après « la buée va plus vite »"
+
+[node name="BueeVitre2" type="AnimatedSprite2D" parent="."]
+position = Vector2(560, 729)
+script = ExtResource("objet_anime")
+nom_objet = &"buee"
+boucle = ExtResource("fx_buee")
+largeur_image = 220
+images_par_seconde = 1.6667
+acceleration = 2.0
+image_depart = 2
+declencheurs = Array[NodePath]([NodePath("../Rencontres/e4_crypte")])
+metadata/note_level_design = "Buée sur la vitre voisine, déphasée"

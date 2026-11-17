@@ -11,7 +11,7 @@ Tobie: Sous la plus grande des cloches. Elle est si grande qu'elle fait le ciel.
 Tobie: Dessous, une très vieille femme, assise. Ses yeux ne voient plus. Ses mains, si.
 La Mère-Cloche: Approche, petit. Je t'entends depuis la forêt. Tu as le pas des autres.
 if GameState.rencontre_vue(&"e7_cloche_regardee")
-	Tobie: Au-dessus de nous, dans la grande cloche, quelque chose se balance sans bruit.
+	Tobie: Au-dessus de nous, dans la grande cloche, quelque chose se balance sans bruit. [#geste=cloche:fremir]
 	La Mère-Cloche: Tu as regardé en montant. Ils regardent toujours, les derniers jours.
 La Mère-Cloche: Sais-tu ce que tu portes ?
 if GameState.fin() == &"porteur"

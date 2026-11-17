@@ -21,9 +21,9 @@ do GameState.appliquer_effets({&"vivres": -1})
 	=> halte
 - [Regarder la cloche qui bouge] [if not GameState.rencontre_vue(&"e7_cloche_regardee") /] [#cout_lucidite=1, #cache]
 	do GameState.marquer_rencontre_vue(&"e7_cloche_regardee")
-	Tobie: Une cloche se balance, toute seule, sans un son. Je me penche pour voir dessous.
+	Tobie: Une cloche se balance, toute seule, sans un son. Je me penche pour voir dessous. [#geste=cloche:fremir]
 	Tobie: À la place du battant, une forme longue, enveloppée de cire noire, serrée d'un ruban rouge.
-	Tobie: Elle se balance doucement. Elle ne touche jamais le bronze.
+	Tobie: Elle se balance doucement. Elle ne touche jamais le bronze. [#geste=cloche:fremir]
 	Tobie: Le même ruban que sur mon pli.
 	=> halte
 - [Continuer de descendre]

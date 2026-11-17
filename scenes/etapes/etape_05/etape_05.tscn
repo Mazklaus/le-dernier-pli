@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3]
+[gd_scene load_steps=38 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_05/etape_05.gd" id="1"]
 [ext_resource type="Script" path="res://scenes/decors/decor_e5.gd" id="decor_e5"]
@@ -21,6 +21,8 @@
 [ext_resource type="AudioStream" path="res://assets/audio/amb_foret-de-croix_cimetiere.ogg" id="son_amb_foret_de_croix_cimetiere"]
 [ext_resource type="AudioStream" path="res://assets/audio/amb_foret-de-croix_clairiere.ogg" id="son_amb_foret_de_croix_clairiere"]
 [ext_resource type="AudioStream" path="res://assets/audio/amb_foret-de-croix_oree.ogg" id="son_amb_foret_de_croix_oree"]
+[ext_resource type="Script" path="res://scenes/decors/objet_anime.gd" id="objet_anime"]
+[ext_resource type="Texture2D" path="res://assets/graphics/fx/fx_fumee-gamelle_01.png" id="fx_fumee"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 180)
 
@@ -798,3 +800,12 @@ stream = ExtResource("son_amb_foret_de_croix_clairiere")
 autoplay = true
 max_distance = 1400.0
 bus = &"Ambiance"
+
+[node name="FumeeGamelle" type="AnimatedSprite2D" parent="Surface/Campement"]
+position = Vector2(660, 722)
+script = ExtResource("objet_anime")
+nom_objet = &"gamelle"
+boucle = ExtResource("fx_fumee")
+largeur_image = 80
+images_par_seconde = 3.3333
+metadata/note_level_design = "La gamelle fume encore sur les braises (x 700)"
