@@ -21,6 +21,8 @@ env:
   WEB_BUDGET_MB: 60
   # Seuil d'alerte du Lead Prog (2026-11-16) : au-delà, le prévenir.
   WEB_WARN_MB: 57
+  # Budget par cinématique (cin_<nom>, toutes planches et calques), en Mo gzip : avertissement.
+  WEB_BUDGET_CINE_MB: 1.0
 
 concurrency:
   group: export-${{ github.ref }}
@@ -173,6 +175,13 @@ jobs:
           elif [ "$MB" -gt "$WEB_WARN_MB" ]; then
             echo "::warning::Build web ${MB} Mo, proche du budget de ${WEB_BUDGET_MB} Mo"
           fi
+
+      - name: Poids des assets par famille et par cinématique
+        # Avertit quand une cinématique dépasse son budget (Mo gzip), pour qu'une planche
+        # de trop se voie avant de faire sauter le budget global du build.
+        # Aussi quand le budget global échoue : c'est là que la répartition sert le plus.
+        if: ${{ !cancelled() && matrix.platform == 'web' }}
+        run: python3 tools/poids_web.py --budget-cine "$WEB_BUDGET_CINE_MB" --resume "$GITHUB_STEP_SUMMARY"
 
       - name: Artefact debug (QA)
         uses: actions/upload-artifact@v4
