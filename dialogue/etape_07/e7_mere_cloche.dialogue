@@ -75,13 +75,11 @@ La Mère-Cloche: Choisis, petit. Pour une fois, quelqu'un choisit.
 - [Être le dernier] Gardez-moi. Mais brisez le moule du sceau.
 	Tobie: Gardez-moi. Mais brisez le moule. Qu'il n'y ait plus de cire noire, plus de pli, plus de coureur.
 	La Mère-Cloche: Le dernier. Il y a quarante hivers que j'attends quelqu'un pour dire ça.
-	do Cinematiques.jouer(&"e7_moule_brise")
 	do GameState.marquer_rencontre_vue(&"fin_dernier_pli_tribut")
 - [Faire sonner les cloches] Plus personne ne descendra.
 	Tobie: Je prends la corde de la grande cloche. Elle pend là depuis toujours. Personne n'a jamais osé.
 	La Mère-Cloche: Si tu tires, petit, je ne sais pas ce qui remontera. Personne ne sait.
 	Tobie: Je tire.
-	do Cinematiques.jouer(&"e7_corde_tiree")
 	do GameState.marquer_rencontre_vue(&"fin_dernier_pli_cloches")
 
 => END
