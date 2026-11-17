@@ -336,6 +336,40 @@ def porte_scellee(i):   # e6_porte_scellee (10 s, PR #246 de la DA) : la porte d
     m=air*0.6+cire+souffle+geste+pas
     m=reverb(m,2.4,0.3,seed=371+i)[:L]
     return m*np.clip(t/0.4,0,1)*np.clip((10.0-t)/0.6,0,1)
+def mere_cloche(i):   # e7_mere_cloche (10 s, PR #248 de la DA) : la salle ronde sous la grande cloche.
+    #   0-3 s : Tobie entre, un appui toutes les 0,4 s de 0 à 2,4 s, puis s'arrête ; elle respire (une image toutes les
+    #           0,5 s : inspire, expire), lente et grave, une respiration de corps, pas de voix.
+    #   3-7 s : elle lève la tête vers lui, les yeux clos (4,4 à 5,2 s) : le col et la cire de ses habits craquent doucement,
+    #           elle retient son souffle sur la tenue, et la salle se tait autour.
+    #   7-10 s : contrechamp, Tobie tout petit sous la bouche noire : son souffle à lui, court, perdu dans la salle.
+    #   Garde-fou : aucune cloche ne sonne ni ne bouge, rien ne vient de l'intérieur ; pas de bourdon, pas de note tenue.
+    L=mk(10.0); t=np.arange(L)/SR
+    salle=fftfilt(burst(L,lo=40,hi=250),lo=40,hi=250)*0.5+fftfilt(burst(L,lo=400,hi=1800),lo=400,hi=1800)*0.04
+    salle*=1-0.45*np.clip((t-5.2)/0.8,0,1)*np.clip((7.2-t)/0.4,0,1)                              # la salle se tait sur la tenue
+    pas=np.zeros(L)
+    for k in range(7):
+        n=mk(0.3); tt=np.arange(n)/SR; g=0.55 if k==6 else (0.85 if k%2 else 0.95)
+        y=fftfilt(rng.standard_normal(n),hi=650)*np.exp(-tt*45)+burst(n,lo=1500,hi=5000)*np.exp(-tt*70)*0.12
+        at(pas,y*g,max(0.0,k*0.4+0.02+rng.normal(0,0.01)))
+    def souffle(t0,n_images,inspire_g,expire_g,grave):
+        y=np.zeros(L)
+        for k in range(n_images):
+            n=mk(0.5); tt=np.arange(n)/SR; inspire=k%2==0
+            env=np.sin(np.pi*tt/tt[-1])**(1.5 if inspire else 2.5)
+            lo,hi=(300,2200) if inspire else (180,1200)
+            at(y,burst(n,lo=lo*grave,hi=hi*grave)*env*(inspire_g if inspire else expire_g),t0+k*0.5)
+        return y
+    elle=souffle(0.0,9,0.10,0.13,0.7)                                                            # 0 à 4,5 s
+    n=mk(0.7); tt=np.arange(n)/SR                                                                # l'inspiration qu'elle prend en levant la tête
+    at(elle,burst(n,lo=250,hi=1600)*np.sin(np.pi*tt/tt[-1])**1.5*0.11,4.5)
+    tete=np.zeros(L)
+    at(tete,froisse(0.8,500,3500,30)*0.25,4.4)                                                   # le col, l'étoffe raide
+    for tc in (4.65,5.05):
+        k=mk(0.06); at(tete,burst(k,lo=1800,hi=6000)*np.exp(-np.arange(k)/SR*70)*0.05,tc)         # la cire de ses habits
+    lui=souffle(7.0,6,0.07,0.08,1.2)                                                             # Tobie, plus clair, plus court
+    m=salle*0.6+pas*0.6+elle+tete+lui
+    m=reverb(m,3.2,0.4,seed=381+i)[:L]
+    return m*np.clip(t/0.3,0,1)*np.clip((10.0-t)/0.6,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -356,3 +390,4 @@ save("sfx_barbeles_foncer",barbeles_foncer,0.6)    # 7 s pour toute la ciné, la
 save("sfx_crypte_descendre",crypte_descendre,0.6)    # 10 s pour toute la ciné, lancé à 0
 save("sfx_village_tablee",village_tablee,0.6)    # 12 s pour toute la ciné, lancé à 0
 save("sfx_porte_scellee",porte_scellee,0.6)    # 10 s pour toute la ciné, lancé à 0
+save("sfx_mere_cloche",mere_cloche,0.6)    # 10 s pour toute la ciné, lancé à 0
