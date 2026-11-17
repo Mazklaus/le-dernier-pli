@@ -13,6 +13,9 @@ env:
   # A aligner sur la version utilisée par le squelette du Lead Prog.
   GODOT_VERSION: "4.7.2"
   GODOT_RELEASE: "stable"
+  # Modèles web allégés (sans 3D ni modules inutiles), publiés par modele-web.yml : même valeur
+  # que MODELE_WEB_TAG de modele-web.yml.
+  MODELE_WEB_TAG: "modele-web-4.7.2-v1"
   # Renseigner quand le projet itch.io existe : "utilisateur/jeu"
   ITCH_TARGET: ""
   # Budget du build web fixé par le Lead Prog : poids TÉLÉCHARGÉ par le joueur, c.-à-d.
@@ -107,7 +110,7 @@ jobs:
           path: |
             ~/godot
             ~/.local/share/godot/export_templates
-          key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}
+          key: godot-${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}-${{ env.MODELE_WEB_TAG }}
 
       - name: Installer Godot headless et templates
         if: steps.cache-godot.outputs.cache-hit != 'true'
@@ -123,6 +126,17 @@ jobs:
           mkdir -p "$TPL"
           unzip -q /tmp/templates.tpz -d /tmp/tpl
           mv /tmp/tpl/templates/* "$TPL"/
+
+      - name: Modèles web allégés (release modele-web.yml)
+        # Remplace les modèles web officiels sans threads par les allégés : −2 à −3 Mo téléchargés.
+        if: matrix.platform == 'web'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TPL=~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE}
+          gh release download "$MODELE_WEB_TAG" -R "${{ github.repository }}" \
+            -p "web_nothreads_*.zip" -D /tmp/modele --clobber
+          cp /tmp/modele/web_nothreads_release.zip /tmp/modele/web_nothreads_debug.zip "$TPL"/
 
       - name: Exclure le dossier de sortie de l'import Godot
         # Sans ce fichier, le second export importe le premier (index.png.import...).
