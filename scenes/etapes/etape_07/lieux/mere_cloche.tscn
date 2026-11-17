@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_07/e7_mere_cloche.dialogue" id="2"]
 
-[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e7_mere_cloche.gd" id="cine_mere"]
 [ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e7_moule_brise.gd" id="cine_moule"]
 [ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e7_corde_tiree.gd" id="cine_corde"]
 [ext_resource type="Script" path="res://scenes/decors/objet_anime.gd" id="objet_anime"]
@@ -134,7 +134,7 @@ theme_override_font_sizes/font_size = 28
 text = "e7_mere_cloche"
 
 [node name="e7_mere_cloche" type="Node2D" parent="."]
-script = ExtResource("cine_script")
+script = ExtResource("cine_mere")
 id = &"e7_mere_cloche"
 duree = 10.0
 metadata/note_level_design = "La salle ronde sous la grande cloche, la vieille femme lève la tête, yeux clos ; lancée par une réplique de e7_mere_cloche (début) (lot 1, arbitrage GD du 17/11)"
