@@ -186,7 +186,7 @@ def _fin_a():
     m=nrm(lit)*0.35+nrm(plan1)*0.35+nrm(plan2)*0.7+nrm(plan3)*0.55+nrm(plan4)*0.6
     m*=np.clip((34.5-t)/3.0,0,1)**2                          # le fondu au papier, puis plus rien
     return stereo(reverb(m,3.5,0.4,seed=71,circ=False)[:L],0.011)
-def fin_b():   # tout revient : le chœur entier, l'harmonium, les fils, la vielle ; ré majeur
+def _fin_b_entier():   # tout revient : le chœur entier, l'harmonium, les fils, la vielle ; ré majeur
     m=jouer(MEL,ACC[:7]+[MAJEUR],L_EPI,PUPITRES+[(12,0.35,'a')])
     fils=np.zeros(L_EPI)
     for i,st in enumerate(MEL[:16]):
@@ -195,6 +195,14 @@ def fin_b():   # tout revient : le chœur entier, l'harmonium, les fils, la viel
     v=np.zeros(L_EPI); place(v,vielle(32*B-12*B+10),mk(12*B))
     m=m+nrm(fils)*0.12+nrm(v)*0.18
     return stereo(reverb(m,3.5,0.45,seed=72),0.011)
+# fin-b : l'épilogue animé du tribut (32 s, coupes à 8, 16 et 24 s, fondu au papier de 30 à 32 s, DA). On entre
+# dans la résolution à la quatrième mesure (la note tenue, l'entrée de la vielle) : la dernière note, en ré majeur,
+# se pose vers 23 s, quand la poussée arrive sur le nom gravé (24 s), et tient jusqu'au papier ; fin vers 35 s.
+DEBUT_B=12          # en temps du thème
+def fin_b():
+    x=_fin_b_entier()[mk(DEBUT_B*B):]; L=mk(35.0); x=x[:L].copy(); t=np.arange(len(x))/SR
+    x*=np.clip(t/0.4,0,1)[:,None]*(np.clip((35.0-t)/4.0,0,1)**2)[:,None]
+    return x
 # fin-c : la ciné « cloches » de la DA (36 s, planche du 17/11), la seule sonnerie du jeu. Grille de coups
 # partagée avec la DA (temps depuis le début de l'épilogue ; le noir de e7_corde_tiree reste muet) :
 #   0-8 s    la grande cloche oscille : un coup à chaque extrémité, toutes les 1,8 s ; les bouchons de cire
@@ -220,7 +228,7 @@ def fin_c():   # son propre hasard (graine 1922), puis les tirages de l'ancienne
     _tirages_fin_c_v1()
     return y
 def _tirages_fin_c_v1():   # l'ancienne fin-c (73 s, avant la ciné), rejouée pour ses seuls tirages ; le résultat est jeté
-    L=L_EPI+mk(12); fin_b(); t0=mk(32*B+1.5); cl=np.zeros(L)
+    L=L_EPI+mk(12); _fin_b_entier(); t0=mk(32*B+1.5); cl=np.zeros(L)
     for k in range(18):
         f=(D3,D3*0.75,D2*1.5,D2)[k%4]; place(cl,cloche(f,1.0),t0+mk(k*0.62+rng.normal(0,0.02)))
 def _fin_c():
@@ -244,7 +252,7 @@ def _fin_c():
             place(proche[:,0],c[:,0],mk(tc)); place(proche[:,1],c[:,1],mk(tc))
             k+=1; tc=tcire+0.7+k*0.9+rng.normal(0,0.03)
     # le Cantique se pose encore dessous : l'accord final de la résolution, avalé par la volée
-    choeur=fin_b()[mk(28*B):,0]; choeur=choeur[:mk(12)]*np.linspace(1,0,mk(12))**1.5
+    choeur=_fin_b_entier()[mk(28*B):,0]; choeur=choeur[:mk(12)]*np.linspace(1,0,mk(12))**1.5
     proche[:len(choeur)]+=stereo(nrm(choeur)*0.25,0.011)
     proche=np.stack([reverb(proche[:,c],4.5,0.4,seed=73+c,hi=6000,circ=False)[:L] for c in (0,1)],1)
     proche=np.tanh(2.5*nrm(proche))                  # une volée pleine, saturée, sans pic isolé
