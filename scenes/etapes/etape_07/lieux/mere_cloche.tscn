@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_07/e7_mere_cloche.dialogue" id="2"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
 [ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e7_moule_brise.gd" id="cine_moule"]
 [ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e7_corde_tiree.gd" id="cine_corde"]
+[ext_resource type="Script" path="res://scenes/decors/objet_anime.gd" id="objet_anime"]
+[ext_resource type="Texture2D" path="res://assets/graphics/fx/fx_cloche-fremir_01.png" id="fx_cloche"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 180)
 
@@ -181,3 +183,18 @@ scale = Vector2(1.5, 1.5)
 [node name="Arrivee" type="Marker2D" parent="e7_corde_tiree"]
 position = Vector2(1000, 560)
 scale = Vector2(2.0, 2.0)
+
+[node name="ClocheFremit" type="AnimatedSprite2D" parent="."]
+position = Vector2(1640, 390)
+script = ExtResource("objet_anime")
+nom_objet = &"cloche"
+gestes = {
+&"fremir": ExtResource("fx_cloche")
+}
+largeur_image = 200
+images_par_seconde = 10.0
+ordres = {
+&"fremir": [0, 1, 0, 1, 0]
+}
+declencheurs = Array[NodePath]([NodePath("../Rencontres/e7_mere_cloche")])
+metadata/note_level_design = "Au bord du cadre, la cloche frémit sans son (e7_mere_cloche, « quelque chose se balance sans bruit »)"

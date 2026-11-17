@@ -5,8 +5,7 @@
 
 ~ debut
 
-do Cinematiques.jouer(&"e4_descente_crypte")
-Tobie: Le noir sent la cire froide et l'encens éteint.
+Tobie: En bas de l'escalier, le noir. Il sent la cire froide et l'encens éteint.
 - [Allumer la lanterne] [if GameState.valeur(&"huile") >= 1 /] [#cout_huile=1, #sans_prelevement]
 	do GameState.entrer_zone_sombre(true)
 	Tobie: Des niches, partout. Dans chaque niche, un saint couché sous une vitre.
@@ -20,7 +19,7 @@ Tobie: Sur les vitres, la buée vient et s'en va. Comme quelqu'un qui dort.
 
 - [Prendre l'huile des lampes votives] [if not GameState.rencontre_vue(&"huile_votive_prise") /]
 	Tobie: De petites lampes devant les niches, pleines d'huile sainte. Je les vide dans ma lampe, une par une.
-	Tobie: Derrière moi, la buée va plus vite sur les vitres.
+	Tobie: Derrière moi, la buée va plus vite sur les vitres. [#geste=buee:accelerer]
 	do GameState.appliquer_effets({&"huile": 2})
 	do GameState.marquer_rencontre_vue(&"huile_votive_prise")
 	=> crypte
