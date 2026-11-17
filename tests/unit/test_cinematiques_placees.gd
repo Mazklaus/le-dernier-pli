@@ -4,7 +4,7 @@ extends GutTest
 
 const PLANS := {
 	1: [&"e1_remise_pli", &"e1_sortie_tranchee", &"e1_adieu_jacquot"],
-	2: [&"e2_barbeles_foncer", &"e2_brouillard_dechire"],
+	2: [&"e2_barbeles_foncer", &"e2_rites_matthieu", &"e2_brouillard_dechire"],
 	3: [&"e3_procession_nuit", &"e3_priere_champs", &"e3_danse_rose"],
 	4: [&"e4_greffe", &"e4_descente_crypte"],
 	5: [&"e5_autre_se_retourne"],

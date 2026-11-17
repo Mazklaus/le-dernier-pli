@@ -22,6 +22,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/amb_no-mans-land_boyau-detour.ogg" id="son_boyau"]
 [ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e2_barbeles_foncer.gd" id="cine_barbeles"]
 [ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e2_brouillard_dechire.gd" id="cine_brouillard"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e2_rites_matthieu.gd" id="cine_rites"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(64, 1300)
 
@@ -815,4 +816,17 @@ position = Vector2(800, 700)
 
 [node name="Depart" type="Marker2D" parent="Surface/Souche/e2_brouillard_dechire"]
 position = Vector2(800, 700)
+scale = Vector2(1.5, 1.5)
+
+[node name="e2_rites_matthieu" type="Node2D" parent="Surface/TrousObus"]
+script = ExtResource("cine_rites")
+id = &"e2_rites_matthieu"
+duree = 8.0
+metadata/note_level_design = "Tobie pose son pain dans la sacoche de Matthieu, s'agenouille au bord du trou et prie ; lancée par une réplique de e2_sacoche (Lui rendre ses rites) (lot 2, planche du GD du 17/11)"
+
+[node name="Camera" type="Camera2D" parent="Surface/TrousObus/e2_rites_matthieu"]
+position = Vector2(1380, 900)
+
+[node name="Depart" type="Marker2D" parent="Surface/TrousObus/e2_rites_matthieu"]
+position = Vector2(1380, 900)
 scale = Vector2(1.5, 1.5)
