@@ -1,9 +1,11 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_07/e7_mere_cloche.dialogue" id="2"]
 
 [ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e7_moule_brise.gd" id="cine_moule"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e7_corde_tiree.gd" id="cine_corde"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 180)
 
@@ -147,7 +149,7 @@ position = Vector2(960, 760)
 scale = Vector2(1.2, 1.2)
 
 [node name="e7_moule_brise" type="Node2D" parent="."]
-script = ExtResource("cine_script")
+script = ExtResource("cine_moule")
 id = &"e7_moule_brise"
 duree = 8.0
 metadata/note_level_design = "Le moule du sceau se fend sur la pierre, la cire noire se fige ; lancée par une réplique de e7_mere_cloche (Être le dernier) (lot 1, arbitrage GD du 17/11)"
@@ -164,7 +166,7 @@ position = Vector2(960, 860)
 scale = Vector2(2.5, 2.5)
 
 [node name="e7_corde_tiree" type="Node2D" parent="."]
-script = ExtResource("cine_script")
+script = ExtResource("cine_corde")
 id = &"e7_corde_tiree"
 duree = 6.0
 metadata/note_level_design = "Les mains sur la corde, la traction ; coupe au noir avant le son ; lancée par une réplique de e7_mere_cloche (Je tire) (lot 1, arbitrage GD du 17/11)"
