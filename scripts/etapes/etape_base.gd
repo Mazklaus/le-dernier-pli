@@ -172,7 +172,8 @@ func son_passage(depart: Vector2, arrivee: Vector2) -> String:
 
 func _sur_passage_franchi(passage: Passage, vers: StringName) -> void:
 	var messager := trouver_messager()
-	if messager != null and passage != null:
+	# Un passage à cinématique a déjà ses sons dans la ciné (ex. le sol qui cède, étape 6).
+	if messager != null and passage != null and passage.cinematique == &"":
 		AudioDirector.jouer_variante(passage.son if passage.son != "" \
 			else son_passage(passage.global_position, messager.global_position))
 	entrer_lieu(vers)

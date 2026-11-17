@@ -1,14 +1,15 @@
 extends GutTest
 ## Placement des cinématiques par le Level Designer (directive animation du Game Director) :
-## neuf plans, au plus deux par étape, chacun avec sa caméra et son cadrage.
+## les neuf plans de départ, puis le lot 1 de l'arbitrage du 17/11 (plus de limite à deux par étape).
 
 const PLANS := {
 	1: [&"e1_remise_pli", &"e1_sortie_tranchee"],
-	3: [&"e3_procession_nuit"],
-	4: [&"e4_greffe"],
+	2: [&"e2_barbeles_foncer"],
+	3: [&"e3_procession_nuit", &"e3_priere_champs", &"e3_danse_rose"],
+	4: [&"e4_greffe", &"e4_descente_crypte"],
 	5: [&"e5_autre_se_retourne"],
-	6: [&"e6_chute_fissure", &"e6_eboulement"],
-	7: [&"e7_descente", &"e7_ouverture_sceau"],
+	6: [&"e6_chute_fissure", &"e6_eboulement", &"e6_village_sous_terre", &"e6_porte_scellee"],
+	7: [&"e7_descente", &"e7_ouverture_sceau", &"e7_mere_cloche", &"e7_moule_brise", &"e7_corde_tiree"],
 }
 ## Seul l'éboulement n'a pas de réplique : il part d'une Zone à l'entrée du village.
 const PAR_ZONE: Array[StringName] = [&"e6_eboulement"]
@@ -34,7 +35,6 @@ func test_chaque_plan_est_place_dans_son_etape() -> void:
 	for numero in range(1, 8):
 		var cines := _cines(_etape(numero))
 		var attendus: Array = PLANS.get(numero, [])
-		assert_lte(cines.size(), 2, "étape %d : au plus deux cinématiques" % numero)
 		assert_eq(cines.size(), attendus.size(), "étape %d" % numero)
 		for c in cines:
 			assert_has(attendus, c.id, "étape %d : %s inattendue" % [numero, c.id])
