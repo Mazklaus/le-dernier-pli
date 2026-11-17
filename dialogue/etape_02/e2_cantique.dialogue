@@ -4,6 +4,7 @@
 
 ~ debut
 
+do Cinematiques.jouer(&"e2_brouillard_dechire")
 Tobie: Le brouillard se déchire. Une souche brûlée, la seule chose debout depuis l'échelle.
 do AudioDirector.jouer_musique(2, "cantique-lointain")
 Tobie: Le vent porte des voix, très loin. Elles chantent le Cantique du Pli.
