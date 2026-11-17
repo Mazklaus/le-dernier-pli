@@ -552,6 +552,38 @@ def sortie_hopital(i):   # e4_sortie_hopital (6 s, PR #263 de la DA) : Tobie sor
     m=dedans+porte+vent+large+croix
     m=reverb(m,0.8,0.15,seed=451+i)[:L]
     return m*np.clip(t/0.2,0,1)*np.clip((6.0-t)/0.6,0,1)
+def boucle_revenir(i):   # e5_boucle (10 s, PR #266 de la DA) : la forêt de croix qui se referme sur elle-même.
+    #   0-4 s : Tobie marche entre les croix (un pas toutes les 0,4 s), le vent dans les croix.
+    #   4 s : coupe, la même croix revient : le son revient aussi, les mêmes 2,5 s à l'identique, mais un quart de ton
+    #         plus bas (la fausse note du monde inversé) ; il s'arrête à 6,5 s.
+    #   7-10 s : gros plan sur l'encoche noircie du poteau, lente avancée : le vent qui se resserre, le bois brûlé qui
+    #            craque une fois. Aucune cloche.
+    L=mk(10.0); t=np.arange(L)/SR; A=mk(4.0)
+    def pas_terre(g):
+        n=mk(0.3); tt=np.arange(n)/SR
+        y=fftfilt(rng.standard_normal(n),lo=80,hi=600)*np.exp(-tt*35)
+        y+=fftfilt(rng.standard_normal(n),lo=1500,hi=6000)*np.exp(-tt*25)*0.25*(rng.random(n)<0.35)   # la terre sèche qui crisse
+        return y*g
+    marche=np.zeros(A); ta=np.arange(A)/SR
+    for k in range(10): at(marche,pas_terre(0.95 if k%2 else 1.0),0.05+k*0.4+rng.normal(0,0.01))
+    vent=fftfilt(burst(A,lo=200,hi=2500),lo=200,hi=2500)*(0.6+0.4*np.sin(2*np.pi*0.3*ta))*0.15
+    for f in (480,710,1050):
+        vent+=fftfilt(rng.standard_normal(A),lo=f*0.95,hi=f*1.05,order=3)*(0.5+0.5*np.sin(2*np.pi*rng.uniform(0.3,0.6)*ta+f))*0.06
+    plan1=marche*0.7+vent
+    m=np.zeros(L); m[:A]+=plan1
+    R=mk(2.5); bas=2**(-0.5/12)                                                   # le même morceau, un quart de ton plus bas
+    src=np.arange(int(R*bas))/bas
+    rejoue=np.interp(src,np.arange(A),plan1)
+    rejoue[-mk(0.05):]*=np.linspace(1,0,mk(0.05))
+    at(m,rejoue,4.0)
+    at(m,pas_terre(0.6),6.45)                                                    # il s'arrête : le pied qui rejoint l'autre
+    queue=fftfilt(burst(L,lo=200,hi=2000),lo=200,hi=2000)*0.08*np.clip((t-6.5)/0.5,0,1)
+    queue*=1-0.5*np.clip((t-7.0)/3.0,0,1)                                        # l'avancée resserre le vent
+    queue+=fftfilt(burst(L,lo=40,hi=250),lo=40,hi=250)*0.12*np.clip((t-7.0)/3.0,0,1)
+    k=mk(0.05); at(queue,burst(k,lo=1500,hi=6000)*np.exp(-np.arange(k)/SR*90)*0.06,8.3)   # l'encoche : le bois brûlé qui craque
+    m+=queue
+    m=reverb(m,1.2,0.2,seed=461+i)[:L]
+    return m*np.clip(t/0.2,0,1)*np.clip((10.0-t)/0.6,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -578,3 +610,4 @@ save("sfx_rites_matthieu",rites_matthieu,0.6)    # 8 s pour toute la ciné, lanc
 save("sfx_brouillard_dechire",brouillard_dechire,0.6)    # 10 s pour toute la ciné, lancé à 0
 save("sfx_cle_tourne",cle_tourne,0.6)    # 6 s pour toute la ciné, lancé à 0
 save("sfx_sortie_hopital",sortie_hopital,0.6)    # 6 s pour toute la ciné, lancé à 0
+save("sfx_boucle_revenir",boucle_revenir,0.6)    # 10 s pour toute la ciné e5_boucle, lancé à 0
