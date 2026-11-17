@@ -107,7 +107,7 @@ static func cout_enfoui(c: Dictionary, palier: StringName) -> Dictionary:
 	return resultat
 
 
-## Slug du timbre de voix d'une réplique (vox_<slug>_NN.wav), ou "" pour la narration.
+## Slug du timbre de voix d'une réplique (vox_<slug>_NN.ogg), ou "" pour la narration.
 static func slug_timbre(personnage: String, tags: PackedStringArray) -> String:
 	var force := valeur_tag(tags, TAG_TIMBRE)
 	if force != "":

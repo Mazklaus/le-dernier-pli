@@ -22,8 +22,8 @@ AUDIO_RULES = {
     # préfixe : (regex du nom sans extension, extension attendue, boucle attendue)
     "amb": (rf"amb_{SEG}_{SEG}", ".ogg", True),
     "mus": (rf"mus_{SEG}_{SEG}", ".ogg", True),
-    "sfx": (rf"sfx_{SEG}_{SEG}_\d{{2}}", ".wav", False),
-    "vox": (rf"vox_{SEG}_\d{{2}}", ".wav", False),
+    "sfx": (rf"sfx_{SEG}_{SEG}_\d{{2}}", ".ogg", False),
+    "vox": (rf"vox_{SEG}_\d{{2}}", ".ogg", False),
 }
 GFX_RULES = [
     rf"chr_{SEG}_{SEG}_\d{{2}}",

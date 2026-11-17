@@ -223,7 +223,7 @@ func variantes_de(base: String) -> Array[String]:
 	var noms: Array[String] = []
 	for n in range(1, 100):
 		var nom := "%s_%02d" % [base, n]
-		if not ResourceLoader.exists("res://assets/audio/%s.wav" % nom):
+		if not ResourceLoader.exists("res://assets/audio/%s.ogg" % nom):
 			break
 		noms.append(nom)
 	_cache_variantes[base] = noms
@@ -233,7 +233,7 @@ func variantes_de(base: String) -> Array[String]:
 func jouer_sfx(nom: String, bus: StringName = BUS_SFX) -> void:
 	if not audio_deverrouille:
 		return
-	var chemin := "res://assets/audio/%s.wav" % nom
+	var chemin := "res://assets/audio/%s.ogg" % nom
 	if not ResourceLoader.exists(chemin):
 		return
 	var lecteur := _creer_lecteur(bus)

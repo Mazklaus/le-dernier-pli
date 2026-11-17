@@ -1,11 +1,14 @@
-# Encodage OGG Vorbis des boucles (budget du build web : 60 Mo, demande du Lead Prog du 15/11).
-#   amb_* : quality 2 (~80-96 kbit/s), en mono quand la stéréo n'est qu'une copie retardée
+# Encodage OGG Vorbis (budget du build web : 60 Mo, demandes du Lead Prog du 15/11 et du 17/11).
+#   amb_* : quality 0 depuis le 17/11 (~48 kbit/s mono, ~64 stéréo ; q2 avant), en mono quand la stéréo n'est qu'une copie retardée
 #           (corrélation décalée > 0,95, cas de stereo() dans les générateurs) ou déjà mono ;
 #   mus_* : quality 3, en mono depuis le 15/11 (réserve de budget, ~3 Mo) : le mélange L+R est
 #           remonté à l'énergie de la stéréo (les canaux décorrélés perdaient 3 à 4,5 dB), crête ≤ -1 dBFS.
-# Les sfx_ et vox_ restent en WAV. Usage : python3 encoder_ogg.py <dossier des .wav> <repo>/assets/audio
+#   sfx_*, vox_* : quality 3, en Ogg depuis le 17/11 (QOA en WAV avant : ~2 fois plus lourd).
+# Exception du Game Director : le Cantique du Pli (toutes versions) et la sonnerie de l'épilogue
+# « cloches » restent en stéréo et en qualité actuelle ; ce sont des mus_, que ce script laisse en q3.
+# Usage : python3 encoder_ogg.py <dossier des .wav> <repo>/assets/audio
 import sys, os, glob, subprocess, tempfile, numpy as np, scipy.io.wavfile as wf
-QUALITE = {"amb": 2, "mus": 3}
+QUALITE = {"amb": 0, "mus": 3, "sfx": 3, "vox": 3}
 SEUIL_FAUSSE_STEREO = 0.95
 MONO_FORCE = {"mus"}
 CRETE_MAX = 10 ** (-1 / 20)
