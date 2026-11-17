@@ -15,7 +15,7 @@ env:
   GODOT_RELEASE: "stable"
   # Modèles web allégés (sans 3D ni modules inutiles), publiés par modele-web.yml : même valeur
   # que MODELE_WEB_TAG de modele-web.yml.
-  MODELE_WEB_TAG: "modele-web-4.7.2-v1"
+  MODELE_WEB_TAG: "modele-web-4.7.2-v2"
   # Renseigner quand le projet itch.io existe : "utilisateur/jeu"
   ITCH_TARGET: ""
   # Budget du build web fixé par le Lead Prog : poids TÉLÉCHARGÉ par le joueur, c.-à-d.
