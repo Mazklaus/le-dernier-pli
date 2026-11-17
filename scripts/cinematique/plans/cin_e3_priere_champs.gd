@@ -36,6 +36,9 @@ const CENTRE_LUEUR := Vector2(45, 45)
 const SILLONS := Vector2(-240, -160)
 const ZOOM := 1.8
 const VENT := 9.5
+## Le fond sonore du Sound Designer (un seul son de 12 s : souffles, mèches, le Cantique fredonné,
+## la rafale à 9,5 s), s'il est là.
+const SON := "sfx_priere_murmurer"
 ## Les silhouettes, sans motif qui se répète : 0 femme au fichu, 1 homme au bonnet, 2 enfant,
 ## 3 vieux tassé.
 const SILHOUETTES := [0, 1, 0, 3, 1, 0, 2, 1, 0, 1, 3, 0, 2, 1, 0, 0, 1, 3, 0, 1, 2, 0, 1]
@@ -55,6 +58,8 @@ func construire() -> Animation:
 	var anim := Animation.new()
 	anim.length = DUREE
 	cle(anim, "Plans:visible", 0.0, true)
+	if not AudioDirector.variantes_de(SON).is_empty():
+		son(anim, 0.0, SON)
 
 	# P1 : de profil
 	var p1 := Node2D.new()
