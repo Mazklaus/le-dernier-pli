@@ -5,6 +5,11 @@ extends Control
 ## la gravure, les lignes du titre epilogue_<clé> de e7_epilogues.dialogue, une à une. Puis
 ## les Noms retenus et les Promesses encore ouvertes, enfin l'invite de retour au titre.
 ## Interagir (ou clic) : tout afficher d'un coup ; une fois tout affiché, retour au titre.
+## Épilogue animé (DA) : si scripts/epilogue/anim_epilogue_<lettre>.gd existe, il remplace la
+## gravure. C'est un Control plein écran construit en code qui expose temps_lignes (l'instant
+## de chaque ligne), duree, jouer(), passer() (dernière image) et le signal finie. Les lignes
+## paraissent alors sur un bandeau papier, en bas, aux instants de temps_lignes, puis la
+## mémoire et l'invite à la fin de l'animation.
 
 enum Etat { LIGNES, MEMOIRE, FINI }
 
@@ -17,6 +22,11 @@ const LECTURE_PAR_CARACTERE := 0.05
 const PAUSE_AVANT_MEMOIRE := 3.0
 const TAILLE_TEXTE := 30
 const TAILLE_MEMOIRE := 26
+## Bandeau papier sous les lignes d'un épilogue animé (l'animation remplit tout l'écran).
+const BANDEAU := Rect2(0.0, 790.0, 1920.0, 290.0)
+
+## Script de l'épilogue animé d'une lettre (modifiable par les tests).
+static var modele_animation := "res://scripts/epilogue/anim_epilogue_%s.gd"
 
 var cle: String
 var lignes: PackedStringArray = []
@@ -25,6 +35,8 @@ var gravure: TextureRect
 var colonne_lignes: VBoxContainer
 var colonne_memoire: VBoxContainer
 var invite: Label
+## L'épilogue animé de la lettre, ou null (gravure fixe).
+var anime: Control
 
 var _sequence: Tween
 
@@ -47,6 +59,17 @@ func _ready() -> void:
 	if ResourceLoader.exists(chemin):
 		gravure.texture = load(chemin) as Texture2D
 	add_child(gravure)
+	anime = creer_animation(EpilogueFin.lettre(cle))
+	if anime != null:
+		gravure.visible = false
+		add_child(anime)
+		var bandeau := ColorRect.new()
+		bandeau.name = "Bandeau"
+		bandeau.color = StylePapier.PAPIER
+		bandeau.position = BANDEAU.position
+		bandeau.size = BANDEAU.size
+		bandeau.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(bandeau)
 	colonne_lignes = _colonne("Lignes")
 	colonne_memoire = _colonne("Memoire")
 	colonne_memoire.modulate.a = 0.0
@@ -59,7 +82,34 @@ func _ready() -> void:
 	AudioDirector.jouer_epilogue(EpilogueFin.moment(cle))
 	lignes = await lire_lignes(EpilogueFin.DIALOGUE, EpilogueFin.titre(cle))
 	_remplir_memoire()
+	if anime != null:
+		anime.connect(&"finie", _sur_animation_finie, CONNECT_ONE_SHOT)
+		anime.call(&"jouer")
 	_derouler()
+
+
+## L'épilogue animé d'une lettre (Control plein écran), ou null s'il n'y en a pas.
+static func creer_animation(lettre: String) -> Control:
+	var chemin := modele_animation % lettre
+	if not ResourceLoader.exists(chemin):
+		return null
+	var script := load(chemin) as GDScript
+	if script == null:
+		return null
+	var noeud := script.new() as Control
+	if noeud == null:
+		return null
+	noeud.name = "Animation"
+	noeud.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return noeud
+
+
+## Les lignes suivent-elles l'animation ? Il faut un instant par ligne.
+func suit_animation() -> bool:
+	if anime == null:
+		return false
+	var temps: Array = anime.get(&"temps_lignes")
+	return temps != null and temps.size() == lignes.size()
 
 
 ## Lignes de texte d'un titre de dialogue (sans exécuter de choix : un carton n'en a pas).
@@ -117,28 +167,62 @@ func _remplir_memoire() -> void:
 		colonne_memoire.add_child(_ligne(" · ".join(promesses), TAILLE_MEMOIRE))
 
 
-## Les lignes paraissent une à une, puis cèdent la place à la mémoire, puis l'invite.
+## Les lignes paraissent une à une, puis cèdent la place à la mémoire, puis l'invite. Avec un
+## épilogue animé : aux instants de temps_lignes, et la suite à la fin de l'animation.
 func _derouler() -> void:
 	_sequence = create_tween()
-	for texte in lignes:
-		var label := _ligne(texte, TAILLE_TEXTE)
+	var animee := suit_animation()
+	var temps: Array = anime.get(&"temps_lignes") if animee else []
+	var instant := 0.0
+	for i in lignes.size():
+		var label := _ligne(lignes[i], TAILLE_TEXTE)
 		label.modulate.a = 0.0
 		colonne_lignes.add_child(label)
-		_sequence.tween_property(label, "modulate:a", 1.0, FONDU)
-		_sequence.tween_interval(duree_lecture(texte))
+		if animee:
+			var t := maxf(float(temps[i]), instant)
+			_sequence.tween_interval(maxf(t - instant, 0.001))
+			_sequence.tween_property(label, "modulate:a", 1.0, FONDU)
+			instant = t + FONDU
+		else:
+			_sequence.tween_property(label, "modulate:a", 1.0, FONDU)
+			_sequence.tween_interval(duree_lecture(lignes[i]))
+	if anime != null:
+		# La mémoire et l'invite viennent à la fin de l'animation (_sur_animation_finie).
+		return
 	_sequence.tween_interval(PAUSE_AVANT_MEMOIRE)
-	_sequence.tween_callback(func() -> void: etat = Etat.MEMOIRE)
+	_suite_memoire(_sequence)
+
+
+## La mémoire (s'il y en a), puis l'invite, à la suite d'une séquence.
+func _suite_memoire(sequence: Tween) -> void:
+	sequence.tween_callback(func() -> void: etat = Etat.MEMOIRE)
 	if colonne_memoire.get_child_count() > 0:
-		_sequence.tween_property(colonne_lignes, "modulate:a", 0.0, FONDU)
-		_sequence.tween_property(colonne_memoire, "modulate:a", 1.0, FONDU)
-	_sequence.tween_property(invite, "modulate:a", 1.0, FONDU)
-	_sequence.tween_callback(func() -> void: etat = Etat.FINI)
+		sequence.tween_property(colonne_lignes, "modulate:a", 0.0, FONDU)
+		sequence.tween_property(colonne_memoire, "modulate:a", 1.0, FONDU)
+	sequence.tween_property(invite, "modulate:a", 1.0, FONDU)
+	sequence.tween_callback(func() -> void: etat = Etat.FINI)
+
+
+## Fin de l'animation : les lignes encore à venir paraissent, puis la mémoire et l'invite.
+func _sur_animation_finie() -> void:
+	if etat == Etat.FINI:
+		return
+	if _sequence != null and _sequence.is_valid():
+		_sequence.kill()
+	for label in colonne_lignes.get_children():
+		(label as CanvasItem).modulate.a = 1.0
+	_sequence = create_tween()
+	_sequence.tween_interval(PAUSE_AVANT_MEMOIRE)
+	_suite_memoire(_sequence)
 
 
 ## Tout afficher d'un coup (lignes déjà lues : on passe à la mémoire).
 func passer() -> void:
 	if _sequence != null and _sequence.is_valid():
 		_sequence.kill()
+	etat = Etat.FINI
+	if anime != null:
+		anime.call(&"passer")
 	for label in colonne_lignes.get_children():
 		(label as CanvasItem).modulate.a = 1.0
 	var memoire := colonne_memoire.get_child_count() > 0
