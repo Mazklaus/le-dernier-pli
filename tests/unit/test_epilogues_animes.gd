@@ -2,7 +2,7 @@ extends GutTest
 ## Épilogues animés de la DA (scripts/epilogue/anim_epilogue_<lettre>.gd) : l'interface attendue
 ## par epilogue.gd (Control plein écran, temps_lignes, duree, jouer, passer, finie), et les planches.
 
-const LETTRES := ["b", "c"]
+const LETTRES := ["a", "b", "c"]
 
 var _attenues := false
 
