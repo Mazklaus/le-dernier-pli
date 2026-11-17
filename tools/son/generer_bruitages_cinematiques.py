@@ -200,6 +200,50 @@ def danse_tourner(i):   # e3_danse_rose (10 s, le jour sur la place, PR #235 de 
     m=fftfilt(vio,hi=6000)*0.55+vielle/np.abs(vielle).max()*0.25+tamb*0.25+gestes*0.6
     m=reverb(m,1.0,0.2,seed=311+i)[:L]
     return m*np.clip((10.0-t)/0.4,0,1)
+def barbeles_foncer(i):   # e2_barbeles_foncer (7 s, le noir et le brouillard, PR #237 de la DA) : Tobie fonce dans les fils.
+    #   0-2,5 s : la course dans la boue, un pas toutes les 0,2 s ; il touche les fils à 2,5 s.
+    #   2,5-5 s : gros plan, tendu, presque muet : les fils vibrent encore, la pointe dans l'étoffe ; la goutte perle (3,3 s),
+    #             grossit (4,1 s) sans un bruit ; il tire d'un coup (4,5-4,9 s), l'étoffe se déchire à 4,9 s.
+    #   5-7 s : il repart, s'éloigne et pâlit dans le brouillard (6-7 s) ; le lambeau bat au vent toutes les 0,3 s.
+    # En fond, les fils fredonnent l'air de Jacquot (étape 2), avec ses fausses notes.
+    L=mk(7.0); t=np.arange(L)/SR; D4=293.66
+    def pas_boue():
+        n=mk(0.3); tt=np.arange(n)/SR
+        y=fftfilt(rng.standard_normal(n),hi=500)*np.exp(-tt*60)*1.5
+        y+=fftfilt(rng.standard_normal(n),lo=300,hi=1600)*np.sin(np.pi*tt/tt[-1])**3*0.5          # la boue qui aspire
+        return y
+    course=np.zeros(L)
+    for k in range(13): at(course,pas_boue()*(0.85 if k%2 else 1.0),0.05+k*0.2)                        # 0 à 2,5 s
+    for k in range(10): at(course,pas_boue()*(0.85 if k%2 else 1.0)*max(0.05,1-max(0,5.1+k*0.2-6.0)),5.1+k*0.2)   # il s'éloigne
+    souffle=np.zeros(L)
+    for k in range(6): n=mk(0.3); tt=np.arange(n)/SR; at(souffle,burst(n,lo=500,hi=2500)*np.sin(np.pi*tt/tt[-1])**2*0.3,0.1+k*0.4)
+    # le choc dans les fils : le fer qui claque, les fils voisins qui répondent, le tissu qui accroche
+    choc=np.zeros(L); n=mk(1.6); tt=np.arange(n)/SR
+    for f,a in ((1180,1),(1630,0.6),(2410,0.4),(890,0.5)):
+        choc[mk(2.5):mk(2.5)+n]+=a*np.sin(2*np.pi*f*tt+0.4*np.sin(2*np.pi*7*tt))*np.exp(-tt*2.2)
+    k=mk(0.08); at(choc,burst(k,lo=1500,hi=8000)*dec(k,50)*1.5,2.5); at(choc,froisse(0.2,800,5000,60),2.52)
+    # 4,5-4,9 s : il tire ; le fil se tend et grince, puis l'étoffe se déchire
+    tire=np.zeros(L); n=mk(0.4); tt=np.arange(n)/SR; f=np.linspace(700,1100,n)
+    at(tire,fftfilt(np.sign(np.sin(2*np.pi*np.cumsum(f)/SR))*(rng.random(n)<0.3),lo=600,hi=4000)*np.linspace(0.2,1,n)*0.3,4.5)
+    n=mk(0.25); tt=np.arange(n)/SR
+    dechire=fftfilt(rng.standard_normal(n)*(rng.random(n)<0.5),lo=1200,hi=7000)*np.exp(-tt*10)*1.2
+    at(tire,dechire,4.9)
+    k=mk(1.2); kt=np.arange(k)/SR; at(tire,np.sin(2*np.pi*1180*kt)*np.exp(-kt*3)*0.5,4.9)                # le fil relâché qui chante
+    lambeau=np.zeros(L)
+    for k in range(7):
+        n=mk(0.12); tt=np.arange(n)/SR; at(lambeau,fftfilt(rng.standard_normal(n),lo=300,hi=2500)*np.hanning(n)*0.5,5.0+k*0.3)
+    # les fils qui fredonnent l'air de Jacquot, loin, sous tout le reste
+    fils=np.zeros(L); air=[0,3,5,7,7,5,3,2,0,2,3,5]; fausses={2:0.45}
+    for k,st in enumerate(air):
+        n=mk(0.65); tt=np.arange(n)/SR; f0=D4*2*2**((st+fausses.get(k,0))/12)
+        y=sum(a*np.sin(2*np.pi*f0*r*tt) for r,a in ((1,1),(2.013,0.45),(3.04,0.25)))*np.sin(np.pi*tt/tt[-1])
+        at(fils,y,k*0.58)
+    brouillard=fftfilt(burst(L,lo=40,hi=350),lo=40,hi=350)
+    pale=np.clip((7.0-t)/1.0,0.15,1)                                                                       # il pâlit dans le brouillard
+    calme=np.where((t>2.7)&(t<4.5),0.35,1.0)                                                              # le gros plan retient tout
+    m=course*0.5+souffle*calme+choc*0.35+tire*0.6+lambeau*0.35+fils*0.06*calme+brouillard*0.15
+    m=reverb(m*pale,1.2,0.3,seed=321+i)[:L]
+    return m*np.clip((7.0-t)/0.3,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -216,3 +260,4 @@ save("sfx_cloche_souffle",cloche_souffle,0.45)   # un fond, pas un événement
 save("sfx_greffe_fausse-note",greffe_fausse_note,0.6)
 save("sfx_priere_murmurer",priere_murmurer,0.6)   # un fond de 12 s pour toute la ciné, lancé à 0
 save("sfx_danse_tourner",danse_tourner,0.6)    # 10 s pour toute la ciné, lancé à 0
+save("sfx_barbeles_foncer",barbeles_foncer,0.6)    # 7 s pour toute la ciné, lancé à 0
