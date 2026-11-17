@@ -137,7 +137,7 @@ text = "e7_mere_cloche"
 script = ExtResource("cine_mere")
 id = &"e7_mere_cloche"
 duree = 10.0
-metadata/note_level_design = "La salle ronde sous la grande cloche, la vieille femme lève la tête, yeux clos ; lancée par une réplique de e7_mere_cloche (début) (lot 1, arbitrage GD du 17/11)"
+metadata/note_level_design = "La salle ronde sous la grande cloche, la vieille femme lève la tête, yeux clos ; lancée par la porte « Passer la porte » de l'anneau du dessus, avant le déplacement (playtest) (lot 1, arbitrage GD du 17/11)"
 
 [node name="Camera" type="Camera2D" parent="e7_mere_cloche"]
 position = Vector2(960, 500)

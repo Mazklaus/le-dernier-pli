@@ -261,8 +261,9 @@ monitoring = false
 script = ExtResource("6")
 vers = &"village"
 libelle = "Suivre Eloi"
+cinematique = &"e6_village_sous_terre"
 metadata/vers = "village"
-metadata/note_level_design = "Eloi conduit Tobie au village ; pas de retour"
+metadata/note_level_design = "Eloi conduit Tobie au village ; pas de retour ; lance e6_village_sous_terre avant le déplacement (playtest)"
 
 [node name="Forme" type="CollisionShape2D" parent="Passages/VersVillage"]
 shape = SubResource("RectangleShape2D_7")

@@ -5,7 +5,7 @@
 
 ~ debut
 
-do Cinematiques.jouer(&"e6_village_sous_terre")
+# La cinématique e6_village_sous_terre se joue au passage « Suivre Eloi » de la nef, avant l'arrivée.
 Tobie: Une odeur de pain.
 Tobie: Comme au village, le jour de la noce. Ici, la musique, ce sont les cuillères. [#geste=tous:lever-cuillere]
 Tobie: Une femme me fait signe de m'asseoir. [#geste=femme:faire-signe]
