@@ -5,7 +5,6 @@
 
 ~ debut
 
-do Cinematiques.jouer(&"e4_descente_crypte")
 Tobie: Le noir sent la cire froide et l'encens éteint.
 - [Allumer la lanterne] [if GameState.valeur(&"huile") >= 1 /] [#cout_huile=1, #sans_prelevement]
 	do GameState.entrer_zone_sombre(true)

@@ -139,9 +139,10 @@ monitoring = false
 script = ExtResource("3")
 vers = &"crypte"
 son = "sfx_porte_fermer"
+cinematique = &"e4_descente_crypte"
 libelle = "Descendre encore"
 metadata/vers = "crypte"
-metadata/note_level_design = "En bas de l'escalier, la crypte"
+metadata/note_level_design = "En bas de l'escalier, la porte de la crypte : lance e4_descente_crypte avant le déplacement (playtest)"
 
 [node name="Forme" type="CollisionShape2D" parent="Passages/VersCrypte"]
 shape = SubResource("RectangleShape2D_5")
