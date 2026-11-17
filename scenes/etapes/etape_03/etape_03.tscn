@@ -23,6 +23,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/amb_village-cloches-muettes_verger.ogg" id="son_amb_village_cloches_muettes_verger"]
 [ext_resource type="AudioStream" path="res://assets/audio/mus_village-cloches-muettes_noce.ogg" id="son_mus_village_cloches_muettes_noce"]
 [ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e3_danse_rose.gd" id="cine_danse"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
 
@@ -433,7 +434,7 @@ max_distance = 1200.0
 bus = &"Ambiance"
 
 [node name="e3_danse_rose" type="Node2D" parent="Surface/RuePlace"]
-script = ExtResource("cine_script")
+script = ExtResource("cine_danse")
 id = &"e3_danse_rose"
 duree = 10.0
 metadata/note_level_design = "Rose entraîne Tobie pour un tour de danse ; lancée par une réplique de e3_noce (nom de la mariée) (lot 1, arbitrage GD du 17/11)"
