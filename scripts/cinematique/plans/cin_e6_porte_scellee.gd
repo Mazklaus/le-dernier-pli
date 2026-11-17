@@ -72,6 +72,7 @@ func construire() -> Animation:
 	var tobie := sprite("Tobie", tex["chr_tobie_repos_01"], TOBIE, 4)
 	tobie.offset = -PIEDS
 	seuil.add_child(tobie)
+	CalqueRuban.poser(tobie)
 	var bocal := sprite("Bocal", tex["bocal"], ELOI - PIEDS + BOCAL)
 	seuil.add_child(bocal)
 	var geste := sprite("Geste", tex["chr_eloi_poser-bocal_01"], ELOI, 6)
