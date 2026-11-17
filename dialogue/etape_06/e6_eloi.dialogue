@@ -17,8 +17,8 @@ if GameState.possede_marque(&"front_contre_terre")
 	=> suivre
 - [Fuir] [#cout_vivres=1]
 	do Cinematiques.jouer(&"e6_fuite_noir")
-	Tobie: Je recule. Je cours dans le noir, je tombe, je me relève. Je ne sais plus où est le haut.
-	Tobie: Longtemps après, la lumière verte est là, devant moi. Il ne dit rien. Il ne m'en veut pas.
+	Tobie: Je ne sais plus où est le haut.
+	Tobie: Il ne dit rien. Il ne m'en veut pas.
 	Éloi: ... par ici, petit. [#geste=lever-bocal]
 	do GameState.sortir_zone_sombre()
 
