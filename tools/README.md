@@ -7,3 +7,6 @@
 
 ## Tuiles de décor rognées (mémoire vidéo)
 `python3 tools/rogner_tuiles.py` rogne les marges transparentes des tuiles de tous les plans (0 à 4) dont la partie utile fait moins de 80 % de la tuile. Le PNG est remplacé par sa partie utile et un `AtlasTexture` `<nom>.tres` est écrit à côté, avec une marge qui redonne la taille et la position d'origine. `DecorParallaxe.charger_tuile()` charge le `.tres` s'il existe, sinon le PNG. Le script est idempotent, et `export_svg.py` le relance après chaque export. En CI, `--verifier` avertit si une tuile presque vide n'est pas rognée. Options : `--plans 3,4`, `--seuil 0.8` (défauts : tous les plans, 0.8). Les `fx_` (voiles, brouillard, textures répétées) ne sont jamais rognés.
+
+## Poids du build web par famille et par cinématique
+`python3 tools/poids_web.py` (après un import Godot) donne le poids téléchargé (gzip) des assets importés, par famille (ambiances, cinématiques, décors…) et par cinématique (`cin_<nom>`, toutes planches et calques `_red`). La CI le lance sur l'export web, écrit le tableau dans le résumé du job et avertit quand une cinématique dépasse `WEB_BUDGET_CINE_MB` (1 Mo par défaut). Options : `--budget-cine 1.0`, `--budget-total 0`, `--resume FICHIER`.
