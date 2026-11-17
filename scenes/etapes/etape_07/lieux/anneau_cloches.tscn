@@ -196,7 +196,7 @@ text = "-> anneau_lise"
 script = ExtResource("cine_descente")
 id = &"e7_descente"
 duree = 10.0
-metadata/note_level_design = "Plan large : les cloches cirées, l'escalier qui tourne autour de la plus grande ; lancée par une réplique de e7_cloches"
+metadata/note_level_design = "Plan large : les cloches cirées, l'escalier qui tourne autour de la plus grande ; lancée par le passage Descendre de la galerie, avant le déplacement (playtest)"
 
 [node name="Camera" type="Camera2D" parent="e7_descente"]
 position = Vector2(1440, 500)
