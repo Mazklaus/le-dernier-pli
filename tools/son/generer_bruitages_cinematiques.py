@@ -584,6 +584,42 @@ def boucle_revenir(i):   # e5_boucle (10 s, PR #266 de la DA) : la forêt de cro
     m+=queue
     m=reverb(m,1.2,0.2,seed=461+i)[:L]
     return m*np.clip(t/0.2,0,1)*np.clip((10.0-t)/0.6,0,1)
+def clairiere_ciel(i):   # e5_clairiere_ciel (10 s, PR #268 de la DA) : Tobie sort de la forêt de croix, le ciel s'ouvre.
+    #   0-3 s : il marche et sort des dernières croix (un pas toutes les 0,4 s), le vent dans les croix.
+    #   3-7 s : tilt lent vers le haut, le ciel immense, les longs nuages : le vent des croix s'efface, il reste un air
+    #           large et haut qui s'ouvre peu à peu ; ses houles montent à l'envers (lentes à venir, coupées net).
+    #   7-10 s : plongée sur le toit d'église enterré : l'herbe de la crête se couche sous le vent à 7,5 / 8,4 / 9,6 s.
+    #   Aucune cloche, aucune note tenue.
+    L=mk(10.0); t=np.arange(L)/SR
+    pas=np.zeros(L)
+    for k in range(8):
+        n=mk(0.3); tt=np.arange(n)/SR
+        y=fftfilt(rng.standard_normal(n),lo=80,hi=600)*np.exp(-tt*35)+fftfilt(rng.standard_normal(n),lo=1500,hi=6000)*np.exp(-tt*25)*0.25*(rng.random(n)<0.35)
+        at(pas,y*(0.95 if k%2 else 1.0)*(1-0.06*k),0.05+k*0.4+rng.normal(0,0.01))
+    croix=np.zeros(L); fond=np.clip((3.6-t)/0.8,0,1)                                         # le vent des croix s'efface
+    for f in (480,710,1050):
+        croix+=fftfilt(rng.standard_normal(L),lo=f*0.95,hi=f*1.05,order=3)*(0.5+0.5*np.sin(2*np.pi*rng.uniform(0.3,0.6)*t+f))*0.06
+    croix=(croix+fftfilt(burst(L,lo=200,hi=2500),lo=200,hi=2500)*0.12)*fond
+    ouvert=np.clip((t-3.0)/4.0,0,1)                                                          # le ciel qui s'ouvre avec le tilt
+    ciel=fftfilt(burst(L,lo=2500,hi=9000),lo=2500,hi=9000)*0.05*ouvert**1.5
+    ciel+=fftfilt(burst(L,lo=60,hi=300),lo=60,hi=300)*0.1*np.clip((t-3.0)/1.0,0,1)
+    houle=np.zeros(L)
+    for tc,d in ((3.4,1.6),(5.2,1.5)):                                                       # houles à l'envers : montée lente, coupe nette
+        n=mk(d); tt=np.arange(n)/SR; env=(tt/tt[-1])**2.5; env[-mk(0.06):]*=np.linspace(1,0,mk(0.06))
+        houle_n=fftfilt(rng.standard_normal(n),lo=300,hi=3000)*env*0.18
+        at(houle,houle_n,tc)
+    herbe=np.zeros(L)
+    for tc in (7.5,8.4,9.6):                                                                 # l'herbe qui se couche
+        n=mk(0.9); tt=np.arange(n)/SR; env=np.sin(np.pi*tt/tt[-1])**1.2*np.exp(-tt*1.5)
+        y=np.zeros(n)
+        for _ in range(140):
+            k=mk(rng.uniform(0.004,0.015)); at(y,burst(k,lo=2000,hi=8000)*np.hanning(k)*rng.uniform(0.3,1),rng.uniform(0,0.85))
+        y=y*env*0.5+fftfilt(rng.standard_normal(n),lo=200,hi=1500)*env*0.12
+        at(herbe,y,tc-0.15)
+    plonge=fftfilt(burst(L,lo=150,hi=1800),lo=150,hi=1800)*0.08*np.clip((t-7.0)/0.1,0,1)
+    m=pas*0.6+croix+ciel+houle+herbe+plonge
+    m=reverb(m,1.6,0.25,seed=471+i)[:L]
+    return m*np.clip(t/0.2,0,1)*np.clip((10.0-t)/0.4,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -611,3 +647,4 @@ save("sfx_brouillard_dechire",brouillard_dechire,0.6)    # 10 s pour toute la ci
 save("sfx_cle_tourne",cle_tourne,0.6)    # 6 s pour toute la ciné, lancé à 0
 save("sfx_sortie_hopital",sortie_hopital,0.6)    # 6 s pour toute la ciné, lancé à 0
 save("sfx_boucle_revenir",boucle_revenir,0.6)    # 10 s pour toute la ciné e5_boucle, lancé à 0
+save("sfx_clairiere_ciel",clairiere_ciel,0.6)    # 10 s pour toute la ciné, lancé à 0
