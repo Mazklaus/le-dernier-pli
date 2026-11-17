@@ -74,6 +74,7 @@ func construire() -> Animation:
 	var tobie := sprite("Tobie", tex["marche"], Vector2.ZERO, 8)
 	tobie.offset = -PIEDS
 	cage.add_child(tobie)
+	CalqueRuban.poser(tobie)
 	var nuit := ColorRect.new()
 	nuit.name = "Nuit"
 	nuit.size = TAILLE_PLEIN_ECRAN

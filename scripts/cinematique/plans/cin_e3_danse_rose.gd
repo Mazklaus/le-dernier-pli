@@ -80,6 +80,7 @@ func construire() -> Animation:
 	place.add_child(violon)
 	var tobie := personnage("Tobie", tex["chr_tobie_repos_01"], 4, Vector2(X_TOBIE, SOL))
 	place.add_child(tobie)
+	CalqueRuban.poser(tobie)
 	var rose := personnage("Rose", tex["chr_rose_repos_01"], 4, Vector2(X_ROSE, SOL))
 	place.add_child(rose)
 	var bras := Node2D.new()
@@ -98,14 +99,20 @@ func construire() -> Animation:
 	rubans.offset = -ATTACHE_RUBANS
 	place.add_child(rubans)
 
-	# P1 : le violon (l'archet va et vient), Tobie et Rose au repos ; elle se tourne vers lui
-	boucle(anim, "Plans/Place/Violon", 0.0, P3, [0, 1, 2, 3], 0.3)
-	boucle(anim, "Plans/Place/Tobie", 0.0, P2, [0, 1, 2, 1], 0.3)
-	boucle(anim, "Plans/Place/Rose", 0.0, SE_TOURNE, [0, 1, 2, 1], 0.3)
+	# les changements de planche d'abord : leurs pistes passent avant celles des images, sinon
+	# une image 4 ou 5 serait posée sur l'ancienne planche (4 images) au moment du changement
 	cle(anim, "Plans/Place/Rose:texture", 0.0, tex["chr_rose_repos_01"])
 	cle(anim, "Plans/Place/Rose:hframes", 0.0, 4)
 	cle(anim, "Plans/Place/Rose:texture", SE_TOURNE, tex["chr_rose_danser_01"])
 	cle(anim, "Plans/Place/Rose:hframes", SE_TOURNE, 6)
+	cle(anim, "Plans/Place/Tobie:texture", 0.0, tex["chr_tobie_repos_01"])
+	cle(anim, "Plans/Place/Tobie:hframes", 0.0, 4)
+	cle(anim, "Plans/Place/Tobie:texture", P2, tex["chr_tobie_marche_01"])
+	cle(anim, "Plans/Place/Tobie:hframes", P2, 8)
+	# P1 : le violon (l'archet va et vient), Tobie et Rose au repos ; elle se tourne vers lui
+	boucle(anim, "Plans/Place/Violon", 0.0, P3, [0, 1, 2, 3], 0.3)
+	boucle(anim, "Plans/Place/Tobie", 0.0, P2, [0, 1, 2, 1], 0.3)
+	boucle(anim, "Plans/Place/Rose", 0.0, SE_TOURNE, [0, 1, 2, 1], 0.3)
 	cle(anim, "Plans/Place/Rose:frame", SE_TOURNE, 4)
 	cle(anim, "Plans/Place/Rose:frame", SE_TOURNE + 0.5, 5)
 	cle(anim, "Plans/Place/Rose:position", 0.0, Vector2(X_ROSE, SOL))
@@ -116,10 +123,6 @@ func construire() -> Animation:
 	cle(anim, "Plans/Place/Rubans:frame", 0.0, 0)
 
 	# P2 : le tour, d'un seul élan ; Rose devant quand elle passe vers nous
-	cle(anim, "Plans/Place/Tobie:texture", 0.0, tex["chr_tobie_repos_01"])
-	cle(anim, "Plans/Place/Tobie:hframes", 0.0, 4)
-	cle(anim, "Plans/Place/Tobie:texture", P2, tex["chr_tobie_marche_01"])
-	cle(anim, "Plans/Place/Tobie:hframes", P2, 8)
 	cle(anim, "Plans/Place/Bras:visible", P2, true)
 	var n := roundi((P3 - P2) / PAS)
 	for k in n + 1:
