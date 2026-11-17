@@ -6,7 +6,7 @@
 ~ debut
 
 do Cinematiques.jouer(&"e6_village_sous_terre")
-Tobie: Comme au village, le jour de la noce. Ici, la musique, ce sont les cuillères.
+Tobie: Comme au village, le jour de la noce. Ici, la musique, ce sont les cuillères. [#geste=tous:lever-cuillere]
 Tobie: Une femme me fait signe de m'asseoir. [#geste=femme:faire-signe]
 Tobie: Personne ne demande qui je suis. Ils savent, peut-être.
 if GameState.palier == GameState.EGARE

@@ -59,3 +59,18 @@ func test_la_tablee_et_le_vieux_de_la_noce_sont_a_table() -> void:
 	assert_true(noce.compagnons.has(&"vieux"))
 	var texte := FileAccess.get_file_as_string("res://dialogue/etape_03/e3_noce.dialogue")
 	assert_true(texte.contains("[#geste=vieux:parler]"))
+
+
+func test_un_geste_de_tous_fait_bouger_toute_la_table_en_desordre() -> void:
+	var d: DeclencheurDialogue = SceneDeclencheur.instantiate()
+	d.personnage = &"lamarre"
+	d.compagnons = {&"jacquot": Vector2(200, 0), &"cassien": Vector2(400, 0)}
+	add_child_autofree(d)
+	assert_true(d.jouer_geste_replique("Tobie", PackedStringArray(["geste=tous:lever-main"])))
+	assert_eq(d.jouer_geste_tous(&"lever-main"), 2, "Cassien n'a pas la planche")
+	assert_eq(d.dessin.animation, &"lever-main", "le premier tout de suite")
+	var jacquot := d.personnage_nomme(&"jacquot")
+	await wait_seconds(DeclencheurDialogue.DECALAGE_TOUS + 0.1)
+	assert_eq(jacquot.animation, &"lever-main", "le suivant un peu après")
+	var texte := FileAccess.get_file_as_string("res://dialogue/etape_06/e6_tablee.dialogue")
+	assert_true(texte.contains("[#geste=tous:lever-cuillere]"))
