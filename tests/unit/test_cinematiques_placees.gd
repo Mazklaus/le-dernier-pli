@@ -10,8 +10,8 @@ const PLANS := {
 	6: [&"e6_chute_fissure", &"e6_eboulement"],
 	7: [&"e7_descente", &"e7_ouverture_sceau"],
 }
-## Seul l'éboulement n'a pas de réplique : il part d'une Zone à l'entrée du village.
-const PAR_ZONE: Array[StringName] = [&"e6_eboulement"]
+## Plans lancés par une Zone : la chute, dès l'arrivée par le trou de la fissure (GD), et l'éboulement.
+const PAR_ZONE: Array[StringName] = [&"e6_chute_fissure", &"e6_eboulement"]
 const AU_DEBUT: Array[StringName] = []
 
 
@@ -77,3 +77,16 @@ func test_les_personnages_vises_par_les_gestes_portent_leur_nom() -> void:
 			assert_not_null(d, String(id))
 			if d != null:
 				assert_eq(d.personnage, attendus[numero][id], String(id))
+
+
+func test_la_chute_part_du_trou_de_la_fissure() -> void:
+	# GD : la chute se joue dès qu'on se laisse tomber dans la fente, pas à un dialogue.
+	var etape := _etape(6)
+	var trou := etape.get_node("Surface/Fissure/Descendre") as Passage
+	var arrivee := trou.trouver_arrivee()
+	assert_eq(arrivee.name, &"entree_nef")
+	var chute := etape.find_child("e6_chute_fissure", true, false) as Cinematique
+	var forme := chute.get_node("Zone/Forme") as CollisionShape2D
+	var rect := (forme.shape as RectangleShape2D).get_rect()
+	var local := forme.global_transform.affine_inverse() * arrivee.global_position
+	assert_true(rect.has_point(local), "le messager arrive dans la Zone de la chute")

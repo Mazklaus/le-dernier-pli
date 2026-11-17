@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_06/e6_nef.dialogue" id="2"]
@@ -31,6 +31,9 @@ size = Vector2(160, 300)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8"]
 size = Vector2(3150, 450)
+
+[sub_resource type="RectangleShape2D" id="cine_zone_e6_chute_fissure"]
+size = Vector2(300, 300)
 
 [node name="Nef" type="Node2D"]
 
@@ -305,7 +308,7 @@ z_index = -1
 script = ExtResource("cine_chute")
 id = &"e6_chute_fissure"
 duree = 6.4
-metadata/note_level_design = "Le sol cède : la caméra suit la glissade jusqu'au fond ; lancée par la première réplique de e6_nef"
+metadata/note_level_design = "La chute part du trou « Se laisser glisser » de la fissure : lancée dès l'arrivée à entree_nef (Zone), avant tout dialogue (GD)"
 
 [node name="Camera" type="Camera2D" parent="e6_chute_fissure"]
 position = Vector2(320, 520)
@@ -317,3 +320,12 @@ scale = Vector2(1.2, 1.2)
 [node name="Arrivee" type="Marker2D" parent="e6_chute_fissure"]
 position = Vector2(320, 800)
 scale = Vector2(1.5, 1.5)
+
+[node name="Zone" type="Area2D" parent="e6_chute_fissure"]
+position = Vector2(200, 780)
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+
+[node name="Forme" type="CollisionShape2D" parent="e6_chute_fissure/Zone"]
+shape = SubResource("cine_zone_e6_chute_fissure")
