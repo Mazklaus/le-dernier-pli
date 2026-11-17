@@ -34,6 +34,7 @@ def main() -> None:
     force = "--all" in sys.argv
     cmd = renderer()
     done = 0
+    exportes: list[Path] = []
     for svg in sorted(SRC.rglob("*.svg")):
         png = DST / svg.relative_to(SRC).with_suffix(".png")
         if not force and png.exists() and png.stat().st_mtime >= svg.stat().st_mtime:
@@ -43,7 +44,12 @@ def main() -> None:
         subprocess.run(args, check=True)
         print(f"{svg.relative_to(ROOT)} -> {png.relative_to(ROOT)}")
         done += 1
+        exportes.append(png)
     print(f"{done} fichier(s) exporté(s)")
+    a_reduire = [str(p) for p in exportes if p.name.startswith(("env_", "cin_", "chr_", "fx_"))]
+    if a_reduire:
+        # Palette réduite pour le budget web (exceptions : dégradés et EXCLUSIONS de quantifier_env.py).
+        subprocess.run([sys.executable, str(ROOT / "tools" / "quantifier_env.py"), *a_reduire], check=True)
     if done:
         # Les tuiles de premier plan réexportées en taille pleine sont rognées à nouveau.
         subprocess.run([sys.executable, str(ROOT / "tools" / "rogner_tuiles.py")], check=True)
