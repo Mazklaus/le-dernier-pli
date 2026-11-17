@@ -27,6 +27,7 @@ Tobie: Je me surprends à le fredonner avec eux.
 - [Ramper dessous] [#cout_vivres=1]
 	Tobie: Je rampe dans la boue froide. Ça prend du temps, et des forces.
 - [Foncer]
+	do Cinematiques.jouer(&"e2_barbeles_foncer")
 	Tobie: Je fonce. Les pointes me prennent les mains, la manche, un peu de peau.
 	do GameState.ajouter_marque(&"les_barbeles", &"cicatrice", &"e2_barbeles")
 
