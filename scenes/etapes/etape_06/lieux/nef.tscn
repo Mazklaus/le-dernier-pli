@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_06/e6_nef.dialogue" id="2"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="6"]
 
 [ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e6_chute_fissure.gd" id="cine_chute"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e6_fuite_noir.gd" id="cine_fuite"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(5760, 180)
 
@@ -316,4 +317,17 @@ scale = Vector2(1.2, 1.2)
 
 [node name="Arrivee" type="Marker2D" parent="e6_chute_fissure"]
 position = Vector2(320, 800)
+scale = Vector2(1.5, 1.5)
+
+[node name="e6_fuite_noir" type="Node2D" parent="."]
+script = ExtResource("cine_fuite")
+id = &"e6_fuite_noir"
+duree = 8.0
+metadata/note_level_design = "La course dans le noir, les mains sur la pierre, la lumière verte qui revient ; lancée par l'option « Fuir » de e6_eloi (lot 2, planche du GD du 17/11)"
+
+[node name="Camera" type="Camera2D" parent="e6_fuite_noir"]
+position = Vector2(3700, 750)
+
+[node name="Depart" type="Marker2D" parent="e6_fuite_noir"]
+position = Vector2(3700, 750)
 scale = Vector2(1.5, 1.5)
