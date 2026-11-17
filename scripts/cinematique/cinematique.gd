@@ -199,7 +199,13 @@ func _prendre_controle() -> void:
 	Cinematiques.masquer_interface(true)
 
 
+## Repère enfant facultatif : à la fin de la lecture, le messager y est replacé, pour que le jeu
+## reprenne là où le plan a laissé Tobie (le seuil de l'étape 6 : assis au milieu de la porte).
+const PLACE_TOBIE := "PlaceTobie"
+
+
 func _rendre_controle() -> void:
+	replacer_messager()
 	if _camera != null:
 		if is_instance_valid(_camera_precedente) and _camera_precedente != _camera and _camera_precedente.enabled:
 			_camera_precedente.make_current()
@@ -212,6 +218,17 @@ func _rendre_controle() -> void:
 	if _messager != null and is_instance_valid(_messager):
 		_messager.bloque = _messager_bloque_avant
 	Cinematiques.masquer_interface(false)
+
+
+## Replace le messager sur le repère PlaceTobie, s'il existe. Vrai s'il a été déplacé.
+func replacer_messager() -> bool:
+	var place := get_node_or_null(PLACE_TOBIE) as Node2D
+	var messager := _messager if _messager != null and is_instance_valid(_messager) else _trouver_messager()
+	if place == null or messager == null:
+		return false
+	messager.global_position = place.global_position
+	messager.velocity = Vector2.ZERO
+	return true
 
 
 ## Hors lecture, si aucune caméra active ne tient la vue, elle revient à celle du messager.
