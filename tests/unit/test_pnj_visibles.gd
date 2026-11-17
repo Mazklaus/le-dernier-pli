@@ -44,3 +44,33 @@ func test_ilde_entre_dans_la_chambre_et_sur_la_route_de_nuit() -> void:
 	assert_true(route.entrees.has(&"ilde"))
 	var texte := FileAccess.get_file_as_string("res://dialogue/etape_03/e3_procession.dialogue")
 	assert_eq(texte.count("[#entree=ilde]"), 2)
+
+
+func test_la_tablee_et_le_vieux_de_la_noce_sont_a_table() -> void:
+	var tablee := _declencheur("res://scenes/etapes/etape_06/lieux/village.tscn", "Rencontres/e6_tablee")
+	for nom: StringName in [&"femme", &"enfant", &"mere", &"fillette"]:
+		assert_true(tablee.compagnons.has(nom), String(nom))
+	var gauche_a_droite: Array = [&"femme", &"enfant", &"mere", &"fillette"].map(
+		func(n: StringName) -> float: return (tablee.compagnons[n] as Vector2).x)
+	var tries := gauche_a_droite.duplicate()
+	tries.sort()
+	assert_eq(gauche_a_droite, tries, "femme, enfant, mère, fillette")
+	var noce := _declencheur("res://scenes/etapes/etape_03/etape_03.tscn", "Surface/RuePlace/e3_noce")
+	assert_true(noce.compagnons.has(&"vieux"))
+	var texte := FileAccess.get_file_as_string("res://dialogue/etape_03/e3_noce.dialogue")
+	assert_true(texte.contains("[#geste=vieux:parler]"))
+
+
+func test_un_geste_de_tous_fait_bouger_toute_la_table_en_desordre() -> void:
+	var d: DeclencheurDialogue = SceneDeclencheur.instantiate()
+	d.personnage = &"lamarre"
+	d.compagnons = {&"jacquot": Vector2(200, 0), &"cassien": Vector2(400, 0)}
+	add_child_autofree(d)
+	assert_true(d.jouer_geste_replique("Tobie", PackedStringArray(["geste=tous:lever-main"])))
+	assert_eq(d.jouer_geste_tous(&"lever-main"), 2, "Cassien n'a pas la planche")
+	assert_eq(d.dessin.animation, &"lever-main", "le premier tout de suite")
+	var jacquot := d.personnage_nomme(&"jacquot")
+	await wait_seconds(DeclencheurDialogue.DECALAGE_TOUS + 0.1)
+	assert_eq(jacquot.animation, &"lever-main", "le suivant un peu après")
+	var texte := FileAccess.get_file_as_string("res://dialogue/etape_06/e6_tablee.dialogue")
+	assert_true(texte.contains("[#geste=tous:lever-cuillere]"))

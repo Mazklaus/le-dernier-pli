@@ -61,6 +61,10 @@ signal geste_demande(cible: StringName, geste: StringName)
 @export var ecart_geste_tobie: float = 60.0
 
 const TAG_ENTREE := "entree"
+## Cible [#geste=tous:<geste>] : tous les personnages dessinés de la rencontre, en désordre.
+const TOUS := &"tous"
+## Décalage entre deux personnages pour un geste de tous (« un cliquetis, pas un ballet »).
+const DECALAGE_TOUS := 0.15
 const DUREE_ENTREE := 0.5
 
 var en_cours: bool = false
@@ -179,10 +183,29 @@ func jouer_geste_replique(locuteur: String, tags: PackedStringArray) -> bool:
 	if cible == &"tobie":
 		var messager := get_tree().get_first_node_in_group(Messager.GROUPE) as Messager if is_inside_tree() else null
 		return messager != null and messager.jouer_geste(geste, repere_geste(geste), ecart_geste_tobie)
+	if cible == TOUS:
+		return jouer_geste_tous(geste) > 0
 	var p := personnage_nomme(cible)
 	if p == null and not demande["explicite"] and cible != &"tobie":
 		p = dessin
 	return p != null and p.jouer_geste(geste, demande["tenir"])
+
+
+## Joue un geste sur chaque personnage dessiné visible de la rencontre (principal, cortège,
+## compagnons, entrants déjà là), chacun DECALAGE_TOUS plus tard que le précédent. Ceux qui
+## n'ont pas la planche ne bougent pas. Renvoie le nombre de personnages qui le joueront.
+func jouer_geste_tous(geste: StringName) -> int:
+	var n := 0
+	for enfant in get_children():
+		var p := enfant as Personnage
+		if p == null or not p.visible or Personnage.chemin_geste(p.nom, geste) == "":
+			continue
+		if n == 0 or not is_inside_tree():
+			p.jouer_geste(geste)
+		else:
+			get_tree().create_timer(DECALAGE_TOUS * n).timeout.connect(p.jouer_geste.bind(geste))
+		n += 1
+	return n
 
 
 ## Le point que vise Tobie pour un geste : un Marker2D enfant nommé « geste_<nom> » (ex.
