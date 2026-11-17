@@ -109,9 +109,10 @@ collision_mask = 0
 monitoring = false
 script = ExtResource("6")
 vers = &"nef"
-libelle = "Se laisser glisser"
+cinematique = &"e6_chute_fissure"
+libelle = "Se laisser tomber"
 metadata/vers = "nef"
-metadata/note_level_design = "La fente dans le sol : on se laisse glisser dans la nef"
+metadata/note_level_design = "La fente dans le sol : on se laisse tomber, la ciné e6_chute_fissure montre la chute, puis la nef"
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/Fissure/Descendre"]
 shape = SubResource("RectangleShape2D_4")
