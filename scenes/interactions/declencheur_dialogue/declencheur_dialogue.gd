@@ -53,6 +53,9 @@ signal geste_demande(cible: StringName, geste: StringName)
 ## (ex. Ilde à la porte de la chambre, à l'aube : {&"ilde": Vector2(450, 0)}). Cachés au départ,
 ## chacun apparaît en fondu à la réplique balisée [#entree=<nom>], puis reste là.
 @export var entrees: Dictionary = {}
+## Le personnage principal quitte la scène dès que ce drapeau est marqué, et reste absent au
+## rechargement (ex. &"cine_e6_porte_scellee" : Éloi recule dans l'ombre à la fin de la ciné).
+@export var absent_apres: StringName
 ## Tant que la rencontre n'est pas vue, le personnage montre la première image de ce geste au
 ## lieu de respirer (ex. le mort, bras pendant, avant « Son bras se lève »). Vide : repos.
 @export var pose_initiale: StringName
@@ -81,6 +84,10 @@ func _ready() -> void:
 		repere.rencontre_id = rencontre_id
 		add_child(repere)
 	_poser_personnages()
+	if absent_apres != &"":
+		GameState.rencontre_vue_marquee.connect(_sur_rencontre_vue_marquee)
+		GameState.etat_charge.connect(maj_absence)
+		maj_absence()
 
 
 ## Pose le personnage, son cortège et ses compagnons ; masque le rectangle de la maquette.
@@ -150,6 +157,16 @@ func interagir(_messager: Messager) -> void:
 func _sur_replique(ligne: DialogueLine) -> void:
 	entrer_replique(ligne.tags)
 	jouer_geste_replique(ligne.character, ligne.tags)
+
+
+func _sur_rencontre_vue_marquee(_id: StringName) -> void:
+	maj_absence()
+
+
+## Cache le personnage principal si `absent_apres` est marqué (le montre sinon).
+func maj_absence() -> void:
+	if dessin != null and absent_apres != &"":
+		dessin.visible = not GameState.rencontre_vue(absent_apres)
 
 
 ## Fait apparaître le personnage nommé par [#entree=<nom>] (voir `entrees`). Vrai s'il entre.
