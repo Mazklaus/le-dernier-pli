@@ -9,6 +9,9 @@ extends AnimatedSprite2D
 ##   réplique des `declencheurs`, puis retour à la boucle (ou à l'immobilité). Le geste
 ##   « accelerer » n'a pas de planche : la boucle va `acceleration` fois plus vite, pour de bon
 ##   (« Derrière moi, la buée va plus vite »).
+## - `ordres` : {nom: [images]} pour rejouer les images d'une planche dans un autre ordre (la
+##   cloche : 0, 1, 0, 1, 0).
+## La position est le coin haut-gauche de l'image (comme les coordonnées données par la DA).
 ## Muet : un objet animé ne joue aucun son (la cloche ne sonne jamais avant l'épilogue).
 
 const BOUCLE := &"boucle"
@@ -21,6 +24,9 @@ const ACCELERER := &"accelerer"
 @export var largeur_image: int = 200
 @export var images_par_seconde: float = 6.0
 @export var acceleration: float = 2.0
+@export var ordres: Dictionary = {}
+## Image de départ de la boucle (deux vitres côte à côte ne respirent pas ensemble).
+@export var image_depart: int = 0
 ## Rencontres dont les répliques peuvent animer l'objet.
 @export var declencheurs: Array[NodePath] = []
 
@@ -38,6 +44,7 @@ func _ready() -> void:
 
 ## Monte les animations depuis les planches ; démarre la boucle s'il y en a une.
 func construire() -> void:
+	centered = false
 	var images := SpriteFrames.new()
 	images.remove_animation(&"default")
 	if boucle != null:
@@ -55,10 +62,12 @@ func _ajouter(images: SpriteFrames, nom: StringName, planche: Texture2D, en_bouc
 	images.set_animation_speed(nom, images_par_seconde)
 	images.set_animation_loop(nom, en_boucle)
 	var largeur := mini(largeur_image, planche.get_width()) if largeur_image > 0 else planche.get_width()
-	for i in planche.get_width() / largeur:
+	var nombre := planche.get_width() / largeur
+	var ordre: Array = ordres.get(nom, range(nombre))
+	for i in ordre:
 		var image := AtlasTexture.new()
 		image.atlas = planche
-		image.region = Rect2(i * largeur, 0, largeur, planche.get_height())
+		image.region = Rect2(clampi(int(i), 0, nombre - 1) * largeur, 0, largeur, planche.get_height())
 		images.add_frame(nom, image)
 
 
@@ -82,7 +91,10 @@ func jouer_geste(geste: StringName) -> bool:
 
 func _revenir() -> void:
 	if sprite_frames.has_animation(BOUCLE):
+		var reprise := animation == BOUCLE and is_playing()
 		play(BOUCLE)
+		if not reprise and image_depart > 0:
+			frame = image_depart % sprite_frames.get_frame_count(BOUCLE)
 		return
 	stop()
 	var noms := sprite_frames.get_animation_names()
