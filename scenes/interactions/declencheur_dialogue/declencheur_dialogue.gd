@@ -49,12 +49,19 @@ signal geste_demande(cible: StringName, geste: StringName)
 ## `ecart_cortege` px, déphasées d'une image (la procession de l'étape 3). 0 ou 1 : seul.
 @export var cortege: int = 0
 @export var ecart_cortege: float = 140.0
+## Personnages qui n'entrent qu'en cours de rencontre, avec leur décalage depuis le déclencheur
+## (ex. Ilde à la porte de la chambre, à l'aube : {&"ilde": Vector2(450, 0)}). Cachés au départ,
+## chacun apparaît en fondu à la réplique balisée [#entree=<nom>], puis reste là.
+@export var entrees: Dictionary = {}
 ## Tant que la rencontre n'est pas vue, le personnage montre la première image de ce geste au
 ## lieu de respirer (ex. le mort, bras pendant, avant « Son bras se lève »). Vide : repos.
 @export var pose_initiale: StringName
 ## Distance (une main) à laquelle Tobie se place pour ses gestes ([#geste=tobie:…]), tourné
 ## vers le déclencheur : le couteau ou la cloche touchent la croix.
 @export var ecart_geste_tobie: float = 60.0
+
+const TAG_ENTREE := "entree"
+const DUREE_ENTREE := 0.5
 
 var en_cours: bool = false
 var repere: RepereExamen = null
@@ -89,6 +96,13 @@ func _poser_personnages() -> void:
 			compagnon.name = "Compagnon_%s" % nom
 			compagnon.position = compagnons[nom]
 			add_child(compagnon)
+	for nom: StringName in entrees:
+		var entrant := Personnage.creer(nom)
+		if entrant != null:
+			entrant.name = "Entree_%s" % nom
+			entrant.position = entrees[nom]
+			entrant.visible = false
+			add_child(entrant)
 	if dessin != null or not compagnons.is_empty():
 		var visuel := get_node_or_null("Visuel") as CanvasItem
 		if visuel != null:
@@ -128,7 +142,27 @@ func interagir(_messager: Messager) -> void:
 
 
 func _sur_replique(ligne: DialogueLine) -> void:
+	entrer_replique(ligne.tags)
 	jouer_geste_replique(ligne.character, ligne.tags)
+
+
+## Fait apparaître le personnage nommé par [#entree=<nom>] (voir `entrees`). Vrai s'il entre.
+func entrer_replique(tags: PackedStringArray) -> bool:
+	var nom := OptionsDialogue.valeur_tag(tags, TAG_ENTREE)
+	return nom != "" and faire_entrer(StringName(nom))
+
+
+## Montre un personnage de `entrees` en fondu (à l'instant si les effets sont atténués).
+## Faux s'il n'existe pas ou s'il est déjà là.
+func faire_entrer(nom_personnage: StringName) -> bool:
+	var entrant := get_node_or_null("Entree_%s" % nom_personnage) as Personnage
+	if entrant == null or entrant.visible:
+		return false
+	entrant.visible = true
+	if not Reglages.valeur(&"effets_attenues") and is_inside_tree():
+		entrant.modulate.a = 0.0
+		create_tween().tween_property(entrant, "modulate:a", 1.0, DUREE_ENTREE)
+	return true
 
 
 ## Joue le geste demandé par une réplique : sur le personnage visé, sinon (locuteur sans
@@ -163,7 +197,8 @@ func repere_geste(geste: StringName) -> Node2D:
 func personnage_nomme(nom_personnage: StringName) -> Personnage:
 	if dessin != null and dessin.nom == nom_personnage:
 		return dessin
-	return get_node_or_null("Compagnon_%s" % nom_personnage) as Personnage
+	var compagnon := get_node_or_null("Compagnon_%s" % nom_personnage) as Personnage
+	return compagnon if compagnon != null else get_node_or_null("Entree_%s" % nom_personnage) as Personnage
 
 
 ## Fin du dialogue : la rencontre n'est comptée comme vue que si son titre principal a été joué.
