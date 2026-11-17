@@ -370,7 +370,7 @@ theme_override_font_sizes/font_size = 28
 text = "e5_autre"
 
 [node name="AutreAuLoin" type="Node2D" parent="Surface/Boucle"]
-position = Vector2(3700, 880)
+position = Vector2(3700, 740)
 script = ExtResource("autre_au_loin")
 declencheur = NodePath("../e5_autre")
 metadata/note_level_design = "L'Autre au bout du sentier : apparaît avec e5_autre, garde ses distances, se dissout dans la brume si on l'accule"

@@ -74,3 +74,22 @@ func test_un_geste_de_tous_fait_bouger_toute_la_table_en_desordre() -> void:
 	assert_eq(jacquot.animation, &"lever-main", "le suivant un peu après")
 	var texte := FileAccess.get_file_as_string("res://dialogue/etape_06/e6_tablee.dialogue")
 	assert_true(texte.contains("[#geste=tous:lever-cuillere]"))
+
+
+func test_tobie_s_arrete_a_la_chaise_vide_sans_cacher_personne() -> void:
+	var tablee := _declencheur("res://scenes/etapes/etape_06/lieux/village.tscn", "Rencontres/e6_tablee")
+	for nom: StringName in tablee.compagnons:
+		assert_gt(absf((tablee.compagnons[nom] as Vector2).x), 150.0, "%s loin de Tobie" % nom)
+
+
+func test_anselme_s_efface_quand_la_porte_se_referme() -> void:
+	var d: DeclencheurDialogue = SceneDeclencheur.instantiate()
+	d.personnage = &"anselme"
+	add_child_autofree(d)
+	assert_true(d.dessin.visible)
+	d.entrer_replique(PackedStringArray(["sortie=anselme"]))
+	await wait_seconds(DeclencheurDialogue.DUREE_ENTREE + 0.1)
+	assert_false(d.dessin.visible)
+	assert_false(d.faire_sortir(&"anselme"), "déjà parti")
+	var texte := FileAccess.get_file_as_string("res://dialogue/etape_04/e4_benediction.dialogue")
+	assert_true(texte.contains("[#sortie=anselme]"))

@@ -218,7 +218,7 @@ gestes = {
 largeur_image = 200
 images_par_seconde = 10.0
 ordres = {
-&"fremir": [0, 1, 0, 1, 0]
+&"fremir": [0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0]
 }
 declencheurs = Array[NodePath]([NodePath("../Rencontres/e7_cloches")])
 metadata/note_level_design = "Une seule cloche frémit, sans son, quand le texte en parle (e7_cloches)"

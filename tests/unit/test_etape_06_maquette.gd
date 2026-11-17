@@ -100,7 +100,9 @@ func test_le_village_reprend_la_composition_de_la_place_de_l_etape_3() -> void:
 	var village := _etape.get_node("Lieux/Village") as Node2D
 	var x3 := func(nom: String) -> float: return (e3.find_child(nom, true, false) as Node2D).global_position.x - place.global_position.x
 	var x6 := func(nom: String) -> float: return (_etape.find_child(nom, true, false) as Node2D).global_position.x - village.global_position.x
-	assert_eq(x6.call("e6_tablee"), x3.call("e3_noce"), "la tablée à la place de la noce")
+	# La table peinte (2080 à 2800) est centrée sur la noce ; Tobie s'arrête au bout, à la chaise
+	# vide (GD, 17/11), jamais devant un villageois.
+	assert_eq(x6.call("e6_tablee"), x3.call("e3_noce") + 320.0, "la chaise vide au bout de la tablée")
 	assert_eq(x6.call("VersNiche"), x3.call("VersClocher"), "la niche à la place du clocher")
 	assert_eq(x6.call("e6_detail_village_lanternes"), x3.call("e3_detail_place_lampions"))
 
