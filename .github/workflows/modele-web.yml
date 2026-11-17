@@ -1,0 +1,89 @@
+# Modèle d'export web allégé (mesure) : compile le modèle release sans threads de Godot sans la 3D
+# ni les modules dont un jeu 2D n'a pas besoin, et compare le poids téléchargé (gzip) de son
+# .wasm à celui du modèle officiel. Lancement manuel, ou sur une PR qui modifie ce fichier.
+# Rien n'est publié : le modèle compilé est seulement gardé en artefact (7 jours).
+name: Modèle web allégé
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/modele-web.yml
+
+env:
+  GODOT_VERSION: "4.7.2"
+  GODOT_RELEASE: "stable"
+  # Version d'emscripten des builds officiels de Godot 4.7 (web_builds.yml du moteur).
+  EM_VERSION: "4.0.11"
+  # Modules retirés : 3D, XR, réseau, formats et compresseurs d'import inutiles au jeu exporté.
+  # text_server_fb remplace text_server_adv (ICU, BiDi, ligatures : inutiles en français).
+  SCONS_ALLEGE: >-
+    disable_3d=yes deprecated=no
+    module_text_server_adv_enabled=no module_text_server_fb_enabled=yes
+    module_csg_enabled=no module_gridmap_enabled=no module_gltf_enabled=no module_fbx_enabled=no
+    module_navigation_3d_enabled=no module_godot_physics_3d_enabled=no module_jolt_physics_enabled=no
+    module_openxr_enabled=no module_mobile_vr_enabled=no module_webxr_enabled=no
+    module_lightmapper_rd_enabled=no module_xatlas_unwrap_enabled=no module_vhacd_enabled=no
+    module_meshoptimizer_enabled=no module_raycast_enabled=no
+    module_enet_enabled=no module_multiplayer_enabled=no module_webrtc_enabled=no
+    module_websocket_enabled=no module_upnp_enabled=no module_jsonrpc_enabled=no
+    module_camera_enabled=no module_mp3_enabled=no module_theora_enabled=no
+    module_basis_universal_enabled=no module_ktx_enabled=no module_astcenc_enabled=no
+    module_etcpak_enabled=no module_cvtt_enabled=no module_betsy_enabled=no
+    module_tinyexr_enabled=no module_hdr_enabled=no module_dds_enabled=no module_tga_enabled=no
+    module_bmp_enabled=no module_jpg_enabled=no module_noise_enabled=no module_msdfgen_enabled=no
+    module_objectdb_profiler_enabled=no
+
+jobs:
+  mesure:
+    name: Compiler et mesurer
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Sources de Godot
+        uses: actions/checkout@v4
+        with:
+          repository: godotengine/godot
+          ref: ${{ env.GODOT_VERSION }}-${{ env.GODOT_RELEASE }}
+          path: godot
+
+      - name: Emscripten
+        uses: emscripten-core/setup-emsdk@v16
+        with:
+          version: ${{ env.EM_VERSION }}
+
+      - name: SCons
+        run: python3 -m pip install --quiet scons
+
+      - name: Compiler le modèle allégé (release, sans threads)
+        working-directory: godot
+        run: |
+          scons platform=web target=template_release threads=no production=yes \
+            -j"$(nproc)" $SCONS_ALLEGE
+          ls -l bin/
+
+      - name: Modèle officiel pour comparaison
+        run: |
+          V="${GODOT_VERSION}-${GODOT_RELEASE}"
+          curl -fsSL -o /tmp/tpl.tpz \
+            "https://github.com/godotengine/godot/releases/download/${V}/Godot_v${V}_export_templates.tpz"
+          unzip -q -j /tmp/tpl.tpz "templates/web_nothreads_release.zip" -d /tmp/officiel
+
+      - name: Comparer
+        run: |
+          mesure() {  # $1 = zip du modèle ; affiche brut et gzip du .wasm, en Mo
+            rm -rf /tmp/m && mkdir /tmp/m && unzip -q "$1" -d /tmp/m
+            W=$(ls /tmp/m/*.wasm)
+            echo "$(( $(stat -c %s "$W") / 1048576 )) $(( $(gzip -9 -c "$W" | wc -c) * 10 / 1048576 ))"
+          }
+          read OB OG <<< "$(mesure /tmp/officiel/web_nothreads_release.zip)"
+          read AB AG <<< "$(mesure godot/bin/godot.web.template_release.wasm32.nothreads.zip)"
+          L="Modèle web : officiel ${OB} Mo brut, $((OG/10)).$((OG%10)) Mo gzip ; allégé ${AB} Mo brut, $((AG/10)).$((AG%10)) Mo gzip ; gain $(((OG-AG)/10)).$(((OG-AG)%10)) Mo téléchargés"
+          echo "$L" | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Garder le modèle allégé
+        uses: actions/upload-artifact@v4
+        with:
+          name: modele-web-allege
+          path: godot/bin/godot.web.template_release.wasm32.nothreads.zip
+          retention-days: 7
