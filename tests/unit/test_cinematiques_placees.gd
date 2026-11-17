@@ -8,7 +8,7 @@ const PLANS := {
 	3: [&"e3_procession_nuit", &"e3_priere_champs", &"e3_danse_rose", &"e3_cle_tourne"],
 	4: [&"e4_greffe", &"e4_descente_crypte", &"e4_sortie_hopital"],
 	5: [&"e5_autre_se_retourne", &"e5_boucle", &"e5_clairiere_ciel"],
-	6: [&"e6_chute_fissure", &"e6_eboulement", &"e6_village_sous_terre", &"e6_porte_scellee"],
+	6: [&"e6_chute_fissure", &"e6_eboulement", &"e6_village_sous_terre", &"e6_porte_scellee", &"e6_fuite_noir"],
 	7: [&"e7_descente", &"e7_ouverture_sceau", &"e7_mere_cloche", &"e7_moule_brise", &"e7_corde_tiree"],
 }
 ## Seul l'éboulement n'a pas de réplique : il part d'une Zone à l'entrée du village.
