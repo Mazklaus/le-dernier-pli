@@ -5,7 +5,7 @@ extends GutTest
 const PLANS := {
 	1: [&"e1_remise_pli", &"e1_sortie_tranchee"],
 	2: [&"e2_barbeles_foncer"],
-	3: [&"e3_procession_nuit", &"e3_priere_champs", &"e3_danse_rose"],
+	3: [&"e3_procession_nuit", &"e3_priere_champs", &"e3_danse_rose", &"e3_cle_tourne"],
 	4: [&"e4_greffe", &"e4_descente_crypte"],
 	5: [&"e5_autre_se_retourne"],
 	6: [&"e6_chute_fissure", &"e6_eboulement", &"e6_village_sous_terre", &"e6_porte_scellee"],
@@ -77,3 +77,10 @@ func test_les_personnages_vises_par_les_gestes_portent_leur_nom() -> void:
 			assert_not_null(d, String(id))
 			if d != null:
 				assert_eq(d.personnage, attendus[numero][id], String(id))
+
+
+func test_le_lit_chez_ilde_joue_la_cle_qui_tourne() -> void:
+	var lit := _etape(3).find_child("Lit", true, false) as Passage
+	assert_not_null(lit)
+	if lit != null:
+		assert_eq(lit.cinematique, &"e3_cle_tourne")

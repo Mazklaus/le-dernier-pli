@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="2"]
 [ext_resource type="Resource" path="res://dialogue/etape_03/e3_details.dialogue" id="3"]
 [ext_resource type="Resource" path="res://dialogue/etape_03/e3_ilde.dialogue" id="4"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e3_cle_tourne.gd" id="cine_cle"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 180)
@@ -202,6 +203,7 @@ vers = &"chambre"
 libelle = "Accepter le lit"
 rencontre_requise = &"e3_ilde"
 fondu_noir = 0.8
+cinematique = &"e3_cle_tourne"
 metadata/vers = "chambre"
 metadata/note_level_design = "Le lit : fondu au noir, bascule en nuit, sans retour"
 
@@ -224,3 +226,16 @@ offset_bottom = 198.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 24
 text = "-> chambre"
+
+[node name="e3_cle_tourne" type="Node2D" parent="."]
+script = ExtResource("cine_cle")
+id = &"e3_cle_tourne"
+duree = 6.0
+metadata/note_level_design = "Ilde ferme les volets, la porte, la clé tourne deux fois ; jouée par le passage Lit avant l'arrivée dans la chambre (lot 2, planche du GD du 17/11)"
+
+[node name="Camera" type="Camera2D" parent="e3_cle_tourne"]
+position = Vector2(1600, 750)
+
+[node name="Depart" type="Marker2D" parent="e3_cle_tourne"]
+position = Vector2(1600, 750)
+scale = Vector2(1.5, 1.5)
