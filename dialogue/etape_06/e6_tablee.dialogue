@@ -5,9 +5,10 @@
 
 ~ debut
 
-Tobie: Un village sous la terre. Une odeur de pain.
-Tobie: Une table au milieu d'une place, comme au village le jour de la noce. Ici, la musique, ce sont les cuillères. [#geste=tous:lever-cuillere]
-Tobie: Une chaise est vide. Un couvert est mis devant. Une femme me fait signe de m'asseoir. [#geste=femme:faire-signe]
+do Cinematiques.jouer(&"e6_village_sous_terre")
+Tobie: Une odeur de pain.
+Tobie: Comme au village, le jour de la noce. Ici, la musique, ce sont les cuillères. [#geste=tous:lever-cuillere]
+Tobie: Une femme me fait signe de m'asseoir. [#geste=femme:faire-signe]
 Tobie: Personne ne demande qui je suis. Ils savent, peut-être.
 if GameState.palier == GameState.EGARE
 	Tobie: Je me pince le bras sous la table. Si c'est un rêve, il sent vraiment le pain.

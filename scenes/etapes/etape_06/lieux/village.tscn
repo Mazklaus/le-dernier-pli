@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="4"]
 
 [ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e6_eboulement.gd" id="cine_script"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e6_village_sous_terre.gd" id="cine_village"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(4800, 180)
 
@@ -305,7 +306,7 @@ monitorable = false
 shape = SubResource("cine_zone_e6_eboulement")
 
 [node name="e6_village_sous_terre" type="Node2D" parent="."]
-script = ExtResource("cine_script")
+script = ExtResource("cine_village")
 id = &"e6_village_sous_terre"
 duree = 12.0
 metadata/note_level_design = "Les maisons dans l'argile, puis la longue table et sa chaise vide ; lancée par une réplique de e6_tablee (début) (lot 1, arbitrage GD du 17/11)"
