@@ -180,8 +180,9 @@ position = Vector2(1400, 800)
 scale = Vector2(1.4, 1.4)
 
 [node name="BocalEloi" type="Sprite2D" parent="."]
-position = Vector2(700, 852)
+position = Vector2(700, 878)
 texture = ExtResource("bocal")
+flip_h = true
 script = ExtResource("decor_apres")
 drapeau = &"cine_e6_porte_scellee"
 metadata/note_level_design = "Le bocal qu’Éloi a posé devant la porte (fin de e6_porte_scellee), à gauche de Tobie (replacé au milieu de la porte) pour rester visible au-dessus de la boîte de dialogue"
