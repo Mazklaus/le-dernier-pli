@@ -485,6 +485,41 @@ def brouillard_dechire(i):   # e2_brouillard_dechire (10 s, PR #258 de la DA) : 
     m=bas*0.7+milieu+haut+dechire*0.5+souche+fftfilt(clocher,hi=1500)
     m=reverb(m,1.4,0.2,seed=421+i)[:L]
     return m*np.clip(t/0.3,0,1)*np.clip((10.0-t)/1.2,0,1)
+def cle_tourne(i):   # e3_cle_tourne (6 s, PR #260 de la DA) : la maison d'Ilde au soir, on ferme tout.
+    #   0,7 s : le volet gauche claque ; 1,3 s : le droit, et l'espagnolette qui tombe dans sa gâche.
+    #   2,0-3,1 s : la porte se ferme : les gonds qui grincent, le bois qui bute.
+    #   4,4 s : la clé entre ; 4,9 s : premier tour, le pêne avance d'un cran ; 5,5 s : second tour. Puis le silence
+    #   (le joueur arrive dans la chambre de nuit).
+    L=mk(6.0); t=np.arange(L)/SR
+    piece=fftfilt(burst(L,lo=60,hi=400),lo=60,hi=400)*0.15                                    # la pièce, le soir
+    dehors=fftfilt(burst(L,lo=300,hi=2000),lo=300,hi=2000)*0.06*np.clip((1.3-t)/0.15,0.25,1)  # le dehors, coupé par les volets
+    dehors*=np.clip((3.1-t)/0.1,0.4,1)
+    def claque(g,lo=90,hi=900):   # du bois contre du bois
+        n=mk(0.4); tt=np.arange(n)/SR
+        y=fftfilt(rng.standard_normal(n),lo=lo,hi=hi)*np.exp(-tt*28)
+        y+=sum(a*np.sin(2*np.pi*f*tt)*np.exp(-tt*k) for f,a,k in ((180,0.4,20),(410,0.25,30),(760,0.12,45)))   # la planche qui sonne
+        return y*g
+    def metal(f,g,dur=0.12,k=40):   # un petit choc de fer forgé, mat
+        n=mk(dur); tt=np.arange(n)/SR
+        y=sum(a*np.sin(2*np.pi*f*r*tt)*np.exp(-tt*k*r**0.5) for r,a in ((1,1),(2.31,0.5),(3.87,0.25)))
+        return (y+burst(n,lo=2000,hi=7000)*np.exp(-tt*150)*0.6)*g
+    bruit=np.zeros(L)
+    at(bruit,grince(0.25,300,260)*0.05,0.45); at(bruit,claque(0.9),0.7)                      # volet gauche
+    at(bruit,grince(0.2,280,240)*0.05,1.1); at(bruit,claque(0.8),1.3)                        # volet droit
+    at(bruit,metal(1900,0.25,0.08,60),1.36); at(bruit,metal(1450,0.35,0.15,35),1.46)          # l'espagnolette : la tige, puis la gâche
+    at(bruit,grince(1.0,240,170)*0.12,2.0)                                                   # les gonds
+    n=mk(1.0); tt=np.arange(n)/SR; at(bruit,burst(n,lo=100,hi=600)*np.linspace(0,1,n)**2*0.15,2.1)   # l'air poussé par la porte
+    at(bruit,claque(1.0,60,600),3.1); at(bruit,metal(1200,0.2,0.1,50),3.12)                 # le bois bute, le loquet
+    n=mk(0.3); tt=np.arange(n)/SR
+    at(bruit,fftfilt(rng.standard_normal(n),lo=2500,hi=7000)*np.sin(np.pi*tt/tt[-1])*0.08,4.4)   # la clé glisse dans la serrure
+    at(bruit,metal(2300,0.2,0.05,80),4.68)                                                   # elle bute au fond
+    for tc,f in ((4.9,1100),(5.5,950)):                                                      # deux tours : ressort, puis pêne
+        n=mk(0.15); tt=np.arange(n)/SR
+        at(bruit,fftfilt(rng.standard_normal(n),lo=1500,hi=5000)*np.linspace(0,1,n)*0.05,tc-0.15)
+        at(bruit,metal(f,0.6,0.2,30),tc); at(bruit,claque(0.25,150,1200),tc+0.005)
+    m=piece+dehors+bruit
+    m=reverb(m,0.7,0.2,seed=431+i)[:L]
+    return m*np.clip(t/0.2,0,1)*np.clip((6.0-t)/0.25,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -509,3 +544,4 @@ save("sfx_mere_cloche",mere_cloche,0.6)    # 10 s pour toute la ciné, lancé à
 save("sfx_adieu_jacquot",adieu_jacquot,0.4)    # 8 s, lancé à 0 ; le sifflet est un son pur : crête plus basse pour rester au niveau des autres cinés
 save("sfx_rites_matthieu",rites_matthieu,0.6)    # 8 s pour toute la ciné, lancé à 0
 save("sfx_brouillard_dechire",brouillard_dechire,0.6)    # 10 s pour toute la ciné, lancé à 0
+save("sfx_cle_tourne",cle_tourne,0.6)    # 6 s pour toute la ciné, lancé à 0
