@@ -3,8 +3,8 @@ extends GutTest
 ## les neuf plans de départ, puis le lot 1 de l'arbitrage du 17/11 (plus de limite à deux par étape).
 
 const PLANS := {
-	1: [&"e1_remise_pli", &"e1_sortie_tranchee"],
-	2: [&"e2_barbeles_foncer"],
+	1: [&"e1_remise_pli", &"e1_sortie_tranchee", &"e1_adieu_jacquot"],
+	2: [&"e2_barbeles_foncer", &"e2_rites_matthieu"],
 	3: [&"e3_procession_nuit", &"e3_priere_champs", &"e3_danse_rose", &"e3_cle_tourne"],
 	4: [&"e4_greffe", &"e4_descente_crypte"],
 	5: [&"e5_autre_se_retourne"],

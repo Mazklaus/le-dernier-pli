@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3]
+[gd_scene load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_02/etape_02.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_02/lieux/boyau_detour.tscn" id="2"]
@@ -21,6 +21,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/amb_no-mans-land_trou-obus.ogg" id="son_trous"]
 [ext_resource type="AudioStream" path="res://assets/audio/amb_no-mans-land_boyau-detour.ogg" id="son_boyau"]
 [ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e2_barbeles_foncer.gd" id="cine_barbeles"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e2_rites_matthieu.gd" id="cine_rites"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(64, 1300)
 
@@ -802,3 +803,16 @@ scale = Vector2(1.5, 1.5)
 [node name="Arrivee" type="Marker2D" parent="Surface/Brouillard/e2_barbeles_foncer"]
 position = Vector2(430, 760)
 scale = Vector2(2.0, 2.0)
+
+[node name="e2_rites_matthieu" type="Node2D" parent="Surface/TrousObus"]
+script = ExtResource("cine_rites")
+id = &"e2_rites_matthieu"
+duree = 8.0
+metadata/note_level_design = "Tobie pose son pain dans la sacoche de Matthieu, s'agenouille au bord du trou et prie ; lancée par une réplique de e2_sacoche (Lui rendre ses rites) (lot 2, planche du GD du 17/11)"
+
+[node name="Camera" type="Camera2D" parent="Surface/TrousObus/e2_rites_matthieu"]
+position = Vector2(1380, 900)
+
+[node name="Depart" type="Marker2D" parent="Surface/TrousObus/e2_rites_matthieu"]
+position = Vector2(1380, 900)
+scale = Vector2(1.5, 1.5)

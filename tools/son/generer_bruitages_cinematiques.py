@@ -370,6 +370,121 @@ def mere_cloche(i):   # e7_mere_cloche (10 s, PR #248 de la DA) : la salle ronde
     m=salle*0.6+pas*0.6+elle+tete+lui
     m=reverb(m,3.2,0.4,seed=381+i)[:L]
     return m*np.clip(t/0.3,0,1)*np.clip((10.0-t)/0.6,0,1)
+AIR_DEPOT=[0,3,5,7, 7,5,3,2, 0,2,3,5, 7,None,None,None, 10,9,7,5, 3,5,7,3, 2,0,2,-2, 0,None,None,None]   # l'air de Jacquot
+FAUSSES_DEPOT={2:0.45, 13:-0.4, 18:0.5, 27:-0.45}                   # (generer_ambiance_no_mans_land : MEL, FAUSSES)
+def sifflet_humain(f,dur):   # un sifflet de bouche : sinus, souffle, vibrato qui s'installe (generer_epilogues_destinataire.sifflet)
+    n=mk(dur); tt=np.arange(n)/SR
+    fv=f*(1+0.006*np.sin(2*np.pi*5.2*tt)*np.clip(tt/0.3,0,1))
+    y=np.sin(2*np.pi*np.cumsum(fv)/SR)+burst(n,lo=f*0.9,hi=f*1.2)*0.15
+    e=np.ones(n); a=min(n,mk(0.04)); r=min(n,mk(0.08)); e[:a]=np.linspace(0,1,a); e[-r:]*=np.linspace(1,0,r)
+    return y*e
+def adieu_jacquot(i):   # e1_adieu_jacquot (8 s, PR #252 de la DA) : l'adieu dans le boyau, puis la couverture de l'abri.
+    #   0-3 s : Jacquot siffle l'air du dépôt de près, une note par image de geste (0,2 s) ; Tobie marche (un appui / 0,4 s).
+    #   3-6 s : travelling arrière : les pas de Tobie restent devant, le sifflet s'éloigne (plus bas, plus sourd, plus de
+    #           boyau autour) ; ses fausses notes restent les siennes.
+    #   6-8 s : la porte de l'abri : la main salue (6,4 s), lâche la couverture (7,2 s), l'étoffe lourde retombe (7,5 s),
+    #           puis le silence.
+    L=mk(8.0); t=np.arange(L)/SR; PAS=0.2
+    air=fftfilt(burst(L,lo=50,hi=500),lo=50,hi=500)*0.35+fftfilt(burst(L,lo=800,hi=3000),lo=800,hi=3000)*0.03
+    air*=np.clip((7.9-t)/0.4,0,1)*(1-0.6*np.clip((t-7.5)/0.2,0,1))+0.0
+    pres=np.zeros(L); loin=np.zeros(L)
+    for k,st in enumerate(AIR_DEPOT):
+        if st is None or k*PAS>=5.9: continue
+        d=1
+        while k+d<len(AIR_DEPOT) and AIR_DEPOT[k+d] is None: d+=1
+        y=sifflet_humain(D2*16*2**((st+FAUSSES_DEPOT.get(k,0))/12),min(d*PAS*1.05,6.0-k*PAS))
+        tc=k*PAS; g=np.clip((tc-3.0)/3.0,0,1)                             # 0 de près, 1 au fond
+        at(pres,y*(1-g)*(0.75+0.25*(k%4==0)),tc); at(loin,y*g*(0.5-0.3*g),tc)
+    loin=fftfilt(loin,hi=1600)
+    sifflet=pres+loin+reverb(pres*0.3+loin,1.6,0.9,seed=391+i)[:L]*0.4
+    pas=np.zeros(L)
+    for k in range(15):                                                     # le caillebotis sous les godillots
+        n=mk(0.25); tt=np.arange(n)/SR
+        y=fftfilt(rng.standard_normal(n),lo=90,hi=700)*np.exp(-tt*40)+burst(n,lo=400,hi=2000)*np.exp(-tt*25)*0.2*(rng.random(n)<0.3)
+        at(pas,y*(0.85 if k%2 else 1.0)*(0.6 if k*0.4>5.0 else 1.0),0.02+k*0.4+rng.normal(0,0.008))
+    porte=np.zeros(L)
+    at(porte,froisse(0.4,400,3000,30)*0.3,6.3)                              # la main qui serre la toile et salue
+    n=mk(0.5); tt=np.arange(n)/SR
+    at(porte,burst(n,lo=80,hi=1200)*np.linspace(0,1,n)**2*0.6,7.0)          # la couverture lâchée, qui glisse
+    k=mk(0.2); at(porte,burst(k,hi=400)*dec(k,25)*1.2+burst(k,lo=300,hi=1500)*dec(k,40)*0.3,7.47)   # l'étoffe lourde, mouillée, retombe
+    m=air+sifflet*0.55+pas*0.5+porte
+    m=reverb(m,1.2,0.2,seed=401+i)[:L]
+    return m*np.clip(t/0.15,0,1)*np.clip((8.0-t)/0.3,0,1)
+def chuchote(nsyl):   # un murmure sans mots : du souffle passé dans des formants de voyelles, des consonnes sifflées ou mates
+    VOY=((300,870,2250),(500,1000,2400),(700,1200,2500),(400,1900,2550),(320,1650,2200),(450,1400,2300))
+    out=[]
+    for _ in range(nsyl):
+        F=VOY[rng.integers(len(VOY))]; n=mk(rng.uniform(0.07,0.13)); tt=np.arange(n)/SR
+        v=sum(fftfilt(rng.standard_normal(n),lo=f*0.85,hi=f*1.15,order=3)*g for f,g in zip(F,(1.0,0.6,0.3)))*np.abs(np.sin(np.pi*tt/tt[-1]))**0.8
+        c=rng.random()
+        if c<0.35: k=mk(0.04); v=np.concatenate([fftfilt(rng.standard_normal(k),lo=4000,hi=9000)*np.hanning(k)*0.4,v])   # s, ch
+        elif c<0.6: k=mk(0.015); v=np.concatenate([burst(k,lo=800,hi=4000)*np.exp(-np.arange(k)/SR*300)*0.8,v])     # p, t
+        out.append(v); out.append(np.zeros(mk(rng.uniform(0.0,0.03))))
+    return np.concatenate(out)
+def rites_matthieu(i):   # e2_rites_matthieu (8 s, PR #255 de la DA) : au fond d'un trou d'obus, dans le brouillard.
+    #   0-3 s : gros plan, les mains tiennent le pain au-dessus de la sacoche, le descendent (1,3 s), le lâchent (2,3 s) :
+    #           la toile, le cuir mouillé.
+    #   3-6 s : de dos au bord du trou, il s'agenouille (4,3 s) : les genoux dans la boue.
+    #   6-8 s : de près, les lèvres murmurent la prière des morts, mal mais en entier, ouvertes à 6,2 / 6,55 / 7,0 / 7,45 s :
+    #           un chuchotement sans mots lisibles, pas de voix timbrée. Aucune cloche.
+    L=mk(8.0); t=np.arange(L)/SR
+    brume=fftfilt(burst(L,lo=80,hi=700),lo=80,hi=700)*0.35*(0.75+0.25*np.sin(2*np.pi*0.15*t+i))   # le vent dans le brouillard, bas
+    brume+=fftfilt(burst(L,lo=1500,hi=4000),lo=1500,hi=4000)*0.02
+    brume*=np.where(t<3.0,0.8,np.where(t<6.0,1.0,0.6))                                          # le gros plan isole, le plan de dos ouvre
+    gestes=np.zeros(L)
+    k=mk(0.3); at(gestes,grince(0.3,180,140)*0.08,0.3)                                          # le cuir de la sacoche qui s'ouvre
+    at(gestes,froisse(0.6,500,4000,40)*0.35,1.2)                                                # le pain qui descend dans la toile
+    n=mk(0.25); tt=np.arange(n)/SR
+    at(gestes,fftfilt(rng.standard_normal(n),hi=500)*np.exp(-tt*30)*0.5,2.3)                     # lâché : il tombe au fond, mat
+    at(gestes,burst(mk(0.35),lo=200,hi=1500)*np.hanning(mk(0.35))*0.25,2.35)                      # le rabat de cuir mouillé retombe
+    def boue(g):
+        n=mk(0.35); tt=np.arange(n)/SR
+        y=fftfilt(rng.standard_normal(n),hi=400)*np.exp(-tt*18)
+        y+=fftfilt(rng.standard_normal(n),lo=600,hi=2500)*np.exp(-tt*10)*(np.sin(2*np.pi*rng.uniform(20,35)*tt)>0.2)*0.3   # la succion
+        return y*g
+    at(gestes,froisse(0.5,300,2500,25)*0.2,3.9)                                                 # la capote qui se plie
+    at(gestes,boue(0.7),4.3); at(gestes,boue(0.55),4.48)                                         # un genou, puis l'autre
+    priere=np.zeros(L)
+    for tc,ns in ((6.2,3),(6.55,4),(7.0,4),(7.45,3)):
+        at(priere,chuchote(ns)*0.35,tc)
+    for tc in (6.1,6.9):
+        n=mk(0.18); tt=np.arange(n)/SR; at(priere,burst(n,lo=300,hi=1500)*np.sin(np.pi*tt/tt[-1])*0.08,tc)   # il reprend son souffle
+    m=brume+gestes+priere
+    m=reverb(m,1.0,0.15,seed=411+i)[:L]
+    return m*np.clip(t/0.2,0,1)*np.clip((8.0-t)/0.3,0,1)
+def brouillard_dechire(i):   # e2_brouillard_dechire (10 s, PR #258 de la DA) : le brouillard se déchire autour de la souche brûlée.
+    #   0-3 s : le brouillard plein roule lentement : tout est étouffé, proche, sans horizon.
+    #   3-4 s : il se déchire d'un coup en quatre temps (3,0 / 3,3 / 3,6 / 4,0 s) : à chaque temps un pan d'air s'arrache
+    #           et le son s'ouvre d'un cran (plus d'aigus, moins de masse).
+    #   4-7 s : la souche seule : l'air libre, le bois brûlé qui craque en refroidissant.
+    #   7-10 s : très loin, le village et son clocher vide : le vent passe dans l'abat-son, sans cloche. On finit ouvert
+    #            et léger, pour la musique « cantique-lointain » qui suit.
+    L=mk(10.0); t=np.arange(L)/SR; TEMPS=(3.0,3.3,3.6,4.0)
+    cran=np.zeros(L)
+    for tc in TEMPS: cran+=(t>=tc)
+    cran=np.convolve(cran,np.ones(mk(0.08))/mk(0.08),mode="same")/4.0              # 0 dans le brouillard, 1 ouvert
+    roule=0.7+0.3*np.sin(2*np.pi*0.18*t+i)*np.sin(2*np.pi*0.07*t)
+    bas=fftfilt(burst(L,lo=40,hi=500),lo=40,hi=500)*roule*(1-0.75*cran)             # la masse du brouillard
+    milieu=fftfilt(burst(L,lo=500,hi=2000),lo=500,hi=2000)*(0.08+0.12*cran)
+    haut=fftfilt(burst(L,lo=2500,hi=8000),lo=2500,hi=8000)*0.06*cran*np.clip((10.0-t)/3.0,0.3,1)
+    dechire=np.zeros(L)
+    for k,tc in enumerate(TEMPS):                                                     # un pan d'air qui s'arrache
+        n=mk(0.35); tt=np.arange(n)/SR; fc=np.linspace(600,3500+1000*k,n)
+        y=burst(n,lo=300,hi=6000); Y=np.zeros(n)
+        for a in range(0,n,mk(0.02)):                                                 # filtre qui monte, par tranches
+            b=min(n,a+mk(0.02)); Y[a:b]=fftfilt(y,lo=fc[a]*0.6,hi=fc[a]*1.4)[a:b]
+        at(dechire,Y*np.sin(np.pi*tt/tt[-1])**1.2*(0.55+0.15*k),tc-0.05)
+    souche=np.zeros(L)
+    for tc in (4.6,5.3,5.45,6.2,6.9):                                                 # le bois brûlé qui refroidit
+        k=mk(0.03); at(souche,burst(k,lo=1500,hi=6000)*np.exp(-np.arange(k)/SR*120)*rng.uniform(0.05,0.1),tc+rng.normal(0,0.03))
+    clocher=np.zeros(L)                                                               # le vent dans l'abat-son vide, très loin
+    n=mk(3.0); tt=np.arange(n)/SR
+    for f in (620,930):
+        clocher_n=fftfilt(rng.standard_normal(n),lo=f*0.96,hi=f*1.04,order=3)*(0.6+0.4*np.sin(2*np.pi*0.4*tt+f))
+        at(clocher,clocher_n*np.sin(np.pi*tt/tt[-1])**2*0.12,7.0)
+    m=bas*0.7+milieu+haut+dechire*0.5+souche+fftfilt(clocher,hi=1500)
+    m=reverb(m,1.4,0.2,seed=421+i)[:L]
+    return m*np.clip(t/0.3,0,1)*np.clip((10.0-t)/1.2,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -391,3 +506,6 @@ save("sfx_crypte_descendre",crypte_descendre,0.6)    # 10 s pour toute la ciné,
 save("sfx_village_tablee",village_tablee,0.6)    # 12 s pour toute la ciné, lancé à 0
 save("sfx_porte_scellee",porte_scellee,0.6)    # 10 s pour toute la ciné, lancé à 0
 save("sfx_mere_cloche",mere_cloche,0.6)    # 10 s pour toute la ciné, lancé à 0
+save("sfx_adieu_jacquot",adieu_jacquot,0.4)    # 8 s, lancé à 0 ; le sifflet est un son pur : crête plus basse pour rester au niveau des autres cinés
+save("sfx_rites_matthieu",rites_matthieu,0.6)    # 8 s pour toute la ciné, lancé à 0
+save("sfx_brouillard_dechire",brouillard_dechire,0.6)    # 10 s pour toute la ciné, lancé à 0
