@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3]
+[gd_scene load_steps=31 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_04/etape_04.gd" id="1"]
 [ext_resource type="Script" path="res://scenes/decors/decor_e4.gd" id="decor_e4"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="11"]
 [ext_resource type="Resource" path="res://dialogue/etape_04/e4_benediction.dialogue" id="12"]
 [ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="13"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e4_sortie_hopital.gd" id="cine_sortie"]
 
 [ext_resource type="AudioStream" path="res://assets/audio/amb_hopital-recousus_atelier.ogg" id="son_amb_hopital_recousus_atelier"]
 [ext_resource type="AudioStream" path="res://assets/audio/amb_hopital-recousus_crypte.ogg" id="son_amb_hopital_recousus_crypte"]
@@ -385,3 +386,16 @@ metadata/note_level_design = "Dans la partie sombre : les saints ne respirent qu
 
 [editable path="Lieux/Lingerie"]
 [editable path="Lieux/EscalierService"]
+
+[node name="e4_sortie_hopital" type="Node2D" parent="Surface/RueLaterale"]
+script = ExtResource("cine_sortie")
+id = &"e4_sortie_hopital"
+duree = 6.0
+metadata/note_level_design = "La porte se referme derrière Tobie, la lumière blanche, la forêt de croix au loin ; lancée par une réplique de e4_benediction (lot 2, planche du GD du 17/11)"
+
+[node name="Camera" type="Camera2D" parent="Surface/RueLaterale/e4_sortie_hopital"]
+position = Vector2(900, 750)
+
+[node name="Depart" type="Marker2D" parent="Surface/RueLaterale/e4_sortie_hopital"]
+position = Vector2(900, 750)
+scale = Vector2(1.5, 1.5)
