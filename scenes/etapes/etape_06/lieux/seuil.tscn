@@ -180,7 +180,7 @@ position = Vector2(1400, 800)
 scale = Vector2(1.4, 1.4)
 
 [node name="BocalEloi" type="Sprite2D" parent="."]
-position = Vector2(700, 878)
+position = Vector2(680, 852)
 texture = ExtResource("bocal")
 flip_h = true
 script = ExtResource("decor_apres")
