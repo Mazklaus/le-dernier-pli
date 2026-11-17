@@ -19,7 +19,7 @@ on:
       - .github/workflows/modele-web.yml
 
 permissions:
-  contents: write  # publication de la release (main seulement)
+  contents: read
 
 env:
   GODOT_VERSION: "4.7.2"
@@ -109,6 +109,8 @@ jobs:
     needs: compiler
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # création de la release, sur ce seul job
     steps:
       - uses: actions/download-artifact@v4
         with:
