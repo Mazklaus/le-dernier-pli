@@ -129,7 +129,7 @@ def fin_b():   # tout revient : le chœur entier, l'harmonium, les fils, la viel
 #   26-36 s  Lamarre lève la tête : seule la résonance lointaine arrive là-haut, et dure sur le noir final (GD).
 GRANDE_PERIODE=1.8
 CIRE=(2.6,4.4,6.0)
-TRAVELLING=((8.0,"galeries"),(10.5,"foret"),(13.0,"champs"),(15.5,"tranchee"),(18.0,"main"))
+TRAVELLING=((8.0,"galeries"),(10.5,"foret"),(13.0,"champs"),(15.5,"tranchee"),(18.0,"main"))   # paliers DA : 10-11, 12,5-13,5, 15-16 s
 DERNIERS_COUPS=((18.0,1.0),(19.9,0.75),(22.0,0.5),(24.4,0.3))   # la corde va et vient seule
 def pan(x,p): a=(p+1)*np.pi/4; return np.stack([x*np.cos(a),x*np.sin(a)],1)
 def cire_claque():   # le bouchon de cire noire se fend : un craquement sec ; il tombe sur la pierre 0,4 s plus tard
@@ -181,13 +181,14 @@ def _fin_c():
         elif lieu=="tranchee": y=[reverb(fftfilt(x[:,c],lo=120,hi=1500),2.0,0.7,seed=85+c) for c in (0,1)]; g=0.2
         else: return x
         return nrm(np.stack(y,1))*g
-    def fenetre(a,b,x=0.4):   # 1 entre a et b, fondus de x secondes
-        return np.clip((t-a+x/2)/x,0,1)*np.clip((b-t+x/2)/x,0,1)
-    m=proche*fenetre(-1,8.0)[:,None]
+    def fenetre(a,b,xa=0.4,xb=None):   # 1 entre a et b, fondus centrés de xa (entrée) et xb (sortie) secondes
+        xb=xa if xb is None else xb
+        return np.clip((t-a+xa/2)/xa,0,1)*np.clip((b-t+xb/2)/xb,0,1)
+    m=proche*fenetre(-1,8.0,0.4,0.1)[:,None]
     bornes=[a for a,_ in TRAVELLING]
-    for (a,lieu),b in zip(TRAVELLING[:-1],bornes[1:]):
-        m+=couleur(proche,lieu)*fenetre(a,b)[:,None]
-    m+=proche*(fenetre(18.0,27.0,1.0)*np.clip((27.0-t)/3.0,0,1)**0.5)[:,None]    # la main : tout près, puis ça s'éteint
+    for (a,lieu),b in zip(TRAVELLING[:-1],bornes[1:]):   # coupes sèches à 8 et 18 s, fondus d'1 s pendant chaque palier
+        m+=couleur(proche,lieu)*fenetre(a,b,0.1 if a==8.0 else 1.0,0.1 if b==18.0 else 1.0)[:,None]
+    m+=proche*(fenetre(18.0,27.0,0.1,1.0)*np.clip((27.0-t)/3.0,0,1)**0.5)[:,None]    # la main : tout près, puis ça s'éteint
     # Lamarre : la résonance arrive là-haut, très loin, avec le vent ; elle tient sur le noir final
     n=L-mk(25.5); tt=np.arange(n)/SR
     res=sum(a*np.sin(2*np.pi*D3*r*tt+rng.uniform(0,6)) for r,a in ((0.5,1),(1,0.6),(1.2,0.3),(2,0.15)))
