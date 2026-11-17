@@ -452,6 +452,39 @@ def rites_matthieu(i):   # e2_rites_matthieu (8 s, PR #255 de la DA) : au fond d
     m=brume+gestes+priere
     m=reverb(m,1.0,0.15,seed=411+i)[:L]
     return m*np.clip(t/0.2,0,1)*np.clip((8.0-t)/0.3,0,1)
+def brouillard_dechire(i):   # e2_brouillard_dechire (10 s, PR #258 de la DA) : le brouillard se déchire autour de la souche brûlée.
+    #   0-3 s : le brouillard plein roule lentement : tout est étouffé, proche, sans horizon.
+    #   3-4 s : il se déchire d'un coup en quatre temps (3,0 / 3,3 / 3,6 / 4,0 s) : à chaque temps un pan d'air s'arrache
+    #           et le son s'ouvre d'un cran (plus d'aigus, moins de masse).
+    #   4-7 s : la souche seule : l'air libre, le bois brûlé qui craque en refroidissant.
+    #   7-10 s : très loin, le village et son clocher vide : le vent passe dans l'abat-son, sans cloche. On finit ouvert
+    #            et léger, pour la musique « cantique-lointain » qui suit.
+    L=mk(10.0); t=np.arange(L)/SR; TEMPS=(3.0,3.3,3.6,4.0)
+    cran=np.zeros(L)
+    for tc in TEMPS: cran+=(t>=tc)
+    cran=np.convolve(cran,np.ones(mk(0.08))/mk(0.08),mode="same")/4.0              # 0 dans le brouillard, 1 ouvert
+    roule=0.7+0.3*np.sin(2*np.pi*0.18*t+i)*np.sin(2*np.pi*0.07*t)
+    bas=fftfilt(burst(L,lo=40,hi=500),lo=40,hi=500)*roule*(1-0.75*cran)             # la masse du brouillard
+    milieu=fftfilt(burst(L,lo=500,hi=2000),lo=500,hi=2000)*(0.08+0.12*cran)
+    haut=fftfilt(burst(L,lo=2500,hi=8000),lo=2500,hi=8000)*0.06*cran*np.clip((10.0-t)/3.0,0.3,1)
+    dechire=np.zeros(L)
+    for k,tc in enumerate(TEMPS):                                                     # un pan d'air qui s'arrache
+        n=mk(0.35); tt=np.arange(n)/SR; fc=np.linspace(600,3500+1000*k,n)
+        y=burst(n,lo=300,hi=6000); Y=np.zeros(n)
+        for a in range(0,n,mk(0.02)):                                                 # filtre qui monte, par tranches
+            b=min(n,a+mk(0.02)); Y[a:b]=fftfilt(y,lo=fc[a]*0.6,hi=fc[a]*1.4)[a:b]
+        at(dechire,Y*np.sin(np.pi*tt/tt[-1])**1.2*(0.55+0.15*k),tc-0.05)
+    souche=np.zeros(L)
+    for tc in (4.6,5.3,5.45,6.2,6.9):                                                 # le bois brûlé qui refroidit
+        k=mk(0.03); at(souche,burst(k,lo=1500,hi=6000)*np.exp(-np.arange(k)/SR*120)*rng.uniform(0.05,0.1),tc+rng.normal(0,0.03))
+    clocher=np.zeros(L)                                                               # le vent dans l'abat-son vide, très loin
+    n=mk(3.0); tt=np.arange(n)/SR
+    for f in (620,930):
+        clocher_n=fftfilt(rng.standard_normal(n),lo=f*0.96,hi=f*1.04,order=3)*(0.6+0.4*np.sin(2*np.pi*0.4*tt+f))
+        at(clocher,clocher_n*np.sin(np.pi*tt/tt[-1])**2*0.12,7.0)
+    m=bas*0.7+milieu+haut+dechire*0.5+souche+fftfilt(clocher,hi=1500)
+    m=reverb(m,1.4,0.2,seed=421+i)[:L]
+    return m*np.clip(t/0.3,0,1)*np.clip((10.0-t)/1.2,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -475,3 +508,4 @@ save("sfx_porte_scellee",porte_scellee,0.6)    # 10 s pour toute la ciné, lanc�
 save("sfx_mere_cloche",mere_cloche,0.6)    # 10 s pour toute la ciné, lancé à 0
 save("sfx_adieu_jacquot",adieu_jacquot,0.4)    # 8 s, lancé à 0 ; le sifflet est un son pur : crête plus basse pour rester au niveau des autres cinés
 save("sfx_rites_matthieu",rites_matthieu,0.6)    # 8 s pour toute la ciné, lancé à 0
+save("sfx_brouillard_dechire",brouillard_dechire,0.6)    # 10 s pour toute la ciné, lancé à 0
