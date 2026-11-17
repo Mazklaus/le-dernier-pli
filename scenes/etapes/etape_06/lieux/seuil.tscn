@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_06/e6_details.dialogue" id="2"]
 [ext_resource type="Resource" path="res://dialogue/etape_06/e6_seuil.dialogue" id="3"]
 
+[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 180)
 
@@ -153,3 +154,20 @@ offset_bottom = -312.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_font_sizes/font_size = 28
 text = "e6_seuil"
+
+[node name="e6_porte_scellee" type="Node2D" parent="."]
+script = ExtResource("cine_script")
+id = &"e6_porte_scellee"
+duree = 10.0
+metadata/note_level_design = "La porte très haute couverte de cire, Éloi pose son bocal et recule ; lancée par une réplique de e6_seuil (début) (lot 1, arbitrage GD du 17/11)"
+
+[node name="Camera" type="Camera2D" parent="e6_porte_scellee"]
+position = Vector2(1400, 500)
+
+[node name="Depart" type="Marker2D" parent="e6_porte_scellee"]
+position = Vector2(1400, 500)
+scale = Vector2(0.8, 0.8)
+
+[node name="Arrivee" type="Marker2D" parent="e6_porte_scellee"]
+position = Vector2(1400, 800)
+scale = Vector2(1.4, 1.4)
