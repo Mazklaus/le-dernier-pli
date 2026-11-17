@@ -2,7 +2,7 @@ extends GutTest
 ## Épilogues animés de la DA (scripts/epilogue/anim_epilogue_<lettre>.gd) : l'interface attendue
 ## par epilogue.gd (Control plein écran, temps_lignes, duree, jouer, passer, finie), et les planches.
 
-const LETTRES := ["a", "b", "c", "d"]
+const LETTRES := ["a", "b", "c", "d", "e"]
 
 var _attenues := false
 
@@ -93,3 +93,19 @@ func test_la_corde_tire_au_plus_bas_sur_chaque_coup_de_la_piste() -> void:
 	for t: float in [18.0, 19.9, 22.0, 24.4]:
 		assert_almost_eq(c.tirage(t), 1.0, 0.001, "coup à %.1f s" % t)
 	assert_lt(c.tirage(18.95), -0.99, "au plus haut entre deux coups")
+
+
+func test_remontee_le_noir_tombe_net_sur_la_derniere_note() -> void:
+	var a := _anim("e")
+	var lecteur := a.get_node("Animation") as AnimationPlayer
+	var noir := a.get_node("Cadre/P4/Noir") as CanvasItem
+	lecteur.seek(29.9, true)
+	assert_false(noir.visible, "le soldat vise encore")
+	lecteur.seek(30.0, true)
+	assert_true(noir.visible, "le noir tombe à 30 s (décision du GD : avant tout coup)")
+	lecteur.seek(31.9, true)
+	assert_true(noir.visible, "et reste jusqu'au carton")
+	# il siffle jusqu'au bout : les lèvres changent encore dans la dernière seconde
+	var anim := _animation(a)
+	var piste := anim.find_track(NodePath("Cadre/P4/Face/Soldat:frame"), Animation.TYPE_VALUE)
+	assert_ne(int(anim.value_track_interpolate(piste, 29.0)), int(anim.value_track_interpolate(piste, 29.5)))
