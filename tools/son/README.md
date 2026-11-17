@@ -41,7 +41,7 @@ Les noms de fichiers restent neutres (règle du Game Director : aucun nom de fin
 | --- | --- | --- |
 | a | Le Battant | se résout tout bas ; le battant frappe une cloche muette |
 | b | Le Dernier Pli, sacrifice | résolution pleine en ré majeur, tout revient |
-| c | Le Dernier Pli, refus | la même résolution, puis les cloches sonnent (la seule fois du jeu), coupure nette |
+| c | Le Dernier Pli, refus | calée sur la ciné de 36 s (planche DA du 17/11) : la grande cloche frappe toutes les 1,8 s, la cire claque et les petites cloches entrent, la volée traverse galeries, forêt, champs et tranchée, revient sous la main, s’espace, puis seule la résonance lointaine tient jusqu’à 40 s ; seule mus_ en stéréo (STEREO_GARDEE) |
 | d | Le Quatorzième | l'harmonium seul manque d'air et se brise à la septième mesure |
 | e | La Remontée | suspendu sur la, sans se poser |
 
