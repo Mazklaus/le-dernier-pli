@@ -1,10 +1,12 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="1"]
 [ext_resource type="Resource" path="res://dialogue/etape_06/e6_details.dialogue" id="2"]
 [ext_resource type="Resource" path="res://dialogue/etape_06/e6_seuil.dialogue" id="3"]
 
 [ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e6_porte_scellee.gd" id="cine_porte"]
+[ext_resource type="Script" path="res://scenes/decors/decor_apres.gd" id="decor_apres"]
+[ext_resource type="Texture2D" path="res://assets/graphics/cin/cin_e6-porte-bocal.png" id="bocal"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(1920, 180)
 
@@ -133,6 +135,7 @@ text = "seuil_porte"
 position = Vector2(1400, 900)
 rencontre_id = &"e6_seuil"
 personnage = &"eloi"
+absent_apres = &"cine_e6_porte_scellee"
 dialogue = ExtResource("3")
 libelle = "Approcher de la porte"
 fin_etape = true
@@ -171,3 +174,10 @@ scale = Vector2(0.8, 0.8)
 [node name="Arrivee" type="Marker2D" parent="e6_porte_scellee"]
 position = Vector2(1400, 800)
 scale = Vector2(1.4, 1.4)
+
+[node name="BocalEloi" type="Sprite2D" parent="."]
+position = Vector2(1340, 852)
+texture = ExtResource("bocal")
+script = ExtResource("decor_apres")
+drapeau = &"cine_e6_porte_scellee"
+metadata/note_level_design = "Le bocal qu'Éloi a posé devant la porte, à la place où il se tenait (fin de e6_porte_scellee)"
