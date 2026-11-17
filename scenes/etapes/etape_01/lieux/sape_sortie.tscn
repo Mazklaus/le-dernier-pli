@@ -1,10 +1,11 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/interactions/declencheur_dialogue/declencheur_dialogue.tscn" id="2"]
 [ext_resource type="Resource" path="res://dialogue/etape_01/e1_details.dialogue" id="3"]
 [ext_resource type="Resource" path="res://dialogue/etape_01/e1_adieu.dialogue" id="4"]
 [ext_resource type="Script" path="res://scenes/interactions/verrou/verrou.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e1_adieu_jacquot.gd" id="cine_adieu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(2880, 180)
@@ -247,3 +248,15 @@ position = Vector2(360, 900)
 
 [node name="sortie_sape_sortie" type="Marker2D" parent="Points"]
 position = Vector2(2560, 900)
+
+[node name="e1_adieu_jacquot" type="Node2D" parent="."]
+script = ExtResource("cine_adieu")
+id = &"e1_adieu_jacquot"
+duree = 8.0
+metadata/note_level_design = "Tobie s'en va, Jacquot siffle et lève la main sous la couverture anti-gaz ; lancée à la fin de e1_adieu (lot 2, planche GD du 17/11)"
+
+[node name="Camera" type="Camera2D" parent="e1_adieu_jacquot"]
+position = Vector2(1400, 600)
+
+[node name="Depart" type="Marker2D" parent="e1_adieu_jacquot"]
+position = Vector2(1400, 600)
