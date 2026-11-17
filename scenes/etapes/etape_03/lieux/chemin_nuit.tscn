@@ -137,6 +137,9 @@ text = "e3_procession_champs"
 [node name="e3_route" parent="Rencontres" instance=ExtResource("1")]
 position = Vector2(3500, 900)
 rencontre_id = &"e3_route"
+entrees = {
+&"ilde": Vector2(-500, 0)
+}
 dialogue = ExtResource("2")
 libelle = "Prendre la route"
 titre = "route"

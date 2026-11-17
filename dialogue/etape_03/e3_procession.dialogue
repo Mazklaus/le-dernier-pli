@@ -18,7 +18,7 @@ if GameState.possede_marque(&"promis_a_ilde")
 	do GameState.marquer_rencontre_vue(&"e3_rester")
 	Tobie: Je tire le drap sur ma tête. Le chant passe, s'éloigne, se perd.
 	Tobie: Je ne dors pas. Puis si.
-	Tobie: À l'aube, la clé tourne. Ilde ne dit rien. Elle regarde mes genoux. Ils sont propres.
+	Tobie: À l'aube, la clé tourne. Ilde ne dit rien. Elle regarde mes genoux. Ils sont propres. [#entree=ilde]
 	Ilde: La route des champs. C'est par là que tu repars.
 - [Suivre la procession] Le volet cède, il est vieux.
 	do GameState.resoudre_promesse(&"promis_a_ilde", false)
@@ -35,9 +35,9 @@ if GameState.possede_marque(&"promis_a_ilde")
 
 ~ champs
 
-Tobie: Tout le village est à genoux, en cercle, le front contre la terre.
+do Cinematiques.jouer(&"e3_priere_champs")
 Tobie: Ils murmurent vers le sol. Le même chant, mais plus bas encore, comme pour quelqu'un qui dort.
-Tobie: Personne ne me regarde. Il y a une place vide dans le cercle.
+Tobie: Personne ne me regarde.
 - [S'agenouiller avec eux] [#cout_lucidite=2]
 	Tobie: Je pose le front contre la terre froide. Elle sent la pluie et le fer.
 	Tobie: Et très loin dessous, quelque chose répond.
@@ -61,7 +61,7 @@ Tobie: La route repart vers l'est. Derrière moi, le village étend son linge.
 ~ route_nuit
 
 Tobie: Au bout du champ, la route. Je me retourne une fois.
-Tobie: Ilde s'est relevée. Elle me regarde partir, son cierge à la main.
+Tobie: Ilde s'est relevée. Elle me regarde partir, son cierge à la main. [#entree=ilde]
 if GameState.possede_marque(&"front_contre_terre")
 	Tobie: Elle regarde mes genoux, pleins de terre. Elle ne dit rien. Elle hoche la tête.
 else

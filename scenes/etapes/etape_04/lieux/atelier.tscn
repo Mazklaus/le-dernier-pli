@@ -161,6 +161,7 @@ text = "atelier_planche"
 [node name="e4_anselme" parent="Rencontres" instance=ExtResource("1")]
 position = Vector2(1250, 900)
 rencontre_id = &"e4_anselme"
+personnage = &"anselme"
 dialogue = ExtResource("3")
 libelle = "Parler au chirurgien"
 une_seule_fois = true

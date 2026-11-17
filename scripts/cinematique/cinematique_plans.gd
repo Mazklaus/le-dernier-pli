@@ -9,6 +9,7 @@ extends Cinematique
 ## Au-dessus du jeu, sous l'écran gravure : les plans prennent le même papier (tremblé,
 ## grain) que le reste du jeu (DA). L'interface est masquée pendant la cinématique.
 const COUCHE_PLEIN_ECRAN := EtapeBase.COUCHE_GRAVURE - 1
+const TAILLE_PLEIN_ECRAN := Vector2(1920, 1080)
 
 
 ## Les nœuds ajoutés par construire() (plans, sprites dans le décor), et le réglage « effets
@@ -51,6 +52,7 @@ func _construire() -> Animation:
 func _preparer_animation() -> StringName:
 	if _construite and bool(Reglages.valeur(&"effets_attenues")) != _attenues_construits:
 		_reconstruire()
+	_recadrer_couches()  # taille de la vue et étape du moment
 	return super()
 
 
@@ -96,14 +98,45 @@ static func sprite(nom: String, texture: Texture2D, position_haut_gauche: Vector
 	return s
 
 
-## Couche plein écran (repère 1920×1080), masquée hors de la cinématique.
+## Couche plein écran (repère 1920×1080), masquée hors de la cinématique. Le projet est en
+## stretch « expand » : sur un écran plus large (ou plus haut) que 16:9, la vue dépasse 1920 × 1080.
+## Les plans y sont centrés, sur un bandeau sombre qui cache le jeu dans les marges (QA, e3).
 func couche_plein_ecran() -> CanvasLayer:
 	var couche := CanvasLayer.new()
 	couche.name = "Plans"
 	couche.layer = COUCHE_PLEIN_ECRAN
 	couche.visible = false
+	var bandeau := ColorRect.new()
+	bandeau.name = "Bandeau"
+	bandeau.color = Cinematique.couleur_voile(GameState.etape)
+	bandeau.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Enfant interne : derrière les plans, et hors de get_children() (les plans gardent leur rang).
+	couche.add_child(bandeau, false, Node.INTERNAL_MODE_FRONT)
 	add_child(couche)
+	cadrer_plein_ecran(couche)
+	if not get_viewport().size_changed.is_connected(_recadrer_couches):
+		get_viewport().size_changed.connect(_recadrer_couches)
 	return couche
+
+
+## Centre le repère 1920×1080 dans la vue et étend le bandeau à toute la vue.
+static func cadrer_plein_ecran(couche: CanvasLayer) -> void:
+	if not couche.is_inside_tree():
+		return
+	var vue := couche.get_viewport().get_visible_rect().size
+	var decalage := ((vue - TAILLE_PLEIN_ECRAN) / 2.0).round()
+	couche.offset = decalage
+	var bandeau := couche.get_node_or_null(^"Bandeau") as ColorRect
+	if bandeau != null:
+		bandeau.color = Cinematique.couleur_voile(GameState.etape)
+		bandeau.position = -decalage
+		bandeau.size = vue
+
+
+func _recadrer_couches() -> void:
+	for n in _noeuds_construits:
+		if is_instance_valid(n) and n is CanvasLayer and n.name == &"Plans":
+			cadrer_plein_ecran(n as CanvasLayer)
 
 
 ## Pose une clé discrète (la piste est créée au besoin), chemin relatif à la cinématique.

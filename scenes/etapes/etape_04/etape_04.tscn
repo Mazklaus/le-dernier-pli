@@ -272,6 +272,7 @@ position = Vector2(300, 900)
 [node name="e4_benediction" parent="Surface/RueLaterale" instance=ExtResource("8")]
 position = Vector2(900, 900)
 rencontre_id = &"e4_benediction"
+personnage = &"anselme"
 dialogue = ExtResource("12")
 libelle = "Recevoir la bénédiction"
 fin_etape = true

@@ -7,8 +7,8 @@
 ~ debut
 
 do GameState.resoudre_promesses_avant_fin({"promis_a_jacquot": GameState.possede_objet(&"pain_blanc")})
-Tobie: Sous la plus grande des cloches. Elle est si grande qu'elle fait le ciel.
-Tobie: Dessous, une très vieille femme, assise. Ses yeux ne voient plus. Ses mains, si.
+do Cinematiques.jouer(&"e7_mere_cloche")
+Tobie: La cloche est si grande qu'elle fait le ciel. Ses yeux à elle ne voient plus. Ses mains, si.
 La Mère-Cloche: Approche, petit. Je t'entends depuis la forêt. Tu as le pas des autres.
 if GameState.rencontre_vue(&"e7_cloche_regardee")
 	Tobie: Au-dessus de nous, dans la grande cloche, quelque chose se balance sans bruit.
@@ -75,11 +75,13 @@ La Mère-Cloche: Choisis, petit. Pour une fois, quelqu'un choisit.
 - [Être le dernier] Gardez-moi. Mais brisez le moule du sceau.
 	Tobie: Gardez-moi. Mais brisez le moule. Qu'il n'y ait plus de cire noire, plus de pli, plus de coureur.
 	La Mère-Cloche: Le dernier. Il y a quarante hivers que j'attends quelqu'un pour dire ça.
+	do Cinematiques.jouer(&"e7_moule_brise")
 	do GameState.marquer_rencontre_vue(&"fin_dernier_pli_tribut")
 - [Faire sonner les cloches] Plus personne ne descendra.
 	Tobie: Je prends la corde de la grande cloche. Elle pend là depuis toujours. Personne n'a jamais osé.
 	La Mère-Cloche: Si tu tires, petit, je ne sais pas ce qui remontera. Personne ne sait.
 	Tobie: Je tire.
+	do Cinematiques.jouer(&"e7_corde_tiree")
 	do GameState.marquer_rencontre_vue(&"fin_dernier_pli_cloches")
 
 => END
