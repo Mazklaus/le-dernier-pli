@@ -5,7 +5,6 @@
 ~ debut
 
 do Cinematiques.jouer(&"e2_brouillard_dechire")
-Tobie: Le brouillard se déchire. Une souche brûlée, la seule chose debout depuis l'échelle.
 do AudioDirector.jouer_musique(2, "cantique-lointain")
 Tobie: Le vent porte des voix, très loin. Elles chantent le Cantique du Pli.
 Tobie: « Porte, porte, petit pli, la cendre au front, la cire au cœur... »
@@ -17,6 +16,6 @@ Tobie: Je m'assois contre la souche et je sors le pli.
 	Tobie: Une prière. À une sainte, sûrement. Je ne connais pas de sainte qui écoute.
 - [Le garder fermé]
 	Tobie: Il est tiède contre ma poitrine. Je le range.
-Tobie: Au loin, un clocher sans cloches. Un village. Le premier depuis que je suis né.
+Tobie: Le village, au loin. Le premier depuis que je suis né.
 
 => END
