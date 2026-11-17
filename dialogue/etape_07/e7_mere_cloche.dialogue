@@ -7,7 +7,7 @@
 ~ debut
 
 do GameState.resoudre_promesses_avant_fin({"promis_a_jacquot": GameState.possede_objet(&"pain_blanc")})
-do Cinematiques.jouer(&"e7_mere_cloche")
+# La cinématique e7_mere_cloche se joue à « Passer la porte », avant l'arrivée.
 Tobie: Ses yeux ne voient plus. Ses mains, si.
 La Mère-Cloche: Approche, petit. Je t'entends depuis la forêt. Tu as le pas des autres.
 if GameState.rencontre_vue(&"e7_cloche_regardee")

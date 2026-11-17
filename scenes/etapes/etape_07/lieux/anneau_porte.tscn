@@ -167,8 +167,9 @@ script = ExtResource("4")
 vers = &"mere_cloche"
 libelle = "Passer la porte"
 rencontre_requise = &"e7_sceau"
+cinematique = &"e7_mere_cloche"
 metadata/vers = "mere_cloche"
-metadata/note_level_design = "La dernière porte"
+metadata/note_level_design = "La dernière porte ; lance e7_mere_cloche avant le déplacement (playtest)"
 
 [node name="Forme" type="CollisionShape2D" parent="Passages/VersMereCloche"]
 shape = SubResource("RectangleShape2D_5")

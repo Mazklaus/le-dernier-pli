@@ -66,6 +66,9 @@ func interagir(messager: Messager) -> void:
 	if cible == null or not est_disponible():
 		return
 	if cinematique != &"":
+		# Une ciné déjà vue ne se rejoue pas : Tobie arrive alors au repère d'arrivée normal.
+		var cine := Cinematiques.trouver(cinematique)
+		var a_jouer := cine != null and not (cine.une_seule_fois and cine.deja_vue())
 		_en_fondu = true
 		await Cinematiques.jouer(cinematique)
 		_en_fondu = false
@@ -74,6 +77,9 @@ func interagir(messager: Messager) -> void:
 		# La ciné cache tout l'écran jusqu'à sa dernière image : le messager arrive dans la
 		# même image, sans retour visible au lieu de départ.
 		messager.teleporter(cible.global_position)
+		# Raccord : si le plan a laissé Tobie ailleurs (repère PlaceTobie), il reprend là.
+		if a_jouer and is_instance_valid(cine):
+			cine.replacer_messager()
 		franchi.emit(self, vers)
 		return
 	if fondu_noir <= 0.0:

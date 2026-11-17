@@ -309,7 +309,7 @@ shape = SubResource("cine_zone_e6_eboulement")
 script = ExtResource("cine_village")
 id = &"e6_village_sous_terre"
 duree = 12.0
-metadata/note_level_design = "Les maisons dans l'argile, puis la longue table et sa chaise vide ; lancée par une réplique de e6_tablee (début) (lot 1, arbitrage GD du 17/11)"
+metadata/note_level_design = "Les maisons dans l'argile, puis la longue table et sa chaise vide ; lancée par le passage « Suivre Eloi » de la nef, avant le déplacement (playtest) (lot 1, arbitrage GD du 17/11)"
 
 [node name="Camera" type="Camera2D" parent="e6_village_sous_terre"]
 position = Vector2(1800, 600)
