@@ -620,6 +620,43 @@ def clairiere_ciel(i):   # e5_clairiere_ciel (10 s, PR #268 de la DA) : Tobie so
     m=pas*0.6+croix+ciel+houle+herbe+plonge
     m=reverb(m,1.6,0.25,seed=471+i)[:L]
     return m*np.clip(t/0.2,0,1)*np.clip((10.0-t)/0.4,0,1)
+def fuite_noir(i):   # e6_fuite_noir (8 s, PR #270 de la DA) : la fuite dans le noir sous la cathédrale.
+    #   0-3 s : la course : pas rapides (un toutes les 0,22 s) et souffle court, de gauche à droite.
+    #   3,25 s : les mains à plat sur la pierre : un choc mat, de chair et de pierre, pas un coup de théâtre (pas de
+    #            jump scare : le niveau reste celui des pas) ; le cadre tremble jusqu'à 3,5 s : un peu de gravier qui roule.
+    #   3,5-5 s : le silence et le souffle qui se reprend.
+    #   5-8 s : longtemps après, le noir ; la lumière verte : un grésillement à peine audible qui naît à 5,8 s, s'éteint à
+    #           5,95 s, revient à 6,1 s et reste. Aucune cloche, aucune note.
+    L=mk(8.0); t=np.arange(L)/SR
+    noir=fftfilt(burst(L,lo=40,hi=250),lo=40,hi=250)*0.12
+    course=np.zeros(L)
+    for k in range(14):
+        n=mk(0.2); tt=np.arange(n)/SR
+        y=fftfilt(rng.standard_normal(n),lo=100,hi=900)*np.exp(-tt*50)+burst(n,lo=1500,hi=5000)*np.exp(-tt*60)*0.2
+        at(course,y*(0.9 if k%2 else 1.0),0.05+k*0.21+rng.normal(0,0.01))
+    souffle=np.zeros(L)
+    def souffles(t0,t1,periode,g,lo,hi):
+        tc=t0; k=0
+        while tc<t1:
+            d=periode*0.5; n=mk(d); tt=np.arange(n)/SR
+            at(souffle,burst(n,lo=lo,hi=hi)*np.sin(np.pi*tt/tt[-1])**(1.5 if k%2==0 else 2.2)*g*(1.0 if k%2==0 else 1.2),tc)
+            tc+=d; k+=1
+    souffles(0.0,3.2,0.45,0.10,500,3000)                                                    # court, en courant
+    souffles(3.6,5.0,0.8,0.09,350,2200)                                                     # il reprend son souffle
+    impact=np.zeros(L)
+    n=mk(0.3); tt=np.arange(n)/SR
+    y=fftfilt(rng.standard_normal(n),lo=150,hi=1800)*np.exp(-tt*45)                          # les paumes à plat
+    y+=fftfilt(rng.standard_normal(n),hi=250)*np.exp(-tt*30)*0.6                             # la pierre, sourde
+    at(impact,y*0.8,3.25)
+    for _ in range(12):                                                                    # le gravier qui roule pendant que le cadre tremble
+        k=mk(0.01); at(impact,burst(k,lo=2000,hi=7000)*np.hanning(k)*rng.uniform(0.05,0.15),rng.uniform(3.28,3.55))
+    vert=np.zeros(L); allume=((t>=5.8)&(t<5.95))|(t>=6.1)
+    allume=np.convolve(allume.astype(float),np.ones(mk(0.015))/mk(0.015),mode="same")
+    vert=fftfilt(burst(L,lo=3000,hi=8000),lo=3000,hi=8000)*0.025*allume*(0.85+0.15*np.sin(2*np.pi*11*t))   # un grésillement, presque rien
+    vert+=fftfilt(burst(L,lo=120,hi=400),lo=120,hi=400)*0.03*allume
+    m=noir+course*0.7+souffle+impact+vert
+    m=reverb(m,1.8,0.3,seed=481+i)[:L]
+    return m*np.clip(t/0.15,0,1)*np.clip((8.0-t)/0.5,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -648,3 +685,4 @@ save("sfx_cle_tourne",cle_tourne,0.6)    # 6 s pour toute la ciné, lancé à 0
 save("sfx_sortie_hopital",sortie_hopital,0.6)    # 6 s pour toute la ciné, lancé à 0
 save("sfx_boucle_revenir",boucle_revenir,0.6)    # 10 s pour toute la ciné e5_boucle, lancé à 0
 save("sfx_clairiere_ciel",clairiere_ciel,0.6)    # 10 s pour toute la ciné, lancé à 0
+save("sfx_fuite_noir",fuite_noir,0.6)    # 8 s pour toute la ciné, lancé à 0
