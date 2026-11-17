@@ -3,8 +3,10 @@ extends CinematiquePlans
 ## Planches de tools/gen_cin_e6_porte.py (l'écran de l'étape 6 les inverse).
 ## P1, 0 à 3 s : contre-plongée sur la porte, couche de cire sur couche de cire ; lent
 ##    panoramique du seuil vers l'arc (plan fixe en effets atténués).
-## P2, 3 à 7 s : devant la porte (décor du seuil réemployé, rapproché), Éloi pose son bocal
-##    (geste poser-bocal réemployé) devant Tobie.
+## P2, 3 à 7 s : devant la porte (décor du seuil réemployé, rapproché), Éloi passe devant
+##    Tobie, se tourne vers lui et pose son bocal (geste poser-bocal réemployé) à sa gauche, là
+##    où le bocal reste en jeu (retouche du GD du 17/11 : visible au-dessus de la boîte de
+##    dialogue).
 ## P3, 7 à 10 s : Éloi recule dans l'ombre sans se retourner et s'efface ; le bocal reste seul
 ##    devant la porte. Rien de ce qu'il y a derrière.
 
@@ -24,12 +26,18 @@ const ECHELLE_SEUIL := 1.25
 const FOYER := Vector2(900, 760)
 const PIEDS := Vector2(100, 316)
 const TOBIE := Vector2(740, 900)
-const ELOI := Vector2(1040, 900)
-const BOCAL := Vector2(40, 268)          # coin du bocal dans l'image d'Éloi (CADRE_BOCAL)
-const POSE := [[3.6, 1], [3.85, 2], [4.1, 3], [4.4, 4], [4.7, 5]]
+## Éloi arrive de la droite (où il attend en jeu), passe devant Tobie et s'arrête à sa gauche,
+## tourné vers lui : le bocal tombe alors 200 px à gauche de Tobie, comme BocalEloi en jeu.
+const ELOI_DEPART := Vector2(1040, 900)
+const ELOI := Vector2(500, 900)
+const DEBUT_MARCHE := 3.0
+const FIN_MARCHE := 4.2
+## Coin du bocal dans l'image d'Éloi retournée (CADRE_BOCAL x 40..80 → 120..160).
+const BOCAL := Vector2(120, 268)
+const POSE := [[4.5, 1], [4.75, 2], [5.0, 3], [5.3, 4], [5.6, 5]]
 const DEBUT_RECUL := 7.2
 const FIN_RECUL := 9.4
-const RECUL := Vector2(520, -30)
+const RECUL := Vector2(-520, -30)
 const RESPIRATION := 0.5
 
 var couche: CanvasLayer
@@ -73,20 +81,31 @@ func construire() -> Animation:
 	tobie.offset = -PIEDS
 	seuil.add_child(tobie)
 	var bocal := sprite("Bocal", tex["bocal"], ELOI - PIEDS + BOCAL)
+	bocal.flip_h = true
 	seuil.add_child(bocal)
-	var geste := sprite("Geste", tex["chr_eloi_poser-bocal_01"], ELOI, 6)
+	var geste := sprite("Geste", tex["chr_eloi_poser-bocal_01"], ELOI_DEPART, 6)
 	geste.offset = -PIEDS
 	seuil.add_child(geste)
 	var eloi := sprite("Eloi", tex["eloi"], ELOI)
 	eloi.offset = -PIEDS
+	eloi.flip_h = true
 	seuil.add_child(eloi)
 	couche.add_child(seuil)
 	cle(anim, "Plans/Seuil:visible", 0.0, false)
 	cle(anim, "Plans/Seuil:visible", P2, true)
 	boucle(anim, "Plans/Seuil/Tobie", P2, DUREE, [0, 1, 2, 3, 2, 1], RESPIRATION)
-	# le geste : Éloi tient son bocal, se penche, le pose, se redresse
+	# Éloi, son bocal contre lui, passe devant Tobie, puis se tourne vers lui
 	cle(anim, "Plans/Seuil/Geste:visible", 0.0, true)
 	cle(anim, "Plans/Seuil/Geste:frame", P2, 0)
+	cle(anim, "Plans/Seuil/Geste:flip_h", 0.0, false)
+	var m := roundi((FIN_MARCHE - DEBUT_MARCHE) / Cinematique.PAS)
+	for k in m + 1:
+		var u := float(k) / m
+		var pas := -5.0 * absf(sin(u * 5.0 * PI))
+		cle(anim, "Plans/Seuil/Geste:position", DEBUT_MARCHE + k * Cinematique.PAS,
+				(ELOI_DEPART.lerp(ELOI, u * u * (3.0 - 2.0 * u)) + Vector2(0, pas)).round())
+	cle(anim, "Plans/Seuil/Geste:flip_h", FIN_MARCHE, true)
+	# le geste : il se penche, pose le bocal, se redresse
 	for c: Array in POSE:
 		cle(anim, "Plans/Seuil/Geste:frame", c[0], c[1])
 	# puis il recule sans le bocal, qui reste à sa place
