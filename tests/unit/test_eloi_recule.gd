@@ -51,3 +51,27 @@ func test_le_seuil_est_regle() -> void:
 	if b != null:
 		assert_eq(b.drapeau, DRAPEAU)
 		assert_not_null(b.texture)
+
+
+func test_la_cine_replace_tobie_au_milieu_de_la_porte() -> void:
+	var messager: Messager = (load("res://scenes/messager/messager.tscn") as PackedScene).instantiate()
+	add_child_autofree(messager)
+	messager.global_position = Vector2(1400, 900)
+	var cine := Cinematique.new()
+	var place := Marker2D.new()
+	place.name = Cinematique.PLACE_TOBIE
+	place.position = Vector2(900, 900)
+	cine.add_child(place)
+	add_child_autofree(cine)
+	assert_true(cine.replacer_messager())
+	assert_eq(messager.global_position, Vector2(900, 900))
+
+
+func test_au_seuil_le_bocal_reste_a_gauche_de_tobie() -> void:
+	var seuil := (load("res://scenes/etapes/etape_06/lieux/seuil.tscn") as PackedScene).instantiate()
+	autofree(seuil)
+	var place := seuil.get_node_or_null("e6_porte_scellee/PlaceTobie") as Marker2D
+	assert_not_null(place)
+	var bocal := seuil.get_node("BocalEloi") as Node2D
+	if place != null:
+		assert_lt(bocal.position.x + 40.0, place.position.x - 100.0, "hors de la boîte de dialogue")

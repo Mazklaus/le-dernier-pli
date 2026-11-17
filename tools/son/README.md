@@ -53,10 +53,12 @@ Dans une piste de méthode de l'AnimationPlayer (ou depuis un geste de dialogue)
 | --- | --- | --- | --- |
 | 1 | L'officier remet le pli | Ciné | `sfx_pli_tendre` (main tendue → poitrine) |
 | 1 | Adieu de Jacquot, couverture | Anim | sifflet = `vox_jacquot_*` ; `sfx_couverture_tomber` |
+| 1 | Adieu de Jacquot (e1_adieu_jacquot) | Ciné | `sfx_adieu_jacquot` lancé à 0 s, 8 s : Jacquot siffle l'air du dépôt (l'air des fils de l'étape 2, mêmes fausses notes), une note par image de geste de 0,2 s ; les pas de Tobie sur le caillebotis (un appui toutes les 0,4 s) ; au travelling arrière, le sifflet s'éloigne ; à la porte, la main salue (6,4 s), lâche la couverture (7,2 s), l'étoffe lourde retombe (7,5 s), puis le silence |
 | 1 | Sortie de tranchée | Ciné | `sfx_echelle_monter` en boucle, puis `sfx_parapet_franchir` quand la caméra le perd |
 | 2 | Brisse réchauffe la cire | Anim | `sfx_sceau_rechauffer` |
 | 2 | Le Mort indique | Anim | `sfx_mort_bras` à l'image où le bras se lève |
 | 2 | Le terrain se referme | Anim | `sfx_terre_ebouler` |
+| 2 | Les rites de Matthieu (e2_rites_matthieu) | Ciné | `sfx_rites_matthieu` lancé à 0 s, 8 s : le vent bas dans le brouillard ; le cuir de la sacoche, le pain qui descend dans la toile (1,3 s) et tombe au fond (2,3 s), le rabat mouillé ; les genoux dans la boue (4,3 s) ; la prière des morts chuchotée, sans mots lisibles ni voix timbrée, sur les quatre ouvertures des lèvres (6,2 / 6,55 / 7,0 / 7,45 s). Aucune cloche |
 | 2 | Foncer dans les barbelés (e2_barbeles_foncer) | Ciné | `sfx_barbeles_foncer` lancé à 0 s, 7 s : la course dans la boue (un pas toutes les 0,2 s), le choc dans les fils à 2,5 s, le gros plan presque muet (les fils qui vibrent, la goutte sans bruit), le fil qui grince quand il tire (4,5 s), l'étoffe déchirée à 4,9 s, le lambeau qui bat, la course qui s'éloigne dans le brouillard ; les fils fredonnent l'air de Jacquot en fond |
 | 3 | La noce | Anim | rien : la musique `mus_village-cloches-muettes_noce` joue déjà sur la place |
 | 3 | La procession de nuit | Ciné | rien : `mus_village-cloches-muettes_procession` (lieux_musique) |

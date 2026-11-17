@@ -171,13 +171,17 @@ position = Vector2(1400, 500)
 position = Vector2(1400, 500)
 scale = Vector2(0.8, 0.8)
 
+[node name="PlaceTobie" type="Marker2D" parent="e6_porte_scellee"]
+position = Vector2(900, 900)
+metadata/note_level_design = "Fin de la ciné : Tobie au milieu de la porte, comme dans le dernier plan"
+
 [node name="Arrivee" type="Marker2D" parent="e6_porte_scellee"]
 position = Vector2(1400, 800)
 scale = Vector2(1.4, 1.4)
 
 [node name="BocalEloi" type="Sprite2D" parent="."]
-position = Vector2(1340, 852)
+position = Vector2(700, 852)
 texture = ExtResource("bocal")
 script = ExtResource("decor_apres")
 drapeau = &"cine_e6_porte_scellee"
-metadata/note_level_design = "Le bocal qu'Éloi a posé devant la porte, à la place où il se tenait (fin de e6_porte_scellee)"
+metadata/note_level_design = "Le bocal qu’Éloi a posé devant la porte (fin de e6_porte_scellee), à gauche de Tobie (replacé au milieu de la porte) pour rester visible au-dessus de la boîte de dialogue"
