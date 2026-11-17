@@ -39,7 +39,7 @@ Les noms de fichiers restent neutres (règle du Game Director : aucun nom de fin
 
 | Lettre | Fin | Le Cantique |
 | --- | --- | --- |
-| a | Le Battant | se résout tout bas ; le battant frappe une cloche muette |
+| a | Le Battant | calée sur la ciné de 32 s (PR #223 de la DA) : la corde grince sous la cloche muette, la terre tombe en pelletées, un soldat siffle le Cantique et se casse quand la larme coule, les noms murmurés, la lampe, puis le chœur se résout tout bas sur le nom (28,5 s) ; rien ne sonne |
 | b | Le Dernier Pli, sacrifice | résolution pleine en ré majeur, tout revient |
 | c | Le Dernier Pli, refus | calée sur la ciné de 36 s (planche DA du 17/11) : la grande cloche frappe toutes les 1,8 s, la cire claque et les petites cloches entrent, la volée traverse galeries, forêt, champs et tranchée, revient sous la main, s’espace, puis seule la résonance lointaine tient jusqu’à 40 s ; seule mus_ en stéréo (STEREO_GARDEE) |
 | d | Le Quatorzième | l'harmonium seul manque d'air et se brise à la septième mesure |
