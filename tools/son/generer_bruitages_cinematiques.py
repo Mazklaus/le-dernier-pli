@@ -134,6 +134,36 @@ def greffe_fausse_note(i):   # e4_greffe, à la coupe au noir : un ré fredonné
     k=mk(0.3); t2=np.arange(k)/SR; fl=np.linspace(1800,2600,k)
     at(y,fftfilt(np.sin(2*np.pi*np.cumsum(fl)/SR)*(0.5+0.5*np.sign(np.sin(2*np.pi*90*t2)))*np.hanning(k),lo=1000,hi=5000)*0.25,0.42)
     return y
+def priere_murmurer(i):  # e3_priere_champs (12 s, la nuit, PR #233 de la DA) : le village à genoux en cercle, front contre terre.
+    # P1 0-4 s de profil : des dos qui respirent (un souffle par seconde, chacun le sien), les cierges qui vacillent ;
+    # P2 4-8 s en plongée : plus loin ; P3 8-12 s poussée vers la place vide, le vent couche les flammes à 9,5 s.
+    # Dessous, le Cantique fredonné vers le sol, bouche fermée, « comme pour quelqu'un qui dort ». Aucune cloche.
+    L=mk(12.0); t=np.arange(L)/SR; D3=146.83
+    plan=np.where(t<4.0,1.0,np.where(t<8.0,0.55,0.35))                       # coupes sèches à 4 et 8 s
+    souffles=np.zeros(L)
+    for _ in range(14):                                                        # quatorze dos, chacun son rythme
+        p=rng.uniform(0.85,1.2); t0=rng.uniform(0,p)
+        while t0<12.0:
+            n=mk(rng.uniform(0.5,0.75)); tt=np.arange(n)/SR
+            at(souffles,burst(n,lo=350,hi=2200)*np.sin(np.pi*tt/tt[-1])**2*rng.uniform(0.4,1),t0); t0+=p*rng.uniform(0.9,1.1)
+    fredon=np.zeros(L); air=[0,3,5,7,5,3,2,0]                                # la première phrase, lente, qui ne monte pas
+    for v in range(6):
+        f0=D3*(0.5 if v%2 else 1.0)*2**(rng.uniform(-8,8)/1200)
+        for k,st in enumerate(air):
+            d=1.5; n=mk(d*1.1); tt=np.arange(n)/SR; f=f0*2**(st/12)*(1+0.004*np.sin(2*np.pi*rng.uniform(4,5.5)*tt))
+            ph=2*np.pi*np.cumsum(f)/SR
+            y=sum(np.exp(-((f0*2**(st/12)*h-250)/150)**2)*np.sin(h*ph)/h for h in range(1,12))
+            at(fredon,y*np.sin(np.pi*tt/tt[-1])**1.5,k*d+0.1*v+rng.normal(0,0.05))
+    fredon=fftfilt(fredon,hi=900)
+    flammes=fftfilt(burst(L,hi=300),hi=300)*(0.6+0.4*np.sin(2*np.pi*0.7*t+i))
+    for _ in range(25): k=mk(0.006); at(flammes,burst(k,lo=2000,hi=8000)*np.hanning(k)*rng.uniform(1,3),rng.uniform(0,12))   # mèches qui crépitent
+    vent=np.clip((t-9.3)/0.4,0,1)*np.clip((11.2-t)/1.2,0,1)
+    rafale=fftfilt(burst(L,lo=150,hi=1600),lo=150,hi=1600)*vent**1.5
+    claque=np.zeros(L)
+    for k in range(8): n=mk(0.08); at(claque,burst(n,hi=600)*np.hanning(n)*(1-k/10),9.55+k*0.09)                 # les flammes couchées qui battent
+    m=fftfilt(souffles,hi=2500)*plan*0.5+fredon*0.6*(0.8+0.2*(t>4.0))+flammes*0.15*plan+rafale*0.9+claque*0.45
+    m=reverb(m,1.6,0.3,seed=301+i)[:L]
+    return m*np.clip((12.0-t)/0.5,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -148,3 +178,4 @@ for base,fn in (("sfx_pli_tendre",pli_tendre),("sfx_couverture_tomber",couvertur
     save(base,fn)
 save("sfx_cloche_souffle",cloche_souffle,0.45)   # un fond, pas un événement
 save("sfx_greffe_fausse-note",greffe_fausse_note,0.6)
+save("sfx_priere_murmurer",priere_murmurer,0.6)   # un fond de 12 s pour toute la ciné, lancé à 0
