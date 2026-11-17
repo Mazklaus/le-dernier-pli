@@ -4,6 +4,7 @@
 
 ~ debut
 
+do Cinematiques.jouer(&"e5_clairiere_ciel")
 Tobie: Les croix s'arrêtent d'un coup. Le ciel s'ouvre.
 Tobie: En bas, la terre descend vers une ombre de pierre. Un toit d'église, à moitié enterré.
 Tobie: Je m'assois dans l'herbe. Je sors le pli.
