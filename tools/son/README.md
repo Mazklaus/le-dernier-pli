@@ -68,6 +68,7 @@ Dans une piste de méthode de l'AnimationPlayer (ou depuis un geste de dialogue)
 | 4 | La greffe de l'œil | Ciné | `sfx_aiguille_coudre` (le fil passe trois fois, hors champ), puis `sfx_greffe_fausse-note` à la coupe au noir (un fredonnement bouche cousue, un quart de ton trop bas, coupé à 0,6 s au retour de l’image) |
 | 3 | La prière des champs (e3_priere_champs) | Ciné | `sfx_priere_murmurer` lancé à 0 s, 12 s : les dos qui respirent (P1, de près), le Cantique fredonné vers le sol, les cierges, le coup de vent à 9,5 s qui couche les flammes ; coupes à 4 et 8 s marquées par le niveau des souffles |
 | 3 | La danse avec Rose (e3_danse_rose) | Ciné | `sfx_danse_tourner` lancé à 0 s, 10 s : le violon de la noce reprend (un coup d'archet toutes les 0,3 s), la jupe à 1,8 s, la vielle et le tambourin pendant le tour, les rubans, l'archet qui dérape quand il trébuche (5,2 s) ; le rire de Rose est joué par le violon (traits à 7,0, trilles à 7,7 et 8,9 s), pas de voix |
+| 3 | La clé qui tourne (e3_cle_tourne) | Ciné | `sfx_cle_tourne` lancé à 0 s, 6 s : la maison d'Ilde au soir ; le volet gauche claque (0,7 s), le droit (1,3 s) et l'espagnolette dans sa gâche ; la porte se ferme, gonds puis bois qui bute (2,0 à 3,1 s) ; la clé entre (4,4 s), premier tour (4,9 s), second tour (5,5 s), puis le silence |
 | 4 | Les saints qui respirent | Anim | rien : l'émetteur `amb_hopital-recousus_crypte` (son_du_noir) |
 | 4 | La bénédiction | Anim | `sfx_cendre_front` |
 | 5 | L'entaille et le retour | Anim | `sfx_lame_entailler` |
