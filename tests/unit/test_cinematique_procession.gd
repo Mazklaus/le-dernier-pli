@@ -61,3 +61,27 @@ func test_teinte_du_chemin_de_nuit_puis_retour() -> void:
 	assert_eq(etape.teinte_actuelle(), Color(0.32, 0.35, 0.48))
 	assert_false((c.get_node("Plans") as CanvasLayer).visible)
 	GameState.reinitialiser()
+
+
+func test_aucun_marcheur_hors_des_lames_du_volet() -> void:
+	if not _planches_livrees():
+		pass_test("planches de la DA pas encore livrées (#152)")
+		return
+	var etape: Node = add_child_autofree((load(ETAPE) as PackedScene).instantiate())
+	var c := _cine(etape)
+	var anim := (c.get_node("Animation") as AnimationPlayer).get_animation(&"jouer")
+	var demi: float = SilhouetteTobie.PIEDS.x * c.ECHELLE
+	for i in c.marcheurs.size():
+		var chemin := "Plans/Marcheur%d" % i
+		var pos := anim.find_track(NodePath(chemin + ":position"), Animation.TYPE_VALUE)
+		var vis := anim.find_track(NodePath(chemin + ":visible"), Animation.TYPE_VALUE)
+		assert_ne(vis, -1, chemin)
+		for k in anim.track_get_key_count(pos):
+			var t := anim.track_get_key_time(pos, k)
+			var x: float = (anim.track_get_key_value(pos, k) as Vector2).x
+			var visible: bool = anim.value_track_interpolate(vis, t)
+			if visible:
+				assert_true(x + demi > c.EMBRASURE.x and x - demi < c.EMBRASURE.y,
+					"%s visible hors des lames à %.1f s (écran plus large que 16:9)" % [chemin, t])
+	var piste := anim.find_track(NodePath("Plans/Marcheur0:visible"), Animation.TYPE_VALUE)
+	assert_false(anim.track_get_key_value(piste, anim.track_get_key_count(piste) - 1), "Ilde finit derrière le mur")
