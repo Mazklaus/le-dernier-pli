@@ -5,6 +5,7 @@
 
 ~ debut
 
+do Cinematiques.jouer(&"e6_village_sous_terre")
 Tobie: Un village sous la terre. Une odeur de pain.
 Tobie: Une table au milieu d'une place, comme au village le jour de la noce. Ici, la musique, ce sont les cuillères. [#geste=tous:lever-cuillere]
 Tobie: Une chaise est vide. Un couvert est mis devant. Une femme me fait signe de m'asseoir. [#geste=femme:faire-signe]
