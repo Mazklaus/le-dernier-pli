@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3]
+[gd_scene load_steps=39 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_05/etape_05.gd" id="1"]
 [ext_resource type="Script" path="res://scenes/decors/decor_e5.gd" id="decor_e5"]
@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" path="res://scenes/messager/messager.tscn" id="12"]
 
 [ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e5_autre_se_retourne.gd" id="cine_autre"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e5_boucle.gd" id="cine_boucle"]
 [ext_resource type="Script" path="res://scenes/interactions/personnage/autre_au_loin.gd" id="autre_au_loin"]
 [ext_resource type="AudioStream" path="res://assets/audio/amb_foret-de-croix_boucle.ogg" id="son_amb_foret_de_croix_boucle"]
 [ext_resource type="AudioStream" path="res://assets/audio/amb_foret-de-croix_campement.ogg" id="son_amb_foret_de_croix_campement"]
@@ -809,3 +810,16 @@ boucle = ExtResource("fx_fumee")
 largeur_image = 80
 images_par_seconde = 3.3333
 metadata/note_level_design = "La gamelle fume encore sur les braises (x 700)"
+
+[node name="e5_boucle" type="Node2D" parent="Surface/Boucle"]
+script = ExtResource("cine_boucle")
+id = &"e5_boucle"
+duree = 10.0
+metadata/note_level_design = "Il marche entre les croix, la même croix revient, l'encoche ancienne noircie ; lancée au début du second passage de e5_sentier (lot 2, planche du GD du 17/11)"
+
+[node name="Camera" type="Camera2D" parent="Surface/Boucle/e5_boucle"]
+position = Vector2(600, 750)
+
+[node name="Depart" type="Marker2D" parent="Surface/Boucle/e5_boucle"]
+position = Vector2(600, 750)
+scale = Vector2(1.5, 1.5)
