@@ -7,7 +7,7 @@ const PLANS := {
 	2: [&"e2_barbeles_foncer", &"e2_rites_matthieu", &"e2_brouillard_dechire"],
 	3: [&"e3_procession_nuit", &"e3_priere_champs", &"e3_danse_rose", &"e3_cle_tourne"],
 	4: [&"e4_greffe", &"e4_descente_crypte"],
-	5: [&"e5_autre_se_retourne"],
+	5: [&"e5_autre_se_retourne", &"e5_boucle"],
 	6: [&"e6_chute_fissure", &"e6_eboulement", &"e6_village_sous_terre", &"e6_porte_scellee"],
 	7: [&"e7_descente", &"e7_ouverture_sceau", &"e7_mere_cloche", &"e7_moule_brise", &"e7_corde_tiree"],
 }

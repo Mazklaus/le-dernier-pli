@@ -27,6 +27,7 @@ do GameState.marquer_rencontre_vue(&"e5_entaille")
 
 ~ debut
 
+do Cinematiques.jouer(&"e5_boucle")
 if GameState.rencontre_vue(&"e5_entaille_faite")
 	Tobie: C'est ma croix. Mon entaille, toute fraîche. Je suis revenu au même endroit.
 	Tobie: Et juste dessous, une autre encoche. Plus vieille, noircie. Faite du même geste que la mienne.
