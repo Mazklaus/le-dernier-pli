@@ -5,7 +5,7 @@
 [ext_resource type="Resource" path="res://dialogue/etape_04/e4_details.dialogue" id="3"]
 [ext_resource type="Script" path="res://scenes/interactions/passage/passage.gd" id="4"]
 
-[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e4_descente_crypte.gd" id="cine_crypte"]
 [ext_resource type="Script" path="res://scenes/decors/objet_anime.gd" id="objet_anime"]
 [ext_resource type="Texture2D" path="res://assets/graphics/fx/fx_buee-crypte_01.png" id="fx_buee"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
@@ -215,7 +215,7 @@ mouse_filter = 2
 z_index = -1
 
 [node name="e4_descente_crypte" type="Node2D" parent="."]
-script = ExtResource("cine_script")
+script = ExtResource("cine_crypte")
 id = &"e4_descente_crypte"
 duree = 10.0
 metadata/note_level_design = "L'escalier s'enfonce, la lumière d'en haut rétrécit jusqu'au noir ; lancée par une réplique de e4_crypte (début) (lot 1, arbitrage GD du 17/11)"
