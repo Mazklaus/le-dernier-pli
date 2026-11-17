@@ -11,7 +11,7 @@ extends CinematiquePlans
 const CIN := "res://assets/graphics/cin/%s.png"
 const ENV := "res://assets/graphics/env/e5/env_e5_plan3_%s.png"
 const CHR := "res://assets/graphics/chr/%s.png"
-const SON := "sfx_boucle"
+const SON := "sfx_boucle_revenir"
 const DUREE := 10.0
 const P2 := 4.0
 const P3 := 7.0
