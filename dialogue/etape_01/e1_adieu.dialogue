@@ -22,7 +22,7 @@ Jacquot: Moi j'ai raté la gamelle. La Ravaude dit que j'ai l'air trop gras.
 - [Passer] Faut que j'y aille.
 	Jacquot: Ouais. Faut toujours.
 Jacquot: Écoute. L'air du dépôt. [#geste=siffler]
-Jacquot: Tu le siffleras là-bas. [#geste=lever-main]
+Jacquot: Tu le siffleras là-bas.
 do Cinematiques.jouer(&"e1_adieu_jacquot")
 
 => END
