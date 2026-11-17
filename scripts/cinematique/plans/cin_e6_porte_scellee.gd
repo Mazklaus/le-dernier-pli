@@ -22,14 +22,16 @@ const CIRE_BAS := Vector2(0, -1080)
 const CIRE_HAUT := Vector2.ZERO
 const DEBUT_PANORAMIQUE := 0.2
 ## P2 et P3 : le seuil rapproché autour du pied de la porte.
-const ECHELLE_SEUIL := 1.25
+## Même cadrage que la caméra de jeu au seuil (décor à l'échelle 1, sans décalage) : la coupe
+## vers le jeu ne saute pas (relevé QA du 17/11).
+const ECHELLE_SEUIL := 1.0
 const FOYER := Vector2(900, 760)
 const PIEDS := Vector2(100, 316)
-const TOBIE := Vector2(740, 900)
+const TOBIE := Vector2(900, 900)
 ## Éloi arrive de la droite (où il attend en jeu), passe devant Tobie et s'arrête à sa gauche,
 ## tourné vers lui : le bocal tombe alors 200 px à gauche de Tobie, comme BocalEloi en jeu.
-const ELOI_DEPART := Vector2(1040, 900)
-const ELOI := Vector2(500, 900)
+const ELOI_DEPART := Vector2(1300, 900)
+const ELOI := Vector2(660, 900)
 const DEBUT_MARCHE := 3.0
 const FIN_MARCHE := 4.2
 ## Coin du bocal dans l'image d'Éloi retournée (CADRE_BOCAL x 40..80 → 120..160).
