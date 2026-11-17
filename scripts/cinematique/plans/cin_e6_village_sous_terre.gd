@@ -13,6 +13,9 @@ const CIN := "res://assets/graphics/cin/%s.png"
 const CHR := "res://assets/graphics/chr/chr_%s_lever-cuillere_01.png"
 const DECOR := "res://assets/graphics/env/e6/env_e6_plan3_village_01.png"
 const SON := "sfx_village_tablee"
+## La musique de la tablée (émetteur posé dans etape_06.tscn sous le village), mise en pause le
+## temps de la ciné : son air et celui des cuillères se chevaucheraient.
+const EMETTEUR := "MusiqueTablee"
 const DUREE := 12.0
 const P2 := 4.0
 const P3 := 8.0
@@ -39,6 +42,7 @@ const BASE_VAPEUR := Vector2(100, 270)
 const POUSSEE := 1.18
 
 var couche: CanvasLayer
+var emetteur: AudioStreamPlayer2D
 
 
 func construire() -> Animation:
@@ -131,9 +135,19 @@ func construire() -> Animation:
 	return anim
 
 
+func _prendre_controle() -> void:
+	super()
+	var lieu := get_parent()
+	emetteur = lieu.find_child(EMETTEUR, true, false) as AudioStreamPlayer2D if lieu != null else null
+	if emetteur != null:
+		emetteur.stream_paused = true
+
+
 func apres() -> void:
 	if couche != null:
 		couche.visible = false
+	if emetteur != null and is_instance_valid(emetteur):
+		emetteur.stream_paused = false
 
 
 static func glisser(anim: Animation, chemin: String, t0: float, t1: float, v0: Vector2, v1: Vector2) -> void:
