@@ -271,7 +271,74 @@ def _fin_c():
     loin*=np.clip((L-mk(1.0)-mk(25.5)-np.arange(n))/mk(3.0),0,1)[:,None]**2   # éteint vers 40 s, puis le silence
     m[mk(25.5):]+=loin
     return m
-def fin_d():   # l'harmonium seul, qui manque d'air ; il se brise à la septième mesure
+# fin-d : l'épilogue animé de la DA (32 s, coupes à 8, 14 et 24 s, PR #225). L'harmonium seul, qui manque d'air :
+#   0-8 s    la main pose le pli sur les autres (2,0 / 3,4 / 4,6 s) ;
+#   8-14 s   personne ne grave rien : l'harmonium seul, le soufflet faiblit ;
+#   14-24 s  le garçon reçoit la sacoche (16 s), la cloche sans battant (17,5 s, aucun son de cloche), l'ordre (19 s) ;
+#   24-32 s  l'harmonium se brise à la coupe ; il ne reste que le pas, le même que celui de Tobie (24,5-30,5 s,
+#            un pas toutes les 0,4 s), qui s'éloigne sur le fondu au papier.
+PLIS=(2.0,3.4,4.6); SACOCHE,CLOCHE_MUETTE,ORDRE=16.0,17.5,19.0
+PAS=(24.5,30.5,0.4); BRISE=24.0; BT_D=1.07          # le thème un peu plus vif : la rupture tombe sur la coupe de 24 s
+def pli_pose():     # un pli de papier épais posé sur la pile
+    n=mk(0.35); tt=np.arange(n)/SR; y=np.zeros(n)
+    for _ in range(14):
+        k=mk(rng.uniform(0.004,0.015)); place(y,burst(k,lo=1500,hi=7000)*np.hanning(k)*rng.uniform(0.2,0.8),mk(rng.uniform(0,0.12)))
+    k=mk(0.05); place(y,burst(k,hi=900)*np.exp(-np.arange(k)/SR*70)*1.2,mk(0.1))   # la tape sur la pile
+    return y
+def cuir():         # la sacoche : sangle qui frotte, boucle qui tinte à peine
+    n=mk(0.6); tt=np.arange(n)/SR
+    y=fftfilt(burst(n,lo=300,hi=2500),lo=300,hi=2500)*np.sin(np.pi*tt/tt[-1])**2*0.6
+    k=mk(0.08); kt=np.arange(k)/SR; place(y,np.sin(2*np.pi*2400*kt)*np.exp(-kt*80)*0.15,mk(0.4))
+    return y
+def bronze_mat():   # la cloche sans battant posée dans les mains : un contact sourd, étouffé par la paume, aucune résonance
+    n=mk(0.25); tt=np.arange(n)/SR
+    return (burst(n,hi=700)*np.exp(-tt*40)+sum(np.sin(2*np.pi*f*tt)*np.exp(-tt*60) for f in (310,770)))*0.6
+def pas_tobie():    # le pas de terre tassée de l'étape 1 (generer_bruitages_etape_01.pas_terre)
+    a=mk(0.07); b=mk(0.18); y=np.zeros(mk(0.25))
+    place(y,fftfilt(rng.standard_normal(a),hi=400)*np.exp(-np.arange(a)/SR*55),0)
+    place(y,fftfilt(rng.standard_normal(b),lo=800,hi=4000)*np.exp(-np.arange(b)/SR*30)*0.3,mk(0.02))
+    return y
+def fin_d():   # son propre hasard (graine 1924), puis les tirages de l'ancienne fin-d : fin-e reste identique
+    global rng
+    principal=rng; rng=np.random.default_rng(1924)
+    try: y=_fin_d()
+    finally: rng=principal
+    _tirages_fin_d_v1()
+    return y
+def _fin_d():
+    L=mk(34); t=np.arange(L)/SR
+    def souffle(b): return 1.0 if b<2 else max(0.25,1.0-(b-1)*0.18)     # par mesure : l'air manque peu à peu
+    hm=np.zeros(L); mel=np.zeros(L); arret=int(BRISE/BT_D)
+    for b,acc in enumerate(ACC):
+        if b*4*BT_D>=BRISE: break
+        n=mk(min(4*BT_D+0.4,BRISE-b*4*BT_D)); place(hm,harmonium_acc(acc,n/SR,souffle=souffle(b))[:n],mk(b*4*BT_D))
+    for i,st in enumerate(MEL[:arret+1]):
+        if st is None: continue
+        d=1
+        while i+d<len(MEL) and MEL[i+d] is None: d+=1
+        dur=min(d*BT_D,BRISE-i*BT_D)
+        if dur<=0.05: break
+        n=mk(dur); tt=np.arange(n)/SR; f=D3*2*2**(st/12)
+        derniere=(i+d)*BT_D>=BRISE
+        if derniere: f=f*(1-0.03*np.clip(tt/dur,0,1))             # la dernière note s'affaisse : le soufflet est vide
+        ph=2*np.pi*np.cumsum(np.full(n,f) if np.isscalar(f) else f)/SR
+        y=sum(np.sin(k*ph)/k**1.2 for k in range(1,10))*env_ar(n,0.08,0.02 if derniere else 0.12)*souffle(i//4)
+        place(mel,y,mk(i*BT_D))
+    a=mk(BRISE); hm[a:]=0; mel[a:]=0
+    musique=nrm(hm)*0.32+nrm(fftfilt(mel,hi=2500))*0.6
+    n=mk(1.2); place(musique,burst(n,lo=200,hi=900)*np.linspace(1,0,n)**2*0.3,a)    # le soufflet vide
+    musique=reverb(musique,2.5,0.4,seed=74,circ=False)[:L]
+    gestes=np.zeros(L)
+    for tp in PLIS: place(gestes,pli_pose(),mk(tp))
+    place(gestes,cuir(),mk(SACOCHE)); place(gestes,bronze_mat(),mk(CLOCHE_MUETTE)); place(gestes,pli_pose()*0.8,mk(ORDRE))
+    pas=np.zeros(L); tp=PAS[0]; k=0
+    while tp<=PAS[1]+1e-6:
+        place(pas,pas_tobie()*(0.9 if k%2 else 1.0)*np.clip((PAS[1]+1.5-tp)/3.0,0.15,1),mk(tp)); k+=1; tp=PAS[0]+k*PAS[2]   # il s'éloigne
+    gestes=reverb(gestes,0.8,0.25,seed=92,circ=False)[:L]; pas=reverb(pas,1.2,0.3,seed=93,circ=False)[:L]
+    m=musique+nrm(gestes)*0.35+nrm(pas)*0.8
+    m*=np.clip((33.5-t)/3.0,0,1)**2
+    return stereo(m,0.011)
+def _tirages_fin_d_v1():   # l'ancienne fin-d (45 s, avant la ciné), rejouée pour ses seuls tirages ; le résultat est jeté
     def souffle(b): return 1.0 if b<4 else max(0.2,1.0-(b-3)*0.25)
     m=jouer(MEL,ACC,L_EPI,[(0,0.0,'o')],harmo=1.0,arret=26,souffle_harmo=souffle)
     mel=np.zeros(L_EPI)
