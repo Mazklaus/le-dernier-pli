@@ -11,6 +11,9 @@ centre à x 120, échelle 0,845) : images de 200 x 320, sol à y 316, centre à 
   chr_sonneur_repos_01     : 4 images ; le vieux sonneur tire une corde qui ne tient à rien (e3_clocher).
   chr_vieux_repos_01       : 4 images ; un vieux de la noce, voûté sur son bâton, barbe blanche (e3_noce).
   chr_vieux_parler_01      : 6 images ; il lève la main libre, la bouche s'ouvre, puis il revient.
+  chr_marie_repos_01       : 4 images ; le marié, jeune, droit dans sa veste du dimanche trop grande,
+                             la casquette serrée contre la poitrine, une fleur de papier (e3_noce).
+  chr_marie_parler_01      : 6 images ; il ouvre la main libre vers Tobie, la bouche s'ouvre.
   chr_procession_marche_01 : 4 images ; un villageois encapuchonné, cierge à la main ; la flamme
                              a sa réserve de papier nu, pour la nuit (e3_procession, chemin de nuit).
 
@@ -287,6 +290,56 @@ def vieux_parler() -> list[str]:
     return [vieux(0), vieux(1, .5), vieux(2, 1.0, True), vieux(1, 1.0), vieux(0, 1.0, True), vieux(1, .4)]
 
 
+def marie(i: int, main: float = 0.0, bouche: bool = False) -> str:
+    """Le marié : jeune, raide, la veste du dimanche un peu grande (les manches sur les mains), les
+    cheveux plaqués avec une raie, la casquette tenue contre la poitrine de la main gauche. main 0
+    à 1 : la main droite quitte la couture du pantalon et s'ouvre vers Tobie ; bouche : elle
+    s'ouvre. Aucun rouge : la fleur est de papier, comme les rubans de la noce."""
+    s = souffle(i)
+    mx, my = 90 - 14 * main, 290 - 70 * main
+    out = [
+        f'<path d="M102 298 L98 396 L120 396 L120 298 Z M126 298 L130 396 L152 396 L146 298 Z" fill="url(#mol)" {ST} stroke-width="2.2"/>',
+        f'<path d="M88 392 L86 405 L122 405 L120 392 Z M128 392 L128 405 L162 405 L158 392 Z" fill="{ENCRE}" {ST} stroke-width="1.4"/>',
+        f'<g transform="translate(0 {s * .7:.1f})">',
+        # la veste, carrée, trop large aux épaules ; la chemise blanche, le col haut
+        f'<path d="M88 176 Q92 162 122 158 Q152 162 156 176 Q160 250 154 306 L94 306 Q86 250 88 176 Z" fill="url(#h2)" {ST} stroke-width="2.6"/>',
+        f'<path d="M110 160 L122 214 L134 160 Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>',
+        f'<path d="M112 166 L122 174 L132 166" fill="none" {ST} stroke-width="2.6"/>',
+        f'<path d="M122 214 V304" fill="none" {ST} stroke-width="1.4"/>'
+        f'<circle cx="126" cy="236" r="2" fill="{PAPIER}"/><circle cx="126" cy="262" r="2" fill="{PAPIER}"/>',
+        # la fleur de papier à la boutonnière
+        "".join(f'<circle cx="{142 + 5 * math.cos(a):.1f}" cy="{184 + 5 * math.sin(a):.1f}" r="3.2" fill="{PAPIER}" {ST} stroke-width="1"/>'
+                for a in (0, 1.26, 2.51, 3.77, 5.03)),
+        f'<circle cx="142" cy="184" r="1.6" fill="{ENCRE}"/>',
+        # le bras gauche (au fond) plié : la casquette contre la poitrine
+        f'<path d="M150 178 Q160 214 140 232 L128 222 Q144 208 138 184 Z" fill="url(#h2)" {ST} stroke-width="2.2"/>',
+        f'<path d="M110 206 Q124 196 140 204 Q146 222 134 236 Q118 240 108 228 Q104 214 110 206 Z" fill="url(#h1)" {ST} stroke-width="2"/>',
+        f'<path d="M106 226 Q124 236 142 226" fill="none" {ST} stroke-width="3"/>',
+        f'<ellipse cx="136" cy="226" rx="8" ry="6" fill="{PAPIER}" {ST} stroke-width="1.6"/>',
+        # le bras droit : le long du corps, ou ouvert vers Tobie (à gauche)
+        f'<path d="M96 178 Q{(96 + mx) / 2 - 10:.0f} {(178 + my) / 2:.0f} {mx - 4:.0f} {my - 4:.0f} L{mx + 8:.0f} {my + 2:.0f} '
+        f'Q{(96 + mx) / 2 + 4:.0f} {(178 + my) / 2 + 4:.0f} {108} {180} Z" fill="url(#h2)" {ST} stroke-width="2.2"/>',
+    ]
+    if main > .3:  # la paume tournée vers le haut, offerte
+        out.append(f'<path d="M{mx + 2:.0f} {my + 2:.0f} Q{mx - 14:.0f} {my + 4:.0f} {mx - 20:.0f} {my - 4:.0f} L{mx - 22:.0f} {my - 10:.0f} '
+                   f'L{mx - 8:.0f} {my - 8:.0f} L{mx - 12:.0f} {my - 18:.0f} L{mx - 6:.0f} {my - 18:.0f} L{mx + 4:.0f} {my - 6:.0f} Z" fill="{PAPIER}" {ST} stroke-width="1.8"/>')
+    else:
+        out.append(f'<ellipse cx="{mx:.0f}" cy="{my:.0f}" rx="7" ry="9" fill="{PAPIER}" {ST} stroke-width="1.8"/>')
+    out.append(visage(120, 132, 19, sourire=not bouche))
+    if bouche:
+        out.append(f'<ellipse cx="117" cy="145" rx="4.2" ry="3.4" fill="{ENCRE}"/>')
+    # les cheveux plaqués, la raie bien nette, les oreilles décollées
+    out.append(f'<path d="M100 128 Q98 106 120 104 Q142 104 140 126 Q134 114 116 114 Q106 116 100 128 Z" fill="{LAVIS}" {ST} stroke-width="2"/>'
+               f'<path d="M114 106 Q110 112 104 122" fill="none" stroke="{PAPIER}" stroke-width="1.6"/>'
+               f'<ellipse cx="140" cy="134" rx="4" ry="6.5" fill="{PAPIER}" {ST} stroke-width="1.6"/>'
+               '</g>')
+    return "".join(out)
+
+
+def marie_parler() -> list[str]:
+    return [marie(0), marie(1, .5), marie(2, 1.0, True), marie(1, 1.0), marie(0, 1.0, True), marie(1, .4)]
+
+
 # ------------------------------------------------------------------ la procession
 
 def procession(i: int) -> str:
@@ -325,6 +378,8 @@ def main() -> None:
         "chr_procession_marche_01": [procession(i) for i in range(4)],
         "chr_vieux_repos_01": [vieux(i) for i in range(4)],
         "chr_vieux_parler_01": vieux_parler(),
+        "chr_marie_repos_01": [marie(i) for i in range(4)],
+        "chr_marie_parler_01": marie_parler(),
     }
     for nom, images in planches.items():
         (DST / f"{nom}.svg").write_text(planche(images), encoding="utf-8")

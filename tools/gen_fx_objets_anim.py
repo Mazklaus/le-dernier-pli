@@ -35,20 +35,25 @@ def planche(images: list[str], w: int, h: int) -> str:
 
 def buee(k: int) -> str:
     """Des nappes de buée, papier pâle, plus ou moins denses ; les mêmes nappes d'une image à
-    l'autre (elles grandissent depuis le bas de la vitre)."""
-    force = (.12, .45, .8, .4)[k]
-    haut = (.25, .6, 1.0, .75)[k]
-    nappes = ((60, 60, 46, 14), (120, 56, 54, 16), (170, 62, 34, 12), (90, 44, 40, 10), (150, 40, 30, 9), (40, 46, 22, 8))
+    l'autre (elles grandissent depuis le bas de la vitre). Retour QA du 17/11 : à peine visible
+    en 720p ; les nappes sont plus opaques et plus larges, les traits plus épais, et des
+    gouttes perlent quand elle est pleine (même case, même ancrage)."""
+    force = (.3, .7, .95, .6)[k]
+    haut = (.3, .65, 1.0, .75)[k]
+    nappes = ((60, 60, 50, 15), (124, 56, 60, 17), (176, 62, 38, 13), (90, 44, 46, 11), (154, 40, 34, 10), (40, 46, 26, 9))
     o = []
     for j, (x, y, rx, ry) in enumerate(nappes):
         if j >= 2 + 4 * haut:
             continue
         yy = 72 - (72 - y) * haut
-        o.append(f'<ellipse cx="{x}" cy="{yy:.1f}" rx="{rx * (.6 + .4 * haut):.1f}" ry="{ry:.1f}" fill="{PAPIER}" opacity="{force * (1 - j * .08):.2f}"/>')
+        o.append(f'<ellipse cx="{x}" cy="{yy:.1f}" rx="{rx * (.7 + .3 * haut):.1f}" ry="{ry:.1f}" fill="{PAPIER}" opacity="{force * (1 - j * .06):.2f}"/>')
     # les traits de buée, comme ceux du décor, plus nombreux quand elle est pleine
     if k in (1, 2, 3):
-        o.append(f'<path d="M30 {66 - 30 * haut:.0f} Q70 {62 - 30 * haut:.0f} 110 {68 - 30 * haut:.0f} M120 {64 - 28 * haut:.0f} Q160 {60 - 28 * haut:.0f} 196 {66 - 28 * haut:.0f}" '
-                 f'fill="none" stroke="{PAPIER}" stroke-width="1.4" stroke-dasharray="6 5" opacity="{force:.2f}"/>')
+        o.append(f'<path d="M24 {66 - 30 * haut:.0f} Q70 {62 - 30 * haut:.0f} 110 {68 - 30 * haut:.0f} M118 {64 - 28 * haut:.0f} Q160 {60 - 28 * haut:.0f} 200 {66 - 28 * haut:.0f}" '
+                 f'fill="none" stroke="{PAPIER}" stroke-width="2.6" stroke-dasharray="8 5" opacity="{min(1.0, force + .1):.2f}"/>')
+    if k == 2:
+        for x, y in ((46, 52), (98, 58), (140, 50), (182, 56), (72, 64)):
+            o.append(f'<circle cx="{x}" cy="{y}" r="2.6" fill="{PAPIER}"/>')
     return "".join(o)
 
 
