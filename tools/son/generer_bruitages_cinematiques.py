@@ -164,6 +164,42 @@ def priere_murmurer(i):  # e3_priere_champs (12 s, la nuit, PR #233 de la DA) : 
     m=fftfilt(souffles,hi=2500)*plan*0.5+fredon*0.6*(0.8+0.2*(t>4.0))+flammes*0.15*plan+rafale*0.9+claque*0.45
     m=reverb(m,1.6,0.3,seed=301+i)[:L]
     return m*np.clip((12.0-t)/0.5,0,1)
+def archet_noce(f,dur,faux=0.0):   # le violon de la noce (generer_ambiance_village_cloches_muettes.archet)
+    n=mk(dur); tt=np.arange(n)/SR; fv=f*2**(faux/12)*(1+0.006*np.sin(2*np.pi*5.5*tt)*np.clip(tt/0.15,0,1))
+    ph=np.cumsum(fv)/SR; y=sum(np.sin(2*np.pi*k*ph)/k*(1.3 if k in (3,4) else 1) for k in range(1,18))
+    a=max(1,mk(0.02)); r=max(1,mk(0.05)); e=np.ones(n); e[:a]=np.linspace(0,1,a); e[-r:]*=np.linspace(1,0,r)
+    return fftfilt(np.pad(y,(0,mk(0.05))),lo=250,hi=4500)[:n]*e
+def danse_tourner(i):   # e3_danse_rose (10 s, le jour sur la place, PR #235 de la DA) : la noce, en ré majeur,
+    # la tierce du violon un quart de ton trop haute comme partout dans la noce. Pas de voix (aucun doublage) :
+    # le rire de Rose, c'est le violon qui le fait.
+    #   P1 0-3 s : le violon reprend, un coup d'archet toutes les 0,3 s ; Rose se tourne (1,8 s) : la jupe.
+    #   P2 3-7 s : un seul tour à deux, la vielle et le tambourin, les rubans de papier ; il trébuche (5,2 s).
+    #   P3 7-10 s : elle rit (7,0 s), la tête en arrière (7,7 et 8,9 s) : le violon éclate en traits et en trilles.
+    L=mk(10.0); t=np.arange(L)/SR; D4=293.66
+    maj=[0,2,4,7,7,4,2,0,0,2,4,5,7,7,9,7, 11,9,7,5,4,5,7,4, 2,0,2,-1,0,0]     # le Cantique mis en fête
+    vio=np.zeros(L); k=0; tn=0.0
+    while tn<7.0-1e-6:
+        st=maj[k%len(maj)]; dur=0.3
+        faux=0.5 if st==4 else 0.0
+        if 5.2<=tn<5.5: faux+=-0.8                                    # il trébuche : l'archet dérape
+        at(vio,archet_noce(D4*2**(st/12),dur*0.98,faux)*(0.8 if k%3 else 1.0),tn); k+=1; tn=k*0.3
+    for t0,traits in ((7.0,[0,2,4,7,9,11,12,14]),(7.7,[12,14,12,14,12]),(8.9,[12,14,12,14,12,11,12])):   # le rire
+        for j,st in enumerate(traits):
+            faux=0.5 if st%12==4 else 0.0; at(vio,archet_noce(D4*2**(st/12),0.11,faux)*0.9,t0+j*0.075)
+    at(vio,archet_noce(D4*2,1.2)*np.linspace(1,0,mk(1.2)),9.45)                      # le ré d'en haut, qui s'en va
+    vielle=sum(np.sin(2*np.pi*k2*73.42*t)/k2 for k2 in range(1,25))+0.6*sum(np.sin(2*np.pi*k2*110.13*t)/k2 for k2 in range(1,25))
+    vielle=fftfilt(vielle,hi=2500)*np.clip((t-0.9)/1.2,0,1)*(1+0.15*np.sign(np.sin(2*np.pi*t/0.9)))
+    tamb=np.zeros(L)
+    for b in range(int(3.0/0.9),int(9.9/0.9)+1):
+        kk=mk(0.15); tk=np.arange(kk)/SR; at(tamb,np.sin(2*np.pi*90*tk)*np.exp(-tk*25)+burst(kk,lo=3000,hi=9000)*np.exp(-tk*30)*0.4,b*0.9)
+    gestes=np.zeros(L)
+    n=mk(0.6); tt=np.arange(n)/SR; at(gestes,fftfilt(burst(n,lo=400,hi=3000),lo=400,hi=3000)*np.sin(np.pi*tt/tt[-1])**2*0.5,1.65)   # la jupe qui tourne
+    rubans=froisse(4.0,1500,7000,60)*np.sin(np.pi*np.arange(mk(4.0))/mk(4.0))**0.5
+    at(gestes,rubans*0.5,3.0)
+    kk=mk(0.12); at(gestes,burst(kk,hi=500)*dec(kk,35)*1.2,5.2); at(gestes,froisse(0.35,800,4000,50)*0.8,5.22)  # le pied dans la traîne
+    m=fftfilt(vio,hi=6000)*0.55+vielle/np.abs(vielle).max()*0.25+tamb*0.25+gestes*0.6
+    m=reverb(m,1.0,0.2,seed=311+i)[:L]
+    return m*np.clip((10.0-t)/0.4,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -179,3 +215,4 @@ for base,fn in (("sfx_pli_tendre",pli_tendre),("sfx_couverture_tomber",couvertur
 save("sfx_cloche_souffle",cloche_souffle,0.45)   # un fond, pas un événement
 save("sfx_greffe_fausse-note",greffe_fausse_note,0.6)
 save("sfx_priere_murmurer",priere_murmurer,0.6)   # un fond de 12 s pour toute la ciné, lancé à 0
+save("sfx_danse_tourner",danse_tourner,0.6)    # 10 s pour toute la ciné, lancé à 0
