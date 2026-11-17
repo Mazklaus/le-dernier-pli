@@ -168,3 +168,23 @@ func test_le_raccord_de_boucle_et_les_ambiances_de_la_foret() -> void:
 			assert_true(son.autoplay, zone)
 			assert_true(son.stream.resource_path.contains("amb_foret-de-croix_"), zone)
 	assert_eq((_etape.get_node("Surface/Cimetiere/SonZone") as AudioStreamPlayer2D).volume_db, -3.0)
+
+
+func test_la_fin_de_l_autre_enchaine_la_cine_de_la_boucle_devant_la_croix() -> void:
+	# Playtest du 17/11 : la ciné de la boucle se lance dès la fin de e5_autre.
+	var autre := _etape.trouver_declencheur(&"e5_autre")
+	assert_true(autre.dialogue_termine.is_connected(Callable(_etape, &"_sur_autre_termine")))
+	var cine := _etape.find_child("e5_boucle", true, false) as Cinematique
+	var place := cine.get_node_or_null(Cinematique.PLACE_TOBIE) as Node2D
+	assert_not_null(place, "la ciné ramène Tobie devant la croix")
+	if place != null:
+		var croix := _etape.trouver_declencheur(&"e5_sentier")
+		assert_lt(absf(place.global_position.x - croix.global_position.x), 200.0)
+
+
+func test_l_autre_disparait_a_la_fin_de_sa_cine() -> void:
+	var autre := _etape.find_child("AutreAuLoin", true, false) as AutreAuLoin
+	assert_true(autre.apparaitre())
+	GameState.marquer_rencontre_vue(&"cine_e5_autre_se_retourne")
+	assert_false(autre.visible)
+	assert_eq(autre.etat, AutreAuLoin.Etat.DISSIPE)

@@ -829,10 +829,14 @@ metadata/note_level_design = "La gamelle fume encore sur les braises (x 700)"
 script = ExtResource("cine_boucle")
 id = &"e5_boucle"
 duree = 10.0
-metadata/note_level_design = "Il marche entre les croix, la même croix revient, l'encoche ancienne noircie ; lancée au début du second passage de e5_sentier (lot 2, planche du GD du 17/11)"
+metadata/note_level_design = "Il marche entre les croix, la même croix revient, l'encoche ancienne noircie ; lancée à la fin de e5_autre (etape_05.gd), puis e5_sentier debut ; aussi au retour par le bout du sentier (lot 2, planche du GD du 17/11)"
 
 [node name="Camera" type="Camera2D" parent="Surface/Boucle/e5_boucle"]
 position = Vector2(600, 750)
+
+[node name="PlaceTobie" type="Marker2D" parent="Surface/Boucle/e5_boucle"]
+position = Vector2(450, 900)
+metadata/note_level_design = "Fin de la ciné : Tobie revenu devant la croix-repère (x 600), sans avoir à repasser le bout du sentier"
 
 [node name="Depart" type="Marker2D" parent="Surface/Boucle/e5_boucle"]
 position = Vector2(600, 750)
