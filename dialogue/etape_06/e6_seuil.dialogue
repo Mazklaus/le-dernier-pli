@@ -5,10 +5,8 @@
 ~ debut
 
 do Cinematiques.jouer(&"e6_porte_scellee")
-Tobie: Une porte très haute, couverte de cire noire.
 Tobie: Comme si on l'avait scellée, puis rescellée, puis rescellée encore. Pendant des années.
-Éloi: Elle t'attend, petit. [#geste=poser-bocal]
-Tobie: Éloi ne va pas plus loin.
+Éloi: Elle t'attend, petit.
 Tobie: Je m'assois devant la porte. Je sors le pli.
 - [Lire en transparence] [if GameState.peut_lire_ligne() /] [#cout_huile=1, #sans_prelevement]
 	=> lecture
