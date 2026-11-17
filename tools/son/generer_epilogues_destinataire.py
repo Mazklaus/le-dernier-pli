@@ -24,7 +24,9 @@ def colored(L,alpha):
 def lfo(L,period,phase=0):
     dur=L/SR; n=max(1,round(dur/period)); t=np.arange(L)/SR; return 0.5+0.5*np.sin(2*np.pi*n*t/dur+phase)
 def place(buf,ev,pos):
-    pos=int(pos); n=min(len(ev),len(buf)-pos)
+    pos=int(pos)
+    if pos<0: ev=ev[-pos:]; pos=0         # une note jouée un rien en avance sur le temps 0 (humanisation)
+    n=min(len(ev),len(buf)-pos)
     if n>0: buf[pos:pos+n]+=ev[:n]
 def place_circ(buf,ev,pos): np.add.at(buf,(np.arange(len(ev))+pos)%len(buf),ev)
 def burst(n,lo=None,hi=None): return fftfilt(rng.standard_normal(n+mk(0.05)),lo=lo,hi=hi)[:n]
@@ -357,12 +359,58 @@ def _tirages_fin_d_v1():   # l'ancienne fin-d (45 s, avant la ciné), rejouée p
     m=reverb(m,2.5,0.4,seed=74,circ=False)[:a+mk(8)]          # huit secondes de silence, pas plus
     m*=np.concatenate([np.ones(len(m)-mk(1)),np.linspace(1,0,mk(1))])
     return stereo(m,0.011)
-def fin_e():   # suspendu : la dernière note devient la, sur l'accord de la, et le chœur se retire sans se poser
-    mel=list(MEL); mel[28]=7
-    m=jouer(mel,ACC[:7]+[SUSPENDU],L_EPI,[(0,1,'o'),(0,0.8,'u'),(-12,0.6,'o')])
-    vent=fftfilt(colored(L_EPI,1.4),lo=60,hi=900)*np.clip((np.arange(L_EPI)/SR-20)/20,0,1)
-    m=reverb(m+nrm(vent)*0.15,3.5,0.5,seed=75)
-    m*=np.concatenate([np.ones(L_EPI-mk(8)),np.linspace(1,0,mk(8))**2])   # le vent emporte tout, sans conclure
+# fin-e : l'épilogue animé de la DA (32 s, coupes à 8, 16 et 24 s, PR #229). Le thème reste suspendu sur la :
+#   0-8 s    la colonne des Enfouis monte : un piétinement sourd, désaccordé, sous le chœur qui ne se pose pas ;
+#   8-16 s   les mains se ferment (10,4 / 13,6 s) et se rouvrent (11,6 / 14,6 s) : les coutures tirent, puis lâchent ;
+#   16-24 s  la terre glisse, sans fin ;
+#   24-30 s  un soldat siffle le Cantique, une note par image de lèvres (0,4 s) ; il épaule (26,4 s), vise (28,0 s) ;
+#            la dernière note est un la, et le noir la coupe net à 30,0 s (GD). Ensuite : rien. Ni coup, ni culasse, ni écho.
+MAINS=((10.4,True),(11.6,False),(13.6,True),(14.6,False))
+SIFFLE=(24.0,0.4); EPAULE,VISE,NOIR=26.4,28.0,30.0
+AIR_SIFFLE=[0,3,5,7,7,5,3,2,0,2,3,5,10,9,7]          # quinze notes ; la dernière, la, reste suspendue
+def couture(ferme):   # le fil des recousus qui tire quand la main se ferme, qui lâche quand elle s'ouvre
+    n=mk(0.45); tt=np.arange(n)/SR
+    if ferme:
+        f=np.linspace(900,1400,n); y=np.sign(np.sin(2*np.pi*np.cumsum(f)/SR))*(rng.random(n)<0.25)
+        return fftfilt(y,lo=600,hi=3500)*np.sin(np.pi*tt/tt[-1])*0.25+burst(n,hi=400)*np.exp(-tt*12)*0.3
+    return burst(n,lo=300,hi=1500)*np.exp(-tt*7)*0.2
+def fin_e():   # son propre hasard (graine 1925) ; c'est le dernier épilogue généré, rien ne vient après
+    global rng
+    principal=rng; rng=np.random.default_rng(1925)
+    try: return _fin_e()
+    finally: rng=principal
+def _fin_e():
+    L=mk(32.5); t=np.arange(L)/SR
+    # le chœur suspendu, tout bas, de 0 à 24 s : la première moitié du thème, sans s'y poser
+    choeur=jouer(MEL[:16]+[None]*16,ACC[:3]+[SUSPENDU],L,[(0,1,'o'),(0,0.8,'u'),(-12,0.6,'o')],harmo=0.5)
+    choeur*=np.clip((24.3-t)/3.0,0,1)
+    # 0-8 s : la colonne qui monte, des dizaines de pas dans la terre, sans rythme commun
+    foule=np.zeros(L)
+    for _ in range(90):
+        tp=rng.uniform(0,7.9); n=mk(0.12); tt=np.arange(n)/SR
+        place(foule,fftfilt(rng.standard_normal(n),hi=rng.uniform(250,500))*np.exp(-tt*rng.uniform(30,50))*rng.uniform(0.4,1),mk(tp))
+    foule=fftfilt(foule,hi=700)+fftfilt(colored(L,1.6),lo=40,hi=300)*0.15
+    foule*=np.clip(t/0.6,0,1)*np.clip((8.0-t)/0.08,0,1)
+    # 8-16 s : les mains
+    mains=np.zeros(L)
+    for tm,ferme in MAINS: place(mains,couture(ferme),mk(tm))
+    # 16-24 s : la terre qui glisse
+    terre=np.zeros(L)
+    n=mk(8.0); tt=np.arange(n)/SR
+    grains=fftfilt(rng.standard_normal(n)*(rng.random(n)<0.03),lo=1500,hi=7000)*0.6+fftfilt(colored(n,1.2),lo=100,hi=1200)*0.5
+    terre[mk(16.0):mk(16.0)+n]=grains*(0.8+0.2*np.sin(2*np.pi*tt/2.7))*np.clip(tt/0.05,0,1)*np.clip((8.0-tt)/0.05,0,1)
+    # 24-30 s : le sifflet, l'épaule, la visée ; le noir coupe la dernière note
+    plan4=np.zeros(L)
+    for i,st in enumerate(AIR_SIFFLE):
+        place(plan4,sifflet(D3*8*2**(st/12),SIFFLE[1]*1.05),mk(SIFFLE[0]+i*SIFFLE[1]))
+    k=mk(0.5); place(plan4,burst(k,lo=200,hi=2500)*np.sin(np.pi*np.arange(k)/k)**2*0.12,mk(EPAULE))   # la vareuse, la crosse contre l'épaule
+    k=mk(0.12); place(plan4,burst(k,hi=500)*np.exp(-np.arange(k)/SR*40)*0.15,mk(EPAULE+0.35))
+    k=mk(0.3); place(plan4,burst(k,lo=300,hi=1200)*np.hanning(k)*0.04,mk(VISE))                        # il retient son souffle
+    air=fftfilt(colored(L,1.4),lo=80,hi=1200)*np.clip((t-24.0)/0.1,0,1)*0.05
+    plan4=reverb(fftfilt(plan4,lo=300,hi=7000),1.5,0.35,seed=95,circ=False)[:L]+air
+    m=nrm(choeur)*0.4+nrm(foule)*0.5+nrm(mains)*0.35+nrm(terre)*0.3+nrm(plan4)*0.55
+    m=reverb(m,2.5,0.3,seed=75,circ=False)[:L]
+    c=mk(NOIR); m[c:]=0.0; m[c-mk(0.008):c]*=np.linspace(1,0,mk(0.008))   # le noir : coupure nette, pas de queue
     return stereo(m,0.011)
 
 # --- La salle des cloches tues (couches globales, boucles de 80 s) ---
