@@ -9,10 +9,11 @@ derrière Tobie ; dehors, la lumière est blanche ; au loin, la forêt de croix.
   cin_e4-sortie-battant  3 images de ZONE_BATTANT, en ligne : le battant ouvert vers
                          l'intérieur, le noir de l'hôpital (0), à demi (1), clos (2).
   P3, plan large :
-  cin_e4-sortie-foret    la route qui monte, et au loin la forêt de croix, en plusieurs plans
-                         de profondeur : croix de travers, tailles inégales, la brume qui mange
-                         le fond (comme la Forêt de Croix validée, mais à l'endroit : l'étape 4
-                         n'est pas inversée).
+  cin_e4-sortie-foret    la route qui monte, et au loin la forêt, en plusieurs plans de
+                         profondeur : des troncs trop droits, de travers, de tailles inégales,
+                         sans branches, la brume qui mange le fond. Ce sont les croix de l'étape 5,
+                         mais leurs traverses se perdent dans la brume : Tobie y voit des arbres
+                         (« des arbres trop droits, qui n'ont pas de branches »).
 
 Tobie (chr_tobie_repos_01 et son ruban) est posé par la ciné. Aucun rouge.
 
@@ -112,20 +113,14 @@ def plan_battant(k: int) -> str:
 
 
 # --- P3 : la forêt de croix -----------------------------------------------------------------------
-def croix(x: float, pied: float, h: float, ep: float, couleur: str, penche: float) -> str:
-    b = h * .26
-    return (f'<g transform="rotate({penche:.1f} {x:.0f} {pied:.0f})"><path d="M{x:.0f} {pied:.0f} V{pied - h:.0f} '
-            f'M{x - b:.0f} {pied - h * .74:.0f} H{x + b:.0f}" stroke="{couleur}" stroke-width="{ep:.1f}" stroke-linecap="square"/></g>')
-
-
-def croix_bois(x: float, pied: float, h: float, larg: float, penche: float) -> str:
-    """Une croix proche, en planches : aplats cernés, une veine, de travers."""
-    b = h * .28
-    ty = pied - h * .74
-    return (f'<g transform="rotate({penche:.1f} {x:.0f} {pied:.0f})">'
-            f'<rect x="{x - larg / 2:.0f}" y="{pied - h:.0f}" width="{larg:.0f}" height="{h:.0f}" fill="{MINE}" {ST} stroke-width="3"/>'
-            f'<rect x="{x - b:.0f}" y="{ty - larg / 2:.0f}" width="{2 * b:.0f}" height="{larg:.0f}" fill="{MINE}" {ST} stroke-width="3"/>'
-            f'<path d="M{x - 2:.0f} {pied - h + 16:.0f} V{pied - 20:.0f}" stroke="{LAVIS}" stroke-width="1.5"/></g>')
+def poteau(x: float, pied: float, h: float, ep: float, couleur: str, penche: float) -> str:
+    """Un tronc trop droit, sans branches : une croix vue de loin, dont la traverse se perd
+    dans la brume (à peine un trait pâle). Tobie croit voir des arbres ; il ne comprend qu'à
+    l'étape 5 (demande du Narrative)."""
+    b = h * .2
+    return (f'<g transform="rotate({penche:.1f} {x:.0f} {pied:.0f})"><path d="M{x:.0f} {pied:.0f} V{pied - h:.0f}" '
+            f'stroke="{couleur}" stroke-width="{ep:.1f}" stroke-linecap="square"/>'
+            f'<path d="M{x - b:.0f} {pied - h * .74:.0f} H{x + b:.0f}" stroke="{couleur}" stroke-width="{ep * .5:.1f}" opacity=".16"/></g>')
 
 
 def foret() -> str:
@@ -145,13 +140,10 @@ def foret() -> str:
         x = r.uniform(-pas, 0) + 700 * (1 - t) * .2
         while x < W + pas:
             if t < .5 or x > 700:
-                o.append(croix(x, pied + r.uniform(-5, 5), h * r.uniform(.7, 1.3), ep, couleur, r.uniform(-7, 7)))
+                o.append(poteau(x, pied + r.uniform(-5, 5), h * r.uniform(.7, 1.3), ep, couleur, r.uniform(-5, 5)))
             x += pas * r.uniform(.6, 1.4)
         if rang < rangs - 1:
             o.append(f'<rect x="0" y="{HORIZON - 200}" width="{W}" height="{pied - HORIZON + 214:.0f}" fill="{PAPIER}" opacity=".32"/>')
-    # la lisière proche, à droite : quelques grandes croix de bois, de travers
-    for x, h, a in ((1380, 330, -4), (1530, 260, 6), (1660, 400, -2), (1800, 300, 8), (1900, 360, -6)):
-        o.append(croix_bois(x, HORIZON + 230 + (x - 1380) * .1, h, 18, a))
     # la route qui monte de la gauche vers la forêt, ses ornières
     o.append(f'<path d="M-20 {H + 10} Q500 860 980 {HORIZON + 160} L1080 {HORIZON + 156} Q760 900 520 {H + 10} Z" fill="{PAPIER}" {ST} stroke-width="4"/>')
     o.append(f'<path d="M150 {H} Q560 870 1010 {HORIZON + 162} M360 {H} Q700 890 1050 {HORIZON + 160}" fill="none" stroke="{MINE}" stroke-width="3"/>')
