@@ -159,6 +159,12 @@ text = "village_lanternes"
 [node name="e6_tablee" parent="Rencontres" instance=ExtResource("1")]
 position = Vector2(2420, 900)
 rencontre_id = &"e6_tablee"
+compagnons = {
+&"femme": Vector2(-280, 0),
+&"enfant": Vector2(-140, 0),
+&"mere": Vector2(0, 0),
+&"fillette": Vector2(140, 0)
+}
 dialogue = ExtResource("3")
 libelle = "S'approcher de la table"
 une_seule_fois = true

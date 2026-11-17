@@ -7,7 +7,7 @@
 
 do Cinematiques.jouer(&"e6_village_sous_terre")
 Tobie: Comme au village, le jour de la noce. Ici, la musique, ce sont les cuillères.
-Tobie: Une femme me fait signe de m'asseoir.
+Tobie: Une femme me fait signe de m'asseoir. [#geste=femme:faire-signe]
 Tobie: Personne ne demande qui je suis. Ils savent, peut-être.
 if GameState.palier == GameState.EGARE
 	Tobie: Je me pince le bras sous la table. Si c'est un rêve, il sent vraiment le pain.
@@ -18,7 +18,7 @@ if GameState.palier == GameState.EGARE
 - [Manger avec eux] [if not GameState.rencontre_vue(&"e6_tablee_repas") /] [#cache]
 	do GameState.marquer_rencontre_vue(&"e6_tablee_repas")
 	Tobie: Du pain noir, une soupe de racines, de l'eau qui a le goût de la pierre. C'est chaud.
-	Tobie: À côté de moi, un enfant me vole un morceau de pain, et sa mère lui tape sur les doigts. On rit.
+	Tobie: À côté de moi, un enfant me vole un morceau de pain, et sa mère lui tape sur les doigts. On rit. [#geste=enfant:voler-pain]
 	do GameState.appliquer_effets({&"vivres": 1, &"lucidite": 1})
 	=> table
 - [Apprendre un mot] [if not GameState.possede_marque(&"la_langue_d_en_dessous") /] [#cout_lucidite=1, #enfoui, #cache]
@@ -28,14 +28,14 @@ if GameState.palier == GameState.EGARE
 	if GameState.possede_marque(&"la_langue_d_en_dessous")
 		Tobie: La petite fille dit le mot. Reste. Je fais semblant de ne pas l'avoir compris.
 	else
-		Tobie: La petite fille me retient par la manche. Sa mère lui détache les doigts, un par un, doucement.
+		Tobie: La petite fille me retient par la manche. Sa mère lui détache les doigts, un par un, doucement. [#geste=fillette:tenir-manche]
 	Tobie: Je remercie avec la main sur le cœur. Ils hochent la tête. Ils ont l'habitude.
 
 => END
 
 ~ mot
 
-Tobie: Une petite fille me tire la manche. Elle montre le pain, et elle dit un mot. Je le répète. Elle rit.
+Tobie: Une petite fille me tire la manche. Elle montre le pain, et elle dit un mot. Je le répète. Elle rit. [#geste=fillette:tenir-manche]
 Tobie: Elle montre sa bouche, puis la mienne. Un autre mot. Merci, je crois.
 Tobie: Le dernier, elle le dit en me tenant la main. Je comprends sans qu'elle explique. Reste.
 do GameState.ajouter_marque(&"la_langue_d_en_dessous", &"nom_retenu", &"e6_tablee")

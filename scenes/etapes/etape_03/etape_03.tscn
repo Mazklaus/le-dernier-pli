@@ -263,7 +263,8 @@ position = Vector2(2420, 900)
 rencontre_id = &"e3_noce"
 compagnons = {
 &"rose": Vector2(-200, 0),
-&"violoneux": Vector2(200, 0)
+&"violoneux": Vector2(200, 0),
+&"vieux": Vector2(-400, 0)
 }
 dialogue = ExtResource("11")
 libelle = "Rejoindre la noce"
