@@ -53,6 +53,7 @@ Dans une piste de méthode de l'AnimationPlayer (ou depuis un geste de dialogue)
 | --- | --- | --- | --- |
 | 1 | L'officier remet le pli | Ciné | `sfx_pli_tendre` (main tendue → poitrine) |
 | 1 | Adieu de Jacquot, couverture | Anim | sifflet = `vox_jacquot_*` ; `sfx_couverture_tomber` |
+| 1 | Adieu de Jacquot (e1_adieu_jacquot) | Ciné | `sfx_adieu_jacquot` lancé à 0 s, 8 s : Jacquot siffle l'air du dépôt (l'air des fils de l'étape 2, mêmes fausses notes), une note par image de geste de 0,2 s ; les pas de Tobie sur le caillebotis (un appui toutes les 0,4 s) ; au travelling arrière, le sifflet s'éloigne ; à la porte, la main salue (6,4 s), lâche la couverture (7,2 s), l'étoffe lourde retombe (7,5 s), puis le silence |
 | 1 | Sortie de tranchée | Ciné | `sfx_echelle_monter` en boucle, puis `sfx_parapet_franchir` quand la caméra le perd |
 | 2 | Brisse réchauffe la cire | Anim | `sfx_sceau_rechauffer` |
 | 2 | Le Mort indique | Anim | `sfx_mort_bras` à l'image où le bras se lève |

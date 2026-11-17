@@ -370,6 +370,46 @@ def mere_cloche(i):   # e7_mere_cloche (10 s, PR #248 de la DA) : la salle ronde
     m=salle*0.6+pas*0.6+elle+tete+lui
     m=reverb(m,3.2,0.4,seed=381+i)[:L]
     return m*np.clip(t/0.3,0,1)*np.clip((10.0-t)/0.6,0,1)
+AIR_DEPOT=[0,3,5,7, 7,5,3,2, 0,2,3,5, 7,None,None,None, 10,9,7,5, 3,5,7,3, 2,0,2,-2, 0,None,None,None]   # l'air de Jacquot
+FAUSSES_DEPOT={2:0.45, 13:-0.4, 18:0.5, 27:-0.45}                   # (generer_ambiance_no_mans_land : MEL, FAUSSES)
+def sifflet_humain(f,dur):   # un sifflet de bouche : sinus, souffle, vibrato qui s'installe (generer_epilogues_destinataire.sifflet)
+    n=mk(dur); tt=np.arange(n)/SR
+    fv=f*(1+0.006*np.sin(2*np.pi*5.2*tt)*np.clip(tt/0.3,0,1))
+    y=np.sin(2*np.pi*np.cumsum(fv)/SR)+burst(n,lo=f*0.9,hi=f*1.2)*0.15
+    e=np.ones(n); a=min(n,mk(0.04)); r=min(n,mk(0.08)); e[:a]=np.linspace(0,1,a); e[-r:]*=np.linspace(1,0,r)
+    return y*e
+def adieu_jacquot(i):   # e1_adieu_jacquot (8 s, PR #252 de la DA) : l'adieu dans le boyau, puis la couverture de l'abri.
+    #   0-3 s : Jacquot siffle l'air du dépôt de près, une note par image de geste (0,2 s) ; Tobie marche (un appui / 0,4 s).
+    #   3-6 s : travelling arrière : les pas de Tobie restent devant, le sifflet s'éloigne (plus bas, plus sourd, plus de
+    #           boyau autour) ; ses fausses notes restent les siennes.
+    #   6-8 s : la porte de l'abri : la main salue (6,4 s), lâche la couverture (7,2 s), l'étoffe lourde retombe (7,5 s),
+    #           puis le silence.
+    L=mk(8.0); t=np.arange(L)/SR; PAS=0.2
+    air=fftfilt(burst(L,lo=50,hi=500),lo=50,hi=500)*0.35+fftfilt(burst(L,lo=800,hi=3000),lo=800,hi=3000)*0.03
+    air*=np.clip((7.9-t)/0.4,0,1)*(1-0.6*np.clip((t-7.5)/0.2,0,1))+0.0
+    pres=np.zeros(L); loin=np.zeros(L)
+    for k,st in enumerate(AIR_DEPOT):
+        if st is None or k*PAS>=5.9: continue
+        d=1
+        while k+d<len(AIR_DEPOT) and AIR_DEPOT[k+d] is None: d+=1
+        y=sifflet_humain(D2*16*2**((st+FAUSSES_DEPOT.get(k,0))/12),min(d*PAS*1.05,6.0-k*PAS))
+        tc=k*PAS; g=np.clip((tc-3.0)/3.0,0,1)                             # 0 de près, 1 au fond
+        at(pres,y*(1-g)*(0.75+0.25*(k%4==0)),tc); at(loin,y*g*(0.5-0.3*g),tc)
+    loin=fftfilt(loin,hi=1600)
+    sifflet=pres+loin+reverb(pres*0.3+loin,1.6,0.9,seed=391+i)[:L]*0.4
+    pas=np.zeros(L)
+    for k in range(15):                                                     # le caillebotis sous les godillots
+        n=mk(0.25); tt=np.arange(n)/SR
+        y=fftfilt(rng.standard_normal(n),lo=90,hi=700)*np.exp(-tt*40)+burst(n,lo=400,hi=2000)*np.exp(-tt*25)*0.2*(rng.random(n)<0.3)
+        at(pas,y*(0.85 if k%2 else 1.0)*(0.6 if k*0.4>5.0 else 1.0),0.02+k*0.4+rng.normal(0,0.008))
+    porte=np.zeros(L)
+    at(porte,froisse(0.4,400,3000,30)*0.3,6.3)                              # la main qui serre la toile et salue
+    n=mk(0.5); tt=np.arange(n)/SR
+    at(porte,burst(n,lo=80,hi=1200)*np.linspace(0,1,n)**2*0.6,7.0)          # la couverture lâchée, qui glisse
+    k=mk(0.2); at(porte,burst(k,hi=400)*dec(k,25)*1.2+burst(k,lo=300,hi=1500)*dec(k,40)*0.3,7.47)   # l'étoffe lourde, mouillée, retombe
+    m=air+sifflet*0.55+pas*0.5+porte
+    m=reverb(m,1.2,0.2,seed=401+i)[:L]
+    return m*np.clip(t/0.15,0,1)*np.clip((8.0-t)/0.3,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -391,3 +431,4 @@ save("sfx_crypte_descendre",crypte_descendre,0.6)    # 10 s pour toute la ciné,
 save("sfx_village_tablee",village_tablee,0.6)    # 12 s pour toute la ciné, lancé à 0
 save("sfx_porte_scellee",porte_scellee,0.6)    # 10 s pour toute la ciné, lancé à 0
 save("sfx_mere_cloche",mere_cloche,0.6)    # 10 s pour toute la ciné, lancé à 0
+save("sfx_adieu_jacquot",adieu_jacquot,0.4)    # 8 s, lancé à 0 ; le sifflet est un son pur : crête plus basse pour rester au niveau des autres cinés
