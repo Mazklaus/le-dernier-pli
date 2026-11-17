@@ -42,7 +42,7 @@ Les noms de fichiers restent neutres (règle du Game Director : aucun nom de fin
 | a | Le Battant | se résout tout bas ; le battant frappe une cloche muette |
 | b | Le Dernier Pli, sacrifice | résolution pleine en ré majeur, tout revient |
 | c | Le Dernier Pli, refus | calée sur la ciné de 36 s (planche DA du 17/11) : la grande cloche frappe toutes les 1,8 s, la cire claque et les petites cloches entrent, la volée traverse galeries, forêt, champs et tranchée, revient sous la main, s’espace, puis seule la résonance lointaine tient jusqu’à 40 s ; seule mus_ en stéréo (STEREO_GARDEE) |
-| d | Le Quatorzième | l'harmonium seul manque d'air et se brise à la septième mesure |
+| d | Le Quatorzième | calée sur la ciné de 32 s (PR #225 de la DA) : l'harmonium seul manque d'air et se brise à la coupe de 24 s ; le pli posé (2,0 / 3,4 / 4,6 s), la sacoche, la cloche sans battant (contact sourd, aucun son de cloche), l'ordre ; puis le même pas que Tobie, toutes les 0,4 s, qui s'éloigne |
 | e | La Remontée | suspendu sur la, sans se poser |
 
 ## Gestes et cinématiques : quel son sur quel moment
