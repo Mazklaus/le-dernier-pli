@@ -275,6 +275,30 @@ def crypte_descendre(i):   # e4_descente_crypte (10 s, PR #241 de la DA) : l'esc
     k=mk(0.05); at(noir,burst(k,lo=2500,hi=7000)*np.exp(-np.arange(k)/SR*80)*0.05,8.6)       # la cire froide, sèche
     m=sec*0.6+humide*0.5+air+noir
     return m*np.clip((10.0-t)/0.3,0,1)
+def village_tablee(i):   # e6_village_sous_terre (12 s, PR #243 de la DA) : le village sous l'argile, la tablée.
+    #   0-4 s : les toits dans l'argile, les fumées qui montent : la caverne, les feux, une goutte.
+    #   4-8 s : la longue table ; chaque convive frappe son écuelle toutes les 0,6 s, trois rangs décalés de 0,2 s :
+    #           un coup toutes les 0,2 s, et les écuelles jouent le Cantique à l'envers, comme la noce de la tablée.
+    #   8-12 s : la chaise vide, l'écuelle qui fume : les cuillères se taisent net ; il reste la vapeur et la caverne.
+    L=mk(12.0); t=np.arange(L)/SR; D4=293.66
+    caverne=fftfilt(burst(L,lo=30,hi=180),lo=30,hi=180)*0.5+fftfilt(burst(L,lo=200,hi=900),lo=200,hi=900)*0.06
+    feux=np.zeros(L)
+    for _ in range(40): k=mk(0.01); at(feux,burst(k,lo=1500,hi=6000)*np.hanning(k)*rng.uniform(0.3,1),rng.uniform(0,8))   # les braises
+    feux+=fftfilt(burst(L,lo=300,hi=1500),lo=300,hi=1500)*0.15*np.clip((8.0-t)/0.5,0.2,1)
+    k=mk(0.4); kt=np.arange(k)/SR
+    for tg in (1.3,3.4): at(feux,np.sin(2*np.pi*(900+2500*np.exp(-kt*40))*kt)*np.exp(-kt*25)*0.3,tg)        # une goutte d'argile
+    air=[0,-2,2,0,2,3,7,5,3,7,5,3,5,7,9,10]                                                         # le Cantique à l'envers
+    cuilleres=np.zeros(L); k=0; tc=4.0
+    while tc<8.0-1e-6:
+        st=air[k%len(air)]; f=D4*2*2**(st/12)*2**(rng.uniform(-15,15)/1200)
+        n=mk(0.18); tt=np.arange(n)/SR
+        y=sum(a*np.sin(2*np.pi*f*r*tt)*np.exp(-tt*(25+r*15)) for r,a in ((1,1),(2.7,0.35),(5.1,0.12)))    # l'écuelle de terre
+        y+=burst(n,lo=2000,hi=7000)*np.exp(-tt*120)*0.4                                             # le bois de la cuillère
+        at(cuilleres,y*(1.0 if k%3==0 else 0.8),tc+rng.normal(0,0.008)); k+=1; tc=4.0+k*0.2
+    vapeur=fftfilt(burst(L,lo=1500,hi=6000),lo=1500,hi=6000)*np.clip((t-8.0)/0.6,0,1)*(0.6+0.4*np.sin(2*np.pi*0.35*t))*0.2
+    m=caverne*0.7+feux*0.7+cuilleres*0.55+vapeur
+    m=reverb(m,2.2,0.35,seed=351+i)[:L]
+    return m*np.clip(t/0.3,0,1)*np.clip((12.0-t)/0.5,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -293,3 +317,4 @@ save("sfx_priere_murmurer",priere_murmurer,0.6)   # un fond de 12 s pour toute l
 save("sfx_danse_tourner",danse_tourner,0.6)    # 10 s pour toute la ciné, lancé à 0
 save("sfx_barbeles_foncer",barbeles_foncer,0.6)    # 7 s pour toute la ciné, lancé à 0
 save("sfx_crypte_descendre",crypte_descendre,0.6)    # 10 s pour toute la ciné, lancé à 0
+save("sfx_village_tablee",village_tablee,0.6)    # 12 s pour toute la ciné, lancé à 0

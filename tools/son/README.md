@@ -73,6 +73,7 @@ Dans une piste de méthode de l'AnimationPlayer (ou depuis un geste de dialogue)
 | 6 | La chute dans la fissure | Ciné | `sfx_sol_ceder`, puis `sfx_lanterne_rouler` |
 | 6 | Éloi éclaire | Anim | `sfx_lampe_approcher` |
 | 6 | L'éboulement | Ciné | `sfx_voute_effondrer`, puis silence |
+| 6 | Le village sous terre (e6_village_sous_terre) | Ciné | `sfx_village_tablee` lancé à 0 s, 12 s : la caverne, les braises, une goutte d'argile ; de 4 à 8 s, les cuillères sur les écuelles (un coup toutes les 0,2 s, trois rangs décalés) jouent le Cantique à l'envers ; à 8 s elles se taisent net, il reste la vapeur de l'écuelle |
 | 7 | La descente sous la grande cloche | Ciné | `sfx_cloche_souffle` (la cloche respire, elle ne sonne pas) |
 | 7 | L'ouverture du sceau | Ciné | `sfx_sceau_ouvrir`, puis `sfx_pli_deplier` |
 | Toutes | Lecture d'une ligne du pli | Anim | `sfx_sceau_rechauffer` puis `sfx_pli_lire` |
