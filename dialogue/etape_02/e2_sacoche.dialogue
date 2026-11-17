@@ -19,6 +19,7 @@ Tobie: Où es-tu allé, Matthieu ? Et où est ton pli ?
 	Tobie: Je la glisse contre mon pli. Quelqu'un, là-bas, saura peut-être qui est Lise.
 	do GameState.ajouter_marque(&"la_lettre_de_matthieu", &"promesse", &"e2_sacoche")
 - [Lui rendre ses rites] Laisser ma ration en offrande. [#cout_vivres=2]
+	do Cinematiques.jouer(&"e2_rites_matthieu")
 	Tobie: Je pose mon pain dans la sacoche, et je dis la prière des morts. Mal, mais en entier.
 	Tobie: Matthieu. Je retiendrai ton nom.
 	do GameState.ajouter_marque(&"il_s_appelait_matthieu", &"nom_retenu", &"e2_sacoche")
