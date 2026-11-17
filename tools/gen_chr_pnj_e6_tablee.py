@@ -73,11 +73,14 @@ def tete(cx: float, cy: float, coiffure: str, enfant: bool) -> str:
 
 
 def assis(i: int, coiffure: str, enfant: bool = False, chale: bool = False, tablier: bool = False,
-          jupe: bool = True, phase: int = 0, penche: float = 0.0, croisees: bool = False) -> str:
+          jupe: bool = True, phase: int = 0, penche: float = 0.0, croisees: bool = False,
+          main: tuple[float, float] | None = None, objet: str = "") -> str:
     """Assis sur un tabouret, de trois quarts vers la gauche, les mains posées sur les genoux.
     phase décale le souffle (ils ne respirent pas ensemble) ; penche incline le buste vers la
     gauche autour des hanches (degrés ; négatif : il se redresse, raide) ; croisees : les mains
-    croisées sur le giron. Un buste penché laisse glisser le châle de l'épaule basse."""
+    croisées sur le giron. Un buste penché laisse glisser le châle de l'épaule basse.
+    main : la main droite quitte le giron et va en (x, y), avec objet : cuillere, pain, ouverte
+    (elle fait signe) ou pince (elle tient une manche, hors du cadre à gauche)."""
     s = SOUFFLE[(i + phase) % 4]
     o = [  # le tabouret
         f'<path d="M108 318 H176 V328 H108 Z" fill="url(#h1)" {ST} stroke-width="2.2"/>',
@@ -107,7 +110,11 @@ def assis(i: int, coiffure: str, enfant: bool = False, chale: bool = False, tabl
     elif chale:
         o.append(f'<path d="M114 212 Q140 196 166 216 L170 256 L150 236 L136 270 L124 236 L108 250 Z" fill="{LAVIS}" {ST} stroke-width="2"/>'
                  + "".join(f'<path d="M{x} {y} l-1 7" stroke="{MINE}" stroke-width="1"/>' for x, y in ((140, 266), (146, 254), (154, 244), (128, 252), (118, 246))))
-    if croisees:
+    if main is not None:
+        o.append(g(bras_geste(main, objet)))
+        if croisees:  # la main gauche reste seule sur le giron
+            o.append(g(f'<ellipse cx="126" cy="293" rx="9" ry="6" fill="{PEAU}" stroke-width="1.8"/>'))
+    elif croisees:
         # les mains croisées sur le giron, serrées : le bras droit plié, coude au corps
         o.append(g(bras((128, 216), (118, 262), (118, 292), "url(#h1)", 15, 13, 11, 2.2)
                    + f'<ellipse cx="128" cy="292" rx="9" ry="6" fill="{PEAU}" stroke-width="1.8"/>'
@@ -128,11 +135,62 @@ def assis(i: int, coiffure: str, enfant: bool = False, chale: bool = False, tabl
     return corps
 
 
+def bras_geste(main: tuple[float, float], objet: str) -> str:
+    """Le bras droit, de l'épaule à la main en (x, y), le coude qui tombe naturellement ; la main
+    et ce qu'elle tient."""
+    x, y = main
+    coude = ((128 + x) / 2 + 12, max((216 + y) / 2 + 16, y - 10))
+    o = [bras((128, 216), coude, main, "url(#h1)", 15, 13, 11, 2.2)]
+    if objet == "cuillere":  # le manche dans le poing, le cuilleron vers la bouche
+        o.append(f'<path d="M{x + 4} {y + 4} L{x - 12} {y - 10}" stroke-width="2.6"/>'
+                 f'<ellipse cx="{x - 14}" cy="{y - 12}" rx="5" ry="3.4" transform="rotate(-40 {x - 14} {y - 12})" fill="{LAVIS}" stroke-width="1.4"/>'
+                 f'<ellipse cx="{x}" cy="{y}" rx="7" ry="6.5" fill="{PEAU}" stroke-width="1.8"/>')
+    elif objet == "pain":  # un gros quignon, croûte hachurée, serré dans la main
+        o.append(f'<g transform="translate({x} {y}) scale(1.8)">'
+                 '<path d="M-12 0 Q-11 -11 1 -10 Q12 -7 9 3 Q0 9 -12 0 Z" fill="url(#h1)" stroke-width="1.2"/>'
+                 '<path d="M-7 -6 l3 3 M0 -8 l3 3 M5 -6 l2 3" stroke-width=".8"/></g>'
+                 f'<ellipse cx="{x + 4}" cy="{y + 4}" rx="7" ry="6" fill="{PEAU}" stroke-width="1.8"/>')
+    elif objet == "ouverte":  # la paume levée, les doigts ouverts
+        o.append(f'<path d="M{x - 6} {y + 4} Q{x - 10} {y - 8} {x - 6} {y - 18} L{x - 1} {y - 16} L{x} {y - 8} L{x + 3} {y - 21} L{x + 8} {y - 19} '
+                 f'L{x + 7} {y - 7} L{x + 12} {y - 15} L{x + 16} {y - 12} Q{x + 12} {y + 4} {x + 2} {y + 6} Z" fill="{PEAU}" stroke-width="1.8"/>')
+    elif objet == "pince":  # deux doigts qui serrent un pli d'étoffe, au bord gauche du cadre
+        o.append(f'<path d="M{x - 18} {y - 8} Q{x - 10} {y - 4} {x - 18} {y + 8}" fill="none" stroke="{MINE}" stroke-width="2.4"/>'
+                 f'<path d="M{x - 8} {y - 6} L{x - 16} {y - 4} L{x - 16} {y + 2} L{x - 6} {y + 4} Q{x + 6} {y + 6} {x + 6} {y - 2} Q{x + 4} {y - 8} {x - 8} {y - 6} Z" fill="{PEAU}" stroke-width="1.8"/>')
+    else:
+        o.append(f'<ellipse cx="{x}" cy="{y}" rx="7" ry="6.5" fill="{PEAU}" stroke-width="1.8"/>')
+    return "".join(o)
+
+
+# les trajets de la main droite, image par image (le souffle continue)
+CUILLERE = ((100, 284), (106, 250), (122, 204), (124, 198), (112, 240), (100, 284))
+CUILLERE_ENFANT = ((100, 284), (106, 248), (120, 206), (122, 200), (110, 242), (100, 284))
+SIGNE = ((100, 270), (92, 222), (84, 196), (96, 192), (84, 196), (96, 230))
+PAIN = ((96, 290), (60, 262), (40, 250), (52, 258), (112, 286), (150, 300))
+MANCHE = ((96, 290), (70, 270), (46, 258), (40, 256), (40, 256), (42, 257))
+
+
+def geste(trajet, objets, **perso) -> list[str]:
+    return [assis(i % 4, main=m, objet=o, **perso) for i, (m, o) in enumerate(zip(trajet, objets))]
+
+
+FEMME = dict(coiffure="fichu", tablier=True, penche=-3, croisees=True)
+MERE = dict(coiffure="chignon", chale=True, phase=1, penche=9)
+ENFANT_ = dict(coiffure="epis", enfant=True, jupe=False, phase=2)
+FILLETTE = dict(coiffure="nattes", enfant=True, tablier=True, phase=3)
+C6 = ["cuillere"] * 6
+
 PLANCHES = {
     "chr_femme_repos_01": lambda: [assis(i, "fichu", tablier=True, penche=-3, croisees=True) for i in range(4)],
     "chr_mere_repos_01": lambda: [assis(i, "chignon", chale=True, phase=1, penche=9) for i in range(4)],
     "chr_enfant_repos_01": lambda: [assis(i, "epis", enfant=True, jupe=False, phase=2) for i in range(4)],
     "chr_fillette_repos_01": lambda: [assis(i, "nattes", enfant=True, tablier=True, phase=3) for i in range(4)],
+    "chr_femme_lever-cuillere_01": lambda: geste(CUILLERE, C6, **FEMME),
+    "chr_mere_lever-cuillere_01": lambda: geste(CUILLERE, C6, **MERE),
+    "chr_enfant_lever-cuillere_01": lambda: geste(CUILLERE_ENFANT, C6, **ENFANT_),
+    "chr_fillette_lever-cuillere_01": lambda: geste(CUILLERE_ENFANT, C6, **FILLETTE),
+    "chr_femme_faire-signe_01": lambda: geste(SIGNE, ["", "ouverte", "ouverte", "ouverte", "ouverte", "ouverte"], **FEMME),
+    "chr_enfant_voler-pain_01": lambda: geste(PAIN, ["", "", "", "pain", "pain", "pain"], **ENFANT_),
+    "chr_fillette_tenir-manche_01": lambda: geste(MANCHE, ["", "", "", "pince", "pince", "pince"], **FILLETTE),
 }
 
 
