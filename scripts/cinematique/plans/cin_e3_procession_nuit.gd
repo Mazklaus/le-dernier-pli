@@ -17,6 +17,10 @@ const NB_SUIVANTS := 5
 const ECART := 200.0
 ## Ilde part derrière le mur, à gauche de l'embrasure (x 360 à 1560), et sort à droite.
 const X_DEPART := 160.0
+## Un marcheur n'existe qu'entre les lames : caché dès qu'il est entièrement derrière le mur
+## (demi-largeur 100 × ECHELLE de part et d'autre des pieds). Sinon, sur un écran plus large
+## que 16:9 (aspect « expand »), la file déborderait à droite et à gauche du cadre du volet.
+const EMBRASURE := Vector2(360.0, 1560.0)
 const VITESSE := 200.0
 ## Une image de marche toutes les 3 tics, comme la respiration des personnages.
 const DUREE_IMAGE := 0.3
@@ -53,9 +57,16 @@ func construire() -> Animation:
 	for i in marcheurs.size():
 		var chemin := "Plans/Marcheur%d" % i
 		var x0 := X_DEPART - ECART * i
+		var demi := SilhouetteTobie.PIEDS.x * ECHELLE
+		var vu := -1
 		for p in nb_pas + 1:
 			var t := p * Cinematique.PAS
-			cle(anim, chemin + ":position", t, Vector2(roundf(x0 + VITESSE * t), SOL))
+			var x := roundf(x0 + VITESSE * t)
+			cle(anim, chemin + ":position", t, Vector2(x, SOL))
+			var dedans := 1 if x + demi > EMBRASURE.x and x - demi < EMBRASURE.y else 0
+			if dedans != vu:
+				cle(anim, chemin + ":visible", t, dedans == 1)
+				vu = dedans
 			if p % int(roundf(DUREE_IMAGE / Cinematique.PAS)) == 0:
 				cle(anim, chemin + ":frame", t, (i + int(roundf(t / DUREE_IMAGE))) % 4)
 	cle(anim, "Plans:visible", DUREE, false)
