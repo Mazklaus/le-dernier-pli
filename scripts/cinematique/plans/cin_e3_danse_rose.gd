@@ -12,6 +12,11 @@ extends CinematiquePlans
 const CIN := "res://assets/graphics/cin/%s.png"
 const CHR := "res://assets/graphics/chr/%s.png"
 const DUREE := 10.0
+## Le son du Sound Designer (#236) : le violon de la noce, puis la vielle, puis le rire au violon.
+const SON := "sfx_danse_tourner"
+## La musique de la place (émetteur de e3_noce), mise en pause le temps de la ciné : les deux
+## violons ne sont pas synchronisés.
+const EMETTEUR := "MusiqueNoce"
 const P2 := 3.0
 const P3 := 7.0
 ## Le décor de la place (env_e3_plan3_surface_03, 2048 × 712), agrandi pour remplir l'écran.
@@ -38,6 +43,7 @@ const RIRE := [[7.0, 0], [7.7, 1], [8.3, 0], [8.9, 1], [9.4, 0]]
 const VISAGE := Vector2(960, 500)
 
 var couche: CanvasLayer
+var emetteur: AudioStreamPlayer2D
 
 
 func construire() -> Animation:
@@ -55,6 +61,8 @@ func construire() -> Animation:
 	var anim := Animation.new()
 	anim.length = DUREE
 	cle(anim, "Plans:visible", 0.0, true)
+	if not AudioDirector.variantes_de(SON).is_empty():
+		son(anim, 0.0, SON)
 
 	# P1 et P2 : la place
 	var place := Node2D.new()
@@ -162,9 +170,19 @@ func construire() -> Animation:
 	return anim
 
 
+func _prendre_controle() -> void:
+	super()
+	var lieu := get_parent()
+	emetteur = lieu.find_child(EMETTEUR, true, false) as AudioStreamPlayer2D if lieu != null else null
+	if emetteur != null:
+		emetteur.stream_paused = true
+
+
 func apres() -> void:
 	if couche != null:
 		couche.visible = false
+	if emetteur != null and is_instance_valid(emetteur):
+		emetteur.stream_paused = false
 
 
 func personnage(nom: String, texture: Texture2D, images: int, pieds: Vector2) -> Sprite2D:
