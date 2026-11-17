@@ -36,9 +36,8 @@ if GameState.possede_marque(&"promis_a_ilde")
 ~ champs
 
 do Cinematiques.jouer(&"e3_priere_champs")
-Tobie: Tout le village est à genoux, en cercle, le front contre la terre.
 Tobie: Ils murmurent vers le sol. Le même chant, mais plus bas encore, comme pour quelqu'un qui dort.
-Tobie: Personne ne me regarde. Il y a une place vide dans le cercle.
+Tobie: Personne ne me regarde.
 - [S'agenouiller avec eux] [#cout_lucidite=2]
 	Tobie: Je pose le front contre la terre froide. Elle sent la pluie et le fer.
 	Tobie: Et très loin dessous, quelque chose répond.
