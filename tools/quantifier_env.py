@@ -34,8 +34,9 @@ ECART_MAX = 24
 COULEURS_MAX = 64
 ## Palette de départ par famille (préfixe du nom) ; --couleurs force la même pour tous.
 DEPART = {"env": 32, "cin": 64, "chr": 64, "fx": 64}
-## Dégradés que l'écart maximal ne voit pas (le halo de la flamme casse en anneaux) : jamais réduites.
-EXCLUSIONS = {"cin_greffe_04"}
+## Dégradés jamais réduits : ceux que l'écart maximal ne voit pas (halo de greffe_04 en anneaux)
+## et les brouillards (fondus d'alpha), validé par la DA le 17/11.
+EXCLUSIONS = {"cin_greffe_04", "fx_brouillard_01", "fx_brouillard_02", "fx_brouillard_03"}
 
 
 def _reduire(rgb: Image.Image, n: int, reservees: list) -> Image.Image:
@@ -53,10 +54,15 @@ def quantifier(chemin: Path, n: int) -> tuple[int, int, int]:
     avant = chemin.stat().st_size
     im = Image.open(chemin).convert("RGBA")
     alpha = im.getchannel("A")
+    # Couleurs brutes (non mélangées au papier) : sinon chaque passage rapproche les bords
+    # semi-transparents du papier et le script n'est pas idempotent. Seuls les pixels
+    # entièrement transparents prennent la couleur du papier (ils ne comptent pas).
     rgb = Image.new("RGB", im.size, PAPIER)
-    rgb.paste(im, mask=alpha)
+    rgb.paste(im.convert("RGB"), mask=alpha.point(lambda a: 255 if a else 0))
     couleurs = rgb.getcolors(1 << 24) or []
-    if len(couleurs) <= n:
+    if len(couleurs) <= max(n, COULEURS_MAX):
+        # Déjà une petite palette (une planche déjà réduite, peut-être à 64) : la réduire encore
+        # changerait l'image à chaque passage. Idempotent.
         return avant, avant, len(couleurs)
     presentes = {c for _, c in couleurs}
     reservees = [c for c in RESERVEES if c in presentes]
