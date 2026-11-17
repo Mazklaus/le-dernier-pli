@@ -1,25 +1,37 @@
-# Modèle d'export web allégé (mesure) : compile le modèle release sans threads de Godot sans la 3D
-# ni les modules dont un jeu 2D n'a pas besoin, et compare le poids téléchargé (gzip) de son
-# .wasm à celui du modèle officiel. Lancement manuel, ou sur une PR qui modifie ce fichier.
-# Rien n'est publié : le modèle compilé est seulement gardé en artefact (7 jours).
+# Modèle d'export web allégé : compile les modèles web sans threads (release et debug) de Godot
+# sans la 3D ni les modules dont le jeu n'a pas besoin, compare le poids téléchargé (gzip) de leur
+# .wasm aux modèles officiels, et les publie en release GitHub (MODELE_WEB_TAG) depuis main.
+# export.yml télécharge cette release au lieu de recompiler.
+#
+# Changer SCONS_ALLEGE (ou la version de Godot) => incrémenter MODELE_WEB_TAG ici ET dans export.yml.
+# Validé par le GD le 17/11 à condition qu'aucun rendu ne change : on garde donc text_server_adv
+# (HarfBuzz : crénage GPOS et ligatures de Spectral) et les API dépréciées (Dialogue Manager).
 name: Modèle web allégé
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/modele-web.yml
   pull_request:
     paths:
       - .github/workflows/modele-web.yml
 
+permissions:
+  contents: write  # publication de la release (main seulement)
+
 env:
   GODOT_VERSION: "4.7.2"
   GODOT_RELEASE: "stable"
+  MODELE_WEB_TAG: "modele-web-4.7.2-v1"
   # Version d'emscripten des builds officiels de Godot 4.7 (web_builds.yml du moteur).
   EM_VERSION: "4.0.11"
-  # Modules retirés : 3D, XR, réseau, formats et compresseurs d'import inutiles au jeu exporté.
-  # text_server_fb remplace text_server_adv (ICU, BiDi, ligatures : inutiles en français).
+  # Modules retirés : 3D, XR, réseau, vidéo, formats et compresseurs d'import inutiles au jeu
+  # exporté (aucun jpg, tga, bmp, exr, hdr, dds, mp3, Noise ni vidéo dans le projet : vérifié par
+  # le Lead le 17/11). Graphite (polices « smart » SIL) n'est pas utilisé par nos polices.
   SCONS_ALLEGE: >-
-    disable_3d=yes deprecated=no
-    module_text_server_adv_enabled=no module_text_server_fb_enabled=yes
+    disable_3d=yes graphite=no
     module_csg_enabled=no module_gridmap_enabled=no module_gltf_enabled=no module_fbx_enabled=no
     module_navigation_3d_enabled=no module_godot_physics_3d_enabled=no module_jolt_physics_enabled=no
     module_openxr_enabled=no module_mobile_vr_enabled=no module_webxr_enabled=no
@@ -35,10 +47,17 @@ env:
     module_objectdb_profiler_enabled=no
 
 jobs:
-  mesure:
-    name: Compiler et mesurer
+  compiler:
+    name: Compiler ${{ matrix.cible }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 150
+    strategy:
+      matrix:
+        include:
+          - cible: release
+            scons: target=template_release production=yes
+          - cible: debug
+            scons: target=template_debug
     steps:
       - name: Sources de Godot
         uses: actions/checkout@v4
@@ -55,35 +74,57 @@ jobs:
       - name: SCons
         run: python3 -m pip install --quiet scons
 
-      - name: Compiler le modèle allégé (release, sans threads)
+      - name: Compiler le modèle allégé (sans threads)
         working-directory: godot
         run: |
-          scons platform=web target=template_release threads=no production=yes \
-            -j"$(nproc)" $SCONS_ALLEGE
-          ls -l bin/
+          scons platform=web threads=no ${{ matrix.scons }} -j"$(nproc)" $SCONS_ALLEGE
+          mkdir -p ../modele
+          cp bin/godot.web.template_${{ matrix.cible }}.wasm32.nothreads.zip \
+            ../modele/web_nothreads_${{ matrix.cible }}.zip
 
-      - name: Modèle officiel pour comparaison
+      - name: Comparer au modèle officiel
         run: |
           V="${GODOT_VERSION}-${GODOT_RELEASE}"
           curl -fsSL -o /tmp/tpl.tpz \
             "https://github.com/godotengine/godot/releases/download/${V}/Godot_v${V}_export_templates.tpz"
-          unzip -q -j /tmp/tpl.tpz "templates/web_nothreads_release.zip" -d /tmp/officiel
-
-      - name: Comparer
-        run: |
-          mesure() {  # $1 = zip du modèle ; affiche brut et gzip du .wasm, en Mo
+          unzip -q -j /tmp/tpl.tpz "templates/web_nothreads_${{ matrix.cible }}.zip" -d /tmp/officiel
+          mesure() {  # $1 = zip du modèle ; brut (Mo) et gzip (dixièmes de Mo) du .wasm
             rm -rf /tmp/m && mkdir /tmp/m && unzip -q "$1" -d /tmp/m
             W=$(ls /tmp/m/*.wasm)
             echo "$(( $(stat -c %s "$W") / 1048576 )) $(( $(gzip -9 -c "$W" | wc -c) * 10 / 1048576 ))"
           }
-          read OB OG <<< "$(mesure /tmp/officiel/web_nothreads_release.zip)"
-          read AB AG <<< "$(mesure godot/bin/godot.web.template_release.wasm32.nothreads.zip)"
-          L="Modèle web : officiel ${OB} Mo brut, $((OG/10)).$((OG%10)) Mo gzip ; allégé ${AB} Mo brut, $((AG/10)).$((AG%10)) Mo gzip ; gain $(((OG-AG)/10)).$(((OG-AG)%10)) Mo téléchargés"
+          read OB OG <<< "$(mesure /tmp/officiel/web_nothreads_${{ matrix.cible }}.zip)"
+          read AB AG <<< "$(mesure modele/web_nothreads_${{ matrix.cible }}.zip)"
+          L="Modèle web ${{ matrix.cible }} : officiel ${OB} Mo brut, $((OG/10)).$((OG%10)) Mo gzip ; allégé ${AB} Mo brut, $((AG/10)).$((AG%10)) Mo gzip ; gain $(((OG-AG)/10)).$(((OG-AG)%10)) Mo téléchargés"
           echo "$L" | tee -a "$GITHUB_STEP_SUMMARY"
 
-      - name: Garder le modèle allégé
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: modele-web-allege
-          path: godot/bin/godot.web.template_release.wasm32.nothreads.zip
+          name: modele-web-${{ matrix.cible }}
+          path: modele/web_nothreads_${{ matrix.cible }}.zip
           retention-days: 7
+
+  publier:
+    name: Publier la release
+    needs: compiler
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: modele-web-*
+          merge-multiple: true
+          path: modele
+      - name: Créer ou mettre à jour la release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          ls -l modele
+          if gh release view "$MODELE_WEB_TAG" >/dev/null 2>&1; then
+            gh release upload "$MODELE_WEB_TAG" modele/*.zip --clobber
+          else
+            gh release create "$MODELE_WEB_TAG" modele/*.zip --target "$GITHUB_SHA" --prerelease \
+              --title "Modèle d'export web allégé (Godot ${GODOT_VERSION})" \
+              --notes "Modèles web sans threads (release, debug) compilés par .github/workflows/modele-web.yml. Utilisés par export.yml ; ne pas supprimer."
+          fi
