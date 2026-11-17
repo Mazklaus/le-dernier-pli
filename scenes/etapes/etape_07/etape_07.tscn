@@ -104,8 +104,9 @@ monitoring = false
 script = ExtResource("6")
 vers = &"anneau_cloches"
 libelle = "Descendre"
+cinematique = &"e7_descente"
 metadata/vers = "anneau_cloches"
-metadata/note_level_design = "Le bord de la galerie : la descente commence"
+metadata/note_level_design = "Le bord de la galerie : la descente commence ; lance e7_descente avant le déplacement (playtest)"
 
 [node name="Forme" type="CollisionShape2D" parent="Surface/Galerie/Descendre"]
 shape = SubResource("RectangleShape2D_4")
