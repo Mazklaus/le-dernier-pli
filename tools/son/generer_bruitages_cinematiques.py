@@ -244,6 +244,37 @@ def barbeles_foncer(i):   # e2_barbeles_foncer (7 s, le noir et le brouillard, P
     m=course*0.5+souffle*calme+choc*0.35+tire*0.6+lambeau*0.35+fils*0.06*calme+brouillard*0.15
     m=reverb(m*pale,1.2,0.3,seed=321+i)[:L]
     return m*np.clip((7.0-t)/0.3,0,1)
+def crypte_descendre(i):   # e4_descente_crypte (10 s, PR #241 de la DA) : l'escalier en vis qui descend vers la crypte.
+    #   0-4 s : la vis tourne et s'enfonce ; un pas sur la pierre toutes les 0,25 s, la cage résonne de plus en plus.
+    #   4-8 s : de côté, neuf marches de 4,2 à 7,6 s ; la lumière d'en haut rétrécit (5,2 / 6,3 / 7,3 s) : l'air de
+    #           l'hôpital s'étouffe par paliers, et disparaît quand elle s'éteint (7,8 s).
+    #   8-10 s : le noir ; presque rien : la cire froide qui craque une fois, la buée des saints qu'on ne voit pas encore.
+    L=mk(10.0); t=np.arange(L)/SR
+    def pas_pierre(force=1.0):
+        n=mk(0.25); tt=np.arange(n)/SR
+        y=fftfilt(rng.standard_normal(n),hi=700)*np.exp(-tt*50)*1.2                        # le talon sur la marche
+        y+=fftfilt(rng.standard_normal(n),lo=1500,hi=6000)*np.exp(-tt*35)*0.25*(rng.random(n)<0.4)   # le grain de la pierre
+        return y*force
+    pas=np.zeros(L)
+    for k in range(16): at(pas,pas_pierre(0.8 if k%2 else 0.9),0.05+k*0.25)
+    for k in range(9): at(pas,pas_pierre(1.0 if k%2 else 0.9),4.2+k*0.425)
+    pas=fftfilt(pas,hi=4000)
+    profond=np.clip(t/8.0,0,1)                                                               # la cage de plus en plus profonde
+    sec=pas*(1-0.5*profond); humide=reverb(pas,2.8,1.0,seed=331+i)[:L]*(0.25+0.6*profond)
+    en_haut=np.ones(L)                                                                        # l'air de l'hôpital, par la porte
+    for tc,g in ((5.2,0.6),(6.3,0.35),(7.3,0.15),(7.8,0.0)): en_haut[t>=tc]=g
+    en_haut=np.convolve(en_haut,np.ones(mk(0.15))/mk(0.15),mode="same")
+    air=fftfilt(burst(L,lo=200,hi=2500),lo=200,hi=2500)*0.12
+    for _ in range(8):                                                                        # des voix lointaines, sans mots
+        n=mk(rng.uniform(0.3,0.6)); tt=np.arange(n)/SR; f=rng.uniform(110,180)
+        at(air,sum(np.sin(2*np.pi*f*h*tt)*np.exp(-((f*h-500)/250)**2) for h in range(1,10))*np.hanning(n)*0.03,rng.uniform(0,7.5))
+    air=fftfilt(air,hi=1200)*en_haut*(1-0.6*np.clip(t/4.0,0,1))
+    noir=np.zeros(L)
+    n=mk(1.4); tt=np.arange(n)/SR; at(noir,fftfilt(burst(n,lo=250,hi=1200),lo=250,hi=1200)*np.sin(np.pi*tt/tt[-1])**2*0.06,8.3)   # la buée des saints
+    noir=reverb(noir,3.0,0.35,seed=341+i)[:L]
+    k=mk(0.05); at(noir,burst(k,lo=2500,hi=7000)*np.exp(-np.arange(k)/SR*80)*0.05,8.6)       # la cire froide, sèche
+    m=sec*0.6+humide*0.5+air+noir
+    return m*np.clip((10.0-t)/0.3,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -261,3 +292,4 @@ save("sfx_greffe_fausse-note",greffe_fausse_note,0.6)
 save("sfx_priere_murmurer",priere_murmurer,0.6)   # un fond de 12 s pour toute la ciné, lancé à 0
 save("sfx_danse_tourner",danse_tourner,0.6)    # 10 s pour toute la ciné, lancé à 0
 save("sfx_barbeles_foncer",barbeles_foncer,0.6)    # 7 s pour toute la ciné, lancé à 0
+save("sfx_crypte_descendre",crypte_descendre,0.6)    # 10 s pour toute la ciné, lancé à 0
