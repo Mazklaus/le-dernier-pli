@@ -43,8 +43,20 @@ func test_passage_lance_la_cine_puis_arrivee(p = use_parameters(CAS)) -> void:
 	assert_true(cine.en_cours, "la ciné se joue au passage")
 	assert_eq(messager.global_position, depart, "Tobie reste devant le passage pendant la ciné")
 	cine.sauter()
-	var arrivee := etape.find_child("entree_" + String(p.vers), true, false) as Marker2D
-	assert_eq(messager.global_position, arrivee.global_position, "puis il arrive dans le lieu")
+	var arrivee := cine.get_node_or_null("PlaceTobie") as Marker2D
+	if arrivee == null:
+		arrivee = etape.find_child("entree_" + String(p.vers), true, false) as Marker2D
+	assert_eq(messager.global_position, arrivee.global_position, "puis il arrive là où le plan l'a laissé")
+
+
+func test_raccord_mere_cloche_tobie_pres_d_elle() -> void:
+	var lieu: Node = load("res://scenes/etapes/etape_07/lieux/mere_cloche.tscn").instantiate()
+	var place := lieu.get_node_or_null("e7_mere_cloche/PlaceTobie") as Marker2D
+	assert_not_null(place, "le jeu reprend à côté de la Mère-Cloche, comme à la fin du plan")
+	if place != null:
+		var mere := lieu.get_node("Rencontres/e7_mere_cloche") as Node2D
+		assert_lt(absf(place.position.x - mere.position.x), 200.0)
+	lieu.free()
 
 
 func test_la_rencontre_ne_rejoue_pas_la_cine(p = use_parameters(CAS)) -> void:

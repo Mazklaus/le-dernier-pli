@@ -74,6 +74,10 @@ func interagir(messager: Messager) -> void:
 		# La ciné cache tout l'écran jusqu'à sa dernière image : le messager arrive dans la
 		# même image, sans retour visible au lieu de départ.
 		messager.teleporter(cible.global_position)
+		# Raccord : si le plan a laissé Tobie ailleurs (repère PlaceTobie), il reprend là.
+		var cine := Cinematiques.trouver(cinematique)
+		if cine != null:
+			cine.replacer_messager()
 		franchi.emit(self, vers)
 		return
 	if fondu_noir <= 0.0:
