@@ -40,6 +40,9 @@ const PRISE := Vector2(598, 876)
 const ANGLE := 54.70
 const ORIGINE_MAIN := Vector2(1350, 240)
 const MONTEE_CORDE := -300.0
+## La corde tire au plus bas à chaque coup de la cloche (piste du Sound Designer, #212) : les
+## allers-retours ralentissent ; après le dernier, un aller-retour de plus, qui s'éteint.
+const COUPS_CORDE := [18.0, 19.9, 22.0, 24.4, 27.0]
 
 
 func construire() -> Animation:
@@ -174,6 +177,16 @@ func _plan_montee(anim: Animation, tex: Dictionary) -> void:
 	boucle(anim, "Cadre/P2/Ondes", 8.0, 18.0, [0, 1], 0.3)
 
 
+## Où en est la corde à l'instant t : 1 au plus bas (un coup), -1 au plus haut, entre deux coups.
+static func tirage(t: float) -> float:
+	for i in COUPS_CORDE.size() - 1:
+		var a: float = COUPS_CORDE[i]
+		var b: float = COUPS_CORDE[i + 1]
+		if t <= b:
+			return cos(TAU * clampf((t - a) / (b - a), 0.0, 1.0))
+	return 1.0
+
+
 ## P3, 18 à 26 s : « Il mourut dessous, la corde dans les mains. » La corde va et vient seule.
 func _plan_corde(anim: Animation, tex: Dictionary) -> void:
 	var p := plan(anim, "P3", 18.0, 26.0)
@@ -197,7 +210,7 @@ func _plan_corde(anim: Animation, tex: Dictionary) -> void:
 	var n := roundi(8.0 / PAS)
 	for k in n + 1:
 		var t := 18.0 + k * PAS
-		cle(anim, "Cadre/P3/Prise:position", t, (PRISE + le_long * lerpf(18.0, 3.0, (t - 18.0) / 8.0) * sin(TAU * (t - 18.0) / 2.4)).round())
+		cle(anim, "Cadre/P3/Prise:position", t, (PRISE + le_long * lerpf(18.0, 3.0, (t - 18.0) / 8.0) * tirage(t)).round())
 	var poussiere := sprite("Poussiere", tex["cin_epi-c-poussiere"], Vector2(1100, 300), 3, 1)
 	p.add_child(poussiere)
 	boucle(anim, "Cadre/P3/Poussiere", 18.0, 26.0, [0, 1, 2], 0.2)

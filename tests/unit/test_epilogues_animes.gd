@@ -86,3 +86,10 @@ func test_effets_attenues_pas_de_glissement_de_camera() -> void:
 	var anim := _animation(_anim("b"))
 	var piste := anim.find_track(NodePath("Cadre/P2/Abri:position"), Animation.TYPE_VALUE)
 	assert_eq(anim.track_get_key_count(piste), 2, "deux plans fixes au lieu d'un panoramique")
+
+
+func test_la_corde_tire_au_plus_bas_sur_chaque_coup_de_la_piste() -> void:
+	var c: GDScript = load("res://scripts/epilogue/anim_epilogue_c.gd")
+	for t: float in [18.0, 19.9, 22.0, 24.4]:
+		assert_almost_eq(c.tirage(t), 1.0, 0.001, "coup à %.1f s" % t)
+	assert_lt(c.tirage(18.95), -0.99, "au plus haut entre deux coups")
