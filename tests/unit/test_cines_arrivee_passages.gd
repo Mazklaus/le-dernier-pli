@@ -62,3 +62,15 @@ func test_raccord_mere_cloche_tobie_pres_d_elle() -> void:
 func test_la_rencontre_ne_rejoue_pas_la_cine(p = use_parameters(CAS)) -> void:
 	var texte := FileAccess.get_file_as_string(p.dialogue)
 	assert_false(texte.contains("Cinematiques.jouer(&\"%s\")" % p.cine))
+
+
+func test_cine_deja_vue_arrivee_a_l_entree() -> void:
+	var etape: EtapeBase = add_child_autofree(load("res://scenes/etapes/etape_07/etape_07.tscn").instantiate())
+	var passage := etape.find_child("VersMereCloche", true, false) as Passage
+	GameState.marquer_rencontre_vue(&"e7_sceau")
+	GameState.marquer_rencontre_vue(Cinematique.drapeau(&"e7_mere_cloche"))
+	var messager := etape.trouver_messager()
+	passage.interagir(messager)
+	await wait_process_frames(2)
+	var entree := etape.find_child("entree_mere_cloche", true, false) as Marker2D
+	assert_eq(messager.global_position, entree.global_position, "ciné déjà vue : pas de PlaceTobie")
