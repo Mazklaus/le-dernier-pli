@@ -24,9 +24,9 @@ permissions:
 env:
   GODOT_VERSION: "4.7.2"
   GODOT_RELEASE: "stable"
-  MODELE_WEB_TAG: "modele-web-4.7.2-v1"
-  # Version d'emscripten des builds officiels de Godot 4.7 (web_builds.yml du moteur).
-  EM_VERSION: "4.0.11"
+  MODELE_WEB_TAG: "modele-web-4.7.2-v2"
+  # Version d'emscripten des modèles officiels de Godot 4.7.2 (en-tête de la console du modèle officiel).
+  EM_VERSION: "4.0.20"
   # Modules retirés : 3D, XR, réseau, vidéo, formats et compresseurs d'import inutiles au jeu
   # exporté (aucun jpg, tga, bmp, exr, hdr, dds, mp3, Noise ni vidéo dans le projet : vérifié par
   # le Lead le 17/11). Graphite (polices « smart » SIL) n'est pas utilisé par nos polices.
