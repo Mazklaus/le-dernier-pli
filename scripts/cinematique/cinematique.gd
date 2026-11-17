@@ -226,8 +226,7 @@ func replacer_messager() -> bool:
 	var messager := _messager if _messager != null and is_instance_valid(_messager) else _trouver_messager()
 	if place == null or messager == null:
 		return false
-	messager.global_position = place.global_position
-	messager.velocity = Vector2.ZERO
+	messager.teleporter(place.global_position)
 	return true
 
 
