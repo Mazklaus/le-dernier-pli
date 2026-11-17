@@ -36,7 +36,7 @@ scripts/regles/    logique pure (pas de Node)
 scripts/ui/        scripts d'interface
 dialogue/etape_NN/ fichiers .dialogue du Narrative Designer
 assets/graphics/   PNG exportés (depuis art/src/)
-assets/audio/      OGG (boucles) et WAV (SFX, UI, voix)
+assets/audio/      OGG Vorbis (boucles, SFX, UI, voix)
 art/src/           sources SVG du DA (ignorées par Godot)
 shaders/           shaders du DA, compatibles renderer Compatibility
 debug/             menu de débogage (debug seulement)
