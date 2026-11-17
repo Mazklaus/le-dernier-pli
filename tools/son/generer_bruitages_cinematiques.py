@@ -410,6 +410,48 @@ def adieu_jacquot(i):   # e1_adieu_jacquot (8 s, PR #252 de la DA) : l'adieu dan
     m=air+sifflet*0.55+pas*0.5+porte
     m=reverb(m,1.2,0.2,seed=401+i)[:L]
     return m*np.clip(t/0.15,0,1)*np.clip((8.0-t)/0.3,0,1)
+def chuchote(nsyl):   # un murmure sans mots : du souffle passé dans des formants de voyelles, des consonnes sifflées ou mates
+    VOY=((300,870,2250),(500,1000,2400),(700,1200,2500),(400,1900,2550),(320,1650,2200),(450,1400,2300))
+    out=[]
+    for _ in range(nsyl):
+        F=VOY[rng.integers(len(VOY))]; n=mk(rng.uniform(0.07,0.13)); tt=np.arange(n)/SR
+        v=sum(fftfilt(rng.standard_normal(n),lo=f*0.85,hi=f*1.15,order=3)*g for f,g in zip(F,(1.0,0.6,0.3)))*np.abs(np.sin(np.pi*tt/tt[-1]))**0.8
+        c=rng.random()
+        if c<0.35: k=mk(0.04); v=np.concatenate([fftfilt(rng.standard_normal(k),lo=4000,hi=9000)*np.hanning(k)*0.4,v])   # s, ch
+        elif c<0.6: k=mk(0.015); v=np.concatenate([burst(k,lo=800,hi=4000)*np.exp(-np.arange(k)/SR*300)*0.8,v])     # p, t
+        out.append(v); out.append(np.zeros(mk(rng.uniform(0.0,0.03))))
+    return np.concatenate(out)
+def rites_matthieu(i):   # e2_rites_matthieu (8 s, PR #255 de la DA) : au fond d'un trou d'obus, dans le brouillard.
+    #   0-3 s : gros plan, les mains tiennent le pain au-dessus de la sacoche, le descendent (1,3 s), le lâchent (2,3 s) :
+    #           la toile, le cuir mouillé.
+    #   3-6 s : de dos au bord du trou, il s'agenouille (4,3 s) : les genoux dans la boue.
+    #   6-8 s : de près, les lèvres murmurent la prière des morts, mal mais en entier, ouvertes à 6,2 / 6,55 / 7,0 / 7,45 s :
+    #           un chuchotement sans mots lisibles, pas de voix timbrée. Aucune cloche.
+    L=mk(8.0); t=np.arange(L)/SR
+    brume=fftfilt(burst(L,lo=80,hi=700),lo=80,hi=700)*0.35*(0.75+0.25*np.sin(2*np.pi*0.15*t+i))   # le vent dans le brouillard, bas
+    brume+=fftfilt(burst(L,lo=1500,hi=4000),lo=1500,hi=4000)*0.02
+    brume*=np.where(t<3.0,0.8,np.where(t<6.0,1.0,0.6))                                          # le gros plan isole, le plan de dos ouvre
+    gestes=np.zeros(L)
+    k=mk(0.3); at(gestes,grince(0.3,180,140)*0.08,0.3)                                          # le cuir de la sacoche qui s'ouvre
+    at(gestes,froisse(0.6,500,4000,40)*0.35,1.2)                                                # le pain qui descend dans la toile
+    n=mk(0.25); tt=np.arange(n)/SR
+    at(gestes,fftfilt(rng.standard_normal(n),hi=500)*np.exp(-tt*30)*0.5,2.3)                     # lâché : il tombe au fond, mat
+    at(gestes,burst(mk(0.35),lo=200,hi=1500)*np.hanning(mk(0.35))*0.25,2.35)                      # le rabat de cuir mouillé retombe
+    def boue(g):
+        n=mk(0.35); tt=np.arange(n)/SR
+        y=fftfilt(rng.standard_normal(n),hi=400)*np.exp(-tt*18)
+        y+=fftfilt(rng.standard_normal(n),lo=600,hi=2500)*np.exp(-tt*10)*(np.sin(2*np.pi*rng.uniform(20,35)*tt)>0.2)*0.3   # la succion
+        return y*g
+    at(gestes,froisse(0.5,300,2500,25)*0.2,3.9)                                                 # la capote qui se plie
+    at(gestes,boue(0.7),4.3); at(gestes,boue(0.55),4.48)                                         # un genou, puis l'autre
+    priere=np.zeros(L)
+    for tc,ns in ((6.2,3),(6.55,4),(7.0,4),(7.45,3)):
+        at(priere,chuchote(ns)*0.35,tc)
+    for tc in (6.1,6.9):
+        n=mk(0.18); tt=np.arange(n)/SR; at(priere,burst(n,lo=300,hi=1500)*np.sin(np.pi*tt/tt[-1])*0.08,tc)   # il reprend son souffle
+    m=brume+gestes+priere
+    m=reverb(m,1.0,0.15,seed=411+i)[:L]
+    return m*np.clip(t/0.2,0,1)*np.clip((8.0-t)/0.3,0,1)
 def pli_deplier(i):     # le pli se déplie : papier épais, plié depuis longtemps, qui résiste
     y=np.zeros(mk(1.6))
     for p in range(2): at(y,froisse(0.45,500,4000,45)*(0.8 if p else 1.0),0.05+p*0.6+0.04*i)
@@ -432,3 +474,4 @@ save("sfx_village_tablee",village_tablee,0.6)    # 12 s pour toute la ciné, lan
 save("sfx_porte_scellee",porte_scellee,0.6)    # 10 s pour toute la ciné, lancé à 0
 save("sfx_mere_cloche",mere_cloche,0.6)    # 10 s pour toute la ciné, lancé à 0
 save("sfx_adieu_jacquot",adieu_jacquot,0.4)    # 8 s, lancé à 0 ; le sifflet est un son pur : crête plus basse pour rester au niveau des autres cinés
+save("sfx_rites_matthieu",rites_matthieu,0.6)    # 8 s pour toute la ciné, lancé à 0
