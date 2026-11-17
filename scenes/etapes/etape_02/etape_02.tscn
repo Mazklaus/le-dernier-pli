@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3]
+[gd_scene load_steps=28 format=3]
 
 [ext_resource type="Script" path="res://scenes/etapes/etape_02/etape_02.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/etapes/etape_02/lieux/boyau_detour.tscn" id="2"]
@@ -20,6 +20,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/amb_no-mans-land_fils.ogg" id="son_fils"]
 [ext_resource type="AudioStream" path="res://assets/audio/amb_no-mans-land_trou-obus.ogg" id="son_trous"]
 [ext_resource type="AudioStream" path="res://assets/audio/amb_no-mans-land_boyau-detour.ogg" id="son_boyau"]
+[ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(64, 1300)
 
@@ -784,3 +785,20 @@ autoplay = true
 max_distance = 1200.0
 bus = &"Ambiance"
 metadata/note_level_design = "Boucle du boyau ; portée courte pour ne pas fuir vers le parapet au-dessus"
+
+[node name="e2_barbeles_foncer" type="Node2D" parent="Surface/Brouillard"]
+script = ExtResource("cine_script")
+id = &"e2_barbeles_foncer"
+duree = 7.0
+metadata/note_level_design = "Tobie se jette dans les fils, une goutte de sang sur une pointe ; lancée par une réplique de e2_barbeles (Foncer) (lot 1, arbitrage GD du 17/11)"
+
+[node name="Camera" type="Camera2D" parent="Surface/Brouillard/e2_barbeles_foncer"]
+position = Vector2(200, 780)
+
+[node name="Depart" type="Marker2D" parent="Surface/Brouillard/e2_barbeles_foncer"]
+position = Vector2(200, 780)
+scale = Vector2(1.5, 1.5)
+
+[node name="Arrivee" type="Marker2D" parent="Surface/Brouillard/e2_barbeles_foncer"]
+position = Vector2(430, 760)
+scale = Vector2(2.0, 2.0)
