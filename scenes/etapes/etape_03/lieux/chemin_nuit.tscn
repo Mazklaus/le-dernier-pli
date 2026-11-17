@@ -4,6 +4,7 @@
 [ext_resource type="Resource" path="res://dialogue/etape_03/e3_procession.dialogue" id="2"]
 
 [ext_resource type="Script" path="res://scripts/cinematique/cinematique.gd" id="cine_script"]
+[ext_resource type="Script" path="res://scripts/cinematique/plans/cin_e3_priere_champs.gd" id="cine_priere"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(3840, 180)
 
@@ -182,7 +183,7 @@ mouse_filter = 2
 z_index = 5
 
 [node name="e3_priere_champs" type="Node2D" parent="."]
-script = ExtResource("cine_script")
+script = ExtResource("cine_priere")
 id = &"e3_priere_champs"
 duree = 12.0
 metadata/note_level_design = "Le cercle des villageois à genoux dans le champ, une place vide ; lancée par une réplique de e3_procession (~ champs) (lot 1, arbitrage GD du 17/11)"
