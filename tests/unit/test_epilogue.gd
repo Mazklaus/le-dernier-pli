@@ -8,6 +8,10 @@ func before_each() -> void:
 	GameState.reinitialiser()
 
 
+func after_each() -> void:
+	Epilogue.modele_animation = "res://scripts/epilogue/anim_epilogue_%s.gd"
+
+
 func after_all() -> void:
 	GameState.reinitialiser()
 
@@ -87,3 +91,56 @@ func test_une_pression_avant_le_chargement_des_lignes_est_ignoree() -> void:
 	var en_scene: Epilogue = add_child_autofree(SceneEpilogue.instantiate())
 	await wait_until(func() -> bool: return en_scene.colonne_lignes.get_child_count() > 0, 3.0)
 	assert_true(en_scene.accepte_entree())
+
+
+func _carton_anime() -> Epilogue:
+	Epilogue.modele_animation = "res://tests/fixtures/anim_epilogue_%s.gd"
+	GameState.ajouter_marque(&"jacquot", Marques.NOM_RETENU, &"e1_adieu")
+	var carton: Epilogue = add_child_autofree(SceneEpilogue.instantiate())
+	await wait_until(func() -> bool: return carton.colonne_lignes.get_child_count() > 0, 3.0)
+	return carton
+
+
+func _visibles(carton: Epilogue) -> int:
+	var n := 0
+	for label in carton.colonne_lignes.get_children():
+		if (label as CanvasItem).modulate.a > 0.0:
+			n += 1
+	return n
+
+
+func test_sans_animation_la_gravure_reste() -> void:
+	Epilogue.modele_animation = "res://tests/fixtures/absent_%s.gd"
+	var carton: Epilogue = add_child_autofree(SceneEpilogue.instantiate())
+	await wait_until(func() -> bool: return carton.colonne_lignes.get_child_count() > 0, 3.0)
+	assert_null(carton.anime)
+	assert_true(carton.gravure.visible)
+	assert_null(carton.get_node_or_null("Bandeau"))
+
+
+func test_l_animation_remplace_la_gravure_et_rythme_les_lignes() -> void:
+	var carton := await _carton_anime()
+	assert_not_null(carton.anime)
+	assert_false(carton.gravure.visible, "l'animation remplace la gravure")
+	assert_not_null(carton.get_node_or_null("Bandeau"), "les lignes sur un bandeau papier")
+	assert_lt(carton.anime.get_index(), carton.colonne_lignes.get_index(), "l'animation derrière le texte")
+	assert_eq(carton.anime.mouse_filter, Control.MOUSE_FILTER_IGNORE)
+	assert_true(carton.anime.get(&"jouee"))
+	assert_true(carton.suit_animation())
+	# Lignes à 0,1 / 0,3 / 0,5 / 0,7 s, chacune en FONDU : la dernière ne commence qu'après les autres.
+	assert_eq(carton.etat, Epilogue.Etat.LIGNES)
+	await wait_seconds(0.2)
+	assert_eq(_visibles(carton), 1, "la première ligne à son instant")
+	await wait_until(func() -> bool: return carton.etat != Epilogue.Etat.LIGNES, 12.0)
+	assert_eq(_visibles(carton), 4, "toutes les lignes avant la mémoire")
+	await wait_until(func() -> bool: return carton.etat == Epilogue.Etat.FINI, 12.0)
+	assert_eq(carton.invite.modulate.a, 1.0, "l'invite à la fin de l'animation")
+
+
+func test_passer_saute_aussi_l_animation() -> void:
+	var carton := await _carton_anime()
+	carton.passer()
+	assert_true(carton.anime.get(&"passee"), "l'animation va à sa dernière image")
+	assert_eq(carton.etat, Epilogue.Etat.FINI)
+	assert_eq(carton.invite.modulate.a, 1.0)
+	assert_eq(_visibles(carton), 4)
