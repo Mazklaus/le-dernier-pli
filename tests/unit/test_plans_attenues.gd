@@ -50,3 +50,25 @@ func test_pas_reconstruite_si_le_reglage_n_a_pas_change() -> void:
 	c.jouer()
 	assert_eq(c.constructions, 1)
 	c.sauter()
+
+
+## Écran plus large que 16:9 (stretch expand) : plans centrés, bandeau sombre sur toute la vue,
+## et le bandeau ne compte pas parmi les plans (QA, procession e3 en 2560 × 1080).
+func test_ecran_large_plans_centres_sur_un_bandeau() -> void:
+	var vue := SubViewport.new()
+	vue.size = Vector2i(2560, 1200)
+	add_child_autofree(vue)
+	var c := CineReglee.new()
+	c.id = &"test_plans_large"
+	c.une_seule_fois = false
+	vue.add_child(c)
+	var couche := c.get_node("Plans") as CanvasLayer
+	assert_eq(couche.offset, Vector2(320, 60), "repère 1920×1080 centré")
+	assert_eq(couche.get_child_count(), 1, "seul le plan compte, pas le bandeau")
+	var bandeau := couche.get_node("Bandeau") as ColorRect
+	assert_eq(bandeau.size, Vector2(2560, 1200), "bandeau sur toute la vue")
+	assert_eq(bandeau.position, Vector2(-320, -60))
+	vue.size = Vector2i(1920, 1080)
+	c.jouer()
+	assert_eq(couche.offset, Vector2.ZERO, "recadré à la lecture")
+	c.sauter()
